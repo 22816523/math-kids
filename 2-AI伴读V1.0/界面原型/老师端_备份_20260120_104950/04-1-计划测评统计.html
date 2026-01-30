@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>计划测评统计 - 校校读吧小管家（教师端）</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: "Source Han Sans CN", "Noto Sans CJK SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background: #F5F7FA; width: 375px; margin: 0 auto; padding-bottom: 20px; }
+        .navbar { background: linear-gradient(135deg, #2E5BFF, #1E4BEF); color: white; height: 44px; display: flex; align-items: center; padding: 0 16px; position: sticky; top: 0; z-index: 100; }
+        .navbar-back { font-size: 18px; cursor: pointer; margin-right: 12px; }
+        .navbar-title { font-size: 18px; font-weight: 600; flex: 1; }
+
+        /* 整体统计卡片 */
+        .stats-card { background: white; margin: 16px; padding: 16px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+        .stats-title { font-size: 16px; font-weight: 600; color: #333333; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+        .stat-item { text-align: center; padding: 12px; background: #f5f5f5; border-radius: 8px; }
+        .stat-value { font-size: 24px; font-weight: 700; color: #2E5BFF; margin-bottom: 4px; }
+        .stat-label { font-size: 12px; color: #999999; }
+
+        /* 书籍对比列表 */
+        .books-section { background: white; margin: 16px; padding: 16px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+        .section-title { font-size: 16px; font-weight: 600; color: #333333; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+        .book-compare-item { padding: 16px; margin-bottom: 12px; background: #fafafa; border-radius: 8px; cursor: pointer; transition: all 0.3s; }
+        .book-compare-item:last-child { margin-bottom: 0; }
+        .book-compare-item:active { background: #f0f0f0; }
+        .book-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .book-name { font-size: 15px; font-weight: 600; color: #333333; }
+        .book-score { font-size: 18px; font-weight: 700; }
+        .score-high { color: #52c41a; }
+        .score-medium { color: #2E5BFF; }
+        .score-low { color: #faad14; }
+        .book-progress { margin-bottom: 8px; }
+        .progress-info { display: flex; justify-content: space-between; font-size: 12px; color: #666666; margin-bottom: 6px; }
+        .progress-bar { height: 6px; background: #f0f0f0; border-radius: 3px; overflow: hidden; }
+        .progress-fill { height: 100%; border-radius: 3px; transition: width 0.3s; }
+        .progress-high { background: linear-gradient(90deg, #52c41a, #73d13d); }
+        .progress-medium { background: linear-gradient(90deg, #faad14, #ffc53d); }
+        .progress-low { background: linear-gradient(90deg, #ff4d4f, #ff7875); }
+        .book-stats { display: flex; gap: 16px; font-size: 12px; color: #999999; }
+
+        /* 学生排名列表 */
+        .ranking-section { background: white; margin: 16px; padding: 16px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+        .student-rank-item { display: flex; align-items: center; padding: 12px; margin-bottom: 8px; background: #fafafa; border-radius: 8px; }
+        .student-rank-item:last-child { margin-bottom: 0; }
+        .rank-number { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; margin-right: 12px; flex-shrink: 0; }
+        .rank-1 { background: linear-gradient(135deg, #ffd700, #ffed4e); color: #fff; }
+        .rank-2 { background: linear-gradient(135deg, #c0c0c0, #e8e8e8); color: #666; }
+        .rank-3 { background: linear-gradient(135deg, #cd7f32, #e8a87c); color: #fff; }
+        .rank-other { background: #f0f0f0; color: #999999; }
+        .student-info { flex: 1; }
+        .student-name { font-size: 14px; font-weight: 600; color: #333333; margin-bottom: 4px; }
+        .student-progress { font-size: 12px; color: #999999; }
+        .student-score { font-size: 18px; font-weight: 700; }
+
+        .fa-solid, .fa-regular { font-weight: 400; }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="navbar">
+        <div class="navbar-back" onclick="Router.back()">←</div>
+        <div class="navbar-title" id="planTitle">计划测评统计</div>
+    </div>
+
+    <!-- 整体统计 -->
+    <div class="stats-card">
+        <div class="stats-title"><i class="fa-solid fa-chart-pie"></i> 整体统计</div>
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-value" id="totalSubmitRate">81%</div>
+                <div class="stat-label">总提交率</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="avgScore">83.5</div>
+                <div class="stat-label">平均分</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="totalSubmitted">84</div>
+                <div class="stat-label">已提交人次</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="totalStudents">52</div>
+                <div class="stat-label">班级人数</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 各书籍对比 -->
+    <div class="books-section">
+        <div class="section-title"><i class="fa-solid fa-book"></i> 各书籍完成情况</div>
+        <div id="booksCompare">
+            <!-- 书籍对比列表将通过JavaScript动态生成 -->
+        </div>
+    </div>
+
+    <!-- 学生排名 -->
+    <div class="ranking-section">
+        <div class="section-title"><i class="fa-solid fa-trophy"></i> 学生排名（前10名）</div>
+        <div id="studentRanking">
+            <!-- 学生排名列表将通过JavaScript动态生成 -->
+        </div>
+    </div>
+
+    <script src="../router.js"></script>
+    <script>
+        // 获取URL参数
+        const urlParams = new URLSearchParams(window.location.search);
+        const planId = parseInt(urlParams.get('planId'));
+
+        // 模拟计划数据（与04-测评管理.html保持一致）
+        const mockPlans = [
+            {
+                id: 1,
+                planName: '2026年春季阅读计划',
+                startDate: '2026-03-01',
+                endDate: '2026-05-31',
+                status: 'ongoing',
+                statusText: '进行中',
+                books: [
+                    { id: 1, name: '三体', examCount: 20, submitted: 46, total: 52, submitRate: 88, avgScore: 85 },
+                    { id: 2, name: '活着', examCount: 20, submitted: 38, total: 52, submitRate: 73, avgScore: 82 }
+                ]
+            },
+            {
+                id: 2,
+                planName: '2025年秋季阅读计划',
+                startDate: '2025-09-01',
+                endDate: '2025-11-30',
+                status: 'ended',
+                statusText: '已结束',
+                books: [
+                    { id: 6, name: '西游记', examCount: 20, submitted: 52, total: 52, submitRate: 100, avgScore: 88 },
+                    { id: 7, name: '水浒传', examCount: 20, submitted: 51, total: 52, submitRate: 98, avgScore: 86 }
+                ]
+            }
+        ];
+
+        // 模拟学生数据
+        const mockStudents = [
+            { id: 1, name: '张三', score: 92, progress: '2/2本完成' },
+            { id: 2, name: '李四', score: 89, progress: '2/2本完成' },
+            { id: 3, name: '王五', score: 87, progress: '2/2本完成' },
+            { id: 4, name: '赵六', score: 85, progress: '2/2本完成' },
+            { id: 5, name: '孙七', score: 83, progress: '2/2本完成' },
+            { id: 6, name: '周八', score: 81, progress: '2/2本完成' },
+            { id: 7, name: '吴九', score: 79, progress: '1/2本完成' },
+            { id: 8, name: '郑十', score: 77, progress: '1/2本完成' },
+            { id: 9, name: '钱十一', score: 75, progress: '1/2本完成' },
+            { id: 10, name: '陈十二', score: 73, progress: '1/2本完成' }
+        ];
+
+        // 页面加载时初始化
+        window.addEventListener('DOMContentLoaded', () => {
+            const plan = mockPlans.find(p => p.id === planId);
+            if (!plan) {
+                alert('计划不存在');
+                Router.back();
+                return;
+            }
+
+            // 设置标题
+            document.getElementById('planTitle').textContent = plan.planName;
+
+            // 计算整体统计
+            const totalSubmitted = plan.books.reduce((sum, book) => sum + book.submitted, 0);
+            const totalTests = plan.books.length * plan.books[0].total;
+            const submitRate = Math.round((totalSubmitted / totalTests) * 100);
+            const avgScore = (plan.books.reduce((sum, book) => sum + book.avgScore, 0) / plan.books.length).toFixed(1);
+
+            document.getElementById('totalSubmitRate').textContent = submitRate + '%';
+            document.getElementById('avgScore').textContent = avgScore;
+            document.getElementById('totalSubmitted').textContent = totalSubmitted;
+            document.getElementById('totalStudents').textContent = plan.books[0].total;
+
+            // 渲染书籍对比
+            renderBooksCompare(plan);
+
+            // 渲染学生排名
+            renderStudentRanking();
+        });
+
+        // 渲染书籍对比
+        function renderBooksCompare(plan) {
+            const container = document.getElementById('booksCompare');
+
+            const html = plan.books.map(book => {
+                const scoreClass = book.avgScore >= 90 ? 'score-high' : book.avgScore >= 80 ? 'score-medium' : 'score-low';
+                const progressClass = book.submitRate >= 80 ? 'progress-high' : book.submitRate >= 60 ? 'progress-medium' : 'progress-low';
+
+                return `
+                    <div class="book-compare-item" onclick="viewBookStats(${plan.id}, ${book.id})">
+                        <div class="book-header">
+                            <div class="book-name">${book.name}</div>
+                            <div class="book-score ${scoreClass}">${book.avgScore}分</div>
+                        </div>
+                        <div class="book-progress">
+                            <div class="progress-info">
+                                <span>提交进度</span>
+                                <span>${book.submitted}/${book.total}人 (${book.submitRate}%)</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill ${progressClass}" style="width: ${book.submitRate}%"></div>
+                            </div>
+                        </div>
+                        <div class="book-stats">
+                            <span><i class="fa-solid fa-clipboard-question"></i> ${book.examCount}道题</span>
+                            <span><i class="fa-solid fa-users"></i> ${book.submitted}人已提交</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            container.innerHTML = html;
+        }
+
+        // 渲染学生排名
+        function renderStudentRanking() {
+            const container = document.getElementById('studentRanking');
+
+            const html = mockStudents.map((student, index) => {
+                const rank = index + 1;
+                let rankClass = 'rank-other';
+                if (rank === 1) rankClass = 'rank-1';
+                else if (rank === 2) rankClass = 'rank-2';
+                else if (rank === 3) rankClass = 'rank-3';
+
+                const scoreClass = student.score >= 90 ? 'score-high' : student.score >= 80 ? 'score-medium' : 'score-low';
+
+                return `
+                    <div class="student-rank-item">
+                        <div class="rank-number ${rankClass}">${rank}</div>
+                        <div class="student-info">
+                            <div class="student-name">${student.name}</div>
+                            <div class="student-progress">${student.progress}</div>
+                        </div>
+                        <div class="student-score ${scoreClass}">${student.score}</div>
+                    </div>
+                `;
+            }).join('');
+
+            container.innerHTML = html;
+        }
+
+        // 查看书籍统计
+        function viewBookStats(planId, bookId) {
+            window.location.href = `04-2-书籍测评统计.html?planId=${planId}&bookId=${bookId}`;
+        }
+    </script>
+</body>
+</html>

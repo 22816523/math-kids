@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>消息详情 - 校校读吧小管家（教师端）</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: "Source Han Sans CN", "Noto Sans CJK SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background: #F5F7FA; width: 375px; margin: 0 auto; min-height: 100vh; opacity: 0; padding-bottom: 20px; }
+        .navbar { background: linear-gradient(135deg, #2E5BFF 0%, #1E4BEF 100%); color: white; height: 44px; display: flex; align-items: center; padding: 0 16px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(24, 144, 255, 0.15); }
+        .back-btn { background: none; border: none; color: white; font-size: 18px; line-height: 1.4; cursor: pointer; padding: 4px; }
+        .navbar-title { flex: 1; text-align: center; font-size: 18px; line-height: 1.4; font-weight: 600; margin-right: 28px; }
+        .message-header { background: white; padding: 20px 16px; border-bottom: 1px solid #f0f0f0; }
+        .message-title { font-size: 20px; line-height: 1.2; font-weight: 600; margin-bottom: 12px; color: #333333; }
+        .message-meta { display: flex; gap: 16px; font-size: 13px; line-height: 1.5; color: #999999; flex-wrap: wrap; }
+        .meta-item { display: flex; align-items: center; gap: 4px; }
+        .message-content { background: white; padding: 20px 16px; margin-bottom: 12px; }
+        .content-text { font-size: 15px; line-height: 1.8; color: #595959; white-space: pre-wrap; }
+
+        /* Font Awesome图标样式优化 */
+        .fa-solid, .fa-regular {
+            font-weight: 400;
+            color: #595959;
+            opacity: 0.85;
+        }
+
+        /* 导航栏和标题中的图标保持原色 */
+        .navbar .fa-solid,
+        .section-title .fa-solid,
+        .task-title .fa-solid {
+            color: inherit;
+            opacity: 1;
+        }
+
+        /* 徽章图标使用白色，与金色背景形成对比 */
+        .badge-icon .fa-solid {
+            color: white;
+            opacity: 1;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 成就图标特殊样式 */
+        .achievement-section .badge-icon .fa-solid {
+            font-size: 32px;
+        }
+
+        /* 选中状态图标颜色优化 */
+        .tab-item.active .tab-icon .fa-solid,
+        .tab-item.active .fa-solid {
+            color: #2E5BFF;
+            opacity: 1;
+        }
+
+        /* 其他选中状态 */
+        .menu-item.active .menu-icon .fa-solid,
+        .nav-item.active .fa-solid,
+        .list-item.selected .fa-solid,
+        .card.active .fa-solid,
+        .btn.active .fa-solid,
+        .filter-btn.active .fa-solid {
+            color: #2E5BFF;
+            opacity: 1;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="navbar">
+        <button class="back-btn" onclick="Router.back()">←</button>
+        <div class="navbar-title">消息详情</div>
+    </div>
+
+    <div class="message-header">
+        <div class="message-title" id="messageTitle">系统通知：新功能上线</div>
+        <div class="message-meta">
+            <div class="meta-item"><span><i class="fa-solid fa-user"></i></span><span id="messageSender">系统管理员</span></div>
+            <div class="meta-item"><span><i class="fa-solid fa-calendar"></i></span><span id="messageSendTime">2026-01-15 10:00</span></div>
+        </div>
+    </div>
+
+    <div class="message-content">
+        <div class="content-text" id="messageContent">平台新增了AI辅助批改功能，可以帮助您更快速地批改学生作业。该功能支持自动识别答案要点，提供批改建议，大幅提升批改效率。</div>
+    </div>
+
+    <script src="./router.js"></script>
+    <script>
+        // 获取URL参数中的消息ID
+        const messageId = Router.getQuery('messageId')
+
+        // 模拟从后端获取消息详情（实际应该根据messageId从后端获取）
+        const mockMessages = {
+            1: {
+                title: '系统通知：新功能上线',
+                content: '平台新增了AI辅助批改功能，可以帮助您更快速地批改学生作业。该功能支持自动识别答案要点，提供批改建议，大幅提升批改效率。',
+                sender: '系统管理员',
+                sendTime: '2026-01-15 10:00'
+            },
+            3: {
+                title: '平台升级通知',
+                content: '系统将于本周六凌晨2:00-4:00进行升级维护，期间将无法访问。请提前做好相关工作安排，给您带来的不便敬请谅解。',
+                sender: '系统管理员',
+                sendTime: '2026-01-13 16:00'
+            }
+        }
+
+        // 页面加载完成
+        window.addEventListener('DOMContentLoaded', () => {
+            if (messageId && mockMessages[messageId]) {
+                const message = mockMessages[messageId]
+                document.getElementById('messageTitle').textContent = message.title
+                document.getElementById('messageContent').textContent = message.content
+                document.getElementById('messageSender').textContent = message.sender
+                document.getElementById('messageSendTime').textContent = message.sendTime
+            }
+        })
+    </script>
+</body>
+</html>

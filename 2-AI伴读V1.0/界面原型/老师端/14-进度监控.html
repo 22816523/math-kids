@@ -1,0 +1,2408 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>进度监控 - 校校读吧小管家（教师端）</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: "Source Han Sans CN", "Noto Sans CJK SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #F5F7FA;
+            width: 375px;
+            margin: 0 auto;
+            min-height: 100vh;
+            padding-bottom: 60px;
+            opacity: 0;
+        }
+        .navbar {
+            background: linear-gradient(135deg, #2E5BFF 0%, #1E4BEF 100%);
+            color: white;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 8px rgba(24, 144, 255, 0.15);
+        }
+        .navbar-title { font-size: 18px;
+            line-height: 1.4; font-weight: 600; }
+        .class-selector {
+            background: white;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .filter-bar {
+            background: white;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .filter-summary {
+            flex: 1;
+            font-size: 13px;
+            color: #333333;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            font-weight: 600;
+        }
+        .filter-tags {
+            display: flex;
+            gap: 6px;
+            margin-left: 8px;
+        }
+        .filter-tag {
+            padding: 2px 8px;
+            background: #e6f0ff;
+            color: #2E5BFF;
+            border-radius: 4px;
+            font-size: 11px;
+            white-space: nowrap;
+        }
+        .filter-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            margin-left: 10px;
+            background: #f5f7fa;
+            border: 1px solid #e8e8e8;
+            border-radius: 6px;
+            font-size: 14px;
+            color: #333333;
+            cursor: pointer;
+            transition: all 0.3s;
+            flex-shrink: 0;
+        }
+        .filter-btn:active {
+            background: #e8eaed;
+        }
+        .filter-btn i {
+            color: #2E5BFF;
+        }
+        .filter-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 375px;
+            height: 100vh;
+            background: rgba(0,0,0,0.5);
+            z-index: 200;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .filter-modal-overlay.show {
+            display: block;
+            opacity: 1;
+        }
+        .filter-modal {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-radius: 16px 16px 0 0;
+            padding: 20px 16px;
+            transform: translateY(100%);
+            transition: transform 0.3s;
+        }
+        .filter-modal-overlay.show .filter-modal {
+            transform: translateY(0);
+        }
+        .filter-modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .filter-modal-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333333;
+        }
+        .filter-modal-close {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: #f5f7fa;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #666666;
+            font-size: 14px;
+        }
+        .filter-group {
+            margin-bottom: 16px;
+        }
+        .filter-group-label {
+            font-size: 13px;
+            color: #666666;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .filter-group-select {
+            width: 100%;
+            height: 44px;
+            border: 1px solid #d9d9d9;
+            border-radius: 8px;
+            padding: 0 12px;
+            font-size: 14px;
+            background: white;
+        }
+        .filter-modal-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+        .filter-reset-btn {
+            flex: 1;
+            height: 44px;
+            border: 1px solid #d9d9d9;
+            background: white;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #666666;
+            cursor: pointer;
+        }
+        .filter-confirm-btn {
+            flex: 2;
+            height: 44px;
+            border: none;
+            background: linear-gradient(135deg, #2E5BFF 0%, #1E4BEF 100%);
+            border-radius: 8px;
+            font-size: 14px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .book-info-card {
+            background: white;
+            margin: 0 16px 12px;
+            padding: 16px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .book-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        .book-cover {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+        .book-meta {
+            flex: 1;
+        }
+        .book-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333333;
+            margin-bottom: 4px;
+        }
+        .book-progress-text {
+            font-size: 12px;
+            color: #666666;
+        }
+        .book-stats {
+            display: flex;
+            gap: 16px;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #f0f0f0;
+        }
+        .book-stat-item {
+            flex: 1;
+            text-align: center;
+        }
+        .book-stat-value {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .book-stat-value.ahead { color: #52c41a; }
+        .book-stat-value.normal { color: #1890ff; }
+        .book-stat-value.behind { color: #ff4d4f; }
+        .book-stat-label {
+            font-size: 12px;
+            color: #999999;
+        }
+        .stats-section-title {
+            font-size: 13px;
+            color: #666666;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        .task-completion-overview {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #f0f0f0;
+        }
+        .progress-compare {
+            background: #f5f7fa;
+            padding: 14px;
+            border-radius: 8px;
+        }
+        .progress-compare-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .progress-compare-title {
+            font-size: 13px;
+            color: #333333;
+            font-weight: 600;
+        }
+        .progress-compare-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: #2E5BFF;
+        }
+        .progress-compare-bar {
+            height: 12px;
+            background: #e0e0e0;
+            border-radius: 6px;
+            overflow: hidden;
+            position: relative;
+        }
+        .progress-actual {
+            height: 100%;
+            border-radius: 6px;
+            position: absolute;
+            left: 0;
+            top: 0;
+            z-index: 2;
+        }
+        .progress-actual.ahead {
+            background: linear-gradient(90deg, #36B37E 0%, #57D9A3 100%);
+        }
+        .progress-actual.behind {
+            background: linear-gradient(90deg, #ff4d4f 0%, #ff7875 100%);
+        }
+        .progress-actual.normal {
+            background: linear-gradient(90deg, #2E5BFF 0%, #5B8CFF 100%);
+        }
+        .progress-expected {
+            position: absolute;
+            top: -4px;
+            width: 3px;
+            height: 20px;
+            background: #faad14;
+            border-radius: 2px;
+            z-index: 3;
+        }
+        .progress-expected::after {
+            content: '';
+            position: absolute;
+            top: -3px;
+            left: -3px;
+            width: 9px;
+            height: 9px;
+            background: #faad14;
+            border-radius: 50%;
+        }
+        .progress-legend {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            font-size: 11px;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            color: #666666;
+        }
+        .legend-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 2px;
+        }
+        .legend-dot.actual {
+            background: #2E5BFF;
+        }
+        .legend-dot.expected {
+            background: #faad14;
+        }
+        /* 今日打卡区域 */
+        .today-checkin-section {
+            background: white;
+            margin: 12px 16px;
+            padding: 16px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+        .section-header-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .section-header-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
+        }
+        .section-header-icon i {
+            color: white !important;
+        }
+        .section-header-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333333;
+        }
+        .section-header-date {
+            font-size: 12px;
+            color: #999999;
+        }
+        .checkin-stats {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .checkin-stat-item {
+            flex: 1;
+            text-align: center;
+            padding: 12px 8px;
+            background: white;
+            border-radius: 8px;
+        }
+        .checkin-stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        .checkin-stat-value.total { color: #2E5BFF; }
+        .checkin-stat-value.done { color: #36B37E; }
+        .checkin-stat-value.undone { color: #ff4d4f; }
+        .checkin-stat-label {
+            font-size: 12px;
+            color: #666666;
+        }
+        .checkin-progress-bar {
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+        .checkin-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #36B37E 0%, #57D9A3 100%);
+            border-radius: 4px;
+            transition: width 0.3s;
+        }
+        .checkin-progress-text {
+            text-align: center;
+            font-size: 13px;
+            color: #666666;
+        }
+        .checkin-progress-text span {
+            color: #36B37E;
+            font-weight: 600;
+        }
+        /* 未打卡学生列表 */
+        .uncheckin-list {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #f0f0f0;
+        }
+        .uncheckin-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            padding: 8px 0;
+        }
+        .uncheckin-title {
+            font-size: 13px;
+            color: #666666;
+            font-weight: 600;
+        }
+        .uncheckin-toggle {
+            font-size: 12px;
+            color: #2E5BFF;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .uncheckin-students {
+            display: none;
+            margin-top: 12px;
+        }
+        .uncheckin-students.show {
+            display: block;
+        }
+        .uncheckin-student-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 0;
+            border-bottom: 1px solid #f5f5f5;
+        }
+        .uncheckin-student-item:last-child {
+            border-bottom: none;
+        }
+        .uncheckin-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff7875 0%, #ff4d4f 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .uncheckin-info {
+            flex: 1;
+        }
+        .uncheckin-name {
+            font-size: 14px;
+            color: #333333;
+            font-weight: 500;
+        }
+        .uncheckin-class {
+            font-size: 12px;
+            color: #999999;
+        }
+        .remind-btn {
+            padding: 6px 12px;
+            background: #fff1f0;
+            border: 1px solid #ffccc7;
+            border-radius: 4px;
+            font-size: 12px;
+            color: #ff4d4f;
+            cursor: pointer;
+        }
+        /* 计划完成情况区域 */
+        .plan-progress-section {
+            background: white;
+            margin: 0 16px 12px;
+            padding: 16px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .plan-header-icon {
+            background: linear-gradient(135deg, #2E5BFF 0%, #1E4BEF 100%);
+        }
+        .plan-filter-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        .plan-filter-tag {
+            padding: 4px 10px;
+            background: #e6f0ff;
+            color: #2E5BFF;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        .checkin-filter-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        .checkin-filter-tag {
+            padding: 4px 10px;
+            background: #fff2e8;
+            color: #fa541c;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        /* 任务详情卡片 */
+        .task-detail-card {
+            background: #f0f5ff;
+            border: 1px solid #d6e4ff;
+            border-radius: 12px;
+            padding: 16px;
+        }
+        .task-detail-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #333333;
+            text-align: center;
+            margin-bottom: 16px;
+        }
+        /* 打卡学生列表 */
+        .checkin-student-section {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #f0f0f0;
+        }
+        .checkin-student-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            padding: 8px 0;
+            margin-bottom: 12px;
+        }
+        .checkin-student-title {
+            font-size: 14px;
+            color: #333333;
+            font-weight: 600;
+        }
+        .checkin-student-toggle {
+            font-size: 12px;
+            color: #2E5BFF;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .checkin-student-content {
+            display: block;
+        }
+        .checkin-student-content.hide {
+            display: none;
+        }
+        .checkin-student-tabs {
+            display: flex;
+            gap: 0;
+            margin-bottom: 12px;
+            background: #f5f7fa;
+            border-radius: 8px;
+            padding: 4px;
+        }
+        .checkin-student-tab {
+            flex: 1;
+            text-align: center;
+            font-size: 13px;
+            color: #666666;
+            cursor: pointer;
+            padding: 8px 0;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+        .checkin-student-tab.active {
+            background: white;
+            color: #2E5BFF;
+            font-weight: 600;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .checkin-student-tab.done { }
+        .checkin-student-tab.undone { }
+        .checkin-student-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .checkin-student-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 0;
+            border-bottom: 1px solid #f5f5f5;
+            cursor: pointer;
+        }
+        .checkin-student-item:last-child {
+            border-bottom: none;
+        }
+        .checkin-student-item:active {
+            background: #f5f7fa;
+        }
+        .checkin-student-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 600;
+            color: white;
+        }
+        .checkin-student-avatar.done {
+            background: linear-gradient(135deg, #36B37E 0%, #57D9A3 100%);
+        }
+        .checkin-student-avatar.undone {
+            background: linear-gradient(135deg, #ff7875 0%, #ff4d4f 100%);
+        }
+        .checkin-student-info {
+            flex: 1;
+            min-width: 0;
+        }
+        .checkin-student-name {
+            font-size: 14px;
+            color: #333333;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+        .checkin-student-detail {
+            font-size: 12px;
+            color: #999999;
+        }
+        .checkin-student-detail.done-detail {
+            color: #36B37E;
+        }
+        .checkin-student-detail.undone-detail {
+            color: #ff4d4f;
+        }
+        .checkin-student-action {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .view-btn {
+            padding: 6px 12px;
+            background: #e6f7ff;
+            border: 1px solid #91d5ff;
+            border-radius: 4px;
+            font-size: 12px;
+            color: #1890ff;
+            cursor: pointer;
+        }
+        .remind-btn {
+            padding: 6px 12px;
+            background: #fff1f0;
+            border: 1px solid #ffccc7;
+            border-radius: 4px;
+            font-size: 12px;
+            color: #ff4d4f;
+            cursor: pointer;
+        }
+        /* 学生列表可折叠 */
+        .student-list-section {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #f0f0f0;
+        }
+        .student-list-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            padding: 8px 0;
+        }
+        .student-list-title {
+            font-size: 13px;
+            color: #666666;
+            font-weight: 600;
+        }
+        .student-list-toggle {
+            font-size: 12px;
+            color: #2E5BFF;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .student-list-content {
+            display: none;
+            margin-top: 12px;
+        }
+        .student-list-content.show {
+            display: block;
+        }
+        .student-list-tabs {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 12px;
+            border-bottom: 1px solid #f0f0f0;
+            padding-bottom: 8px;
+        }
+        .student-list-tab {
+            font-size: 13px;
+            color: #999999;
+            cursor: pointer;
+            padding-bottom: 8px;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -9px;
+        }
+        .student-list-tab.active {
+            color: #2E5BFF;
+            font-weight: 600;
+            border-bottom-color: #2E5BFF;
+        }
+        .compact-student-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 0;
+            border-bottom: 1px solid #f5f5f5;
+            cursor: pointer;
+        }
+        .compact-student-item:last-child {
+            border-bottom: none;
+        }
+        .compact-student-item:active {
+            background: #f5f7fa;
+        }
+        .compact-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .compact-info {
+            flex: 1;
+            min-width: 0;
+        }
+        .compact-name {
+            font-size: 14px;
+            color: #333333;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .compact-progress {
+            font-size: 12px;
+            color: #999999;
+            margin-top: 2px;
+        }
+        .compact-rate {
+            font-size: 16px;
+            font-weight: 700;
+            color: #36B37E;
+        }
+        .compact-rate.low {
+            color: #ff4d4f;
+        }
+        .compact-rate.medium {
+            color: #faad14;
+        }
+        .book-assessment {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #f0f0f0;
+        }
+        .assessment-label {
+            font-size: 13px;
+            color: #666666;
+            margin-bottom: 8px;
+        }
+        .assessment-label i {
+            color: #52c41a;
+            margin-right: 4px;
+        }
+        .assessment-stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .assessment-completed {
+            font-size: 14px;
+            color: #333333;
+            font-weight: 600;
+        }
+        .assessment-rate {
+            font-size: 18px;
+            color: #52c41a;
+            font-weight: 700;
+        }
+        .task-stats-section {
+            background: white;
+            margin: 0 16px 12px;
+            padding: 16px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .reading-times-selector {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            margin-top: 12px;
+            padding: 12px;
+            background: #f5f7fa;
+            border-radius: 8px;
+        }
+        .times-btn {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #2E5BFF;
+            font-size: 14px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+        .times-btn:active {
+            transform: scale(0.95);
+        }
+        .times-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+        .times-display {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+        .times-label {
+            font-size: 12px;
+            color: #999999;
+        }
+        .times-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: #2E5BFF;
+        }
+        .task-list {
+            margin-top: 12px;
+        }
+        .task-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            border-bottom: 1px solid #f0f0f0;
+            transition: all 0.3s;
+            cursor: pointer;
+            border-radius: 8px;
+            margin-bottom: 4px;
+        }
+        .task-item:last-child {
+            border-bottom: none;
+        }
+        .task-item:hover {
+            background: #f5f7fa;
+        }
+        .task-item:active {
+            background: #e8eaed;
+        }
+        .task-item.active {
+            background: #e6f7ff;
+            border: 1px solid #2E5BFF;
+        }
+        .task-number {
+            min-width: 36px;
+            height: 24px;
+            background: #2E5BFF;
+            color: white;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 600;
+            flex-shrink: 0;
+            padding: 0 8px;
+        }
+        .task-info {
+            flex: 1;
+            min-width: 0;
+        }
+        .task-title {
+            font-size: 14px;
+            color: #333333;
+            font-weight: 600;
+            margin-bottom: 4px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .task-type {
+            font-size: 12px;
+            color: #999999;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .task-type i {
+            font-size: 11px;
+        }
+        .task-stats {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 2px;
+            flex-shrink: 0;
+        }
+        .task-completion-rate {
+            font-size: 18px;
+            font-weight: 700;
+        }
+        .task-completion-rate.high { color: #52c41a; }
+        .task-completion-rate.medium { color: #faad14; }
+        .task-completion-rate.low { color: #ff4d4f; }
+        .task-completion-count {
+            font-size: 11px;
+            color: #999999;
+        }
+        .calendar-section {
+            background: white;
+            margin: 0 16px 12px;
+            padding: 16px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .calendar-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+            gap: 12px;
+        }
+        .month-nav-btn {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: white;
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #2E5BFF;
+            font-size: 14px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+        .calendar-section.expanded .month-nav-btn {
+            display: flex;
+        }
+        .month-nav-btn:active {
+            transform: scale(0.95);
+        }
+        .month-display {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333333;
+        }
+        .calendar-footer {
+            display: flex;
+            justify-content: center;
+            margin-top: 12px;
+        }
+        .calendar-toggle-btn {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: #f5f7fa;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #666666;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        .calendar-toggle-btn:active {
+            transform: scale(0.95);
+        }
+        .calendar-toggle-btn.expanded {
+            background: #2E5BFF;
+            color: white;
+        }
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+            margin-top: 12px;
+        }
+        .calendar-grid.collapsed .calendar-day:not(.header):not(.current-week) {
+            display: none;
+        }
+        .calendar-day {
+            aspect-ratio: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            position: relative;
+            gap: 2px;
+        }
+        .calendar-day.header {
+            background: transparent;
+            color: #999999;
+            font-weight: 400;
+        }
+        .calendar-day.today {
+            border: 2px solid #2E5BFF;
+            font-weight: 700;
+        }
+        .calendar-day.no-task {
+            background: #fafafa;
+            color: #666666;
+        }
+        .calendar-day.completed {
+            background: #f6ffed;
+            color: #333333;
+        }
+        .calendar-day.incomplete {
+            background: #fff1f0;
+            color: #333333;
+        }
+        .calendar-day.future {
+            background: transparent;
+            color: #d9d9d9;
+        }
+        .task-icon {
+            font-size: 10px;
+            margin-top: 2px;
+        }
+        .calendar-day.completed .task-icon {
+            color: #52c41a;
+        }
+        .calendar-day.incomplete .task-icon {
+            color: #ff4d4f;
+        }
+        .progress-status {
+            font-size: 11px;
+            padding: 2px 6px;
+            border-radius: 3px;
+            margin-left: 8px;
+        }
+        .progress-status.normal {
+            background: #e6f7ff;
+            color: #1890ff;
+        }
+        .progress-status.overdue {
+            background: #fff1f0;
+            color: #ff4d4f;
+        }
+        .chart-section {
+            background: white;
+            margin: 0 16px 12px;
+            padding: 16px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .section-title {
+            font-size: 16px;
+            line-height: 1.4;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .chart-placeholder {
+            height: 200px;
+            background: linear-gradient(135deg, #e6f7ff 0%, #f0f5ff 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #2E5BFF;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .student-tabs {
+            background: white;
+            padding: 12px 16px 0;
+            margin: 0 16px;
+            border-radius: 8px 8px 0 0;
+            display: flex;
+            gap: 24px;
+        }
+        .tab {
+            padding: 8px 0;
+            font-size: 14px;
+            line-height: 1.5;
+            color: #999999;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s;
+        }
+        .tab.active {
+            color: #2E5BFF;
+            font-weight: 600;
+            border-bottom-color: #2E5BFF;
+        }
+        .student-list {
+            background: white;
+            margin: 0 16px 12px;
+            padding: 0 16px 16px;
+            border-radius: 0 0 8px 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .student-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .student-item:last-child { border-bottom: none; }
+        .student-avatar {
+            width: 40px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            line-height: 1.6;
+            font-weight: 600;
+        }
+        .student-info {
+            flex: 1;
+        }
+        .student-name {
+            font-size: 14px;
+            line-height: 1.5;
+            font-weight: 600;
+            color: #333333;
+            margin-bottom: 4px;
+        }
+        .student-progress {
+            font-size: 12px;
+            line-height: 1.5;
+            color: #999999;
+        }
+        .progress-bar {
+            height: 4px;
+            background: #f0f0f0;
+            border-radius: 2px;
+            margin-top: 4px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: #36B37E;
+            border-radius: 2px;
+            transition: width 0.3s;
+        }
+        .student-status {
+            font-size: 12px;
+            line-height: 1.5;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+        .status-done {
+            background: #f6ffed;
+            color: #52c41a;
+        }
+        .status-pending {
+            background: #fff7e6;
+            color: #faad14;
+        }
+        .status-late {
+            background: #fff1f0;
+            color: #ff4d4f;
+        }
+        .action-icon {
+            font-size: 18px;
+            line-height: 1.5;
+            color: #999999;
+            cursor: pointer;
+        }
+        .action-icon:hover {
+            color: #2E5BFF;
+        }
+        .tabbar {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 375px;
+            height: 50px;
+            background: white;
+            border-top: 1px solid #f0f0f0;
+            display: flex;
+            box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.06);
+        }
+        .tab-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .tab-item:hover {
+            background: #F5F7FA;
+        }
+        .tab-icon {
+            font-size: 20px;
+            line-height: 1.2;
+        }
+        .tab-label {
+            font-size: 12px;
+            line-height: 1.5;
+            color: #999999;
+        }
+        .tab-item.active .tab-label {
+            color: #2E5BFF;
+        }
+        .tab-item.active .tab-icon {
+            color: #2E5BFF;
+        }
+        .student-item {
+            cursor: pointer;
+        }
+        .student-item:hover {
+            background: #fafafa;
+        }
+    
+        /* Font Awesome图标样式优化 */
+        .fa-solid, .fa-regular {
+            font-weight: 400;
+            color: #595959;
+            opacity: 0.85;
+        }
+
+        /* 导航栏和标题中的图标保持原色 */
+        .navbar .fa-solid,
+        .section-title .fa-solid,
+        .task-title .fa-solid {
+            color: inherit;
+            opacity: 1;
+        }
+
+        /* 徽章图标使用白色，与金色背景形成对比 */
+        .badge-icon .fa-solid {
+            color: white;
+            opacity: 1;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 成就图标特殊样式 */
+        .achievement-section .badge-icon .fa-solid {
+            font-size: 32px;
+        }
+    
+        /* 选中状态图标颜色优化 */
+        .tab-item.active .tab-icon .fa-solid,
+        .tab-item.active .fa-solid {
+            color: #2E5BFF;
+            opacity: 1;
+        }
+
+        /* 其他选中状态 */
+        .menu-item.active .menu-icon .fa-solid,
+        .nav-item.active .fa-solid,
+        .list-item.selected .fa-solid,
+        .card.active .fa-solid,
+        .btn.active .fa-solid,
+        .filter-btn.active .fa-solid {
+            color: #2E5BFF;
+            opacity: 1;
+        }
+        /* 顶部页签切换 */
+        .main-tabs {
+            display: flex;
+            gap: 0;
+            margin: 0 16px 12px;
+            border-bottom: 1px solid #e8e8e8;
+        }
+        .main-tab {
+            flex: 1;
+            text-align: center;
+            padding: 12px 0;
+            font-size: 15px;
+            font-weight: 500;
+            color: #666666;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s;
+        }
+        .main-tab.active {
+            color: #2E5BFF;
+            font-weight: 600;
+        }
+        .main-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 3px;
+            background: #2E5BFF;
+            border-radius: 2px;
+        }
+        .main-tab-content {
+            display: none;
+        }
+        .main-tab-content.active {
+            display: block;
+        }
+        /* 提醒弹窗样式 */
+        .remind-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 375px;
+            height: 100vh;
+            background: rgba(0,0,0,0.5);
+            z-index: 300;
+            display: none;
+            align-items: flex-end;
+        }
+        .remind-modal-overlay.show {
+            display: flex;
+        }
+        .remind-modal {
+            width: 100%;
+            background: white;
+            border-radius: 16px 16px 0 0;
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            animation: slideUp 0.3s ease;
+        }
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+        .remind-modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .remind-modal-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333333;
+        }
+        .remind-modal-close {
+            width: 28px;
+            height: 28px;
+            border: none;
+            background: #f5f7fa;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 14px;
+            color: #666666;
+        }
+        .remind-modal-body {
+            padding: 16px;
+            flex: 1;
+            overflow-y: auto;
+        }
+        .remind-student-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: #fff1f0;
+            border-radius: 8px;
+            margin-bottom: 16px;
+        }
+        .remind-student-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff7875 0%, #ff4d4f 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .remind-student-detail {
+            flex: 1;
+        }
+        .remind-student-name {
+            font-size: 15px;
+            font-weight: 600;
+            color: #333333;
+            margin-bottom: 4px;
+        }
+        .remind-student-task {
+            font-size: 13px;
+            color: #ff4d4f;
+        }
+        .remind-content-section {
+            margin-bottom: 16px;
+        }
+        .remind-content-label {
+            font-size: 13px;
+            color: #666666;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .remind-content-textarea {
+            width: 100%;
+            height: 100px;
+            border: 1px solid #d9d9d9;
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 14px;
+            resize: none;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        .remind-content-textarea:focus {
+            border-color: #2E5BFF;
+        }
+        .remind-share-section {
+            margin-bottom: 16px;
+        }
+        .remind-share-label {
+            font-size: 13px;
+            color: #666666;
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+        .remind-share-options {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .remind-share-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: none;
+            border: none;
+            padding: 4px;
+        }
+        .remind-share-btn:hover {
+            transform: scale(1.1);
+        }
+        .remind-share-btn:active {
+            transform: scale(0.95);
+        }
+        .remind-share-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+        .remind-share-icon i {
+            color: white !important;
+        }
+        .remind-share-icon.wechat {
+            background: #07c160;
+            color: white;
+        }
+        .remind-share-icon.qq {
+            background: #12b7f5;
+            color: white;
+        }
+        .remind-share-icon.weibo {
+            background: #e6162d;
+            color: white;
+        }
+        .remind-share-icon.dingtalk {
+            background: #0089ff;
+            color: white;
+        }
+        .remind-share-icon.sms {
+            background: #34c759;
+            color: white;
+        }
+        .remind-share-icon.link {
+            background: #007aff;
+            color: white;
+        }
+        .remind-share-icon.qrcode {
+            background: #333333;
+            color: white;
+        }
+        .remind-share-text {
+            font-size: 10px;
+            color: #333333;
+            font-weight: 500;
+        }
+        .remind-modal-footer {
+            padding: 12px 16px;
+            border-top: 1px solid #f0f0f0;
+            display: flex;
+            gap: 12px;
+        }
+        .remind-cancel-btn {
+            flex: 1;
+            height: 44px;
+            border: 1px solid #d9d9d9;
+            background: white;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #666666;
+            cursor: pointer;
+        }
+        .remind-send-btn {
+            flex: 2;
+            height: 44px;
+            border: none;
+            background: linear-gradient(135deg, #2E5BFF 0%, #1E4BEF 100%);
+            border-radius: 8px;
+            font-size: 14px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .remind-send-btn:active {
+            opacity: 0.9;
+        }
+        /* Toast提示样式 */
+        .toast {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            z-index: 400;
+            display: none;
+        }
+        .toast.show {
+            display: block;
+            animation: toastFade 2s ease;
+        }
+        @keyframes toastFade {
+            0% { opacity: 0; }
+            20% { opacity: 1; }
+            80% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+    </style>    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="navbar">
+        <div class="navbar-title">进度监控</div>
+    </div>
+
+    <!-- 顶部页签切换 -->
+    <div class="main-tabs">
+        <div class="main-tab active" onclick="switchMainTab(this, 'checkin')">今日打卡情况</div>
+        <div class="main-tab" onclick="switchMainTab(this, 'plan')">计划完成情况</div>
+    </div>
+
+    <!-- 打卡情况内容 -->
+    <div class="main-tab-content active" id="checkinContent">
+        <div class="today-checkin-section">
+            <div class="section-header">
+                <div class="section-header-left">
+                    <div class="section-header-icon">
+                        <i class="fa-solid fa-calendar-check"></i>
+                    </div>
+                    <div>
+                        <div class="section-header-title">打卡情况</div>
+                    </div>
+                </div>
+                <button class="filter-btn" onclick="openCheckinFilterModal()">
+                    <i class="fa-solid fa-filter"></i>
+                </button>
+            </div>
+
+        <!-- 打卡筛选标签 -->
+        <div class="checkin-filter-tags">
+            <span class="checkin-filter-tag">全部班级</span>
+            <span class="checkin-filter-tag">2026-01-15</span>
+        </div>
+
+        <!-- 今日任务 -->
+        <div style="background: #f0f5ff; border: 1px solid #d6e4ff; border-radius: 8px; padding: 12px; margin-bottom: 16px;">
+            <div style="font-size: 13px; color: #666666; margin-bottom: 6px;">今日任务</div>
+            <div style="font-size: 14px; color: #333333; font-weight: 500;">阅读1-15页，完成导读单一</div>
+        </div>
+
+        <!-- 打卡筛选弹窗 -->
+        <div class="filter-modal-overlay" id="checkinFilterModal" onclick="closeCheckinFilterModal(event)">
+            <div class="filter-modal" onclick="event.stopPropagation()">
+                <div class="filter-modal-header">
+                    <div class="filter-modal-title">筛选条件</div>
+                    <button class="filter-modal-close" onclick="closeCheckinFilterModal()">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+                <div class="filter-group">
+                    <div class="filter-group-label">班级</div>
+                    <select class="filter-group-select" id="checkinFilterClass">
+                        <option>全部班级</option>
+                        <option>初一(3)班</option>
+                        <option>初一(4)班</option>
+                        <option>初二(1)班</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <div class="filter-group-label">日期</div>
+                    <input type="date" class="filter-group-select" id="checkinFilterDate" value="2026-01-15">
+                </div>
+                <div class="filter-modal-actions">
+                    <button class="filter-reset-btn" onclick="resetCheckinFilter()">重置</button>
+                    <button class="filter-confirm-btn" onclick="confirmCheckinFilter()">确定</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 任务详情卡片 -->
+        <div class="task-detail-card">
+            <div class="checkin-stats">
+                <div class="checkin-stat-item">
+                    <div class="checkin-stat-value total" id="statTotal">13</div>
+                    <div class="checkin-stat-label" id="statTotalLabel">应完成人数</div>
+                </div>
+                <div class="checkin-stat-item">
+                    <div class="checkin-stat-value done" id="statDone">10</div>
+                    <div class="checkin-stat-label">已完成</div>
+                </div>
+                <div class="checkin-stat-item">
+                    <div class="checkin-stat-value undone" id="statUndone">3</div>
+                    <div class="checkin-stat-label">未完成</div>
+                </div>
+            </div>
+            <div class="checkin-progress-bar">
+                <div class="checkin-progress-fill" id="progressFill" style="width: 77%;"></div>
+            </div>
+            <div class="checkin-progress-text">完成率 <span id="progressRate">77%</span></div>
+        </div>
+
+        <!-- 学生完成情况 -->
+        <div class="checkin-student-section">
+            <div class="checkin-student-title" style="font-size: 14px; color: #333333; font-weight: 600; margin-bottom: 12px;">学生完成情况</div>
+            <div class="student-list-tabs">
+                <div class="student-list-tab active" onclick="switchCheckinTab(this, 'done')">已完成 (10)</div>
+                <div class="student-list-tab" onclick="switchCheckinTab(this, 'undone')">未完成 (3)</div>
+            </div>
+
+            <!-- 已完成学生列表 -->
+            <div class="compact-student-list" id="checkinDoneList">
+                <div class="compact-student-item" onclick="Router.toTeacherPage('studentDetail', {studentId: 1})">
+                    <div class="compact-avatar" style="background: linear-gradient(135deg, #36B37E 0%, #57D9A3 100%);">张三</div>
+                    <div class="compact-info">
+                        <div class="compact-name">张三</div>
+                    </div>
+                    <button class="view-btn">查看</button>
+                </div>
+                <div class="compact-student-item" onclick="Router.toTeacherPage('studentDetail', {studentId: 2})">
+                    <div class="compact-avatar" style="background: linear-gradient(135deg, #36B37E 0%, #57D9A3 100%);">李四</div>
+                    <div class="compact-info">
+                        <div class="compact-name">李四</div>
+                    </div>
+                    <button class="view-btn">查看</button>
+                </div>
+                <div class="compact-student-item" onclick="Router.toTeacherPage('studentDetail', {studentId: 3})">
+                    <div class="compact-avatar" style="background: linear-gradient(135deg, #36B37E 0%, #57D9A3 100%);">王五</div>
+                    <div class="compact-info">
+                        <div class="compact-name">王五</div>
+                    </div>
+                    <button class="view-btn">查看</button>
+                </div>
+                <div class="compact-student-item" onclick="Router.toTeacherPage('studentDetail', {studentId: 4})">
+                    <div class="compact-avatar" style="background: linear-gradient(135deg, #36B37E 0%, #57D9A3 100%);">赵六</div>
+                    <div class="compact-info">
+                        <div class="compact-name">赵六</div>
+                    </div>
+                    <button class="view-btn">查看</button>
+                </div>
+                <div class="compact-student-item" onclick="Router.toTeacherPage('studentDetail', {studentId: 5})">
+                    <div class="compact-avatar" style="background: linear-gradient(135deg, #36B37E 0%, #57D9A3 100%);">孙七</div>
+                    <div class="compact-info">
+                        <div class="compact-name">孙七</div>
+                    </div>
+                    <button class="view-btn">查看</button>
+                </div>
+                <div class="compact-student-item" onclick="Router.toTeacherPage('studentDetail', {studentId: 6})">
+                    <div class="compact-avatar" style="background: linear-gradient(135deg, #36B37E 0%, #57D9A3 100%);">吴九</div>
+                    <div class="compact-info">
+                        <div class="compact-name">吴九</div>
+                    </div>
+                    <button class="view-btn">查看</button>
+                </div>
+                <div class="compact-student-item" onclick="Router.toTeacherPage('studentDetail', {studentId: 7})">
+                    <div class="compact-avatar" style="background: linear-gradient(135deg, #36B37E 0%, #57D9A3 100%);">郑十</div>
+                    <div class="compact-info">
+                        <div class="compact-name">郑十</div>
+                    </div>
+                    <button class="view-btn">查看</button>
+                </div>
+                <div class="compact-student-item" onclick="Router.toTeacherPage('studentDetail', {studentId: 8})">
+                    <div class="compact-avatar" style="background: linear-gradient(135deg, #36B37E 0%, #57D9A3 100%);">钱十一</div>
+                    <div class="compact-info">
+                        <div class="compact-name">钱十一</div>
+                    </div>
+                    <button class="view-btn">查看</button>
+                </div>
+                <div class="compact-student-item" onclick="Router.toTeacherPage('studentDetail', {studentId: 9})">
+                    <div class="compact-avatar" style="background: linear-gradient(135deg, #36B37E 0%, #57D9A3 100%);">陈十二</div>
+                    <div class="compact-info">
+                        <div class="compact-name">陈十二</div>
+                    </div>
+                    <button class="view-btn">查看</button>
+                </div>
+                <div class="compact-student-item" onclick="Router.toTeacherPage('studentDetail', {studentId: 10})">
+                    <div class="compact-avatar" style="background: linear-gradient(135deg, #36B37E 0%, #57D9A3 100%);">周十三</div>
+                    <div class="compact-info">
+                        <div class="compact-name">周十三</div>
+                    </div>
+                    <button class="view-btn">查看</button>
+                </div>
+            </div>
+
+            <!-- 未完成学生列表 -->
+            <div class="compact-student-list" id="checkinUndoneList" style="display: none;">
+                <div class="compact-student-item">
+                    <div class="compact-avatar" style="background: linear-gradient(135deg, #ff7875 0%, #ff4d4f 100%);">林十四</div>
+                    <div class="compact-info">
+                        <div class="compact-name">林十四</div>
+                    </div>
+                    <button class="remind-btn" onclick="openRemindModal('林十四', '阅读任务')">提醒</button>
+                </div>
+                <div class="compact-student-item">
+                    <div class="compact-avatar" style="background: linear-gradient(135deg, #ff7875 0%, #ff4d4f 100%);">黄十五</div>
+                    <div class="compact-info">
+                        <div class="compact-name">黄十五</div>
+                    </div>
+                    <button class="remind-btn" onclick="openRemindModal('黄十五', '阅读任务')">提醒</button>
+                </div>
+                <div class="compact-student-item">
+                    <div class="compact-avatar" style="background: linear-gradient(135deg, #ff7875 0%, #ff4d4f 100%);">杨十六</div>
+                    <div class="compact-info">
+                        <div class="compact-name">杨十六</div>
+                    </div>
+                    <button class="remind-btn" onclick="openRemindModal('杨十六', '阅读任务')">提醒</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <!-- 计划完成情况内容 -->
+    <div class="main-tab-content" id="planContent">
+    <div class="plan-progress-section">
+        <div class="section-header">
+            <div class="section-header-left">
+                <div class="section-header-icon plan-header-icon">
+                    <i class="fa-solid fa-chart-line"></i>
+                </div>
+                <div>
+                    <div class="section-header-title">计划完成情况</div>
+                </div>
+            </div>
+            <button class="filter-btn" onclick="openFilterModal()">
+                <i class="fa-solid fa-filter"></i>
+            </button>
+        </div>
+
+        <!-- 筛选标签 -->
+        <div class="plan-filter-tags">
+            <span class="plan-filter-tag">2026春季阅读计划</span>
+            <span class="plan-filter-tag">全部班级</span>
+            <span class="plan-filter-tag">《三体》</span>
+        </div>
+
+        <!-- 筛选弹窗 -->
+        <div class="filter-modal-overlay" id="filterModal" onclick="closeFilterModal(event)">
+            <div class="filter-modal" onclick="event.stopPropagation()">
+                <div class="filter-modal-header">
+                    <div class="filter-modal-title">筛选条件</div>
+                    <button class="filter-modal-close" onclick="closeFilterModal()">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+                <div class="filter-group">
+                    <div class="filter-group-label">阅读计划</div>
+                    <select class="filter-group-select" id="filterPlan">
+                        <option>2026春季阅读计划</option>
+                        <option>2025秋季阅读计划</option>
+                        <option>2025春季阅读计划</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <div class="filter-group-label">班级</div>
+                    <select class="filter-group-select" id="filterClass">
+                        <option>全部班级</option>
+                        <option>初一(3)班</option>
+                        <option>初一(4)班</option>
+                        <option>初二(1)班</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <div class="filter-group-label">当前书籍</div>
+                    <select class="filter-group-select" id="filterBook">
+                        <option>《三体》（第1本 / 共3本）</option>
+                        <option>全部书籍</option>
+                        <option>《活着》（第2本 / 共3本）</option>
+                        <option>《平凡的世界》（第3本 / 共3本）</option>
+                    </select>
+                </div>
+                <div class="filter-modal-actions">
+                    <button class="filter-reset-btn" onclick="resetFilter()">重置</button>
+                    <button class="filter-confirm-btn" onclick="confirmFilter()">确定</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 进度对比 -->
+        <div class="progress-compare">
+            <div class="progress-compare-header">
+                <div class="progress-compare-title">整体阅读完成进度</div>
+                <div class="progress-compare-value">66%</div>
+            </div>
+            <div class="progress-compare-bar">
+                <div class="progress-actual normal" style="width: 66%;"></div>
+                <div class="progress-expected" style="left: 75%;"></div>
+            </div>
+            <div class="progress-legend">
+                <div class="legend-item">
+                    <span class="legend-dot actual"></span>
+                    <span>实际进度 66%</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-dot expected"></span>
+                    <span>应达进度 75%</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 学生列表（可折叠） -->
+        <div class="student-list-section">
+            <div class="student-list-header" onclick="toggleStudentList()">
+                <div class="student-list-title">学生完成详情（共8次阅读）</div>
+                <div class="student-list-toggle">
+                    <span id="studentListToggleText">收起</span>
+                    <i class="fa-solid fa-chevron-up" id="studentListToggleIcon"></i>
+                </div>
+            </div>
+            <div class="student-list-content show" id="studentListContent">
+                <div class="student-list-tabs">
+                    <div class="student-list-tab active" onclick="switchStudentTab(this, 'all')">全部 (13)</div>
+                    <div class="student-list-tab" onclick="switchStudentTab(this, 'done')">正常 (10)</div>
+                    <div class="student-list-tab" onclick="switchStudentTab(this, 'undone')">延期 (3)</div>
+                </div>
+                <div class="compact-student-list" id="compactStudentList">
+                    <div class="compact-student-item" onclick="Router.toTeacherPage('studentDetail', {studentId: 1})">
+                        <div class="compact-avatar">张三</div>
+                        <div class="compact-info">
+                            <div class="compact-name">张三 <span class="progress-status normal">正常</span></div>
+                            <div class="compact-progress">已完成 6/8 次阅读</div>
+                        </div>
+                        <div class="compact-rate">75%</div>
+                    </div>
+                    <div class="compact-student-item" onclick="Router.toTeacherPage('studentDetail', {studentId: 2})">
+                        <div class="compact-avatar">李四</div>
+                        <div class="compact-info">
+                            <div class="compact-name">李四 <span class="progress-status normal">正常</span></div>
+                            <div class="compact-progress">已完成 6/8 次阅读</div>
+                        </div>
+                        <div class="compact-rate">75%</div>
+                    </div>
+                    <div class="compact-student-item" onclick="Router.toTeacherPage('studentDetail', {studentId: 3})">
+                        <div class="compact-avatar">王五</div>
+                        <div class="compact-info">
+                            <div class="compact-name">王五 <span class="progress-status normal">正常</span></div>
+                            <div class="compact-progress">已完成 6/8 次阅读</div>
+                        </div>
+                        <div class="compact-rate">75%</div>
+                    </div>
+                    <div class="compact-student-item" onclick="Router.toTeacherPage('studentDetail', {studentId: 4})">
+                        <div class="compact-avatar">赵六</div>
+                        <div class="compact-info">
+                            <div class="compact-name">赵六 <span class="progress-status normal">正常</span></div>
+                            <div class="compact-progress">已完成 6/8 次阅读</div>
+                        </div>
+                        <div class="compact-rate">75%</div>
+                    </div>
+                    <div class="compact-student-item" onclick="Router.toTeacherPage('studentDetail', {studentId: 5})">
+                        <div class="compact-avatar">孙七</div>
+                        <div class="compact-info">
+                            <div class="compact-name">孙七 <span class="progress-status normal">正常</span></div>
+                            <div class="compact-progress">已完成 6/8 次阅读</div>
+                        </div>
+                        <div class="compact-rate">75%</div>
+                    </div>
+                    <div class="compact-student-item" onclick="Router.toTeacherPage('studentDetail', {studentId: 6})">
+                        <div class="compact-avatar">吴九</div>
+                        <div class="compact-info">
+                            <div class="compact-name">吴九 <span class="progress-status normal">正常</span></div>
+                            <div class="compact-progress">已完成 6/8 次阅读</div>
+                        </div>
+                        <div class="compact-rate">75%</div>
+                    </div>
+                    <div class="compact-student-item" onclick="Router.toTeacherPage('studentDetail', {studentId: 7})">
+                        <div class="compact-avatar">郑十</div>
+                        <div class="compact-info">
+                            <div class="compact-name">郑十 <span class="progress-status normal">正常</span></div>
+                            <div class="compact-progress">已完成 6/8 次阅读</div>
+                        </div>
+                        <div class="compact-rate">75%</div>
+                    </div>
+                    <div class="compact-student-item" onclick="Router.toTeacherPage('studentDetail', {studentId: 8})">
+                        <div class="compact-avatar">钱十一</div>
+                        <div class="compact-info">
+                            <div class="compact-name">钱十一 <span class="progress-status normal">正常</span></div>
+                            <div class="compact-progress">已完成 6/8 次阅读</div>
+                        </div>
+                        <div class="compact-rate">75%</div>
+                    </div>
+                    <div class="compact-student-item" onclick="Router.toTeacherPage('studentDetail', {studentId: 9})">
+                        <div class="compact-avatar">陈十二</div>
+                        <div class="compact-info">
+                            <div class="compact-name">陈十二 <span class="progress-status normal">正常</span></div>
+                            <div class="compact-progress">已完成 6/8 次阅读</div>
+                        </div>
+                        <div class="compact-rate">75%</div>
+                    </div>
+                    <div class="compact-student-item" onclick="Router.toTeacherPage('studentDetail', {studentId: 10})">
+                        <div class="compact-avatar">周十三</div>
+                        <div class="compact-info">
+                            <div class="compact-name">周十三 <span class="progress-status normal">正常</span></div>
+                            <div class="compact-progress">已完成 6/8 次阅读</div>
+                        </div>
+                        <div class="compact-rate">75%</div>
+                    </div>
+                    <div class="compact-student-item" onclick="Router.toTeacherPage('studentDetail', {studentId: 11})">
+                        <div class="compact-avatar" style="background: linear-gradient(135deg, #ff7875 0%, #ff4d4f 100%);">林十四</div>
+                        <div class="compact-info">
+                            <div class="compact-name">林十四 <span class="progress-status overdue">延期</span></div>
+                            <div class="compact-progress">已完成 4/8 次阅读</div>
+                        </div>
+                        <div class="compact-rate low">50%</div>
+                    </div>
+                    <div class="compact-student-item" onclick="Router.toTeacherPage('studentDetail', {studentId: 12})">
+                        <div class="compact-avatar" style="background: linear-gradient(135deg, #ff7875 0%, #ff4d4f 100%);">黄十五</div>
+                        <div class="compact-info">
+                            <div class="compact-name">黄十五 <span class="progress-status overdue">延期</span></div>
+                            <div class="compact-progress">已完成 3/8 次阅读</div>
+                        </div>
+                        <div class="compact-rate low">38%</div>
+                    </div>
+                    <div class="compact-student-item" onclick="Router.toTeacherPage('studentDetail', {studentId: 13})">
+                        <div class="compact-avatar" style="background: linear-gradient(135deg, #ff7875 0%, #ff4d4f 100%);">杨十六</div>
+                        <div class="compact-info">
+                            <div class="compact-name">杨十六 <span class="progress-status overdue">延期</span></div>
+                            <div class="compact-progress">已完成 2/8 次阅读</div>
+                        </div>
+                        <div class="compact-rate low">25%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <!-- 提醒弹窗 -->
+    <div class="remind-modal-overlay" id="remindModal" onclick="closeRemindModal(event)">
+        <div class="remind-modal" onclick="event.stopPropagation()">
+            <div class="remind-modal-header">
+                <div class="remind-modal-title">发送提醒</div>
+                <button class="remind-modal-close" onclick="closeRemindModal()">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="remind-modal-body">
+                <div class="remind-student-info">
+                    <div class="remind-student-avatar" id="remindStudentAvatar">孙</div>
+                    <div class="remind-student-detail">
+                        <div class="remind-student-name" id="remindStudentName">孙七</div>
+                        <div class="remind-student-task" id="remindStudentTask">未完成：阅读第45-60页</div>
+                    </div>
+                </div>
+                <div class="remind-content-section">
+                    <div class="remind-content-label">提醒内容</div>
+                    <textarea class="remind-content-textarea" id="remindContent" placeholder="请输入提醒内容...">同学你好，你今日的阅读任务还未完成，记得抽时间完成打卡哦！坚持阅读，一起加油！</textarea>
+                </div>
+                <div class="remind-share-section">
+                    <div class="remind-share-label">分享方式</div>
+                    <div class="remind-share-options">
+                        <div class="remind-share-btn" onclick="shareTo('微信')">
+                            <div class="remind-share-icon wechat">
+                                <i class="fa-brands fa-weixin"></i>
+                            </div>
+                            <div class="remind-share-text">微信</div>
+                        </div>
+                        <div class="remind-share-btn" onclick="shareTo('QQ')">
+                            <div class="remind-share-icon qq">
+                                <i class="fa-brands fa-qq"></i>
+                            </div>
+                            <div class="remind-share-text">QQ</div>
+                        </div>
+                        <div class="remind-share-btn" onclick="shareTo('微博')">
+                            <div class="remind-share-icon weibo">
+                                <i class="fa-brands fa-weibo"></i>
+                            </div>
+                            <div class="remind-share-text">微博</div>
+                        </div>
+                        <div class="remind-share-btn" onclick="shareTo('钉钉')">
+                            <div class="remind-share-icon dingtalk">
+                                <i class="fa-solid fa-d"></i>
+                            </div>
+                            <div class="remind-share-text">钉钉</div>
+                        </div>
+                        <div class="remind-share-btn" onclick="shareTo('短信')">
+                            <div class="remind-share-icon sms">
+                                <i class="fa-solid fa-message"></i>
+                            </div>
+                            <div class="remind-share-text">短信</div>
+                        </div>
+                        <div class="remind-share-btn" onclick="copyLink()">
+                            <div class="remind-share-icon link">
+                                <i class="fa-solid fa-link"></i>
+                            </div>
+                            <div class="remind-share-text">复制链接</div>
+                        </div>
+                        <div class="remind-share-btn" onclick="showQRCode()">
+                            <div class="remind-share-icon qrcode">
+                                <i class="fa-solid fa-qrcode"></i>
+                            </div>
+                            <div class="remind-share-text">二维码</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast提示 -->
+    <div class="toast" id="toast"></div>
+
+    <div class="tabbar">
+        <div class="tab-item" onclick="Router.toTeacherPage('planList')">
+            <div class="tab-icon"><i class="fa-solid fa-book-open"></i></div>
+            <div class="tab-label">计划</div>
+        </div>
+        <div class="tab-item active" onclick="Router.toTeacherPage('monitor')">
+            <div class="tab-icon"><i class="fa-solid fa-chart-column"></i></div>
+            <div class="tab-label">进度</div>
+        </div>
+        <div class="tab-item" onclick="Router.toTeacherPage('profile')">
+            <div class="tab-icon"><i class="fa-solid fa-user"></i></div>
+            <div class="tab-label">我的</div>
+        </div>
+    </div>
+
+    <script>
+        // 页面加载时初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 初始化完成
+        });
+
+        // 切换主页签
+        function switchMainTab(tab, type) {
+            document.querySelectorAll('.main-tab').forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+
+            document.querySelectorAll('.main-tab-content').forEach(c => c.classList.remove('active'));
+            if (type === 'checkin') {
+                document.getElementById('checkinContent').classList.add('active');
+            } else {
+                document.getElementById('planContent').classList.add('active');
+            }
+        }
+
+        // 打开打卡筛选弹窗
+        function openCheckinFilterModal() {
+            const modal = document.getElementById('checkinFilterModal');
+            modal.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // 关闭打卡筛选弹窗
+        function closeCheckinFilterModal(event) {
+            if (event && event.target !== event.currentTarget) return;
+            const modal = document.getElementById('checkinFilterModal');
+            modal.classList.remove('show');
+            document.body.style.overflow = '';
+        }
+
+        // 重置打卡筛选
+        function resetCheckinFilter() {
+            document.getElementById('checkinFilterClass').selectedIndex = 0;
+            document.getElementById('checkinFilterDate').value = '2026-01-15';
+        }
+
+        // 确认打卡筛选
+        function confirmCheckinFilter() {
+            const classVal = document.getElementById('checkinFilterClass').value;
+            const date = document.getElementById('checkinFilterDate').value;
+
+            // 更新筛选标签显示
+            const tagsContainer = document.querySelector('.checkin-filter-tags');
+            tagsContainer.innerHTML = `
+                <span class="checkin-filter-tag">${classVal}</span>
+                <span class="checkin-filter-tag">${date}</span>
+            `;
+
+            closeCheckinFilterModal();
+            // TODO: 根据筛选条件刷新数据
+        }
+
+        // 任务数据（包含全部任务汇总）
+        const checkinTasks = [
+            { name: '全部任务汇总', type: '汇总', icon: 'fa-list-check', total: 156, done: 138, undone: 18, rate: 88 },
+            { name: '阅读第45-60页', type: '阅读任务', icon: 'fa-book-open', total: 52, done: 46, undone: 6, rate: 88 },
+            { name: '观看导读视频', type: '视频任务', icon: 'fa-video', total: 52, done: 48, undone: 4, rate: 92 },
+            { name: '完成导读单', type: '导读单任务', icon: 'fa-clipboard-list', total: 52, done: 44, undone: 8, rate: 85 }
+        ];
+
+        // 切换已完成/未完成标签
+        function switchCheckinTab(tab, type) {
+            tab.parentElement.querySelectorAll('.student-list-tab').forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+
+            const doneList = document.getElementById('checkinDoneList');
+            const undoneList = document.getElementById('checkinUndoneList');
+
+            if (type === 'done') {
+                doneList.style.display = 'block';
+                undoneList.style.display = 'none';
+            } else {
+                doneList.style.display = 'none';
+                undoneList.style.display = 'block';
+            }
+        }
+
+        // 查看学生提交结果
+        function viewStudentSubmission(studentId) {
+            // TODO: 跳转到学生提交详情页
+            console.log('查看学生提交:', studentId);
+            // Router.toTeacherPage('studentSubmission', { studentId: studentId });
+        }
+
+        // 切换打卡学生列表展开/收起
+        function toggleCheckinStudentList() {
+            const content = document.getElementById('checkinStudentContent');
+            const text = document.getElementById('checkinStudentToggleText');
+            const icon = document.getElementById('checkinStudentToggleIcon');
+
+            if (content.classList.contains('hide')) {
+                content.classList.remove('hide');
+                text.textContent = '收起';
+                icon.className = 'fa-solid fa-chevron-up';
+            } else {
+                content.classList.add('hide');
+                text.textContent = '展开';
+                icon.className = 'fa-solid fa-chevron-down';
+            }
+        }
+
+        // 打开计划筛选弹窗
+        function openFilterModal() {
+            const modal = document.getElementById('filterModal');
+            modal.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // 关闭筛选弹窗
+        function closeFilterModal(event) {
+            if (event && event.target !== event.currentTarget) return;
+            const modal = document.getElementById('filterModal');
+            modal.classList.remove('show');
+            document.body.style.overflow = '';
+        }
+
+        // 重置筛选
+        function resetFilter() {
+            document.getElementById('filterPlan').selectedIndex = 0;
+            document.getElementById('filterClass').selectedIndex = 0;
+            document.getElementById('filterBook').selectedIndex = 0;
+        }
+
+        // 确认筛选
+        function confirmFilter() {
+            const plan = document.getElementById('filterPlan').value;
+            const classVal = document.getElementById('filterClass').value;
+            const book = document.getElementById('filterBook').value;
+
+            // 更新筛选标签显示
+            const tagsContainer = document.querySelector('.plan-filter-tags');
+            const bookShort = book === '全部书籍' ? '全部书籍' : book.split('（')[0];
+            tagsContainer.innerHTML = `
+                <span class="plan-filter-tag">${plan}</span>
+                <span class="plan-filter-tag">${classVal}</span>
+                <span class="plan-filter-tag">${bookShort}</span>
+            `;
+
+            closeFilterModal();
+            // TODO: 根据筛选条件刷新数据
+        }
+
+        // 切换未打卡学生列表展开/收起
+        function toggleUncheckinList() {
+            const list = document.getElementById('uncheckinStudents');
+            const text = document.getElementById('uncheckinToggleText');
+            const icon = document.getElementById('uncheckinToggleIcon');
+
+            if (list.classList.contains('show')) {
+                list.classList.remove('show');
+                text.textContent = '展开';
+                icon.className = 'fa-solid fa-chevron-down';
+            } else {
+                list.classList.add('show');
+                text.textContent = '收起';
+                icon.className = 'fa-solid fa-chevron-up';
+            }
+        }
+
+        // 切换学生列表展开/收起
+        function toggleStudentList() {
+            const content = document.getElementById('studentListContent');
+            const text = document.getElementById('studentListToggleText');
+            const icon = document.getElementById('studentListToggleIcon');
+
+            if (content.classList.contains('show')) {
+                content.classList.remove('show');
+                text.textContent = '展开';
+                icon.className = 'fa-solid fa-chevron-down';
+            } else {
+                content.classList.add('show');
+                text.textContent = '收起';
+                icon.className = 'fa-solid fa-chevron-up';
+            }
+        }
+
+        // 切换学生列表标签
+        function switchStudentTab(tab, type) {
+            // 更新标签选中状态
+            document.querySelectorAll('#studentListContent .student-list-tab').forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+
+            // 根据type筛选学生列表
+            const studentItems = document.querySelectorAll('#compactStudentList .compact-student-item');
+            studentItems.forEach(item => {
+                const statusSpan = item.querySelector('.progress-status');
+                const isNormal = statusSpan && statusSpan.classList.contains('normal');
+                const isOverdue = statusSpan && statusSpan.classList.contains('overdue');
+
+                if (type === 'all') {
+                    item.style.display = 'flex';
+                } else if (type === 'done') {
+                    // 正常状态
+                    item.style.display = isNormal ? 'flex' : 'none';
+                } else if (type === 'undone') {
+                    // 延期状态
+                    item.style.display = isOverdue ? 'flex' : 'none';
+                }
+            });
+        }
+
+        // 打开提醒弹窗
+        function openRemindModal(studentName, unfinishedTasks) {
+            const modal = document.getElementById('remindModal');
+            const avatar = document.getElementById('remindStudentAvatar');
+            const name = document.getElementById('remindStudentName');
+            const task = document.getElementById('remindStudentTask');
+            const content = document.getElementById('remindContent');
+
+            // 设置学生信息
+            avatar.textContent = studentName.charAt(0);
+            name.textContent = studentName;
+            task.textContent = '未完成：' + unfinishedTasks;
+
+            // 设置默认提醒内容（针对学生）
+            content.value = `${studentName}同学你好，你今日的阅读任务还未完成（${unfinishedTasks}），记得抽时间完成打卡哦！坚持阅读，一起加油！`;
+
+            modal.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // 关闭提醒弹窗
+        function closeRemindModal(event) {
+            if (event && event.target !== event.currentTarget) return;
+            const modal = document.getElementById('remindModal');
+            modal.classList.remove('show');
+            document.body.style.overflow = '';
+        }
+
+        // 通用分享函数
+        function shareTo(platform) {
+            showToast('正在打开' + platform + '...');
+        }
+
+        // 复制链接
+        function copyLink() {
+            const content = document.getElementById('remindContent').value;
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(content);
+            }
+            showToast('已复制到剪贴板');
+        }
+
+        // 显示二维码
+        function showQRCode() {
+            showToast('正在生成二维码...');
+        }
+
+        // 更多分享方式
+        function shareMore() {
+            showToast('打开系统分享...');
+        }
+
+        // 发送提醒
+        function sendRemind() {
+            const content = document.getElementById('remindContent').value;
+            if (!content.trim()) {
+                showToast('请输入提醒内容');
+                return;
+            }
+            closeRemindModal();
+            showToast('提醒已发送');
+        }
+
+        // 显示Toast提示
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.remove('show');
+            // 触发重绘
+            void toast.offsetWidth;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2000);
+        }
+    </script>
+
+    <!-- 引入路由管理脚本 -->
+    <script src="./router.js"></script>
+</body>
+</html>

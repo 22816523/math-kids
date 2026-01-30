@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>客户唯一标识 - 客户管理系统V1.1</title>
+    <link rel="stylesheet" href="common.css">
+</head>
+<body>
+    <div class="container">
+        <div class="breadcrumb">
+            <a href="index.html">首页</a>
+            <span>></span>
+            <a href="#">主客户管理</a>
+            <span>></span>
+            <span>客户唯一标识</span>
+        </div>
+
+        <div class="page-header">
+            <h1 class="page-title">🏢 客户唯一标识管理</h1>
+            <p class="page-subtitle">Customer Unique Identifier Management</p>
+        </div>
+
+        <div class="alert alert-info">
+            <strong>功能说明：</strong> 为每个主客户生成全局唯一ID，用于跨系统识别和匹配。建议取ERP系统客户ID作为主键，实现各业务系统的客户数据打通
+        </div>
+
+        <div class="card">
+            <div class="card-header">客户基本信息</div>
+            <div class="card-body">
+                <div class="info-row">
+                    <div class="info-label">全局唯一ID：</div>
+                    <div class="info-value"><strong style="color: #667eea; font-size: 16px;">CUS-2024-000001</strong></div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">客户名称：</div>
+                    <div class="info-value">北京市第一中学</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">客户类型：</div>
+                    <div class="info-value"><span class="badge badge-info">普通</span></div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">单位类型：</div>
+                    <div class="info-value">学校</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">学段：</div>
+                    <div class="info-value">高中</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">所在地区：</div>
+                    <div class="info-value">北京市 / 海淀区 / 中关村街道</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">详细地址：</div>
+                    <div class="info-value">北京市海淀区中关村大街1号</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">创建时间：</div>
+                    <div class="info-value">2024-01-15 10:30:25</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">审核状态：</div>
+                    <div class="info-value"><span class="badge badge-success">已开通</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">跨系统数据映射</div>
+            <div class="card-body">
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>业务系统</th>
+                                <th>系统客户ID</th>
+                                <th>客户名称</th>
+                                <th>同步状态</th>
+                                <th>最后同步时间</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>ERP系统（主）</strong></td>
+                                <td>ERP-20240001</td>
+                                <td>北京市第一中学</td>
+                                <td><span class="badge badge-success">已同步</span></td>
+                                <td>2024-01-15 10:30:25</td>
+                                <td><a href="#" class="action-link">查看详情</a></td>
+                            </tr>
+                            <tr>
+                                <td>智慧九科星</td>
+                                <td>JKX-2024-0156</td>
+                                <td>北京一中</td>
+                                <td><span class="badge badge-success">已同步</span></td>
+                                <td>2024-01-15 10:32:18</td>
+                                <td><a href="#" class="action-link">查看详情</a></td>
+                            </tr>
+                            <tr>
+                                <td>中课云系统</td>
+                                <td>ZKY-BJ-001</td>
+                                <td>北京市第一中学</td>
+                                <td><span class="badge badge-success">已同步</span></td>
+                                <td>2024-01-15 10:33:42</td>
+                                <td><a href="#" class="action-link">查看详情</a></td>
+                            </tr>
+                            <tr>
+                                <td>研究院稿费报销</td>
+                                <td>YJY-2024-0089</td>
+                                <td>北京一中</td>
+                                <td><span class="badge badge-warning">待同步</span></td>
+                                <td>-</td>
+                                <td><a href="#" class="action-link">立即同步</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">操作日志</div>
+            <div class="card-body">
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>操作时间</th>
+                                <th>操作类型</th>
+                                <th>操作人</th>
+                                <th>操作内容</th>
+                                <th>来源系统</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>2024-01-15 10:33:42</td>
+                                <td><span class="badge badge-info">数据同步</span></td>
+                                <td>系统自动</td>
+                                <td>同步客户信息到中课云系统</td>
+                                <td>中课云系统</td>
+                            </tr>
+                            <tr>
+                                <td>2024-01-15 10:32:18</td>
+                                <td><span class="badge badge-info">数据同步</span></td>
+                                <td>系统自动</td>
+                                <td>同步客户信息到智慧九科星</td>
+                                <td>智慧九科星</td>
+                            </tr>
+                            <tr>
+                                <td>2024-01-15 10:30:25</td>
+                                <td><span class="badge badge-success">创建客户</span></td>
+                                <td>张三（管理员）</td>
+                                <td>创建客户档案并生成全局唯一ID</td>
+                                <td>ERP系统</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="btn-group">
+            <button class="btn btn-primary">编辑客户信息</button>
+            <button class="btn btn-success">手动同步</button>
+            <button class="btn btn-secondary">返回列表</button>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>资源库 - 校校读吧小管家管理平台</title>
+    <link rel="stylesheet" href="common/admin-common.css">    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="admin-layout">
+        <div class="admin-sidebar">
+            <div class="sidebar-header"></div>
+            <div class="sidebar-menu"></div>
+        </div>
+
+        <div class="admin-main">
+            <div class="admin-header"></div>
+
+            <div class="admin-content">
+                <div class="page-header">
+                    <h1 class="page-title">资源库</h1>
+                    <p class="page-description">管理系统中的多媒体教学资源</p>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 24px;">
+                    <div class="card" style="padding: 20px;">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div style="width: 48px; height: 48px; border-radius: 8px; background: linear-gradient(135deg, #1890FF, #096DD9); color: white; display: flex; align-items: center; justify-content: center; font-size: 24px;"><i class="fa-solid fa-circle-play"></i></div>
+                            <div>
+                                <div style="font-size: 24px; font-weight: 700; color: #262626;">156</div>
+                                <div style="font-size: 12px; color: #8c8c8c;">视频资源</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card" style="padding: 20px;">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div style="width: 48px; height: 48px; border-radius: 8px; background: linear-gradient(135deg, #52c41a, #73d13d); color: white; display: flex; align-items: center; justify-content: center; font-size: 24px;"><i class="fa-solid fa-music"></i></div>
+                            <div>
+                                <div style="font-size: 24px; font-weight: 700; color: #262626;">89</div>
+                                <div style="font-size: 12px; color: #8c8c8c;">音频资源</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card" style="padding: 20px;">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div style="width: 48px; height: 48px; border-radius: 8px; background: linear-gradient(135deg, #fa8c16, #ffa940); color: white; display: flex; align-items: center; justify-content: center; font-size: 24px;"><i class="fa-solid fa-image"></i></div>
+                            <div>
+                                <div style="font-size: 24px; font-weight: 700; color: #262626;">234</div>
+                                <div style="font-size: 12px; color: #8c8c8c;">图片资源</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card" style="padding: 20px;">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div style="width: 48px; height: 48px; border-radius: 8px; background: linear-gradient(135deg, #722ed1, #9254de); color: white; display: flex; align-items: center; justify-content: center; font-size: 24px;"><i class="fa-solid fa-file"></i></div>
+                            <div>
+                                <div style="font-size: 24px; font-weight: 700; color: #262626;">67</div>
+                                <div style="font-size: 12px; color: #8c8c8c;">文档资源</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">筛选条件</h3>
+                    </div>
+                    <div class="card-body">
+                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label class="form-label">资源类型</label>
+                                <select class="form-select">
+                                    <option value="">全部类型</option>
+                                    <option>视频</option>
+                                    <option>音频</option>
+                                    <option>图片</option>
+                                    <option>文档</option>
+                                </select>
+                            </div>
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label class="form-label">学科分类</label>
+                                <select class="form-select">
+                                    <option value="">全部学科</option>
+                                    <option>语文</option>
+                                    <option>数学</option>
+                                    <option>英语</option>
+                                    <option>科学</option>
+                                </select>
+                            </div>
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label class="form-label">审核状态</label>
+                                <select class="form-select">
+                                    <option value="">全部状态</option>
+                                    <option>已通过</option>
+                                    <option>待审核</option>
+                                    <option>未通过</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="action-bar">
+                    <div class="action-left">
+                        <button class="btn btn-primary" onclick="showModal('uploadResourceModal')">
+                            <span><i class="fa-solid fa-arrow-up"></i></span>
+                            <span>上传资源</span>
+                        </button>
+                        <button class="btn btn-secondary">
+                            <span><i class="fa-solid fa-folder"></i></span>
+                            <span>批量管理</span>
+                        </button>
+                    </div>
+                    <div class="action-right">
+                        <div class="search-bar">
+                            <input type="text" class="form-input search-input" placeholder="搜索资源名称">
+                            <button class="btn btn-primary">搜索</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px;">
+                    <div class="card" style="cursor: pointer; transition: all 0.3s;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 4px 16px rgba(0,0,0,0.1)'" onmouseout="this.style.transform=''; this.style.boxShadow=''">
+                        <div style="width: 100%; height: 160px; background: linear-gradient(135deg, #1890FF, #096DD9); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 48px; color: white; margin-bottom: 16px;">
+                            <i class="fa-solid fa-film"></i>
+                        </div>
+                        <div style="margin-bottom: 12px;">
+                            <div style="font-size: 16px; font-weight: 600; color: #262626; margin-bottom: 4px;">《西游记》动画片段</div>
+                            <div style="font-size: 12px; color: #8c8c8c;">视频 · 语文 · 15:32</div>
+                        </div>
+                        <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+                            <span class="tag tag-blue">已通过</span>
+                            <span class="tag tag-gray">高清</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 12px; border-top: 1px solid #f0f0f0;">
+                            <div style="font-size: 12px; color: #8c8c8c;">使用 234 次</div>
+                            <div style="display: flex; gap: 8px;">
+                                <button class="btn btn-primary btn-sm" onclick="previewResource(1)">预览</button>
+                                <button class="btn btn-secondary btn-sm" onclick="deleteResource(1)">删除</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card" style="cursor: pointer; transition: all 0.3s;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 4px 16px rgba(0,0,0,0.1)'" onmouseout="this.style.transform=''; this.style.boxShadow=''">
+                        <div style="width: 100%; height: 160px; background: linear-gradient(135deg, #52c41a, #73d13d); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 48px; color: white; margin-bottom: 16px;">
+                            <i class="fa-solid fa-music"></i>
+                        </div>
+                        <div style="margin-bottom: 12px;">
+                            <div style="font-size: 16px; font-weight: 600; color: #262626; margin-bottom: 4px;">古诗词朗诵音频</div>
+                            <div style="font-size: 12px; color: #8c8c8c;">音频 · 语文 · 08:45</div>
+                        </div>
+                        <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+                            <span class="tag tag-blue">已通过</span>
+                            <span class="tag tag-gray">MP3</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 12px; border-top: 1px solid #f0f0f0;">
+                            <div style="font-size: 12px; color: #8c8c8c;">使用 189 次</div>
+                            <div style="display: flex; gap: 8px;">
+                                <button class="btn btn-primary btn-sm" onclick="previewResource(2)">预览</button>
+                                <button class="btn btn-secondary btn-sm" onclick="deleteResource(2)">删除</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card" style="cursor: pointer; transition: all 0.3s;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 4px 16px rgba(0,0,0,0.1)'" onmouseout="this.style.transform=''; this.style.boxShadow=''">
+                        <div style="width: 100%; height: 160px; background: linear-gradient(135deg, #fa8c16, #ffa940); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 48px; color: white; margin-bottom: 16px;">
+                            <i class="fa-solid fa-image"></i>️
+                        </div>
+                        <div style="margin-bottom: 12px;">
+                            <div style="font-size: 16px; font-weight: 600; color: #262626; margin-bottom: 4px;">四大名著人物插图</div>
+                            <div style="font-size: 12px; color: #8c8c8c;">图片 · 语文 · 12张</div>
+                        </div>
+                        <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+                            <span class="tag tag-blue">已通过</span>
+                            <span class="tag tag-gray">PNG</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 12px; border-top: 1px solid #f0f0f0;">
+                            <div style="font-size: 12px; color: #8c8c8c;">使用 156 次</div>
+                            <div style="display: flex; gap: 8px;">
+                                <button class="btn btn-primary btn-sm" onclick="previewResource(3)">预览</button>
+                                <button class="btn btn-secondary btn-sm" onclick="deleteResource(3)">删除</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card" style="cursor: pointer; transition: all 0.3s;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 4px 16px rgba(0,0,0,0.1)'" onmouseout="this.style.transform=''; this.style.boxShadow=''">
+                        <div style="width: 100%; height: 160px; background: linear-gradient(135deg, #722ed1, #9254de); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 48px; color: white; margin-bottom: 16px;">
+                            <i class="fa-solid fa-file"></i>
+                        </div>
+                        <div style="margin-bottom: 12px;">
+                            <div style="font-size: 16px; font-weight: 600; color: #262626; margin-bottom: 4px;">阅读理解练习题</div>
+                            <div style="font-size: 12px; color: #8c8c8c;">文档 · 语文 · 8页</div>
+                        </div>
+                        <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+                            <span class="tag tag-orange">待审核</span>
+                            <span class="tag tag-gray">PDF</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 12px; border-top: 1px solid #f0f0f0;">
+                            <div style="font-size: 12px; color: #8c8c8c;">使用 0 次</div>
+                            <div style="display: flex; gap: 8px;">
+                                <button class="btn btn-primary btn-sm" onclick="previewResource(4)">预览</button>
+                                <button class="btn btn-secondary btn-sm" onclick="deleteResource(4)">删除</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card" style="cursor: pointer; transition: all 0.3s;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 4px 16px rgba(0,0,0,0.1)'" onmouseout="this.style.transform=''; this.style.boxShadow=''">
+                        <div style="width: 100%; height: 160px; background: linear-gradient(135deg, #eb2f96, #f759ab); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 48px; color: white; margin-bottom: 16px;">
+                            <i class="fa-solid fa-film"></i>
+                        </div>
+                        <div style="margin-bottom: 12px;">
+                            <div style="font-size: 16px; font-weight: 600; color: #262626; margin-bottom: 4px;">数学几何动画演示</div>
+                            <div style="font-size: 12px; color: #8c8c8c;">视频 · 数学 · 12:18</div>
+                        </div>
+                        <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+                            <span class="tag tag-blue">已通过</span>
+                            <span class="tag tag-gray">高清</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 12px; border-top: 1px solid #f0f0f0;">
+                            <div style="font-size: 12px; color: #8c8c8c;">使用 178 次</div>
+                            <div style="display: flex; gap: 8px;">
+                                <button class="btn btn-primary btn-sm" onclick="previewResource(5)">预览</button>
+                                <button class="btn btn-secondary btn-sm" onclick="deleteResource(5)">删除</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card" style="cursor: pointer; transition: all 0.3s;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 4px 16px rgba(0,0,0,0.1)'" onmouseout="this.style.transform=''; this.style.boxShadow=''">
+                        <div style="width: 100%; height: 160px; background: linear-gradient(135deg, #13c2c2, #36cfc9); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 48px; color: white; margin-bottom: 16px;">
+                            <i class="fa-solid fa-music"></i>
+                        </div>
+                        <div style="margin-bottom: 12px;">
+                            <div style="font-size: 16px; font-weight: 600; color: #262626; margin-bottom: 4px;">英语单词发音</div>
+                            <div style="font-size: 12px; color: #8c8c8c;">音频 · 英语 · 25:30</div>
+                        </div>
+                        <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+                            <span class="tag tag-blue">已通过</span>
+                            <span class="tag tag-gray">MP3</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 12px; border-top: 1px solid #f0f0f0;">
+                            <div style="font-size: 12px; color: #8c8c8c;">使用 267 次</div>
+                            <div style="display: flex; gap: 8px;">
+                                <button class="btn btn-primary btn-sm" onclick="previewResource(6)">预览</button>
+                                <button class="btn btn-secondary btn-sm" onclick="deleteResource(6)">删除</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pagination">
+                    <div class="pagination-item disabled">上一页</div>
+                    <div class="pagination-item active">1</div>
+                    <div class="pagination-item">2</div>
+                    <div class="pagination-item">3</div>
+                    <div class="pagination-item">下一页</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="uploadResourceModal" style="display: none;">
+        <div class="modal" style="max-width: 600px;">
+            <div class="modal-header">
+                <h3 class="modal-title">上传资源</h3>
+                <span class="modal-close" onclick="hideModal('uploadResourceModal')">×</span>
+            </div>
+            <div class="modal-body">
+                <form id="uploadResourceForm">
+                    <div class="form-group">
+                        <label class="form-label">资源类型 <span class="required">*</span></label>
+                        <select class="form-select" required>
+                            <option value="">请选择资源类型</option>
+                            <option>视频</option>
+                            <option>音频</option>
+                            <option>图片</option>
+                            <option>文档</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">资源名称 <span class="required">*</span></label>
+                        <input type="text" class="form-input" placeholder="请输入资源名称" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">学科分类 <span class="required">*</span></label>
+                        <select class="form-select" required>
+                            <option value="">请选择学科</option>
+                            <option>语文</option>
+                            <option>数学</option>
+                            <option>英语</option>
+                            <option>科学</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">上传文件 <span class="required">*</span></label>
+                        <div style="border: 2px dashed #d9d9d9; border-radius: 8px; padding: 40px; text-align: center; cursor: pointer; transition: all 0.3s;" onmouseover="this.style.borderColor='#1890FF'" onmouseout="this.style.borderColor='#d9d9d9'">
+                            <div style="font-size: 48px; margin-bottom: 12px;"><i class="fa-solid fa-folder"></i></div>
+                            <div style="font-size: 14px; color: #262626; margin-bottom: 4px;">点击或拖拽文件到此区域上传</div>
+                            <div style="font-size: 12px; color: #8c8c8c;">支持视频、音频、图片、文档格式，单个文件不超过100MB</div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">资源描述</label>
+                        <textarea class="form-textarea" placeholder="请输入资源描述" rows="3"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="hideModal('uploadResourceModal')">取消</button>
+                <button class="btn btn-primary" onclick="submitUploadResource()">确定</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="common/admin-common.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            pageManager.renderHeader(['内容管理', '资源库']);
+        });
+
+        function previewResource(id) {
+            showToast('预览资源功能开发中', 'info');
+        }
+
+        function deleteResource(id) {
+            showConfirm('确定要删除这个资源吗？', () => {
+                showToast('删除成功');
+            });
+        }
+
+        function submitUploadResource() {
+            const form = document.getElementById('uploadResourceForm');
+            if (form.checkValidity()) {
+                hideModal('uploadResourceModal');
+                showToast('上传资源成功');
+                form.reset();
+            } else {
+                form.reportValidity();
+            }
+        }
+    </script>
+</body>
+</html>

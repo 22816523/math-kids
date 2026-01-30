@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>审核记录 - 校校读吧小管家管理平台</title>
+    <link rel="stylesheet" href="common/admin-common.css">    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="admin-layout">
+        <div class="admin-sidebar">
+            <div class="sidebar-header"></div>
+            <div class="sidebar-menu"></div>
+        </div>
+
+        <div class="admin-main">
+            <div class="admin-header"></div>
+
+            <div class="admin-content">
+                <div class="page-header">
+                    <h1 class="page-title">审核记录</h1>
+                    <p class="page-description">查看所有内容的审核历史记录</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">筛选条件</h3>
+                    </div>
+                    <div class="card-body">
+                        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;">
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label class="form-label">审核结果</label>
+                                <select class="form-select">
+                                    <option value="">全部结果</option>
+                                    <option>已通过</option>
+                                    <option>未通过</option>
+                                </select>
+                            </div>
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label class="form-label">内容类型</label>
+                                <select class="form-select">
+                                    <option value="">全部类型</option>
+                                    <option>评论</option>
+                                    <option>笔记</option>
+                                    <option>书评</option>
+                                </select>
+                            </div>
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label class="form-label">审核人</label>
+                                <select class="form-select">
+                                    <option value="">全部审核人</option>
+                                    <option>张老师</option>
+                                    <option>李老师</option>
+                                    <option>王老师</option>
+                                </select>
+                            </div>
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label class="form-label">审核时间</label>
+                                <select class="form-select">
+                                    <option value="">全部时间</option>
+                                    <option>今天</option>
+                                    <option>最近7天</option>
+                                    <option>最近30天</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-body" style="padding: 0;">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 100px">类型</th>
+                                    <th>内容</th>
+                                    <th style="width: 120px">提交人</th>
+                                    <th style="width: 120px">审核人</th>
+                                    <th style="width: 150px">审核时间</th>
+                                    <th style="width: 100px">结果</th>
+                                    <th style="width: 100px">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><span class="tag tag-blue">评论</span></td>
+                                    <td>
+                                        <div style="font-size: 14px; color: #262626; line-height: 1.6; max-width: 400px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                            这本书真的很好看，孙悟空的形象非常生动，让我对中国古典文学产生了浓厚的兴趣
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div style="display: flex; align-items: center; gap: 8px;">
+                                            <div style="width: 28px; height: 28px; border-radius: 50%; background: linear-gradient(135deg, #1890FF, #096DD9); color: white; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600;">张</div>
+                                            <span style="font-size: 13px;">张小明</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div style="display: flex; align-items: center; gap: 8px;">
+                                            <div style="width: 28px; height: 28px; border-radius: 50%; background: linear-gradient(135deg, #52c41a, #73d13d); color: white; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600;">李</div>
+                                            <span style="font-size: 13px;">李老师</span>
+                                        </div>
+                                    </td>
+                                    <td>2026-01-04 11:30</td>
+                                    <td><span class="tag tag-green">已通过</span></td>
+                                    <td>
+                                        <button class="btn btn-secondary btn-sm" onclick="viewDetail(1)">详情</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><span class="tag tag-green">笔记</span></td>
+                                    <td>
+                                        <div style="font-size: 14px; color: #262626; line-height: 1.6; max-width: 400px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                            今天读了《三国演义》第一回，了解了桃园三结义的故事
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div style="display: flex; align-items: center; gap: 8px;">
+                                            <div style="width: 28px; height: 28px; border-radius: 50%; background: linear-gradient(135deg, #52c41a, #73d13d); color: white; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600;">李</div>
+                                            <span style="font-size: 13px;">李小红</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div style="display: flex; align-items: center; gap: 8px;">
+                                            <div style="width: 28px; height: 28px; border-radius: 50%; background: linear-gradient(135deg, #52c41a, #73d13d); color: white; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600;">李</div>
+                                            <span style="font-size: 13px;">李老师</span>
+                                        </div>
+                                    </td>
+                                    <td>2026-01-04 10:45</td>
+                                    <td><span class="tag tag-green">已通过</span></td>
+                                    <td>
+                                        <button class="btn btn-secondary btn-sm" onclick="viewDetail(2)">详情</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><span class="tag tag-purple">书评</span></td>
+                                    <td>
+                                        <div style="font-size: 14px; color: #262626; line-height: 1.6; max-width: 400px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                            《红楼梦》是一部伟大的作品，通过贾宝玉和林黛玉的爱情故事
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div style="display: flex; align-items: center; gap: 8px;">
+                                            <div style="width: 28px; height: 28px; border-radius: 50%; background: linear-gradient(135deg, #fa8c16, #ffa940); color: white; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600;">王</div>
+                                            <span style="font-size: 13px;">王小刚</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div style="display: flex; align-items: center; gap: 8px;">
+                                            <div style="width: 28px; height: 28px; border-radius: 50%; background: linear-gradient(135deg, #fa8c16, #ffa940); color: white; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600;">王</div>
+                                            <span style="font-size: 13px;">王老师</span>
+                                        </div>
+                                    </td>
+                                    <td>2026-01-04 09:20</td>
+                                    <td><span class="tag tag-green">已通过</span></td>
+                                    <td>
+                                        <button class="btn btn-secondary btn-sm" onclick="viewDetail(3)">详情</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><span class="tag tag-blue">评论</span></td>
+                                    <td>
+                                        <div style="font-size: 14px; color: #262626; line-height: 1.6; max-width: 400px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                            这本书内容不适合小学生阅读
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div style="display: flex; align-items: center; gap: 8px;">
+                                            <div style="width: 28px; height: 28px; border-radius: 50%; background: linear-gradient(135deg, #13c2c2, #36cfc9); color: white; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600;">周</div>
+                                            <span style="font-size: 13px;">周小强</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div style="display: flex; align-items: center; gap: 8px;">
+                                            <div style="width: 28px; height: 28px; border-radius: 50%; background: linear-gradient(135deg, #52c41a, #73d13d); color: white; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600;">李</div>
+                                            <span style="font-size: 13px;">李老师</span>
+                                        </div>
+                                    </td>
+                                    <td>2026-01-03 16:50</td>
+                                    <td><span class="tag tag-red">未通过</span></td>
+                                    <td>
+                                        <button class="btn btn-secondary btn-sm" onclick="viewDetail(4)">详情</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><span class="tag tag-green">笔记</span></td>
+                                    <td>
+                                        <div style="font-size: 14px; color: #262626; line-height: 1.6; max-width: 400px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                            今天学习了《论语》中的"学而时习之，不亦说乎"
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div style="display: flex; align-items: center; gap: 8px;">
+                                            <div style="width: 28px; height: 28px; border-radius: 50%; background: linear-gradient(135deg, #eb2f96, #f759ab); color: white; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600;">孙</div>
+                                            <span style="font-size: 13px;">孙小华</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div style="display: flex; align-items: center; gap: 8px;">
+                                            <div style="width: 28px; height: 28px; border-radius: 50%; background: linear-gradient(135deg, #fa8c16, #ffa940); color: white; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600;">王</div>
+                                            <span style="font-size: 13px;">王老师</span>
+                                        </div>
+                                    </td>
+                                    <td>2026-01-03 15:30</td>
+                                    <td><span class="tag tag-green">已通过</span></td>
+                                    <td>
+                                        <button class="btn btn-secondary btn-sm" onclick="viewDetail(5)">详情</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><span class="tag tag-blue">评论</span></td>
+                                    <td>
+                                        <div style="font-size: 14px; color: #262626; line-height: 1.6; max-width: 400px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                            水浒传中的108位好汉各有特色，我最喜欢武松打虎的故事
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div style="display: flex; align-items: center; gap: 8px;">
+                                            <div style="width: 28px; height: 28px; border-radius: 50%; background: linear-gradient(135deg, #722ed1, #9254de); color: white; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600;">赵</div>
+                                            <span style="font-size: 13px;">赵小丽</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div style="display: flex; align-items: center; gap: 8px;">
+                                            <div style="width: 28px; height: 28px; border-radius: 50%; background: linear-gradient(135deg, #52c41a, #73d13d); color: white; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600;">李</div>
+                                            <span style="font-size: 13px;">李老师</span>
+                                        </div>
+                                    </td>
+                                    <td>2026-01-03 14:15</td>
+                                    <td><span class="tag tag-green">已通过</span></td>
+                                    <td>
+                                        <button class="btn btn-secondary btn-sm" onclick="viewDetail(6)">详情</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="pagination">
+                    <div class="pagination-item disabled">上一页</div>
+                    <div class="pagination-item active">1</div>
+                    <div class="pagination-item">2</div>
+                    <div class="pagination-item">3</div>
+                    <div class="pagination-item">4</div>
+                    <div class="pagination-item">下一页</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="common/admin-common.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            pageManager.renderHeader(['审核管理', '审核记录']);
+        });
+
+        function viewDetail(id) {
+            showToast('查看详情功能开发中', 'info');
+        }
+    </script>
+</body>
+</html>

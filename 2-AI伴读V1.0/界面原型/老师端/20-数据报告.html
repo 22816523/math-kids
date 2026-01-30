@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据报告 - 校校读吧小管家（教师端）</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: "Source Han Sans CN", "Noto Sans CJK SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background: #F5F7FA; width: 375px; margin: 0 auto; padding-bottom: 16px; opacity: 0; }
+        .navbar { background: linear-gradient(135deg, #2E5BFF, #1E4BEF); color: white; height: 44px; display: flex; align-items: center; padding: 0 16px; }
+        .navbar-back { font-size: 18px; cursor: pointer; padding: 8px; margin-left: -8px; }
+        .navbar-title { font-size: 18px;
+            line-height: 1.4; font-weight: 600; flex: 1; text-align: center; margin-right: 26px; }
+        .filter-container {
+            background: white;
+            margin: 0 16px 12px;
+            padding: 16px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .section-header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .section-header-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            color: white;
+            background: linear-gradient(135deg, #2E5BFF 0%, #1E4BEF 100%);
+        }
+        .section-header-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+        .filter-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            border: 1px solid #e8e8e8;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #666;
+            font-size: 14px;
+        }
+        .filter-btn:hover {
+            border-color: #2E5BFF;
+            color: #2E5BFF;
+        }
+        .filter-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .filter-tag {
+            padding: 4px 10px;
+            background: #e6f0ff;
+            color: #2E5BFF;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        .filter-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 375px;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            display: none;
+            align-items: flex-end;
+        }
+        .filter-modal-overlay.show {
+            display: flex;
+        }
+        .filter-modal {
+            width: 100%;
+            background: white;
+            border-radius: 16px 16px 0 0;
+            padding: 20px 16px 32px;
+        }
+        .filter-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .filter-modal-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+        .filter-modal-close {
+            width: 28px;
+            height: 28px;
+            border: none;
+            background: #f5f5f5;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #999;
+        }
+        .filter-group {
+            margin-bottom: 16px;
+        }
+        .filter-group-label {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+        .filter-group-select {
+            width: 100%;
+            height: 40px;
+            padding: 0 12px;
+            border: 1px solid #d9d9d9;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #333;
+            background: white;
+        }
+        .filter-modal-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+        .filter-reset-btn {
+            flex: 1;
+            height: 44px;
+            border: 1px solid #d9d9d9;
+            background: white;
+            border-radius: 8px;
+            font-size: 15px;
+            color: #666;
+            cursor: pointer;
+        }
+        .filter-confirm-btn {
+            flex: 1;
+            height: 44px;
+            border: none;
+            background: linear-gradient(135deg, #2E5BFF, #1E4BEF);
+            border-radius: 8px;
+            font-size: 15px;
+            color: white;
+            cursor: pointer;
+        }
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 16px; }
+        .stat-card { background: white; border-radius: 8px; padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+        .stat-icon { width: 40px; height: 44px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px;
+            line-height: 1.2; margin-bottom: 12px; }
+        .icon-blue { background: linear-gradient(135deg, #e6f7ff, #bae7ff); }
+        .icon-green { background: linear-gradient(135deg, #f6ffed, #d9f7be); }
+        .icon-orange { background: linear-gradient(135deg, #fff7e6, #ffd591); }
+        .icon-purple { background: linear-gradient(135deg, #f9f0ff, #d3adf7); }
+        .stat-value { font-size: 24px; font-weight: 700; color: #333333; margin-bottom: 4px; }
+        .stat-label { font-size: 12px;
+            line-height: 1.5; color: #999999; }
+        .stat-trend { font-size: 12px;
+            line-height: 1.5; margin-top: 4px; }
+        .trend-up { color: #52c41a; }
+        .trend-down { color: #ff4d4f; }
+        .chart-section { background: white; margin: 0 16px 12px; padding: 16px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+        .progress-distribution { margin-top: 12px; }
+        .distribution-item { margin-bottom: 16px; }
+        .distribution-item:last-child { margin-bottom: 0; }
+        .distribution-label { font-size: 14px; line-height: 1.5; color: #333333; margin-bottom: 8px; font-weight: 500; }
+        .distribution-bar { height: 24px; background: #f5f5f5; border-radius: 4px; overflow: hidden; margin-bottom: 4px; }
+        .distribution-fill { height: 100%; transition: width 0.3s; }
+        .distribution-value { font-size: 12px; line-height: 1.5; color: #8c8c8c; text-align: right; }
+        .task-comparison { margin-top: 12px; }
+        .task-compare-item { margin-bottom: 20px; }
+        .task-compare-item:last-child { margin-bottom: 0; }
+        .task-compare-header { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+        .task-compare-icon { width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+        .task-compare-info { flex: 1; }
+        .task-compare-title { font-size: 14px; line-height: 1.5; font-weight: 600; color: #333333; }
+        .task-compare-subtitle { font-size: 12px; line-height: 1.5; color: #8c8c8c; }
+        .task-compare-rate { font-size: 20px; line-height: 1.4; font-weight: 700; }
+        .task-compare-rate.high { color: #52c41a; }
+        .task-compare-rate.medium { color: #2E5BFF; }
+        .task-compare-rate.low { color: #faad14; }
+        .task-compare-bar { height: 8px; background: #f5f5f5; border-radius: 4px; overflow: hidden; margin-bottom: 4px; }
+        .task-compare-fill { height: 100%; transition: width 0.3s; }
+        .task-compare-fill.high { background: #52c41a; }
+        .task-compare-fill.medium { background: #2E5BFF; }
+        .task-compare-fill.low { background: #faad14; }
+        .task-compare-detail { font-size: 12px; line-height: 1.5; color: #8c8c8c; }
+        .section-title { font-size: 16px;
+            line-height: 1.4; font-weight: 600; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; }
+        .chart-placeholder { height: 200px; background: linear-gradient(135deg, #e6f7ff, #f0f5ff); border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #2E5BFF; font-size: 14px; text-align: center; line-height: 1.8; }
+        .ranking-list { margin-top: 12px; }
+        .ranking-item { display: flex; align-items: center; gap: 12px; padding: 12px; background: #fafafa; border-radius: 8px; margin-bottom: 8px; }
+        .rank-number { width: 32px; height: 36px; border-radius: 50%; background: #d9d9d9; color: white; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 14px;
+            line-height: 1.6; }
+        .rank-number.top1 { background: linear-gradient(135deg, #FFD700, #FFA500); }
+        .rank-number.top2 { background: linear-gradient(135deg, #C0C0C0, #A8A8A8); }
+        .rank-number.top3 { background: linear-gradient(135deg, #CD7F32, #B8860B); }
+        .rank-info { flex: 1; }
+        .rank-name { font-size: 14px;
+            line-height: 1.5; font-weight: 600; color: #333333; }
+        .rank-class { font-size: 12px;
+            line-height: 1.5; color: #999999; margin-top: 2px; }
+        .rank-value { font-size: 18px;
+            line-height: 1.4; font-weight: 700; color: #2E5BFF; }
+        .export-btn { width: calc(100% - 32px); margin: 0 16px 12px; min-height: 44px; background: #36B37E; color: white; border: none; border-radius: 6px; font-size: 14px;
+            line-height: 1.5; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 16px; }
+        .export-btn:hover { opacity: 0.9; }
+        .tabbar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 375px; height: 50px; background: white; border-top: 1px solid #f0f0f0; display: flex; box-shadow: 0 -2px 8px rgba(0,0,0,0.06); }
+        .tab-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; cursor: pointer; transition: all 0.3s; }
+        .tab-item:hover { background: #F5F7FA; }
+        .tab-icon { font-size: 20px;
+            line-height: 1.2; }
+        .tab-label { font-size: 12px;
+            line-height: 1.5; color: #999999; }
+        .tab-item.active .tab-label { color: #2E5BFF; }
+        .tab-item.active .tab-icon { color: #2E5BFF; }
+        .ranking-item { cursor: pointer; transition: all 0.3s; }
+        .ranking-item:hover { background: #f0f0f0; }
+    
+        /* Font Awesome图标样式优化 */
+        .fa-solid, .fa-regular {
+            font-weight: 400;
+            color: #595959;
+            opacity: 0.85;
+        }
+
+        /* 导航栏和标题中的图标保持原色 */
+        .navbar .fa-solid,
+        .section-title .fa-solid,
+        .task-title .fa-solid {
+            color: inherit;
+            opacity: 1;
+        }
+
+        /* 徽章图标使用白色，与金色背景形成对比 */
+        .badge-icon .fa-solid {
+            color: white;
+            opacity: 1;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 成就图标特殊样式 */
+        .achievement-section .badge-icon .fa-solid {
+            font-size: 32px;
+        }
+    
+        /* 选中状态图标颜色优化 */
+        .tab-item.active .tab-icon .fa-solid,
+        .tab-item.active .fa-solid {
+            color: #2E5BFF;
+            opacity: 1;
+        }
+
+        /* 其他选中状态 */
+        .menu-item.active .menu-icon .fa-solid,
+        .nav-item.active .fa-solid,
+        .list-item.selected .fa-solid,
+        .card.active .fa-solid,
+        .btn.active .fa-solid,
+        .filter-btn.active .fa-solid {
+            color: #2E5BFF;
+            opacity: 1;
+        }
+    </style>    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="navbar">
+        <div class="navbar-back" onclick="Router.back()">←</div>
+        <div class="navbar-title">数据报告</div>
+    </div>
+
+    <!-- 筛选器区域 -->
+    <div class="filter-container">
+        <div class="section-header">
+            <div class="filter-tags">
+                <span class="filter-tag">《三体》阅读计划</span>
+                <span class="filter-tag">初一(3)班</span>
+                <span class="filter-tag">《三体》</span>
+                <span class="filter-tag">本月</span>
+            </div>
+            <button class="filter-btn" onclick="openFilterModal()">
+                <i class="fa-solid fa-filter"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- 筛选弹窗 -->
+    <div class="filter-modal-overlay" id="filterModal" onclick="closeFilterModal(event)">
+        <div class="filter-modal" onclick="event.stopPropagation()">
+            <div class="filter-modal-header">
+                <div class="filter-modal-title">筛选条件</div>
+                <button class="filter-modal-close" onclick="closeFilterModal()">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="filter-group">
+                <div class="filter-group-label">阅读计划</div>
+                <select class="filter-group-select" id="filterPlan">
+                    <option>《三体》阅读计划</option>
+                    <option>《活着》阅读计划</option>
+                    <option>《平凡的世界》阅读计划</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <div class="filter-group-label">班级</div>
+                <select class="filter-group-select" id="filterClass">
+                    <option>全部班级</option>
+                    <option selected>初一(3)班</option>
+                    <option>初一(4)班</option>
+                    <option>初二(1)班</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <div class="filter-group-label">书籍</div>
+                <select class="filter-group-select" id="filterBook">
+                    <option>全部书籍</option>
+                    <option selected>《三体》</option>
+                    <option>《三体II：黑暗森林》</option>
+                    <option>《三体III：死神永生》</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <div class="filter-group-label">时间范围</div>
+                <select class="filter-group-select" id="filterTime">
+                    <option>本周</option>
+                    <option selected>本月</option>
+                    <option>本学期</option>
+                </select>
+            </div>
+            <div class="filter-modal-actions">
+                <button class="filter-reset-btn" onclick="resetFilter()">重置</button>
+                <button class="filter-confirm-btn" onclick="confirmFilter()">确定</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon icon-blue"><i class="fa-solid fa-user-graduate"></i></div>
+            <div class="stat-value">52</div>
+            <div class="stat-label">参与学生数</div>
+            <div class="stat-trend trend-up">↑ 较上月 +2人</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon icon-green"><i class="fa-solid fa-circle-check"></i></div>
+            <div class="stat-value">85%</div>
+            <div class="stat-label">阅读完成率</div>
+            <div class="stat-trend trend-up">↑ 较上月 +3%</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon icon-blue"><i class="fa-solid fa-calendar-check"></i></div>
+            <div class="stat-value">83%</div>
+            <div class="stat-label">任务完成率</div>
+            <div class="stat-trend trend-up">↑ 较上月 +4%</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon icon-purple"><i class="fa-solid fa-clock"></i></div>
+            <div class="stat-value">48</div>
+            <div class="stat-label">按时完成人数</div>
+            <div class="stat-trend trend-up">↑ 较上月 +6人</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon icon-orange"><i class="fa-solid fa-book-bookmark"></i></div>
+            <div class="stat-value">15/30</div>
+            <div class="stat-label">平均阅读进度</div>
+            <div class="stat-trend trend-up">↑ 较上月 +3次</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon icon-orange"><i class="fa-solid fa-pen-to-square"></i></div>
+            <div class="stat-value">85.2</div>
+            <div class="stat-label">平均测评分数</div>
+            <div class="stat-trend trend-up">↑ 较上月 +2.8分</div>
+        </div>
+    </div>
+
+    <div class="chart-section">
+        <div class="section-title">
+            <span><i class="fa-solid fa-chart-pie"></i> 阅读进度分布</span>
+        </div>
+        <div class="progress-distribution">
+            <div class="distribution-item">
+                <div class="distribution-label">已完成（30次）</div>
+                <div class="distribution-bar">
+                    <div class="distribution-fill" style="width: 35%; background: #52c41a;"></div>
+                </div>
+                <div class="distribution-value">18人 (35%)</div>
+            </div>
+            <div class="distribution-item">
+                <div class="distribution-label">进行中（15-29次）</div>
+                <div class="distribution-bar">
+                    <div class="distribution-fill" style="width: 48%; background: #2E5BFF;"></div>
+                </div>
+                <div class="distribution-value">25人 (48%)</div>
+            </div>
+            <div class="distribution-item">
+                <div class="distribution-label">刚开始（1-14次）</div>
+                <div class="distribution-bar">
+                    <div class="distribution-fill" style="width: 13%; background: #faad14;"></div>
+                </div>
+                <div class="distribution-value">7人 (13%)</div>
+            </div>
+            <div class="distribution-item">
+                <div class="distribution-label">未开始（0次）</div>
+                <div class="distribution-bar">
+                    <div class="distribution-fill" style="width: 4%; background: #d9d9d9;"></div>
+                </div>
+                <div class="distribution-value">2人 (4%)</div>
+        </div>
+    </div>
+
+    <div class="chart-section">
+        <div class="section-title">
+            <span><i class="fa-solid fa-list-check"></i> 任务完成情况对比</span>
+        </div>
+        <div class="task-comparison">
+            <div class="task-compare-item">
+                <div class="task-compare-header">
+                    <div class="task-compare-icon" style="background: linear-gradient(135deg, #e6f7ff, #bae7ff);">
+                        <i class="fa-solid fa-video"></i>
+                    </div>
+                    <div class="task-compare-info">
+                        <div class="task-compare-title">视频任务</div>
+                        <div class="task-compare-subtitle">共15次</div>
+                    </div>
+                    <div class="task-compare-rate high">88%</div>
+                </div>
+                <div class="task-compare-bar">
+                    <div class="task-compare-fill high" style="width: 88%;"></div>
+                </div>
+                <div class="task-compare-detail">46人完成 · 6人未完成</div>
+            </div>
+
+            <div class="task-compare-item">
+                <div class="task-compare-header">
+                    <div class="task-compare-icon" style="background: linear-gradient(135deg, #f6ffed, #d9f7be);">
+                        <i class="fa-solid fa-book-open"></i>
+                    </div>
+                    <div class="task-compare-info">
+                        <div class="task-compare-title">阅读任务</div>
+                        <div class="task-compare-subtitle">共15次</div>
+                    </div>
+                    <div class="task-compare-rate high">85%</div>
+                </div>
+                <div class="task-compare-bar">
+                    <div class="task-compare-fill high" style="width: 85%;"></div>
+                </div>
+                <div class="task-compare-detail">44人完成 · 8人未完成</div>
+            </div>
+
+            <div class="task-compare-item">
+                <div class="task-compare-header">
+                    <div class="task-compare-icon" style="background: linear-gradient(135deg, #f9f0ff, #d3adf7);">
+                        <i class="fa-solid fa-clipboard-list"></i>
+                    </div>
+                    <div class="task-compare-info">
+                        <div class="task-compare-title">导读单任务</div>
+                        <div class="task-compare-subtitle">共15次</div>
+                    </div>
+                    <div class="task-compare-rate medium">80%</div>
+                </div>
+                <div class="task-compare-bar">
+                    <div class="task-compare-fill medium" style="width: 80%;"></div>
+                </div>
+                <div class="task-compare-detail">42人完成 · 10人未完成</div>
+            </div>
+
+            <div class="task-compare-item">
+                <div class="task-compare-header">
+                    <div class="task-compare-icon" style="background: linear-gradient(135deg, #fff7e6, #ffd591);">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                    </div>
+                    <div class="task-compare-info">
+                        <div class="task-compare-title">测评任务</div>
+                        <div class="task-compare-subtitle">共10次</div>
+                    </div>
+                    <div class="task-compare-rate medium">78%</div>
+                </div>
+                <div class="task-compare-bar">
+                    <div class="task-compare-fill medium" style="width: 78%;"></div>
+                </div>
+                <div class="task-compare-detail">41人完成 · 11人未完成</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="chart-section">
+        <div class="section-title">
+            <span><i class="fa-solid fa-chart-line"></i> 打卡趋势（近30天）</span>
+        </div>
+        <div class="chart-placeholder">
+            <i class="fa-solid fa-chart-line" style="font-size: 32px; margin-bottom: 8px;"></i>
+            <div style="font-size: 14px; line-height: 1.8;">
+                <div>打卡趋势折线图</div>
+                <div style="color: #52c41a;">峰值：11月15日 95% (49人)</div>
+                <div style="color: #ff4d4f;">谷值：11月8日 72% (37人)</div>
+                <div style="color: #8c8c8c;">平均打卡率：88%</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="chart-section">
+        <div class="section-title">
+            <span><i class="fa-solid fa-chart-column"></i> 测评成绩分布</span>
+        </div>
+        <div class="chart-placeholder">
+            <i class="fa-solid fa-chart-bar" style="font-size: 32px; margin-bottom: 8px;"></i>
+            <div style="font-size: 14px; line-height: 1.8;">
+                <div>成绩分布柱状图</div>
+                <div style="color: #52c41a;">90-100分：18人 (35%)</div>
+                <div style="color: #2E5BFF;">80-89分：22人 (42%)</div>
+                <div style="color: #faad14;">70-79分：9人 (17%)</div>
+                <div style="color: #ff4d4f;">60-69分：3人 (6%)</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="chart-section">
+        <div class="section-title">
+            <span><i class="fa-solid fa-trophy"></i> 优秀学生排名</span>
+            <span style="font-size: 12px; color: #8c8c8c;">综合表现 TOP 5</span>
+        </div>
+        <div class="ranking-list">
+            <div class="ranking-item">
+                <div class="rank-number top1">1</div>
+                <div class="rank-info">
+                    <div class="rank-name">张晓明</div>
+                    <div class="rank-class">初一(3)班 · 完成30次 · 平均92分</div>
+                </div>
+                <div class="rank-value">100%</div>
+            </div>
+
+            <div class="ranking-item">
+                <div class="rank-number top2">2</div>
+                <div class="rank-info">
+                    <div class="rank-name">李思雨</div>
+                    <div class="rank-class">初一(3)班 · 完成30次 · 平均90分</div>
+                </div>
+                <div class="rank-value">100%</div>
+            </div>
+
+            <div class="ranking-item">
+                <div class="rank-number top3">3</div>
+                <div class="rank-info">
+                    <div class="rank-name">王浩然</div>
+                    <div class="rank-class">初一(3)班 · 完成29次 · 平均88分</div>
+                </div>
+                <div class="rank-value">97%</div>
+            </div>
+
+            <div class="ranking-item">
+                <div class="rank-number">4</div>
+                <div class="rank-info">
+                    <div class="rank-name">陈雨欣</div>
+                    <div class="rank-class">初一(3)班 · 完成28次 · 平均87分</div>
+                </div>
+                <div class="rank-value">93%</div>
+            </div>
+
+            <div class="ranking-item">
+                <div class="rank-number">5</div>
+                <div class="rank-info">
+                    <div class="rank-name">刘子轩</div>
+                    <div class="rank-class">初一(3)班 · 完成28次 · 平均85分</div>
+                </div>
+                <div class="rank-value">93%</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="chart-section">
+        <div class="section-title">
+            <span><i class="fa-solid fa-triangle-exclamation"></i> 需要关注的学生</span>
+            <span style="font-size: 12px; color: #8c8c8c;">完成率低于60%</span>
+        </div>
+        <div class="ranking-list">
+            <div class="ranking-item" style="background: #fff7e6; border-left: 3px solid #faad14;">
+                <div class="rank-info" style="flex: 1;">
+                    <div class="rank-name">赵明远</div>
+                    <div class="rank-class">初一(3)班 · 完成15次 · 平均72分</div>
+                </div>
+                <div class="rank-value" style="color: #faad14;">50%</div>
+            </div>
+
+            <div class="ranking-item" style="background: #fff7e6; border-left: 3px solid #faad14;">
+                <div class="rank-info" style="flex: 1;">
+                    <div class="rank-name">孙佳怡</div>
+                    <div class="rank-class">初一(3)班 · 完成12次 · 平均68分</div>
+                </div>
+                <div class="rank-value" style="color: #faad14;">40%</div>
+            </div>
+
+            <div class="ranking-item" style="background: #fff1f0; border-left: 3px solid #ff4d4f;">
+                <div class="rank-info" style="flex: 1;">
+                    <div class="rank-name">周思涵</div>
+                    <div class="rank-class">初一(3)班 · 完成8次 · 平均65分</div>
+                </div>
+                <div class="rank-value" style="color: #ff4d4f;">27%</div>
+            </div>
+
+            <div class="ranking-item" style="background: #fff1f0; border-left: 3px solid #ff4d4f;">
+                <div class="rank-info" style="flex: 1;">
+                    <div class="rank-name">吴宇航</div>
+                    <div class="rank-class">初一(3)班 · 完成5次 · 平均62分</div>
+                </div>
+                <div class="rank-value" style="color: #ff4d4f;">17%</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入路由管理脚本 -->
+    <script src="./router.js"></script>
+    <script>
+        // 打开筛选弹窗
+        function openFilterModal() {
+            const modal = document.getElementById('filterModal');
+            modal.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // 关闭筛选弹窗
+        function closeFilterModal(event) {
+            if (event && event.target !== event.currentTarget) return;
+            const modal = document.getElementById('filterModal');
+            modal.classList.remove('show');
+            document.body.style.overflow = '';
+        }
+
+        // 重置筛选
+        function resetFilter() {
+            document.getElementById('filterPlan').selectedIndex = 0;
+            document.getElementById('filterClass').selectedIndex = 0;
+            document.getElementById('filterBook').selectedIndex = 0;
+            document.getElementById('filterTime').selectedIndex = 1;
+        }
+
+        // 确认筛选
+        function confirmFilter() {
+            const plan = document.getElementById('filterPlan').value;
+            const classVal = document.getElementById('filterClass').value;
+            const book = document.getElementById('filterBook').value;
+            const time = document.getElementById('filterTime').value;
+
+            // 更新筛选标签显示
+            const tagsContainer = document.querySelector('.filter-tags');
+            tagsContainer.innerHTML = `
+                <span class="filter-tag">${plan}</span>
+                <span class="filter-tag">${classVal}</span>
+                <span class="filter-tag">${book}</span>
+                <span class="filter-tag">${time}</span>
+            `;
+
+            closeFilterModal();
+            // TODO: 根据筛选条件刷新数据
+        }
+    </script>
+</body>
+</html>

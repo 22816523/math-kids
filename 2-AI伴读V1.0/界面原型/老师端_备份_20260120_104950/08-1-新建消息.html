@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>新建消息 - 校校读吧小管家（教师端）</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: "Source Han Sans CN", "Noto Sans CJK SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #F5F7FA;
+            width: 375px;
+            margin: 0 auto;
+            min-height: 100vh;
+            opacity: 0;
+            padding-bottom: 80px;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, #2E5BFF 0%, #1E4BEF 100%);
+            color: white;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 8px rgba(24, 144, 255, 0.15);
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 18px;
+            line-height: 1.4;
+            cursor: pointer;
+            padding: 0;
+            margin-right: 12px;
+        }
+
+        .navbar-title {
+            font-size: 18px;
+            line-height: 1.4;
+            font-weight: 600;
+            flex: 1;
+        }
+
+        .form-section {
+            background: white;
+            margin: 12px 16px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .section-title {
+            font-size: 16px;
+            line-height: 1.4;
+            font-weight: 600;
+            padding: 16px;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-item {
+            padding: 16px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .form-item:last-child {
+            border-bottom: none;
+        }
+
+        .form-label {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #333333;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .form-label.required::after {
+            content: '*';
+            color: #ff4d4f;
+            margin-left: 4px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #d9d9d9;
+            border-radius: 4px;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #333333;
+            transition: all 0.3s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #2E5BFF;
+            box-shadow: 0 0 0 2px rgba(46, 91, 255, 0.1);
+        }
+
+        .form-input::placeholder {
+            color: #bfbfbf;
+        }
+
+        .form-textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 10px 12px;
+            border: 1px solid #d9d9d9;
+            border-radius: 4px;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #333333;
+            resize: vertical;
+            font-family: inherit;
+            transition: all 0.3s;
+        }
+
+        .form-textarea:focus {
+            outline: none;
+            border-color: #2E5BFF;
+            box-shadow: 0 0 0 2px rgba(46, 91, 255, 0.1);
+        }
+
+        .form-textarea::placeholder {
+            color: #bfbfbf;
+        }
+
+        .char-count {
+            font-size: 12px;
+            line-height: 1.5;
+            color: #999999;
+            text-align: right;
+            margin-top: 4px;
+        }
+
+        .select-box {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 12px;
+            border: 1px solid #d9d9d9;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .select-box:hover {
+            border-color: #2E5BFF;
+        }
+
+        .select-value {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #333333;
+        }
+
+        .select-value.placeholder {
+            color: #bfbfbf;
+        }
+
+        .select-arrow {
+            color: #999999;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .selected-items {
+            margin-top: 8px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .selected-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 8px;
+            background: #e6f7ff;
+            color: #2E5BFF;
+            border-radius: 4px;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .tag-close {
+            cursor: pointer;
+            font-size: 14px;
+            line-height: 1;
+        }
+
+        .tag-close:hover {
+            color: #1E4BEF;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 16px;
+        }
+
+        .radio-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .radio-input {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .radio-label {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #333333;
+            cursor: pointer;
+        }
+
+        .time-selector {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .time-input {
+            flex: 1;
+            padding: 10px 12px;
+            border: 1px solid #d9d9d9;
+            border-radius: 4px;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #333333;
+        }
+
+        .time-input:focus {
+            outline: none;
+            border-color: #2E5BFF;
+            box-shadow: 0 0 0 2px rgba(46, 91, 255, 0.1);
+        }
+
+        .time-input:disabled {
+            background: #f5f5f5;
+            color: #bfbfbf;
+            cursor: not-allowed;
+        }
+
+        .info-tip {
+            background: #f0f5ff;
+            border-left: 3px solid #2E5BFF;
+            padding: 12px;
+            margin-top: 8px;
+            border-radius: 4px;
+        }
+
+        .info-tip-text {
+            font-size: 12px;
+            line-height: 1.6;
+            color: #666666;
+        }
+
+        .submit-section {
+            padding: 16px;
+            display: flex;
+            gap: 12px;
+        }
+
+        .submit-btn {
+            flex: 1;
+            height: 44px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            line-height: 1.5;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #2E5BFF, #1E4BEF);
+            color: white;
+            box-shadow: 0 4px 12px rgba(46, 91, 255, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(46, 91, 255, 0.4);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #2E5BFF;
+            border: 1px solid #2E5BFF;
+        }
+
+        .btn-secondary:hover {
+            background: #f0f5ff;
+        }
+
+        .error-tip {
+            font-size: 12px;
+            line-height: 1.5;
+            color: #ff4d4f;
+            margin-top: 4px;
+            display: none;
+        }
+
+        .error-tip.show {
+            display: block;
+        }
+
+        .form-input.error,
+        .form-textarea.error,
+        .select-box.error {
+            border-color: #ff4d4f;
+        }
+
+        /* Font Awesome图标样式优化 */
+        .fa-solid, .fa-regular {
+            font-weight: 400;
+            color: #595959;
+            opacity: 0.85;
+        }
+
+        .navbar .fa-solid,
+        .section-title .fa-solid {
+            color: inherit;
+            opacity: 1;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="navbar">
+        <button class="back-btn" onclick="Router.back()">←</button>
+        <div class="navbar-title">新建消息</div>
+    </div>
+
+    <div class="form-section">
+        <div class="section-title">
+            <i class="fa-solid fa-users"></i>
+            <span>发送对象</span>
+        </div>
+
+        <div class="form-item">
+            <label class="form-label required">发送方式</label>
+            <div class="radio-group">
+                <label class="radio-item">
+                    <input type="radio" name="sendType" value="class" class="radio-input" checked onchange="updateSendType()">
+                    <span class="radio-label">按班级</span>
+                </label>
+                <label class="radio-item">
+                    <input type="radio" name="sendType" value="student" class="radio-input" onchange="updateSendType()">
+                    <span class="radio-label">按学生</span>
+                </label>
+            </div>
+        </div>
+
+        <div class="form-item" id="classSelectItem">
+            <label class="form-label required">选择班级</label>
+            <div class="select-box" id="classSelectBox" onclick="selectClasses()">
+                <span class="select-value placeholder" id="classSelectValue">请选择班级</span>
+                <span class="select-arrow">→</span>
+            </div>
+            <div class="selected-items" id="selectedClasses"></div>
+            <div class="error-tip" id="classError">请至少选择一个班级</div>
+        </div>
+
+        <div class="form-item" id="studentSelectItem" style="display: none;">
+            <label class="form-label required">选择学生</label>
+            <div class="select-box" id="studentSelectBox" onclick="selectStudents()">
+                <span class="select-value placeholder" id="studentSelectValue">请选择学生</span>
+                <span class="select-arrow">→</span>
+            </div>
+            <div class="selected-items" id="selectedStudents"></div>
+            <div class="error-tip" id="studentError">请至少选择一个学生</div>
+        </div>
+    </div>
+
+    <div class="form-section">
+        <div class="section-title">
+            <i class="fa-solid fa-message"></i>
+            <span>消息内容</span>
+        </div>
+
+        <div class="form-item">
+            <label class="form-label">消息标题</label>
+            <input type="text" class="form-input" id="messageTitle" placeholder="请输入消息标题（选填）" maxlength="50">
+            <div class="char-count"><span id="titleCount">0</span>/50</div>
+        </div>
+
+        <div class="form-item">
+            <label class="form-label required">消息正文</label>
+            <textarea class="form-textarea" id="messageContent" placeholder="请输入消息内容" maxlength="500"></textarea>
+            <div class="char-count"><span id="contentCount">0</span>/500</div>
+            <div class="error-tip" id="contentError">请输入消息内容</div>
+        </div>
+    </div>
+
+    <div class="form-section">
+        <div class="section-title">
+            <i class="fa-solid fa-clock"></i>
+            <span>发送时间</span>
+        </div>
+
+        <div class="form-item">
+            <label class="form-label required">发送方式</label>
+            <div class="radio-group">
+                <label class="radio-item">
+                    <input type="radio" name="sendTime" value="now" class="radio-input" checked onchange="updateSendTime()">
+                    <span class="radio-label">立即发送</span>
+                </label>
+                <label class="radio-item">
+                    <input type="radio" name="sendTime" value="scheduled" class="radio-input" onchange="updateSendTime()">
+                    <span class="radio-label">定时发送</span>
+                </label>
+            </div>
+        </div>
+
+        <div class="form-item" id="scheduledTimeItem" style="display: none;">
+            <label class="form-label required">发送时间</label>
+            <div class="time-selector">
+                <input type="date" class="time-input" id="sendDate" disabled>
+                <input type="time" class="time-input" id="sendTime" disabled>
+            </div>
+            <div class="info-tip">
+                <div class="info-tip-text">定时发送时间不能早于当前时间</div>
+            </div>
+            <div class="error-tip" id="timeError">请选择发送时间</div>
+        </div>
+    </div>
+
+    <div class="submit-section">
+        <button class="submit-btn btn-secondary" onclick="saveDraft()">保存草稿</button>
+        <button class="submit-btn btn-primary" onclick="sendMessage()">发送消息</button>
+    </div>
+
+    <script src="../router.js"></script>
+    <script>
+        // 模拟数据
+        const mockClasses = [
+            { id: 1, name: '初一(3)班', studentCount: 52 },
+            { id: 2, name: '初一(4)班', studentCount: 48 },
+            { id: 3, name: '初二(1)班', studentCount: 50 }
+        ]
+
+        const mockStudents = [
+            { id: 1, name: '张三', className: '初一(3)班' },
+            { id: 2, name: '李四', className: '初一(3)班' },
+            { id: 3, name: '王五', className: '初一(3)班' },
+            { id: 4, name: '赵六', className: '初一(4)班' },
+            { id: 5, name: '孙七', className: '初一(4)班' }
+        ]
+
+        // 选中的对象
+        let selectedClassIds = []
+        let selectedStudentIds = []
+
+        // 页面加载完成
+        window.addEventListener('DOMContentLoaded', () => {
+            document.body.style.opacity = '1'
+            document.body.style.transition = 'opacity 0.3s'
+
+            // 设置默认日期时间
+            const now = new Date()
+            const tomorrow = new Date(now.getTime() + 24 * 60 * 60 * 1000)
+            document.getElementById('sendDate').value = tomorrow.toISOString().split('T')[0]
+            document.getElementById('sendTime').value = '09:00'
+
+            // 字数统计
+            document.getElementById('messageTitle').addEventListener('input', function() {
+                document.getElementById('titleCount').textContent = this.value.length
+            })
+
+            document.getElementById('messageContent').addEventListener('input', function() {
+                document.getElementById('contentCount').textContent = this.value.length
+            })
+        })
+
+        // 更新发送方式
+        function updateSendType() {
+            const sendType = document.querySelector('input[name="sendType"]:checked').value
+
+            if (sendType === 'class') {
+                document.getElementById('classSelectItem').style.display = 'block'
+                document.getElementById('studentSelectItem').style.display = 'none'
+            } else {
+                document.getElementById('classSelectItem').style.display = 'none'
+                document.getElementById('studentSelectItem').style.display = 'block'
+            }
+        }
+
+        // 更新发送时间方式
+        function updateSendTime() {
+            const sendTime = document.querySelector('input[name="sendTime"]:checked').value
+            const scheduledTimeItem = document.getElementById('scheduledTimeItem')
+            const dateInput = document.getElementById('sendDate')
+            const timeInput = document.getElementById('sendTime')
+
+            if (sendTime === 'scheduled') {
+                scheduledTimeItem.style.display = 'block'
+                dateInput.disabled = false
+                timeInput.disabled = false
+            } else {
+                scheduledTimeItem.style.display = 'none'
+                dateInput.disabled = true
+                timeInput.disabled = true
+            }
+        }
+
+        // 选择班级
+        function selectClasses() {
+            // 模拟选择班级（实际应该跳转到班级选择页面或弹出选择框）
+            const classNames = mockClasses.map(c => c.name).join('、')
+            const confirmed = confirm(`是否选择以下班级？\n\n${classNames}`)
+
+            if (confirmed) {
+                selectedClassIds = mockClasses.map(c => c.id)
+                updateClassDisplay()
+            }
+        }
+
+        // 更新班级显示
+        function updateClassDisplay() {
+            const selectedClasses = mockClasses.filter(c => selectedClassIds.includes(c.id))
+            const valueEl = document.getElementById('classSelectValue')
+            const tagsEl = document.getElementById('selectedClasses')
+
+            if (selectedClasses.length > 0) {
+                valueEl.textContent = `已选择 ${selectedClasses.length} 个班级`
+                valueEl.classList.remove('placeholder')
+
+                tagsEl.innerHTML = selectedClasses.map(c => `
+                    <span class="selected-tag">
+                        ${c.name} (${c.studentCount}人)
+                        <span class="tag-close" onclick="removeClass(${c.id})">×</span>
+                    </span>
+                `).join('')
+            } else {
+                valueEl.textContent = '请选择班级'
+                valueEl.classList.add('placeholder')
+                tagsEl.innerHTML = ''
+            }
+        }
+
+        // 移除班级
+        function removeClass(classId) {
+            selectedClassIds = selectedClassIds.filter(id => id !== classId)
+            updateClassDisplay()
+        }
+
+        // 选择学生
+        function selectStudents() {
+            // 模拟选择学生
+            const studentNames = mockStudents.map(s => s.name).join('、')
+            const confirmed = confirm(`是否选择以下学生？\n\n${studentNames}`)
+
+            if (confirmed) {
+                selectedStudentIds = mockStudents.map(s => s.id)
+                updateStudentDisplay()
+            }
+        }
+
+        // 更新学生显示
+        function updateStudentDisplay() {
+            const selectedStudents = mockStudents.filter(s => selectedStudentIds.includes(s.id))
+            const valueEl = document.getElementById('studentSelectValue')
+            const tagsEl = document.getElementById('selectedStudents')
+
+            if (selectedStudents.length > 0) {
+                valueEl.textContent = `已选择 ${selectedStudents.length} 名学生`
+                valueEl.classList.remove('placeholder')
+
+                tagsEl.innerHTML = selectedStudents.map(s => `
+                    <span class="selected-tag">
+                        ${s.name} (${s.className})
+                        <span class="tag-close" onclick="removeStudent(${s.id})">×</span>
+                    </span>
+                `).join('')
+            } else {
+                valueEl.textContent = '请选择学生'
+                valueEl.classList.add('placeholder')
+                tagsEl.innerHTML = ''
+            }
+        }
+
+        // 移除学生
+        function removeStudent(studentId) {
+            selectedStudentIds = selectedStudentIds.filter(id => id !== studentId)
+            updateStudentDisplay()
+        }
+
+        // 验证表单
+        function validateForm() {
+            let isValid = true
+
+            // 验证发送对象
+            const sendType = document.querySelector('input[name="sendType"]:checked').value
+            if (sendType === 'class') {
+                if (selectedClassIds.length === 0) {
+                    showError('classSelectBox', 'classError')
+                    isValid = false
+                } else {
+                    hideError('classSelectBox', 'classError')
+                }
+            } else {
+                if (selectedStudentIds.length === 0) {
+                    showError('studentSelectBox', 'studentError')
+                    isValid = false
+                } else {
+                    hideError('studentSelectBox', 'studentError')
+                }
+            }
+
+            // 验证消息内容
+            const content = document.getElementById('messageContent').value.trim()
+            if (!content) {
+                showError('messageContent', 'contentError')
+                isValid = false
+            } else {
+                hideError('messageContent', 'contentError')
+            }
+
+            // 验证定时发送时间
+            const sendTime = document.querySelector('input[name="sendTime"]:checked').value
+            if (sendTime === 'scheduled') {
+                const sendDate = document.getElementById('sendDate').value
+                const sendTimeValue = document.getElementById('sendTime').value
+
+                if (!sendDate || !sendTimeValue) {
+                    showError('sendDate', 'timeError')
+                    isValid = false
+                } else {
+                    const scheduledTime = new Date(`${sendDate} ${sendTimeValue}`)
+                    const now = new Date()
+
+                    if (scheduledTime <= now) {
+                        document.getElementById('timeError').textContent = '发送时间不能早于当前时间'
+                        showError('sendDate', 'timeError')
+                        isValid = false
+                    } else {
+                        hideError('sendDate', 'timeError')
+                    }
+                }
+            }
+
+            return isValid
+        }
+
+        // 显示错误
+        function showError(inputId, errorId) {
+            const input = document.getElementById(inputId)
+            const error = document.getElementById(errorId)
+            input.classList.add('error')
+            error.classList.add('show')
+        }
+
+        // 隐藏错误
+        function hideError(inputId, errorId) {
+            const input = document.getElementById(inputId)
+            const error = document.getElementById(errorId)
+            input.classList.remove('error')
+            error.classList.remove('show')
+        }
+
+        // 保存草稿
+        function saveDraft() {
+            const title = document.getElementById('messageTitle').value.trim()
+            const content = document.getElementById('messageContent').value.trim()
+
+            if (!content) {
+                alert('请至少填写消息内容')
+                return
+            }
+
+            console.log('保存草稿:', { title, content })
+            alert('草稿已保存')
+            Router.back()
+        }
+
+        // 发送消息
+        function sendMessage() {
+            if (!validateForm()) {
+                return
+            }
+
+            const sendType = document.querySelector('input[name="sendType"]:checked').value
+            const title = document.getElementById('messageTitle').value.trim()
+            const content = document.getElementById('messageContent').value.trim()
+            const sendTimeType = document.querySelector('input[name="sendTime"]:checked').value
+
+            let recipients = []
+            let recipientCount = 0
+
+            if (sendType === 'class') {
+                recipients = mockClasses.filter(c => selectedClassIds.includes(c.id))
+                recipientCount = recipients.reduce((sum, c) => sum + c.studentCount, 0)
+            } else {
+                recipients = mockStudents.filter(s => selectedStudentIds.includes(s.id))
+                recipientCount = recipients.length
+            }
+
+            const messageData = {
+                sendType,
+                recipients,
+                recipientCount,
+                title: title || '无标题',
+                content,
+                sendTimeType
+            }
+
+            if (sendTimeType === 'scheduled') {
+                const sendDate = document.getElementById('sendDate').value
+                const sendTime = document.getElementById('sendTime').value
+                messageData.scheduledTime = `${sendDate} ${sendTime}`
+            }
+
+            console.log('发送消息:', messageData)
+
+            if (sendTimeType === 'now') {
+                alert(`消息已发送给 ${recipientCount} 人`)
+            } else {
+                alert(`消息已设置定时发送\n发送时间：${messageData.scheduledTime}\n接收人数：${recipientCount} 人`)
+            }
+
+            Router.back()
+        }
+    </script>
+</body>
+</html>

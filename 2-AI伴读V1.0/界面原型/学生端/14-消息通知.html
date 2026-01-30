@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>消息通知 - 校校读吧-学生端</title>
+    <link rel="stylesheet" href="design-system.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background: #f5f5f5; width: 375px; margin: 0 auto; min-height: 100vh; opacity: 0; padding-bottom: 20px; }
+
+        .navbar { background: linear-gradient(135deg, var(--color-primary), var(--color-secondary)); color: white; height: 44px; display: flex; align-items: center; padding: 0 16px; position: sticky; top: 0; z-index: 100; }
+        .navbar-back { font-size: 18px; cursor: pointer; padding: 8px; margin-left: -8px; }
+        .navbar-title { font-size: 18px; line-height: 1.4; font-weight: 600; flex: 1; text-align: center; }
+        .navbar-action { font-size: 14px; cursor: pointer; padding: 8px; margin-right: -8px; }
+        .navbar-action:hover { opacity: 0.8; }
+
+        .message-list { padding: 16px; }
+
+        .message-card { background: white; border-radius: 8px; padding: 16px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); cursor: pointer; transition: all 0.3s; }
+        .message-card:hover { box-shadow: 0 4px 12px rgba(54,207,201,0.15); }
+        .message-card:active { background: #f5f5f5; }
+        .message-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .message-title { font-size: 16px; line-height: 1.4; font-weight: 600; flex: 1; }
+        .message-status { padding: 4px 8px; border-radius: 4px; font-size: 12px; line-height: 1.5; }
+        .status-read { background: #f0f0f0; color: #8c8c8c; }
+        .status-unread { background: #fff7e6; color: #faad14; }
+
+        .message-content { font-size: 14px; color: #595959; line-height: 1.6; margin-bottom: 12px; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+        .message-meta { font-size: 12px; line-height: 1.5; color: #999999; display: flex; gap: 16px; flex-wrap: wrap; }
+
+        .empty-state { text-align: center; padding: 60px 20px; }
+        .empty-icon { font-size: 64px; color: #d9d9d9; margin-bottom: 16px; }
+        .empty-text { font-size: 14px; color: #999999; line-height: 1.6; }
+        .empty-tip { font-size: 12px; color: #bfbfbf; margin-top: 8px; }
+
+        /* Font Awesome图标样式优化 */
+        .fa-solid, .fa-regular {
+            font-weight: 400;
+            color: #595959;
+            opacity: 0.85;
+        }
+
+        .navbar .fa-solid,
+        .section-title .fa-solid,
+        .task-title .fa-solid {
+            color: inherit;
+            opacity: 1;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="navbar">
+        <div class="navbar-back" onclick="Router.back()">←</div>
+        <div class="navbar-title">消息通知</div>
+        <div class="navbar-action" onclick="markAllRead()">全部已读</div>
+    </div>
+
+    <div class="message-list" id="messageList"></div>
+
+    <script src="./router.js"></script>
+    <script>
+        // 模拟数据
+        const mockData = [
+            {
+                id: 1,
+                title: '今日阅读提醒',
+                content: '你今天还没有完成阅读打卡哦，《三体》第2章等你来阅读，记得在晚上10点前完成今日的阅读任务。',
+                sendTime: '2026-01-29 18:00',
+                isRead: false
+            },
+            {
+                id: 2,
+                title: '导读单待完成',
+                content: '《三体》第2章导读单还未完成，完成后可查看参考答案，帮助你更好地理解阅读内容。',
+                sendTime: '2026-01-29 16:00',
+                isRead: false
+            },
+            {
+                id: 6,
+                title: '版本更新提示',
+                content: '新版本已发布，本次更新新增AI伴读功能，优化了阅读打卡流程，请更新到最新版本以获得更好的体验。',
+                sendTime: '2026-01-26 10:00',
+                isRead: true
+            }
+        ]
+
+        // 页面加载完成
+        window.addEventListener('DOMContentLoaded', () => {
+            renderList()
+        })
+
+        // 渲染列表
+        function renderList() {
+            const listEl = document.getElementById('messageList')
+
+            if (mockData.length === 0) {
+                listEl.innerHTML = renderEmptyState()
+                return
+            }
+
+            listEl.innerHTML = mockData.map(msg => renderMessageCard(msg)).join('')
+        }
+
+        // 渲染消息卡片
+        function renderMessageCard(msg) {
+            const statusClass = msg.isRead ? 'status-read' : 'status-unread'
+            const statusText = msg.isRead ? '已读' : '未读'
+
+            return `
+                <div class="message-card" onclick="viewMessage(${msg.id})">
+                    <div class="message-header">
+                        <div class="message-title">${msg.title}</div>
+                        <div class="message-status ${statusClass}">${statusText}</div>
+                        <i class="fa-solid fa-chevron-right" style="color: #999999; font-size: 14px; margin-left: 8px;"></i>
+                    </div>
+                    <div class="message-content">${msg.content}</div>
+                    <div class="message-meta">
+                        <span>${msg.sendTime}</span>
+                    </div>
+                </div>
+            `
+        }
+
+        // 渲染空状态
+        function renderEmptyState() {
+            return `
+                <div class="empty-state">
+                    <div class="empty-icon"><i class="fa-solid fa-inbox"></i></div>
+                    <div class="empty-text">暂无消息</div>
+                    <div class="empty-tip">系统通知和提醒消息将显示在这里</div>
+                </div>
+            `
+        }
+
+        // 查看消息详情
+        function viewMessage(id) {
+            Router.toStudentPage('messageDetail', {messageId: id})
+        }
+
+        // 全部已读
+        function markAllRead() {
+            mockData.forEach(msg => msg.isRead = true)
+            renderList()
+        }
+    </script>
+</body>
+</html>

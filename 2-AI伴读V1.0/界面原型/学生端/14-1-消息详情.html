@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>消息详情 - 校校读吧-学生端</title>
+    <link rel="stylesheet" href="design-system.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background: #f5f5f5; width: 375px; margin: 0 auto; min-height: 100vh; opacity: 0; padding-bottom: 20px; }
+        .navbar { background: linear-gradient(135deg, var(--color-primary), var(--color-secondary)); color: white; height: 44px; display: flex; align-items: center; padding: 0 16px; position: sticky; top: 0; z-index: 100; }
+        .back-btn { background: none; border: none; color: white; font-size: 18px; line-height: 1.4; cursor: pointer; padding: 4px; }
+        .navbar-title { flex: 1; text-align: center; font-size: 18px; line-height: 1.4; font-weight: 600; margin-right: 28px; }
+        .message-header { background: white; padding: 20px 16px; border-bottom: 1px solid #f0f0f0; }
+        .message-title { font-size: 20px; line-height: 1.2; font-weight: 600; margin-bottom: 12px; color: #333333; }
+        .message-meta { display: flex; gap: 16px; font-size: 13px; line-height: 1.5; color: #999999; flex-wrap: wrap; }
+        .meta-item { display: flex; align-items: center; gap: 4px; }
+        .message-content { background: white; padding: 20px 16px; margin-bottom: 12px; }
+        .content-text { font-size: 15px; line-height: 1.8; color: #595959; white-space: pre-wrap; }
+
+        /* Font Awesome图标样式优化 */
+        .fa-solid, .fa-regular {
+            font-weight: 400;
+            color: #595959;
+            opacity: 0.85;
+        }
+
+        /* 导航栏和标题中的图标保持原色 */
+        .navbar .fa-solid,
+        .section-title .fa-solid,
+        .task-title .fa-solid {
+            color: inherit;
+            opacity: 1;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="navbar">
+        <button class="back-btn" onclick="Router.back()">←</button>
+        <div class="navbar-title">消息详情</div>
+    </div>
+
+    <div class="message-header">
+        <div class="message-title" id="messageTitle">版本更新提示</div>
+        <div class="message-meta">
+            <div class="meta-item"><span id="messageSendTime">2026-01-20 10:00</span></div>
+        </div>
+    </div>
+
+    <div class="message-content">
+        <div class="content-text" id="messageContent">新版本已发布，本次更新包含以下内容：
+
+1. 新增AI伴读功能，阅读时可以随时向AI提问
+2. 优化了阅读打卡流程，操作更便捷
+3. 修复了部分已知问题，提升了稳定性
+
+请更新到最新版本以获得更好的体验</div>
+    </div>
+
+    <script src="./router.js"></script>
+    <script>
+        // 获取URL参数中的消息ID
+        const messageId = Router.getQuery('messageId')
+
+        // 模拟从后端获取消息详情
+        const mockMessages = {
+            1: {
+                title: '今日阅读提醒',
+                content: '你今天还没有完成阅读打卡哦，《三体》第2章等你来阅读，记得在晚上10点前完成今日的阅读任务。\n\n坚持阅读，养成好习惯！',
+                sendTime: '2026-01-20 18:00'
+            },
+            2: {
+                title: '导读单待完成',
+                content: '《三体》第2章导读单还未完成，完成后可查看参考答案，帮助你更好地理解阅读内容。\n\n导读单可以帮助你：\n1. 梳理章节重点内容\n2. 加深对故事情节的理解\n3. 提升阅读思考能力',
+                sendTime: '2026-01-20 16:00'
+            },
+            6: {
+                title: '版本更新提示',
+                content: '新版本已发布，本次更新包含以下内容：\n\n1. 新增AI伴读功能，阅读时可以随时向AI提问\n2. 优化了阅读打卡流程，操作更便捷\n3. 修复了部分已知问题，提升了稳定性\n\n请更新到最新版本以获得更好的体验',
+                sendTime: '2026-01-20 10:00'
+            }
+        }
+
+        // 页面加载完成
+        window.addEventListener('DOMContentLoaded', () => {
+            if (messageId && mockMessages[messageId]) {
+                const message = mockMessages[messageId]
+                document.getElementById('messageTitle').textContent = message.title
+                document.getElementById('messageContent').textContent = message.content
+                document.getElementById('messageSendTime').textContent = message.sendTime
+            }
+        })
+    </script>
+</body>
+</html>

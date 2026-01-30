@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学生端界面导航 - 校校读吧小管家</title>
+    <link rel="stylesheet" href="design-system.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary) 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .header { text-align: center; color: white; margin-bottom: 40px; }
+        .title { font-size: 36px; font-weight: 700; margin-bottom: 12px; }
+        .subtitle { font-size: 18px; opacity: 0.9; }
+        .search-box { max-width: 600px; margin: 24px auto 0; position: relative; }
+        .search-input { width: 100%; padding: 14px 48px 14px 20px; border: none; border-radius: 24px; font-size: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .search-input:focus { outline: none; box-shadow: 0 4px 20px rgba(0,0,0,0.25); }
+        .search-icon { position: absolute; right: 20px; top: 50%; transform: translateY(-50%); font-size: 20px; color: #8c8c8c; }
+        .section { background: white; border-radius: 12px; padding: 24px; margin-bottom: 24px; box-shadow: 0 8px 24px rgba(0,0,0,0.15); }
+        .section-title { font-size: 24px; font-weight: 600; margin-bottom: 20px; color: #262626; display: flex; align-items: center; gap: 12px; }
+        .section-icon { width: 40px; height: 40px; background: linear-gradient(135deg, var(--color-primary), var(--color-secondary)); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+        .page-table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; }
+        .page-table thead { background: #fafafa; }
+        .page-table th { padding: 12px 16px; text-align: left; font-size: 14px; font-weight: 600; color: #262626; border-bottom: 2px solid #f0f0f0; }
+        .page-table td { padding: 12px 16px; border-bottom: 1px solid #f0f0f0; font-size: 14px; color: #595959; }
+        .page-table tbody tr:hover { background: #f5f5f5; }
+        .page-table tbody tr.hidden { display: none; }
+        .page-link { color: var(--color-primary); text-decoration: none; font-weight: 600; transition: color 0.3s; }
+        .page-link:hover { color: var(--color-primary); text-decoration: underline; }
+        .page-desc { color: #8c8c8c; line-height: 1.6; }
+        .page-btn { display: inline-block; padding: 4px 12px; background: var(--color-primary); color: white; border-radius: 4px; text-decoration: none; font-size: 12px; transition: background 0.3s; }
+        .page-btn:hover { background: var(--color-primary); }
+        .info-box { background: #d4f4f0; border-left: 4px solid var(--color-primary); padding: 16px; border-radius: 4px; margin-bottom: 24px; }
+        .info-title { font-size: 16px; font-weight: 600; color: #262626; margin-bottom: 8px; }
+        .info-text { font-size: 14px; color: #595959; line-height: 1.6; }
+        .stats { display: flex; gap: 24px; margin-top: 16px; }
+        .stat-item { flex: 1; text-align: center; padding: 16px; background: rgba(255,255,255,0.2); border-radius: 8px; }
+        .stat-value { font-size: 32px; font-weight: 700; color: white; margin-bottom: 4px; }
+        .stat-label { font-size: 14px; color: white; opacity: 0.9; }
+        .no-results { text-align: center; padding: 40px; color: #8c8c8c; font-size: 16px; display: none; }
+        .no-results.show { display: block; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="title">👨‍🎓 校校读吧小管家 - 学生端</div>
+            <div class="subtitle">AI赋能的K12整本书阅读教学助手</div>
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-value">28</div>
+                    <div class="stat-label">原型页面</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">100%</div>
+                    <div class="stat-label">可交互</div>
+                </div>
+            </div>
+            <div class="search-box">
+                <input type="text" class="search-input" id="searchInput" placeholder="搜索页面名称或描述...">
+                <span class="search-icon">🔍</span>
+            </div>
+        </div>
+
+        <div class="info-box">
+            <div class="info-title">💡 使用说明</div>
+            <div class="info-text">
+                • 所有页面均为HTML交互原型，可在浏览器中直接打开查看<br>
+                • 页面宽度固定为375px，模拟小程序界面<br>
+                • 点击按钮会弹出提示，展示交互逻辑<br>
+                • 使用了真实的颜色、字体、间距等视觉规范<br>
+                • 建议使用Chrome浏览器，并开启移动设备模拟模式（F12 → 设备工具栏）
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">
+                <div class="section-icon">👨‍🎓</div>
+                <span>学生端界面（28个页面）</span>
+            </div>
+            <table class="page-table" id="pageGrid">
+                <thead>
+                    <tr>
+                        <th style="width: 60px">#</th>
+                        <th style="width: 200px">页面名称</th>
+                        <th>页面描述</th>
+                        <th style="width: 100px; text-align: center">操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td><a href="01-首页.html" class="page-link">首页</a></td>
+                        <td class="page-desc">展示今日任务、阅读进度、连续打卡天数、快捷入口、成就勋章等</td>
+                        <td style="text-align: center"><a href="01-首页.html" class="page-btn">访问</a></td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td><a href="02-打卡.html" class="page-link">打卡页面</a></td>
+                        <td class="page-desc">支持文字、图片、视频三种打卡方式，完成打卡可获得积分奖励</td>
+                        <td style="text-align: center"><a href="02-打卡.html" class="page-btn">访问</a></td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td><a href="03-AI对话.html" class="page-link">AI角色对话</a></td>
+                        <td class="page-desc">与书中角色（如叶文洁）进行AI对话，深入理解书籍内容</td>
+                        <td style="text-align: center"><a href="03-AI对话.html" class="page-btn">访问</a></td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td><a href="04-测评答题.html" class="page-link">测评答题</a></td>
+                        <td class="page-desc">在线答题界面，显示倒计时、答题进度，支持标记题目</td>
+                        <td style="text-align: center"><a href="04-测评答题.html" class="page-btn">访问</a></td>
+                    </tr>
+                    <tr>
+                        <td>5</td>
+                        <td><a href="05-积分商城.html" class="page-link">积分商城</a></td>
+                        <td class="page-desc">使用积分兑换实物奖品和虚拟奖品（称号、头像框、勋章）</td>
+                        <td style="text-align: center"><a href="05-积分商城.html" class="page-btn">访问</a></td>
+                    </tr>
+                    <tr>
+                        <td>6</td>
+                        <td><a href="06-个人中心.html" class="page-link">个人中心</a></td>
+                        <td class="page-desc">展示个人信息、等级、积分、勋章，查看积分明细、阅读统计等</td>
+                        <td style="text-align: center"><a href="06-个人中心.html" class="page-btn">访问</a></td>
+                    </tr>
+                    <tr>
+                        <td>7</td>
+                        <td><a href="07-书架.html" class="page-link">我的书架</a></td>
+                        <td class="page-desc">管理个人书籍，分为正在读、已读完、想读三个分类</td>
+                        <td style="text-align: center"><a href="07-书架.html" class="page-btn">访问</a></td>
+                    </tr>
+                    <tr>
+                        <td>8</td>
+                        <td><a href="08-测评结果.html" class="page-link">测评结果</a></td>
+                        <td class="page-desc">查看测评成绩、答题详情、错题解析和分享成绩</td>
+                        <td style="text-align: center"><a href="08-测评结果.html" class="page-btn">访问</a></td>
+                    </tr>
+                    <tr>
+                        <td>9</td>
+                        <td><a href="09-等级勋章.html" class="page-link">等级勋章</a></td>
+                        <td class="page-desc">展示当前等级、升级进度、所有等级体系和已获得的勋章</td>
+                        <td style="text-align: center"><a href="09-等级勋章.html" class="page-btn">访问</a></td>
+                    </tr>
+                    <tr>
+                        <td>10</td>
+                        <td><a href="10-班级排行榜.html" class="page-link">班级排行榜</a></td>
+                        <td class="page-desc">展示班级内的积分、打卡、测评排名，前三名特殊展示</td>
+                        <td style="text-align: center"><a href="10-班级排行榜.html" class="page-btn">访问</a></td>
+                    </tr>
+                    <tr>
+                        <td>11</td>
+                        <td><a href="11-AI导读视频.html" class="page-link">AI导读视频</a></td>
+                        <td class="page-desc">观看AI生成的书籍导读视频，了解章节概要、重点知识、主要人物</td>
+                        <td style="text-align: center"><a href="11-AI导读视频.html" class="page-btn">访问</a></td>
+                    </tr>
+                    <tr>
+                        <td>12</td>
+                        <td><a href="12-积分明细.html" class="page-link">积分明细</a></td>
+                        <td class="page-desc">查看积分获得和消费记录，按日期分组展示</td>
+                        <td style="text-align: center"><a href="12-积分明细.html" class="page-btn">访问</a></td>
+                    </tr>
+                    <tr>
+                        <td>13</td>
+                        <td><a href="13-个人信息编辑.html" class="page-link">个人信息编辑</a></td>
+                        <td class="page-desc">编辑个人资料，包括头像、昵称、年级、班级等信息</td>
+                        <td style="text-align: center"><a href="13-个人信息编辑.html" class="page-btn">访问</a></td>
+                    </tr>
+                    <tr>
+                        <td>14</td>
+                        <td><a href="14-消息通知.html" class="page-link">消息通知</a></td>
+                        <td class="page-desc">查看系统通知、教师消息、活动提醒等各类通知</td>
+                        <td style="text-align: center"><a href="14-消息通知.html" class="page-btn">访问</a></td>
+                    </tr>
+                    <tr>
+                        <td>15</td>
+                        <td><a href="15-关于我们.html" class="page-link">关于我们</a></td>
+                        <td class="page-desc">查看应用介绍、版本信息、用户协议、隐私政策等</td>
+                        <td style="text-align: center"><a href="15-关于我们.html" class="page-btn">访问</a></td>
+                    </tr>
+                    <tr>
+                        <td>16</td>
+                        <td><a href="16-兑换记录.html" class="page-link">兑换记录</a></td>
+                        <td class="page-desc">查看积分商城的兑换历史记录和物流信息</td>
+                        <td style="text-align: center"><a href="16-兑换记录.html" class="page-btn">访问</a></td>
+                    </tr>
+                    <tr>
+                        <td>17</td>
+                        <td><a href="17-阅读统计.html" class="page-link">阅读统计</a></td>
+                        <td class="page-desc">展示个人阅读数据统计，包括阅读时长、书籍数量、打卡趋势等</td>
+                        <td style="text-align: center"><a href="17-阅读统计.html" class="page-btn">访问</a></td>
+                    </tr>
+                    <tr>
+                        <td>18</td>
+                        <td><a href="18-阅读书籍.html" class="page-link">阅读书籍</a></td>
+                        <td class="page-desc">在线阅读书籍内容，支持翻页和书签功能</td>
+                        <td style="text-align: center"><a href="18-阅读书籍.html" class="page-btn">访问</a></td>
+                    </tr>
+                    <tr>
+                        <td>19</td>
+                        <td><a href="19-书籍详情.html" class="page-link">书籍详情</a></td>
+                        <td class="page-desc">查看书籍的详细信息、简介、目录、评分、评论等</td>
+                        <td style="text-align: center"><a href="19-书籍详情.html" class="page-btn">访问</a></td>
+                    </tr>
+                    <tr>
+                        <td>20</td>
+                        <td><a href="20-测评详情.html" class="page-link">测评详情</a></td>
+                        <td class="page-desc">查看测评任务的详细信息、要求、截止时间、参与情况等</td>
+                        <td style="text-align: center"><a href="20-测评详情.html" class="page-btn">访问</a></td>
+                    </tr>
+                    <tr>
+                        <td>22</td>
+                        <td><a href="22-商品详情.html" class="page-link">商品详情</a></td>
+                        <td class="page-desc">查看积分商城商品的详细信息、兑换所需积分、库存等</td>
+                        <td style="text-align: center"><a href="22-商品详情.html" class="page-btn">访问</a></td>
+                    </tr>
+                    <tr>
+                        <td>23</td>
+                        <td><a href="23-收货地址.html" class="page-link">收货地址</a></td>
+                        <td class="page-desc">管理收货地址，支持添加、编辑、删除、设置默认地址</td>
+                        <td style="text-align: center"><a href="23-收货地址.html" class="page-btn">访问</a></td>
+                    </tr>
+                    <tr>
+                        <td>24</td>
+                        <td><a href="24-同学详情.html" class="page-link">同学详情</a></td>
+                        <td class="page-desc">查看同学的个人信息、阅读成就、勋章、排名等</td>
+                        <td style="text-align: center"><a href="24-同学详情.html" class="page-btn">访问</a></td>
+                    </tr>
+                    <tr>
+                        <td>25</td>
+                        <td><a href="25-计划详情.html" class="page-link">计划详情</a></td>
+                        <td class="page-desc">查看阅读计划的详细信息、章节安排、任务要求、完成进度等</td>
+                        <td style="text-align: center"><a href="25-计划详情.html" class="page-btn">访问</a></td>
+                    </tr>
+                    <tr>
+                        <td>26</td>
+                        <td><a href="26-勋章详情.html" class="page-link">勋章详情</a></td>
+                        <td class="page-desc">查看勋章的详细信息、获得条件、获得时间、稀有度等</td>
+                        <td style="text-align: center"><a href="26-勋章详情.html" class="page-btn">访问</a></td>
+                    </tr>
+                    <tr>
+                        <td>27</td>
+                        <td><a href="28-测评列表.html" class="page-link">测评列表</a></td>
+                        <td class="page-desc">查看所有测评任务，包括待完成、已完成、已过期，显示成绩和排名</td>
+                        <td style="text-align: center"><a href="28-测评列表.html" class="page-btn">访问</a></td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="no-results" id="noResults">未找到匹配的页面</div>
+        </div>
+
+        <div style="text-align: center; color: white; margin-top: 40px; opacity: 0.8;">
+            <p style="font-size: 14px;">© 2025 校校读吧小管家 - 学生端界面原型</p>
+            <p style="font-size: 12px; margin-top: 8px;">生成日期：2026-01-20 · 共28个页面</p>
+        </div>
+    </div>
+
+    <script>
+        // 搜索功能
+        const searchInput = document.getElementById('searchInput');
+        const pageGrid = document.getElementById('pageGrid');
+        const noResults = document.getElementById('noResults');
+
+        searchInput.addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase().trim();
+
+            const rows = pageGrid.querySelectorAll('tbody tr');
+            let visibleCount = 0;
+            rows.forEach(row => {
+                const name = row.querySelector('.page-link').textContent.toLowerCase();
+                const desc = row.querySelector('.page-desc').textContent.toLowerCase();
+                if (name.includes(searchTerm) || desc.includes(searchTerm)) {
+                    row.classList.remove('hidden');
+                    visibleCount++;
+                } else {
+                    row.classList.add('hidden');
+                }
+            });
+            noResults.classList.toggle('show', visibleCount === 0 && searchTerm !== '');
+        });
+    </script>
+</body>
+</html>

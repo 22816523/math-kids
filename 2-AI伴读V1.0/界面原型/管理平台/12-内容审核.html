@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>内容审核 - 校校读吧小管家管理平台</title>
+    <link rel="stylesheet" href="common/admin-common.css">    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="admin-layout">
+        <div class="admin-sidebar">
+            <div class="sidebar-header"></div>
+            <div class="sidebar-menu"></div>
+        </div>
+
+        <div class="admin-main">
+            <div class="admin-header"></div>
+
+            <div class="admin-content">
+                <div class="page-header">
+                    <h1 class="page-title">内容审核</h1>
+                    <p class="page-description">审核用户提交的评论、笔记等内容</p>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 24px;">
+                    <div class="card" style="padding: 20px;">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div style="width: 48px; height: 48px; border-radius: 8px; background: linear-gradient(135deg, #fa8c16, #ffa940); color: white; display: flex; align-items: center; justify-content: center; font-size: 24px;"><i class="fa-solid fa-hourglass"></i></div>
+                            <div>
+                                <div style="font-size: 24px; font-weight: 700; color: #262626;">23</div>
+                                <div style="font-size: 12px; color: #8c8c8c;">待审核</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card" style="padding: 20px;">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div style="width: 48px; height: 48px; border-radius: 8px; background: linear-gradient(135deg, #52c41a, #73d13d); color: white; display: flex; align-items: center; justify-content: center; font-size: 24px;"><i class="fa-solid fa-circle-check"></i></div>
+                            <div>
+                                <div style="font-size: 24px; font-weight: 700; color: #262626;">156</div>
+                                <div style="font-size: 12px; color: #8c8c8c;">已通过</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card" style="padding: 20px;">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div style="width: 48px; height: 48px; border-radius: 8px; background: linear-gradient(135deg, #ff4d4f, #ff7875); color: white; display: flex; align-items: center; justify-content: center; font-size: 24px;"><i class="fa-solid fa-circle-xmark"></i></div>
+                            <div>
+                                <div style="font-size: 24px; font-weight: 700; color: #262626;">12</div>
+                                <div style="font-size: 12px; color: #8c8c8c;">未通过</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card" style="padding: 20px;">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div style="width: 48px; height: 48px; border-radius: 8px; background: linear-gradient(135deg, #1890FF, #096DD9); color: white; display: flex; align-items: center; justify-content: center; font-size: 24px;"><i class="fa-solid fa-chart-column"></i></div>
+                            <div>
+                                <div style="font-size: 24px; font-weight: 700; color: #262626;">191</div>
+                                <div style="font-size: 12px; color: #8c8c8c;">总计</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">筛选条件</h3>
+                    </div>
+                    <div class="card-body">
+                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label class="form-label">内容类型</label>
+                                <select class="form-select">
+                                    <option value="">全部类型</option>
+                                    <option>评论</option>
+                                    <option>笔记</option>
+                                    <option>书评</option>
+                                </select>
+                            </div>
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label class="form-label">审核状态</label>
+                                <select class="form-select">
+                                    <option value="">全部状态</option>
+                                    <option>待审核</option>
+                                    <option>已通过</option>
+                                    <option>未通过</option>
+                                </select>
+                            </div>
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label class="form-label">提交时间</label>
+                                <select class="form-select">
+                                    <option value="">全部时间</option>
+                                    <option>今天</option>
+                                    <option>最近7天</option>
+                                    <option>最近30天</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-body" style="padding: 0;">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 100px">类型</th>
+                                    <th>内容</th>
+                                    <th style="width: 150px">提交人</th>
+                                    <th style="width: 150px">提交时间</th>
+                                    <th style="width: 100px">状态</th>
+                                    <th style="width: 200px">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><span class="tag tag-blue">评论</span></td>
+                                    <td>
+                                        <div style="font-size: 14px; color: #262626; line-height: 1.6; max-width: 500px;">
+                                            这本书真的很好看，孙悟空的形象非常生动，让我对中国古典文学产生了浓厚的兴趣
+                                        </div>
+                                        <div style="font-size: 12px; color: #8c8c8c; margin-top: 4px;">关联书籍：《西游记》</div>
+                                    </td>
+                                    <td>
+                                        <div style="display: flex; align-items: center; gap: 8px;">
+                                            <div style="width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, #1890FF, #096DD9); color: white; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600;">张</div>
+                                            <span>张小明</span>
+                                        </div>
+                                    </td>
+                                    <td>2026-01-04 10:30</td>
+                                    <td><span class="tag tag-orange">待审核</span></td>
+                                    <td>
+                                        <button class="btn btn-primary btn-sm" onclick="approveContent(1)">通过</button>
+                                        <button class="btn btn-secondary btn-sm" style="color: #ff4d4f" onclick="rejectContent(1)">拒绝</button>
+                                        <button class="btn btn-secondary btn-sm" onclick="viewDetail(1)">详情</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><span class="tag tag-green">笔记</span></td>
+                                    <td>
+                                        <div style="font-size: 14px; color: #262626; line-height: 1.6; max-width: 500px;">
+                                            今天读了《三国演义》第一回，了解了桃园三结义的故事，刘备、关羽、张飞的兄弟情谊让我很感动
+                                        </div>
+                                        <div style="font-size: 12px; color: #8c8c8c; margin-top: 4px;">关联书籍：《三国演义》</div>
+                                    </td>
+                                    <td>
+                                        <div style="display: flex; align-items: center; gap: 8px;">
+                                            <div style="width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, #52c41a, #73d13d); color: white; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600;">李</div>
+                                            <span>李小红</span>
+                                        </div>
+                                    </td>
+                                    <td>2026-01-04 09:15</td>
+                                    <td><span class="tag tag-orange">待审核</span></td>
+                                    <td>
+                                        <button class="btn btn-primary btn-sm" onclick="approveContent(2)">通过</button>
+                                        <button class="btn btn-secondary btn-sm" style="color: #ff4d4f" onclick="rejectContent(2)">拒绝</button>
+                                        <button class="btn btn-secondary btn-sm" onclick="viewDetail(2)">详情</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><span class="tag tag-purple">书评</span></td>
+                                    <td>
+                                        <div style="font-size: 14px; color: #262626; line-height: 1.6; max-width: 500px;">
+                                            《红楼梦》是一部伟大的作品，通过贾宝玉和林黛玉的爱情故事，展现了封建社会的兴衰
+                                        </div>
+                                        <div style="font-size: 12px; color: #8c8c8c; margin-top: 4px;">关联书籍：《红楼梦》</div>
+                                    </td>
+                                    <td>
+                                        <div style="display: flex; align-items: center; gap: 8px;">
+                                            <div style="width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, #fa8c16, #ffa940); color: white; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600;">王</div>
+                                            <span>王小刚</span>
+                                        </div>
+                                    </td>
+                                    <td>2026-01-04 08:45</td>
+                                    <td><span class="tag tag-orange">待审核</span></td>
+                                    <td>
+                                        <button class="btn btn-primary btn-sm" onclick="approveContent(3)">通过</button>
+                                        <button class="btn btn-secondary btn-sm" style="color: #ff4d4f" onclick="rejectContent(3)">拒绝</button>
+                                        <button class="btn btn-secondary btn-sm" onclick="viewDetail(3)">详情</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><span class="tag tag-blue">评论</span></td>
+                                    <td>
+                                        <div style="font-size: 14px; color: #262626; line-height: 1.6; max-width: 500px;">
+                                            水浒传中的108位好汉各有特色，我最喜欢武松打虎的故事
+                                        </div>
+                                        <div style="font-size: 12px; color: #8c8c8c; margin-top: 4px;">关联书籍：《水浒传》</div>
+                                    </td>
+                                    <td>
+                                        <div style="display: flex; align-items: center; gap: 8px;">
+                                            <div style="width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, #722ed1, #9254de); color: white; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600;">赵</div>
+                                            <span>赵小丽</span>
+                                        </div>
+                                    </td>
+                                    <td>2026-01-03 16:20</td>
+                                    <td><span class="tag tag-green">已通过</span></td>
+                                    <td>
+                                        <button class="btn btn-secondary btn-sm" onclick="viewDetail(4)">详情</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><span class="tag tag-green">笔记</span></td>
+                                    <td>
+                                        <div style="font-size: 14px; color: #262626; line-height: 1.6; max-width: 500px;">
+                                            今天学习了《论语》中的"学而时习之，不亦说乎"，理解了学习的重要性
+                                        </div>
+                                        <div style="font-size: 12px; color: #8c8c8c; margin-top: 4px;">关联书籍：《论语》</div>
+                                    </td>
+                                    <td>
+                                        <div style="display: flex; align-items: center; gap: 8px;">
+                                            <div style="width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, #eb2f96, #f759ab); color: white; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600;">孙</div>
+                                            <span>孙小华</span>
+                                        </div>
+                                    </td>
+                                    <td>2026-01-03 14:50</td>
+                                    <td><span class="tag tag-green">已通过</span></td>
+                                    <td>
+                                        <button class="btn btn-secondary btn-sm" onclick="viewDetail(5)">详情</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><span class="tag tag-blue">评论</span></td>
+                                    <td>
+                                        <div style="font-size: 14px; color: #262626; line-height: 1.6; max-width: 500px;">
+                                            这本书内容不适合小学生阅读
+                                        </div>
+                                        <div style="font-size: 12px; color: #8c8c8c; margin-top: 4px;">关联书籍：《骆驼祥子》</div>
+                                    </td>
+                                    <td>
+                                        <div style="display: flex; align-items: center; gap: 8px;">
+                                            <div style="width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, #13c2c2, #36cfc9); color: white; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600;">周</div>
+                                            <span>周小强</span>
+                                        </div>
+                                    </td>
+                                    <td>2026-01-03 11:30</td>
+                                    <td><span class="tag tag-red">未通过</span></td>
+                                    <td>
+                                        <button class="btn btn-secondary btn-sm" onclick="viewDetail(6)">详情</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="pagination">
+                    <div class="pagination-item disabled">上一页</div>
+                    <div class="pagination-item active">1</div>
+                    <div class="pagination-item">2</div>
+                    <div class="pagination-item">3</div>
+                    <div class="pagination-item">下一页</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="rejectModal" style="display: none;">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">拒绝原因</h3>
+                <span class="modal-close" onclick="hideModal('rejectModal')">×</span>
+            </div>
+            <div class="modal-body">
+                <form id="rejectForm">
+                    <div class="form-group">
+                        <label class="form-label">拒绝原因 <span class="required">*</span></label>
+                        <textarea class="form-textarea" placeholder="请输入拒绝原因" rows="4" required></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="hideModal('rejectModal')">取消</button>
+                <button class="btn btn-primary" onclick="submitReject()">确定</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="common/admin-common.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            pageManager.renderHeader(['审核管理', '内容审核']);
+        });
+
+        function approveContent(id) {
+            showConfirm('确定要通过这条内容吗？', () => {
+                showToast('审核通过');
+            });
+        }
+
+        function rejectContent(id) {
+            showModal('rejectModal');
+        }
+
+        function viewDetail(id) {
+            showToast('查看详情功能开发中', 'info');
+        }
+
+        function submitReject() {
+            const form = document.getElementById('rejectForm');
+            if (form.checkValidity()) {
+                hideModal('rejectModal');
+                showToast('已拒绝该内容');
+                form.reset();
+            } else {
+                form.reportValidity();
+            }
+        }
+    </script>
+</body>
+</html>

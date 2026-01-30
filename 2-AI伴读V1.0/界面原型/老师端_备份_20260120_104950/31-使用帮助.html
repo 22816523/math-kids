@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>使用帮助 - 校校读吧小管家（教师端）</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: "Source Han Sans CN", "Noto Sans CJK SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background-color: #F5F7FA; width: 375px; margin: 0 auto; min-height: 100vh; opacity: 0; }
+
+        .navbar { background: linear-gradient(135deg, #2E5BFF 0%, #1E4BEF 100%); color: white; height: 44px; display: flex; align-items: center; padding: 0 16px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(24, 144, 255, 0.15); }
+        .back-btn { background: none; border: none; color: white; font-size: 18px; line-height: 1.4; cursor: pointer; padding: 0; margin-right: 12px; }
+        .navbar-title { font-size: 18px; line-height: 1.4; font-weight: 600; flex: 1; }
+
+        .search-bar { background: white; padding: 12px 16px; margin-bottom: 12px; }
+        .search-input { width: 100%; padding: 10px 16px; border: 1px solid #d9d9d9; border-radius: 20px; font-size: 14px; line-height: 1.6; outline: none; }
+        .search-input:focus { border-color: #2E5BFF; }
+
+        .section-title { font-size: 14px; line-height: 1.6; color: #999999; padding: 16px 16px 8px; }
+
+        .faq-section { background: white; margin-bottom: 12px; }
+        .faq-item { border-bottom: 1px solid #f0f0f0; }
+        .faq-item:last-child { border-bottom: none; }
+        .faq-question { padding: 16px; display: flex; align-items: center; cursor: pointer; }
+        .faq-question:hover { background: #fafafa; }
+        .faq-icon { width: 32px; height: 32px; background: linear-gradient(135deg, #e6f7ff, #f0f5ff); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; line-height: 1.2; margin-right: 12px; }
+        .faq-text { flex: 1; font-size: 15px; line-height: 1.6; color: #333333; }
+        .faq-arrow { color: #bfbfbf; font-size: 18px; line-height: 1.4; transition: transform 0.3s; }
+        .faq-item.active .faq-arrow { transform: rotate(90deg); }
+        .faq-answer { padding: 0 16px 16px 60px; font-size: 14px; line-height: 1.6; color: #595959; display: none; }
+        .faq-item.active .faq-answer { display: block; }
+
+        .feature-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 0 16px 16px; }
+        .feature-card { background: white; padding: 16px; border-radius: 8px; text-align: center; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.06); transition: transform 0.3s; }
+        .feature-card:hover { transform: translateY(-2px); }
+        .feature-icon { font-size: 32px; line-height: 1.2; margin-bottom: 8px; }
+        .feature-name { font-size: 13px; line-height: 1.5; color: #333333; }
+
+        .menu-section { background: white; margin-bottom: 12px; }
+        .menu-item { display: flex; align-items: center; padding: 16px; border-bottom: 1px solid #f0f0f0; cursor: pointer; }
+        .menu-item:last-child { border-bottom: none; }
+        .menu-item:hover { background: #fafafa; }
+        .menu-icon { width: 40px; height: 40px; background: linear-gradient(135deg, #e6f7ff, #f0f5ff); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; line-height: 1.2; margin-right: 12px; }
+        .menu-text { flex: 1; font-size: 15px; line-height: 1.6; color: #333333; }
+        .menu-arrow { color: #bfbfbf; font-size: 18px; line-height: 1.4; }
+
+        .contact-btn { margin: 16px; padding: 14px; background: linear-gradient(135deg, #2E5BFF, #1E4BEF); color: white; border: none; border-radius: 8px; font-size: 16px; line-height: 1.5; font-weight: 500; cursor: pointer; width: calc(100% - 32px); box-shadow: 0 4px 12px rgba(24, 144, 255, 0.3); }
+        .contact-btn:hover { opacity: 0.9; }
+        .contact-btn:active { transform: scale(0.98); }
+    
+        /* Font Awesome图标样式优化 */
+        .fa-solid, .fa-regular {
+            font-weight: 400;
+            color: #595959;
+            opacity: 0.85;
+        }
+
+        /* 导航栏和标题中的图标保持原色 */
+        .navbar .fa-solid,
+        .section-title .fa-solid,
+        .task-title .fa-solid {
+            color: inherit;
+            opacity: 1;
+        }
+
+        /* 徽章图标使用白色，与金色背景形成对比 */
+        .badge-icon .fa-solid {
+            color: white;
+            opacity: 1;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 成就图标特殊样式 */
+        .achievement-section .badge-icon .fa-solid {
+            font-size: 32px;
+        }
+    
+        /* 选中状态图标颜色优化 */
+        .tab-item.active .tab-icon .fa-solid,
+        .tab-item.active .fa-solid {
+            color: #2E5BFF;
+            opacity: 1;
+        }
+
+        /* 其他选中状态 */
+        .menu-item.active .menu-icon .fa-solid,
+        .nav-item.active .fa-solid,
+        .list-item.selected .fa-solid,
+        .card.active .fa-solid,
+        .btn.active .fa-solid,
+        .filter-btn.active .fa-solid {
+            color: #2E5BFF;
+            opacity: 1;
+        }
+    </style>    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="navbar">
+        <button class="back-btn" onclick="Router.back()">←</button>
+        <div class="navbar-title">使用帮助</div>
+    </div>
+
+    <div class="search-bar">
+        <input type="text" class="search-input" placeholder="搜索问题或功能">
+    </div>
+
+    <div class="section-title">常见问题</div>
+    <div class="faq-section">
+        <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-question">
+                <div class="faq-icon"><i class="fa-solid fa-circle-question"></i></div>
+                <div class="faq-text">如何创建阅读计划</div>
+                <div class="faq-arrow">→</div>
+            </div>
+            <div class="faq-answer">
+                1. 点击首页"创建计划"按钮<br>
+                2. 填写计划基本信息（名称、时间等）<br>
+                3. 选择或搜索书籍<br>
+                4. 划分章节和设置打卡要求<br>
+                5. 预览并发布计划
+            </div>
+        </div>
+        <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-question">
+                <div class="faq-icon"><i class="fa-solid fa-circle-question"></i></div>
+                <div class="faq-text">如何批改学生测评</div>
+                <div class="faq-arrow">→</div>
+            </div>
+            <div class="faq-answer">
+                1. 进入"测评管理"页面<br>
+                2. 选择需要批改的测评<br>
+                3. 查看学生答题情况<br>
+                4. 对主观题进行评分和点评<br>
+                5. 保存批改结果
+            </div>
+        </div>
+        <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-question">
+                <div class="faq-icon"><i class="fa-solid fa-circle-question"></i></div>
+                <div class="faq-text">如何查看班级数据报告</div>
+                <div class="faq-arrow">→</div>
+            </div>
+            <div class="faq-answer">
+                1. 进入"数据报告"页面<br>
+                2. 选择要查看的班级<br>
+                3. 查看打卡率、测评成绩等数据<br>
+                4. 可以导出数据报告
+            </div>
+        </div>
+        <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-question">
+                <div class="faq-icon"><i class="fa-solid fa-circle-question"></i></div>
+                <div class="faq-text">如何添加学生到班级</div>
+                <div class="faq-arrow">→</div>
+            </div>
+            <div class="faq-answer">
+                1. 进入"班级管理"页面<br>
+                2. 选择要添加学生的班级<br>
+                3. 点击"学生管理"<br>
+                4. 通过邀请码或扫码方式添加学生
+            </div>
+        </div>
+        <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-question">
+                <div class="faq-icon"><i class="fa-solid fa-circle-question"></i></div>
+                <div class="faq-text">如何与家长沟通</div>
+                <div class="faq-arrow">→</div>
+            </div>
+            <div class="faq-answer">
+                1. 进入"家长沟通"页面<br>
+                2. 选择要沟通的学生家长<br>
+                3. 发送消息或查看历史沟通记录<br>
+                4. 可以群发通知给所有家长
+            </div>
+        </div>
+    </div>
+
+    <div class="section-title">功能介绍</div>
+    <div class="feature-grid">
+        <div class="feature-card" onclick="viewFeature('plan')">
+            <div class="feature-icon"><i class="fa-solid fa-book"></i></div>
+            <div class="feature-name">阅读计划</div>
+        </div>
+        <div class="feature-card" onclick="viewFeature('exam')">
+            <div class="feature-icon"><i class="fa-solid fa-pen-to-square"></i></div>
+            <div class="feature-name">测评管理</div>
+        </div>
+        <div class="feature-card" onclick="viewFeature('monitor')">
+            <div class="feature-icon"><i class="fa-solid fa-chart-column"></i></div>
+            <div class="feature-name">进度监控</div>
+        </div>
+        <div class="feature-card" onclick="viewFeature('report')">
+            <div class="feature-icon"><i class="fa-solid fa-chart-line"></i></div>
+            <div class="feature-name">数据报告</div>
+        </div>
+        <div class="feature-card" onclick="viewFeature('message')">
+            <div class="feature-icon"><i class="fa-solid fa-bullhorn"></i></div>
+            <div class="feature-name">消息推送</div>
+        </div>
+        <div class="feature-card" onclick="viewFeature('parent')">
+            <div class="feature-icon"><i class="fa-solid fa-user-group"></i></div>
+            <div class="feature-name">家长沟通</div>
+        </div>
+    </div>
+
+    <div class="section-title">更多帮助</div>
+    <div class="menu-section">
+        <div class="menu-item" onclick="viewGuide()">
+            <div class="menu-icon"><i class="fa-solid fa-book-open"></i></div>
+            <div class="menu-text">操作指南</div>
+            <div class="menu-arrow">→</div>
+        </div>
+        <div class="menu-item" onclick="viewVideo()">
+            <div class="menu-icon"><i class="fa-solid fa-circle-play"></i></div>
+            <div class="menu-text">视频教程</div>
+            <div class="menu-arrow">→</div>
+        </div>
+        <div class="menu-item" onclick="viewUpdates()">
+            <div class="menu-icon">🆕</div>
+            <div class="menu-text">更新日志</div>
+            <div class="menu-arrow">→</div>
+        </div>
+        <div class="menu-item" onclick="Router.toTeacherPage('feedback')">
+            <div class="menu-icon"><i class="fa-solid fa-comment-dots"></i></div>
+            <div class="menu-text">意见反馈</div>
+            <div class="menu-arrow">→</div>
+        </div>
+        <div class="menu-item" onclick="Router.toTeacherPage('about')">
+            <div class="menu-icon"><i class="fa-solid fa-circle-info"></i></div>
+            <div class="menu-text">关于我们</div>
+            <div class="menu-arrow">→</div>
+        </div>
+    </div>
+
+    <button class="contact-btn" onclick="contactService()">联系客服</button>
+
+    <script src="../router.js"></script>
+    <script>
+        function toggleFaq(item) {
+            item.classList.toggle('active')
+        }
+
+        function viewFeature(feature) {
+            const features = {
+                plan: '阅读计划功能介绍：\n\n创建个性化的阅读计划，设置打卡要求，监控学生阅读进度',
+                exam: '测评管理功能介绍：\n\n创建测评题目，自动批改客观题，手动批改主观题',
+                monitor: '进度监控功能介绍：\n\n实时查看学生打卡情况，了解阅读进度',
+                report: '数据报告功能介绍：\n\n查看班级和学生的各项数据统计，生成可视化报告',
+                message: '消息推送功能介绍：\n\n向学生和家长推送通知消息',
+                parent: '家长沟通功能介绍：\n\n与家长进行一对一或群体沟通'
+            }
+            alert(features[feature])
+        }
+
+        function viewGuide() {
+            alert('操作指南\n\n详细的功能使用说明和最佳实践')
+        }
+
+        function viewVideo() {
+            alert('视频教程\n\n观看视频快速掌握各项功能')
+        }
+
+        function viewUpdates() {
+            alert('更新日志\n\nV3.0 (2025-01-05)\n• 新增AI导读功能\n• 优化数据报告\n• 修复已知问题')
+        }
+
+        function contactService() {
+            alert('联系客服\n\n客服热线：400-123-4567\n工作时间：9:00-18:00\n\n或通过意见反馈页面提交问题')
+        }
+    </script>
+</body>
+</html>

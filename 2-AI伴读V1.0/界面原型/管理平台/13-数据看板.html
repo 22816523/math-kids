@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据概览 - 校校读吧小管家管理平台</title>
+    <link rel="stylesheet" href="common/admin-common.css">    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="admin-layout">
+        <!-- 侧边栏 -->
+        <div class="admin-sidebar">
+            <div class="sidebar-header"></div>
+            <div class="sidebar-menu"></div>
+        </div>
+
+        <!-- 主内容区域 -->
+        <div class="admin-main">
+            <!-- 顶部导航栏 -->
+            <div class="admin-header"></div>
+
+            <!-- 内容区域 -->
+            <div class="admin-content">
+                <div class="page-header">
+                    <h1 class="page-title">数据概览</h1>
+                    <p class="page-description">实时查看系统运营数据和关键指标</p>
+                </div>
+
+                <!-- 统计卡片 -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon blue"><i class="fa-solid fa-users"></i></div>
+                            <div class="stat-trend up">↑ 12%</div>
+                        </div>
+                        <div class="stat-value">1,248</div>
+                        <div class="stat-label">教师总数</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon green"><i class="fa-solid fa-user"></i></div>
+                            <div class="stat-trend up">↑ 8%</div>
+                        </div>
+                        <div class="stat-value">32,456</div>
+                        <div class="stat-label">学生总数</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon orange"><i class="fa-solid fa-graduation-cap"></i></div>
+                            <div class="stat-trend up">↑ 5%</div>
+                        </div>
+                        <div class="stat-value">856</div>
+                        <div class="stat-label">班级总数</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon purple"><i class="fa-solid fa-book"></i></div>
+                            <div class="stat-trend up">↑ 15%</div>
+                        </div>
+                        <div class="stat-value">2,345</div>
+                        <div class="stat-label">书籍总数</div>
+                    </div>
+                </div>
+
+                <!-- 今日数据 -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="fa-solid fa-chart-column"></i> 今日数据</h3>
+                        <div class="card-extra">
+                            <button class="btn btn-text">查看详情</button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-value" style="font-size: 24px; color: #1890FF;">8,234</div>
+                                <div class="stat-label">今日打卡数</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value" style="font-size: 24px; color: #52c41a;">1,456</div>
+                                <div class="stat-label">今日完成测评</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value" style="font-size: 24px; color: #fa8c16;">234</div>
+                                <div class="stat-label">今日新增用户</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value" style="font-size: 24px; color: #722ed1;">89.5%</div>
+                                <div class="stat-label">今日活跃率</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 最近活动 -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="fa-solid fa-bell"></i> 最近活动</h3>
+                        <div class="card-extra">
+                            <button class="btn btn-text">查看全部</button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-container">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>时间</th>
+                                        <th>类型</th>
+                                        <th>内容</th>
+                                        <th>操作人</th>
+                                        <th>状态</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>10:30</td>
+                                        <td><span class="tag tag-blue">阅读计划</span></td>
+                                        <td>张老师创建了《三体》阅读计划</td>
+                                        <td>张老师</td>
+                                        <td><span class="tag tag-green">已发布</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>10:15</td>
+                                        <td><span class="tag tag-orange">测评</span></td>
+                                        <td>李老师发布了第一章测评</td>
+                                        <td>李老师</td>
+                                        <td><span class="tag tag-green">进行中</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>09:45</td>
+                                        <td><span class="tag tag-green">打卡</span></td>
+                                        <td>初一(3)班完成今日打卡</td>
+                                        <td>系统</td>
+                                        <td><span class="tag tag-green">已完成</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>09:20</td>
+                                        <td><span class="tag tag-purple">书籍</span></td>
+                                        <td>新增书籍《红楼梦》</td>
+                                        <td>王老师</td>
+                                        <td><span class="tag tag-green">已审核</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>08:50</td>
+                                        <td><span class="tag tag-blue">班级</span></td>
+                                        <td>创建了初二(5)班</td>
+                                        <td>管理员</td>
+                                        <td><span class="tag tag-green">已激活</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 快捷操作 -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="fa-solid fa-bolt"></i> 快捷操作</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="action-bar">
+                            <div class="action-left">
+                                <button class="btn btn-primary" onclick="window.location.href='28-教师管理.html'">
+                                    <span><i class="fa-solid fa-users"></i></span>
+                                    <span>管理教师</span>
+                                </button>
+                                <button class="btn btn-primary" onclick="window.location.href='26-学生管理.html'">
+                                    <span><i class="fa-solid fa-user"></i></span>
+                                    <span>管理学生</span>
+                                </button>
+                                <button class="btn btn-primary" onclick="window.location.href='11-班级管理.html'">
+                                    <span><i class="fa-solid fa-graduation-cap"></i></span>
+                                    <span>管理班级</span>
+                                </button>
+                                <button class="btn btn-primary" onclick="window.location.href='10-图书管理.html'">
+                                    <span><i class="fa-solid fa-book"></i></span>
+                                    <span>管理书库</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 系统信息 -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">ℹ️ 系统信息</h3>
+                    </div>
+                    <div class="card-body">
+                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;">
+                            <div>
+                                <div style="font-size: 12px; color: #8c8c8c; margin-bottom: 4px;">系统版本</div>
+                                <div style="font-size: 16px; font-weight: 600; color: #262626;">V3.0.0</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 12px; color: #8c8c8c; margin-bottom: 4px;">最后更新</div>
+                                <div style="font-size: 16px; font-weight: 600; color: #262626;">2026-01-04</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 12px; color: #8c8c8c; margin-bottom: 4px;">运行状态</div>
+                                <div style="font-size: 16px; font-weight: 600; color: #52c41a;">正常运行</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="common/admin-common.js"></script>
+    <script>
+        // 页面初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 渲染顶部导航栏
+            pageManager.renderHeader(['数据概览']);
+
+            // 根据角色显示不同的统计数据
+            const role = userManager.getUserRole();
+            updateDashboardByRole(role);
+        });
+
+        // 根据角色更新仪表盘数据
+        function updateDashboardByRole(role) {
+            // 这里可以根据不同角色显示不同的数据
+            // 例如：教师只看自己班级的数据，学校管理员看学校的数据等
+            console.log('当前角色:', role);
+        }
+    </script>
+</body>
+</html>

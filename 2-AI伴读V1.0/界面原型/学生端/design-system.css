@@ -1,0 +1,371 @@
+/**
+ * 校校读吧小管家 - 设计系统
+ * 基于UI设计规范 v1.0
+ * 设计基准：750px×1624px（2倍图），实际开发：375px×812px
+ * 适配：iOS12+、Android8+
+ */
+
+/* ========================================
+   1. CSS变量定义
+   ======================================== */
+:root {
+    /* 色彩体系 */
+    --color-primary: #36CFC9;
+    --color-secondary: #FFC857;
+    --color-text-primary: #333333;
+    --color-text-secondary: #666666;
+    --color-text-tertiary: #999999;
+    --color-bg-primary: #FFFFFF;
+    --color-bg-secondary: #F0F9FF;
+    --color-border: #E5E6EB;
+    --color-success: #4ECDC4;
+    --color-warning: #FFC857;
+    --color-error: #FF6B6B;
+    --color-annotation-bg: #FFFBE6;
+
+    /* 字体大小 */
+    --font-size-h1: 24px;
+    --font-size-h2: 20px;
+    --font-size-h3: 18px;
+    --font-size-body: 18px;
+    --font-size-caption: 14px;
+    --font-size-small: 12px;
+
+    /* 行高 */
+    --line-height-h1: 36px;
+    --line-height-h2: 30px;
+    --line-height-h3: 27px;
+    --line-height-body: 28px;
+    --line-height-caption: 22px;
+    --line-height-small: 18px;
+
+    /* 间距 */
+    --spacing-xs: 4px;
+    --spacing-sm: 8px;
+    --spacing-md: 12px;
+    --spacing-lg: 16px;
+    --spacing-xl: 20px;
+    --spacing-xxl: 24px;
+
+    /* 圆角 */
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+    --radius-round: 50%;
+
+    /* 组件尺寸 */
+    --button-height: 48px;
+    --input-height: 48px;
+    --navbar-height: 44px;
+    --tabbar-height: 50px;
+
+    /* 动画时长 */
+    --duration-fast: 100ms;
+    --duration-normal: 200ms;
+    --duration-slow: 300ms;
+
+    /* 阴影 */
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --shadow-lg: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+/* ========================================
+   2. 基础样式重置
+   ======================================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Source Han Sans CN", sans-serif;
+    font-size: var(--font-size-body);
+    line-height: var(--line-height-body);
+    color: var(--color-text-primary);
+    background: var(--color-bg-secondary);
+    width: 375px;
+    margin: 0 auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* ========================================
+   3. 通用按钮样式
+   ======================================== */
+.btn-primary {
+    height: var(--button-height);
+    background: var(--color-primary);
+    color: #FFFFFF;
+    border: none;
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-body);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--duration-fast);
+    padding: 0 var(--spacing-xl);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-primary:hover {
+    opacity: 0.9;
+}
+
+.btn-primary:active {
+    transform: scale(0.98);
+}
+
+.btn-secondary {
+    height: var(--button-height);
+    background: var(--color-secondary);
+    color: #FFFFFF;
+    border: none;
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-body);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--duration-fast);
+    padding: 0 var(--spacing-xl);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-secondary:hover {
+    opacity: 0.9;
+}
+
+.btn-secondary:active {
+    transform: scale(0.98);
+}
+
+.btn-outline {
+    height: var(--button-height);
+    background: transparent;
+    color: var(--color-primary);
+    border: 1px solid var(--color-primary);
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-body);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--duration-fast);
+    padding: 0 var(--spacing-xl);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-outline:hover {
+    background: var(--color-primary);
+    color: #FFFFFF;
+}
+
+/* ========================================
+   4. 通用输入框样式
+   ======================================== */
+.input {
+    height: var(--input-height);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 0 var(--spacing-lg);
+    font-size: var(--font-size-body);
+    color: var(--color-text-primary);
+    background: var(--color-bg-primary);
+    transition: border-color var(--duration-fast);
+    width: 100%;
+}
+
+.input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+}
+
+.input::placeholder {
+    color: var(--color-text-tertiary);
+}
+
+.textarea {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-lg);
+    font-size: var(--font-size-body);
+    line-height: var(--line-height-body);
+    color: var(--color-text-primary);
+    background: var(--color-bg-primary);
+    transition: border-color var(--duration-fast);
+    width: 100%;
+    resize: vertical;
+    font-family: inherit;
+}
+
+.textarea:focus {
+    outline: none;
+    border-color: var(--color-primary);
+}
+
+.textarea::placeholder {
+    color: var(--color-text-tertiary);
+}
+
+/* ========================================
+   5. 文字样式
+   ======================================== */
+.text-h1 {
+    font-size: var(--font-size-h1);
+    line-height: var(--line-height-h1);
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+.text-h2 {
+    font-size: var(--font-size-h2);
+    line-height: var(--line-height-h2);
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+.text-h3 {
+    font-size: var(--font-size-h3);
+    line-height: var(--line-height-h3);
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+.text-body {
+    font-size: var(--font-size-body);
+    line-height: var(--line-height-body);
+    color: var(--color-text-primary);
+}
+
+.text-caption {
+    font-size: var(--font-size-caption);
+    line-height: var(--line-height-caption);
+    color: var(--color-text-secondary);
+}
+
+.text-small {
+    font-size: var(--font-size-small);
+    line-height: var(--line-height-small);
+    color: var(--color-text-tertiary);
+}
+
+/* ========================================
+   6. 布局样式
+   ======================================== */
+.container {
+    padding: var(--spacing-lg);
+}
+
+.section {
+    margin-bottom: var(--spacing-lg);
+}
+
+.section-title {
+    font-size: var(--font-size-h3);
+    line-height: var(--line-height-h3);
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin-bottom: var(--spacing-md);
+}
+
+/* ========================================
+   7. 卡片样式
+   ======================================== */
+.card {
+    background: var(--color-bg-primary);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-lg);
+    box-shadow: var(--shadow-sm);
+}
+
+.card-title {
+    font-size: var(--font-size-h3);
+    line-height: var(--line-height-h3);
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin-bottom: var(--spacing-sm);
+}
+
+/* ========================================
+   8. 动画
+   ======================================== */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideInFast {
+    from {
+        transform: translateY(10px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(100%);
+    }
+    to {
+        transform: translateY(0);
+    }
+}
+
+.fade-in {
+    animation: fadeIn var(--duration-slow);
+}
+
+.slide-in {
+    animation: slideIn var(--duration-normal);
+}
+
+.slide-in-fast {
+    animation: slideInFast var(--duration-fast);
+}
+
+.slide-up {
+    animation: slideUp var(--duration-normal);
+}
+
+/* ========================================
+   9. 工具类
+   ======================================== */
+.text-left { text-align: left; }
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+
+.mt-xs { margin-top: var(--spacing-xs); }
+.mt-sm { margin-top: var(--spacing-sm); }
+.mt-md { margin-top: var(--spacing-md); }
+.mt-lg { margin-top: var(--spacing-lg); }
+.mt-xl { margin-top: var(--spacing-xl); }
+
+.mb-xs { margin-bottom: var(--spacing-xs); }
+.mb-sm { margin-bottom: var(--spacing-sm); }
+.mb-md { margin-bottom: var(--spacing-md); }
+.mb-lg { margin-bottom: var(--spacing-lg); }
+.mb-xl { margin-bottom: var(--spacing-xl); }
+
+.p-xs { padding: var(--spacing-xs); }
+.p-sm { padding: var(--spacing-sm); }
+.p-md { padding: var(--spacing-md); }
+.p-lg { padding: var(--spacing-lg); }
+.p-xl { padding: var(--spacing-xl); }

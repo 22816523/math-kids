@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>我的打卡记录 - 校校读吧-学生端</title>
+    <link rel="stylesheet" href="design-system.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background-color: #f5f5f5; width: 375px; margin: 0 auto; min-height: 100vh; padding-bottom: 20px; opacity: 0; }
+
+        .navbar { background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary) 100%); color: white; height: 44px; display: flex; align-items: center; padding: 0 16px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0, 201, 167, 0.15); }
+        .back-btn { background: none; border: none; color: white; font-size: 18px; line-height: 1.4; cursor: pointer; padding: 0; margin-right: 12px; }
+        .navbar-title { font-size: 18px; line-height: 1.4; font-weight: 600; }
+
+        .filter-section { background: white; padding: 12px 16px; margin-bottom: 12px; }
+        .filter-row { display: flex; gap: 12px; }
+        .filter-select { flex: 1; height: 36px; border: 1px solid #d9d9d9; border-radius: 6px; padding: 0 12px; font-size: 14px; color: #262626; background: white; cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238c8c8c' d='M2 4l4 4 4-4'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; }
+        .filter-select:focus { border-color: var(--color-primary); outline: none; }
+
+        .stats-bar { background: white; padding: 16px; margin: 0 16px 12px; border-radius: 8px; display: flex; justify-content: space-around; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+        .stats-item { text-align: center; }
+        .stats-value { font-size: 24px; font-weight: 700; color: var(--color-primary); }
+        .stats-label { font-size: 12px; color: #8c8c8c; margin-top: 4px; }
+
+        .record-list { padding: 0 16px; }
+        .record-card { background: white; border-radius: 12px; padding: 16px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+        .record-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+        .record-plan { display: flex; align-items: center; gap: 8px; }
+        .plan-tag { padding: 4px 8px; background: rgba(0, 201, 167, 0.1); color: var(--color-primary); border-radius: 4px; font-size: 12px; font-weight: 500; }
+        .record-date { font-size: 12px; color: #8c8c8c; }
+        .record-book { font-size: 14px; color: #595959; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+        .record-book i { color: var(--color-primary); }
+        .record-content { margin-bottom: 12px; }
+        .record-text { font-size: 14px; color: #262626; line-height: 1.8; margin-bottom: 12px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+        .record-images { display: flex; gap: 8px; }
+        .record-image { width: calc((100% - 16px) / 3); aspect-ratio: 1; border-radius: 8px; background: #f0f0f0; overflow: hidden; }
+        .record-image img { width: 100%; height: 100%; object-fit: cover; }
+        .record-image-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #bfbfbf; font-size: 24px; }
+        .record-footer { display: flex; align-items: center; justify-content: space-between; padding-top: 12px; border-top: 1px solid #f0f0f0; }
+        .record-actions { display: flex; gap: 20px; }
+        .action-item { display: flex; align-items: center; gap: 6px; font-size: 13px; color: #8c8c8c; cursor: pointer; transition: all 0.3s; }
+        .action-item:hover { color: var(--color-primary); }
+        .action-item.liked { color: #ff4d4f; }
+        .action-item.liked i { color: #ff4d4f; opacity: 1; }
+        .action-item i { font-size: 14px; }
+        .record-time { font-size: 12px; color: #bfbfbf; }
+
+        .empty-state { text-align: center; padding: 60px 20px; }
+        .empty-icon { font-size: 64px; color: #d9d9d9; margin-bottom: 16px; }
+        .empty-text { font-size: 14px; color: #8c8c8c; }
+
+        /* Font Awesome图标样式优化 */
+        .fa-solid, .fa-regular {
+            font-weight: 400;
+            color: #595959;
+            opacity: 0.85;
+        }
+
+        .navbar .fa-solid,
+        .section-title .fa-solid,
+        .task-title .fa-solid {
+            color: inherit;
+            opacity: 1;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="navbar">
+        <button class="back-btn" onclick="Router.back()">←</button>
+        <div class="navbar-title">我的打卡记录</div>
+    </div>
+
+    <div class="filter-section">
+        <div class="filter-row">
+            <select class="filter-select" id="planFilter" onchange="filterRecords()">
+                <option value="">全部阅读计划</option>
+                <option value="1">2026春季阅读计划</option>
+                <option value="2">2025暑假阅读计划</option>
+                <option value="3">2025寒假阅读计划</option>
+            </select>
+            <select class="filter-select" id="bookFilter" onchange="filterRecords()">
+                <option value="">全部书籍</option>
+                <option value="1">三体</option>
+                <option value="2">红楼梦</option>
+                <option value="3">活着</option>
+                <option value="4">骆驼祥子</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="stats-bar">
+        <div class="stats-item">
+            <div class="stats-value">28</div>
+            <div class="stats-label">打卡总数</div>
+        </div>
+        <div class="stats-item">
+            <div class="stats-value">156</div>
+            <div class="stats-label">获得点赞</div>
+        </div>
+        <div class="stats-item">
+            <div class="stats-value">42</div>
+            <div class="stats-label">收到评价</div>
+        </div>
+    </div>
+
+    <div class="record-list" id="recordList">
+        <!-- 记录卡片1 -->
+        <div class="record-card" onclick="Router.toStudentPage('checkinDetail', {id: 1})" style="cursor: pointer;">
+            <div class="record-header">
+                <div class="record-plan">
+                    <span class="plan-tag">2026春季阅读计划</span>
+                </div>
+                <div class="record-date">2025-01-15</div>
+            </div>
+            <div class="record-book">
+                <i class="fa-solid fa-book"></i>
+                <span>《三体》·第8次阅读</span>
+            </div>
+            <div class="record-content">
+                <div class="record-text">今天读完了《三体》第三部的最后几章，程心最终选择了人类的生存而非宇宙的毁灭。这个结局让我思考了很多关于文明、道德和宇宙的问题。刘慈欣的想象力真的太惊人了，黑暗森林法则、降维打击这些概念让我对宇宙有了全新的认识</div>
+                <div class="record-images">
+                    <div class="record-image">
+                        <div class="record-image-placeholder"><i class="fa-solid fa-image"></i></div>
+                    </div>
+                    <div class="record-image">
+                        <div class="record-image-placeholder"><i class="fa-solid fa-image"></i></div>
+                    </div>
+                    <div class="record-image">
+                        <div class="record-image-placeholder"><i class="fa-solid fa-image"></i></div>
+                    </div>
+                </div>
+            </div>
+            <div class="record-footer">
+                <div class="record-actions">
+                    <div class="action-item liked">
+                        <i class="fa-solid fa-thumbs-up"></i>
+                        <span>32</span>
+                    </div>
+                    <div class="action-item">
+                        <i class="fa-solid fa-comment"></i>
+                        <span>8</span>
+                    </div>
+                </div>
+                <div class="record-time">14:30</div>
+            </div>
+        </div>
+
+        <!-- 记录卡片2 -->
+        <div class="record-card" onclick="Router.toStudentPage('checkinDetail', {id: 2})" style="cursor: pointer;">
+            <div class="record-header">
+                <div class="record-plan">
+                    <span class="plan-tag">2025暑假阅读计划</span>
+                </div>
+                <div class="record-date">2025-01-14</div>
+            </div>
+            <div class="record-book">
+                <i class="fa-solid fa-book"></i>
+                <span>《红楼梦》·第5次阅读</span>
+            </div>
+            <div class="record-content">
+                <div class="record-text">刘姥姥进大观园这一段真的太有趣了！曹雪芹通过刘姥姥的视角，让我们看到了贾府的奢华生活。同时也感受到了作者对底层人民的同情</div>
+                <div class="record-images">
+                    <div class="record-image">
+                        <div class="record-image-placeholder"><i class="fa-solid fa-image"></i></div>
+                    </div>
+                </div>
+            </div>
+            <div class="record-footer">
+                <div class="record-actions">
+                    <div class="action-item">
+                        <i class="fa-regular fa-thumbs-up"></i>
+                        <span>18</span>
+                    </div>
+                    <div class="action-item">
+                        <i class="fa-solid fa-comment"></i>
+                        <span>5</span>
+                    </div>
+                </div>
+                <div class="record-time">20:15</div>
+            </div>
+        </div>
+
+        <!-- 记录卡片3 -->
+        <div class="record-card" onclick="Router.toStudentPage('checkinDetail', {id: 3})" style="cursor: pointer;">
+            <div class="record-header">
+                <div class="record-plan">
+                    <span class="plan-tag">2025暑假阅读计划</span>
+                </div>
+                <div class="record-date">2025-01-13</div>
+            </div>
+            <div class="record-book">
+                <i class="fa-solid fa-book"></i>
+                <span>《活着》·第3次阅读</span>
+            </div>
+            <div class="record-content">
+                <div class="record-text">福贵的一生经历了太多苦难，但他依然选择活着。余华用平静的笔触描写了那么多悲剧，却让人感受到生命的韧性和力量</div>
+                <div class="record-images">
+                    <div class="record-image">
+                        <div class="record-image-placeholder"><i class="fa-solid fa-image"></i></div>
+                    </div>
+                    <div class="record-image">
+                        <div class="record-image-placeholder"><i class="fa-solid fa-image"></i></div>
+                    </div>
+                </div>
+            </div>
+            <div class="record-footer">
+                <div class="record-actions">
+                    <div class="action-item liked">
+                        <i class="fa-solid fa-thumbs-up"></i>
+                        <span>45</span>
+                    </div>
+                    <div class="action-item">
+                        <i class="fa-solid fa-comment"></i>
+                        <span>12</span>
+                    </div>
+                </div>
+                <div class="record-time">19:00</div>
+            </div>
+        </div>
+
+        <!-- 记录卡片4 -->
+        <div class="record-card" onclick="Router.toStudentPage('checkinDetail', {id: 4})" style="cursor: pointer;">
+            <div class="record-header">
+                <div class="record-plan">
+                    <span class="plan-tag">2026春季阅读计划</span>
+                </div>
+                <div class="record-date">2025-01-12</div>
+            </div>
+            <div class="record-book">
+                <i class="fa-solid fa-book"></i>
+                <span>《三体》·第7次阅读</span>
+            </div>
+            <div class="record-content">
+                <div class="record-text">罗辑终于理解了黑暗森林法则的真正含义。面壁者计划的设定太精彩了，人类用最原始的方式对抗三体文明的智子监控</div>
+            </div>
+            <div class="record-footer">
+                <div class="record-actions">
+                    <div class="action-item">
+                        <i class="fa-regular fa-thumbs-up"></i>
+                        <span>28</span>
+                    </div>
+                    <div class="action-item">
+                        <i class="fa-solid fa-comment"></i>
+                        <span>6</span>
+                    </div>
+                </div>
+                <div class="record-time">21:30</div>
+            </div>
+        </div>
+
+        <!-- 记录卡片5 -->
+        <div class="record-card" onclick="Router.toStudentPage('checkinDetail', {id: 5})" style="cursor: pointer;">
+            <div class="record-header">
+                <div class="record-plan">
+                    <span class="plan-tag">2025寒假阅读计划</span>
+                </div>
+                <div class="record-date">2025-01-10</div>
+            </div>
+            <div class="record-book">
+                <i class="fa-solid fa-book"></i>
+                <span>《骆驼祥子》·第1次阅读</span>
+            </div>
+            <div class="record-content">
+                <div class="record-text">祥子的三起三落让人唏嘘。老舍先生用朴实的语言描绘了旧社会底层人民的悲惨命运，让我更加珍惜现在的生活</div>
+                <div class="record-images">
+                    <div class="record-image">
+                        <div class="record-image-placeholder"><i class="fa-solid fa-image"></i></div>
+                    </div>
+                    <div class="record-image">
+                        <div class="record-image-placeholder"><i class="fa-solid fa-image"></i></div>
+                    </div>
+                    <div class="record-image">
+                        <div class="record-image-placeholder"><i class="fa-solid fa-image"></i></div>
+                    </div>
+                </div>
+            </div>
+            <div class="record-footer">
+                <div class="record-actions">
+                    <div class="action-item liked">
+                        <i class="fa-solid fa-thumbs-up"></i>
+                        <span>33</span>
+                    </div>
+                    <div class="action-item">
+                        <i class="fa-solid fa-comment"></i>
+                        <span>11</span>
+                    </div>
+                </div>
+                <div class="record-time">16:45</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="./router.js"></script>
+    <script>
+        function filterRecords() {
+            const planFilter = document.getElementById('planFilter').value;
+            const bookFilter = document.getElementById('bookFilter').value;
+            console.log('筛选条件：', { planFilter, bookFilter });
+            // 实际应用中会根据筛选条件过滤记录列表
+        }
+    </script>
+</body>
+</html>

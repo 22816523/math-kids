@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据统计 - 校校读吧小管家管理平台</title>
+    <link rel="stylesheet" href="common/admin-common.css">    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="admin-layout">
+        <!-- 侧边栏 -->
+        <div class="admin-sidebar">
+            <div class="sidebar-header"></div>
+            <div class="sidebar-menu"></div>
+        </div>
+
+        <!-- 主内容区域 -->
+        <div class="admin-main">
+            <!-- 顶部导航栏 -->
+            <div class="admin-header"></div>
+
+            <!-- 内容区域 -->
+            <div class="admin-content">
+                <div class="page-header">
+                    <h1 class="page-title">数据统计</h1>
+                    <p class="page-description">查看系统运营数据和趋势分析</p>
+                </div>
+
+                <!-- 时间筛选 -->
+                <div class="card">
+                    <div class="card-body">
+                        <div style="display: flex; gap: 16px; align-items: center;">
+                            <div style="font-size: 14px; color: #595959;">时间范围：</div>
+                            <button class="btn btn-primary btn-sm">今日</button>
+                            <button class="btn btn-secondary btn-sm">本周</button>
+                            <button class="btn btn-secondary btn-sm">本月</button>
+                            <button class="btn btn-secondary btn-sm">本年</button>
+                            <div style="flex: 1;"></div>
+                            <input type="date" class="form-input" style="width: 150px;">
+                            <span style="color: #8c8c8c;">至</span>
+                            <input type="date" class="form-input" style="width: 150px;">
+                            <button class="btn btn-primary">查询</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 核心指标 -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon blue"><i class="fa-solid fa-book"></i></div>
+                            <div class="stat-trend up">↑ 15%</div>
+                        </div>
+                        <div class="stat-value">8,234</div>
+                        <div class="stat-label">今日打卡数</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon green"><i class="fa-solid fa-circle-check"></i></div>
+                            <div class="stat-trend up">↑ 8%</div>
+                        </div>
+                        <div class="stat-value">1,456</div>
+                        <div class="stat-label">今日完成测评</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon orange"><i class="fa-solid fa-users"></i></div>
+                            <div class="stat-trend up">↑ 12%</div>
+                        </div>
+                        <div class="stat-value">234</div>
+                        <div class="stat-label">今日新增用户</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon purple"><i class="fa-solid fa-chart-column"></i></div>
+                            <div class="stat-trend up">↑ 3%</div>
+                        </div>
+                        <div class="stat-value">89.5%</div>
+                        <div class="stat-label">今日活跃率</div>
+                    </div>
+                </div>
+
+                <!-- 打卡趋势 -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="fa-solid fa-chart-line"></i> 打卡趋势</h3>
+                        <div class="card-extra">
+                            <button class="btn btn-text">导出数据</button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div style="height: 300px; background: linear-gradient(180deg, #f0f5ff 0%, white 100%); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #8c8c8c;">
+                            <i class="fa-solid fa-chart-column"></i> 图表区域（实际项目中接入ECharts等图表库）
+                        </div>
+                        <div style="display: flex; justify-content: space-around; margin-top: 20px; padding-top: 20px; border-top: 1px solid #f0f0f0;">
+                            <div style="text-align: center;">
+                                <div style="font-size: 12px; color: #8c8c8c; margin-bottom: 4px;">本周平均</div>
+                                <div style="font-size: 20px; font-weight: 700; color: #1890FF;">7,856</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="font-size: 12px; color: #8c8c8c; margin-bottom: 4px;">本月累计</div>
+                                <div style="font-size: 20px; font-weight: 700; color: #52c41a;">234,567</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="font-size: 12px; color: #8c8c8c; margin-bottom: 4px;">环比增长</div>
+                                <div style="font-size: 20px; font-weight: 700; color: #fa8c16;">+15.3%</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 阅读数据 -->
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
+                    <!-- 班级排行 -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="fa-solid fa-trophy"></i> 班级打卡排行</h3>
+                            <div class="card-extra">
+                                <button class="btn btn-text">查看全部</button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div style="display: flex; flex-direction: column; gap: 12px;">
+                                <div style="display: flex; align-items: center; gap: 12px; padding: 12px; background: linear-gradient(135deg, #fff7e6, #fffbe6); border-radius: 8px;">
+                                    <div style="width: 32px; height: 32px; background: linear-gradient(135deg, #fa8c16, #ffa940); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700;">1</div>
+                                    <div style="flex: 1;">
+                                        <div style="font-size: 14px; font-weight: 600; color: #262626;">初一(3)班</div>
+                                        <div style="font-size: 12px; color: #8c8c8c;">示范中学</div>
+                                    </div>
+                                    <div style="font-size: 18px; font-weight: 700; color: #fa8c16;">95%</div>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 12px; padding: 12px; background: #fafafa; border-radius: 8px;">
+                                    <div style="width: 32px; height: 32px; background: #d9d9d9; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700;">2</div>
+                                    <div style="flex: 1;">
+                                        <div style="font-size: 14px; font-weight: 600; color: #262626;">初二(1)班</div>
+                                        <div style="font-size: 12px; color: #8c8c8c;">示范中学</div>
+                                    </div>
+                                    <div style="font-size: 18px; font-weight: 700; color: #52c41a;">92%</div>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 12px; padding: 12px; background: #fafafa; border-radius: 8px;">
+                                    <div style="width: 32px; height: 32px; background: #d9d9d9; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700;">3</div>
+                                    <div style="flex: 1;">
+                                        <div style="font-size: 14px; font-weight: 600; color: #262626;">五年级(2)班</div>
+                                        <div style="font-size: 12px; color: #8c8c8c;">实验小学</div>
+                                    </div>
+                                    <div style="font-size: 18px; font-weight: 700; color: #52c41a;">90%</div>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 12px; padding: 12px; background: #fafafa; border-radius: 8px;">
+                                    <div style="width: 32px; height: 32px; background: #d9d9d9; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700;">4</div>
+                                    <div style="flex: 1;">
+                                        <div style="font-size: 14px; font-weight: 600; color: #262626;">初三(5)班</div>
+                                        <div style="font-size: 12px; color: #8c8c8c;">第一中学</div>
+                                    </div>
+                                    <div style="font-size: 18px; font-weight: 700; color: #52c41a;">88%</div>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 12px; padding: 12px; background: #fafafa; border-radius: 8px;">
+                                    <div style="width: 32px; height: 32px; background: #d9d9d9; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700;">5</div>
+                                    <div style="flex: 1;">
+                                        <div style="font-size: 14px; font-weight: 600; color: #262626;">初一(2)班</div>
+                                        <div style="font-size: 12px; color: #8c8c8c;">示范中学</div>
+                                    </div>
+                                    <div style="font-size: 18px; font-weight: 700; color: #52c41a;">86%</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 热门书籍 -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="fa-solid fa-fire"></i> 热门书籍</h3>
+                            <div class="card-extra">
+                                <button class="btn btn-text">查看全部</button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div style="display: flex; flex-direction: column; gap: 12px;">
+                                <div style="display: flex; align-items: center; gap: 12px; padding: 12px; background: #fafafa; border-radius: 8px;">
+                                    <div style="width: 40px; height: 56px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px; font-weight: 700;">三体</div>
+                                    <div style="flex: 1;">
+                                        <div style="font-size: 14px; font-weight: 600; color: #262626;">三体</div>
+                                        <div style="font-size: 12px; color: #8c8c8c;">刘慈欣</div>
+                                    </div>
+                                    <div style="text-align: right;">
+                                        <div style="font-size: 16px; font-weight: 700; color: #1890FF;">156</div>
+                                        <div style="font-size: 11px; color: #8c8c8c;">使用次数</div>
+                                    </div>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 12px; padding: 12px; background: #fafafa; border-radius: 8px;">
+                                    <div style="width: 40px; height: 56px; background: linear-gradient(135deg, #f093fb, #f5576c); border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-size: 10px; font-weight: 700; text-align: center;">红楼梦</div>
+                                    <div style="flex: 1;">
+                                        <div style="font-size: 14px; font-weight: 600; color: #262626;">红楼梦</div>
+                                        <div style="font-size: 12px; color: #8c8c8c;">曹雪芹</div>
+                                    </div>
+                                    <div style="text-align: right;">
+                                        <div style="font-size: 16px; font-weight: 700; color: #1890FF;">234</div>
+                                        <div style="font-size: 11px; color: #8c8c8c;">使用次数</div>
+                                    </div>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 12px; padding: 12px; background: #fafafa; border-radius: 8px;">
+                                    <div style="width: 40px; height: 56px; background: linear-gradient(135deg, #4facfe, #00f2fe); border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-size: 9px; font-weight: 700; text-align: center;">海底两万里</div>
+                                    <div style="flex: 1;">
+                                        <div style="font-size: 14px; font-weight: 600; color: #262626;">海底两万里</div>
+                                        <div style="font-size: 12px; color: #8c8c8c;">儒勒·凡尔纳</div>
+                                    </div>
+                                    <div style="text-align: right;">
+                                        <div style="font-size: 16px; font-weight: 700; color: #1890FF;">189</div>
+                                        <div style="font-size: 11px; color: #8c8c8c;">使用次数</div>
+                                    </div>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 12px; padding: 12px; background: #fafafa; border-radius: 8px;">
+                                    <div style="width: 40px; height: 56px; background: linear-gradient(135deg, #fa709a, #fee140); border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-size: 9px; font-weight: 700; text-align: center;">骆驼祥子</div>
+                                    <div style="flex: 1;">
+                                        <div style="font-size: 14px; font-weight: 600; color: #262626;">骆驼祥子</div>
+                                        <div style="font-size: 12px; color: #8c8c8c;">老舍</div>
+                                    </div>
+                                    <div style="text-align: right;">
+                                        <div style="font-size: 16px; font-weight: 700; color: #1890FF;">267</div>
+                                        <div style="font-size: 11px; color: #8c8c8c;">使用次数</div>
+                                    </div>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 12px; padding: 12px; background: #fafafa; border-radius: 8px;">
+                                    <div style="width: 40px; height: 56px; background: linear-gradient(135deg, #30cfd0, #330867); border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-size: 10px; font-weight: 700; text-align: center;">西游记</div>
+                                    <div style="flex: 1;">
+                                        <div style="font-size: 14px; font-weight: 600; color: #262626;">西游记</div>
+                                        <div style="font-size: 12px; color: #8c8c8c;">吴承恩</div>
+                                    </div>
+                                    <div style="text-align: right;">
+                                        <div style="font-size: 16px; font-weight: 700; color: #1890FF;">412</div>
+                                        <div style="font-size: 11px; color: #8c8c8c;">使用次数</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 测评数据 -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="fa-solid fa-pen-to-square"></i> 测评数据分析</h3>
+                    </div>
+                    <div class="card-body">
+                        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;">
+                            <div style="text-align: center; padding: 20px; background: #f0f5ff; border-radius: 8px;">
+                                <div style="font-size: 28px; font-weight: 700; color: #1890FF; margin-bottom: 8px;">1,456</div>
+                                <div style="font-size: 13px; color: #595959;">今日完成测评</div>
+                            </div>
+                            <div style="text-align: center; padding: 20px; background: #f6ffed; border-radius: 8px;">
+                                <div style="font-size: 28px; font-weight: 700; color: #52c41a; margin-bottom: 8px;">85.6</div>
+                                <div style="font-size: 13px; color: #595959;">平均分</div>
+                            </div>
+                            <div style="text-align: center; padding: 20px; background: #fff7e6; border-radius: 8px;">
+                                <div style="font-size: 28px; font-weight: 700; color: #fa8c16; margin-bottom: 8px;">92%</div>
+                                <div style="font-size: 13px; color: #595959;">及格率</div>
+                            </div>
+                            <div style="text-align: center; padding: 20px; background: #f9f0ff; border-radius: 8px;">
+                                <div style="font-size: 28px; font-weight: 700; color: #722ed1; margin-bottom: 8px;">68%</div>
+                                <div style="font-size: 13px; color: #595959;">优秀率</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="common/admin-common.js"></script>
+    <script>
+        // 页面初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            pageManager.renderHeader(['数据分析', '数据统计']);
+        });
+    </script>
+</body>
+</html>

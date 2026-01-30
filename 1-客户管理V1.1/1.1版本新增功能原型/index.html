@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>客户管理系统V1.1 - 新增功能原型</title>
+    <link rel="stylesheet" href="common.css">
+    <style>
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+
+        .feature-card {
+            background: #fff;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 30px;
+            transition: all 0.3s;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .feature-card:hover {
+            border-color: #667eea;
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.15);
+            transform: translateY(-4px);
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: #fff;
+            margin-bottom: 20px;
+        }
+
+        .feature-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 12px;
+        }
+
+        .feature-desc {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .feature-tag {
+            display: inline-block;
+            background: #d3f9d8;
+            color: #2b8a3e;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-top: 15px;
+        }
+
+        .version-info {
+            background: linear-gradient(135deg, #e7f5ff 0%, #d0ebff 100%);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border-left: 4px solid #1c7ed6;
+        }
+
+        .version-info h3 {
+            color: #1864ab;
+            margin-bottom: 10px;
+        }
+
+        .version-info p {
+            color: #495057;
+            line-height: 1.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="page-header">
+            <h1 class="page-title">客户管理系统V1.1 新增功能原型</h1>
+            <p class="page-subtitle">Customer Management System V1.1 - New Features Prototype</p>
+        </div>
+
+        <div class="version-info">
+            <h3>📋 版本说明</h3>
+            <p>本原型展示了客户管理系统从V1.0升级到V1.1版本新增的核心功能。这些功能旨在实现"一个学校，一个档案；一个老师，一个档案"的核心目标，建立公司级统一数据资产管理体系</p>
+        </div>
+
+        <div class="card">
+            <div class="card-header">🎯 新增功能列表</div>
+            <div class="card-body">
+                <div class="feature-grid">
+                    <a href="客户唯一标识.html" class="feature-card">
+                        <div class="feature-icon">🏢</div>
+                        <div class="feature-title">客户唯一标识</div>
+                        <div class="feature-desc">为每个主客户生成全局唯一ID，实现跨系统识别和匹配，打通各业务系统的客户数据</div>
+                        <span class="feature-tag">主客户管理</span>
+                    </a>
+
+                    <a href="联系人唯一标识.html" class="feature-card">
+                        <div class="feature-icon">👤</div>
+                        <div class="feature-title">联系人唯一标识</div>
+                        <div class="feature-desc">建立公司级统一联系人数据库，以学校+姓名+手机号作为唯一标识，整合分散的老师信息</div>
+                        <span class="feature-tag">联系人管理</span>
+                    </a>
+
+                    <a href="归属权管理.html" class="feature-card">
+                        <div class="feature-icon">🔐</div>
+                        <div class="feature-title">归属权管理</div>
+                        <div class="feature-desc">支持联系人的分配、转移、回收等操作，实现公司级资产管理和灵活的权限控制</div>
+                        <span class="feature-tag">联系人管理</span>
+                    </a>
+
+                    <a href="全局搜索与权限控制.html" class="feature-card">
+                        <div class="feature-icon">🔍</div>
+                        <div class="feature-title">全局搜索与权限控制</div>
+                        <div class="feature-desc">提供公司级联系人搜索功能，支持按姓名、电话、学校搜索，并实现分级权限控制</div>
+                        <span class="feature-tag">联系人管理</span>
+                    </a>
+
+                    <a href="跨系统数据打通.html" class="feature-card">
+                        <div class="feature-icon">🔗</div>
+                        <div class="feature-title">跨系统数据打通</div>
+                        <div class="feature-desc">打通智慧九科星、中课云、研究院稿费报销等系统，实现客户和联系人数据的统一管理</div>
+                        <span class="feature-tag">系统集成</span>
+                    </a>
+
+                    <a href="数据同步日志.html" class="feature-card">
+                        <div class="feature-icon">🔄</div>
+                        <div class="feature-title">数据同步日志</div>
+                        <div class="feature-desc">实时监控各系统间的数据同步状态，记录同步日志，确保数据准确性和时效性</div>
+                        <span class="feature-tag">系统集成</span>
+                    </a>
+
+                    <a href="敏感信息保护配置.html" class="feature-card">
+                        <div class="feature-icon">🛡️</div>
+                        <div class="feature-title">敏感信息保护配置</div>
+                        <div class="feature-desc">配置敏感信息脱敏规则，对手机号等信息进行加密显示，保护客户隐私数据安全</div>
+                        <span class="feature-tag">数据安全</span>
+                    </a>
+
+                    <a href="统计报表.html" class="feature-card">
+                        <div class="feature-icon">📊</div>
+                        <div class="feature-title">统计报表</div>
+                        <div class="feature-desc">生成主客户分布、联系人增长等多维度统计报表，可视化展示数据全景</div>
+                        <span class="feature-tag">报表分析</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="alert alert-info">
+            <strong>💡 提示：</strong> 点击上方功能卡片可查看对应的详细原型页面。所有页面均为静态展示，用于需求评审和设计参考
+        </div>
+    </div>
+</body>
+</html>

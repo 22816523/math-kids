@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>计划库 - 校校读吧小管家（教师端）</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: "Source Han Sans CN", "Noto Sans CJK SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background: #F5F7FA; width: 375px; margin: 0 auto; min-height: 100vh; padding-bottom: 20px; }
+
+        .navbar { background: linear-gradient(135deg, #2E5BFF 0%, #1E4BEF 100%); color: white; height: 44px; display: flex; align-items: center; padding: 0 16px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(24, 144, 255, 0.15); }
+        .back-btn { background: none; border: none; color: white; font-size: 18px; line-height: 1.4; cursor: pointer; padding: 4px; }
+        .navbar-title { flex: 1; text-align: center; font-size: 18px; line-height: 1.4; font-weight: 600; margin-right: 28px; }
+
+        .header-card { background: linear-gradient(135deg, #2E5BFF 0%, #1E4BEF 100%); padding: 20px 16px; color: white; }
+        .header-title { font-size: 24px; font-weight: 700; margin-bottom: 8px; }
+        .header-desc { font-size: 14px; opacity: 0.9; }
+
+        .filter-bar { background: white; padding: 12px 16px; display: flex; gap: 8px; overflow-x: auto; }
+        .filter-btn { border: 1px solid #d9d9d9; background: white; border-radius: 16px; padding: 6px 16px; font-size: 13px; color: #595959; white-space: nowrap; cursor: pointer; }
+        .filter-btn.active { border-color: #2E5BFF; background: #e6f7ff; color: #2E5BFF; }
+
+        .plans-container { padding: 12px 16px; }
+        .plan-card { background: white; border-radius: 12px; padding: 16px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06); }
+        .plan-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+        .plan-title { font-size: 16px; font-weight: 600; color: #333333; margin-bottom: 6px; }
+        .plan-badge { background: linear-gradient(135deg, #FFD700, #FFA500); color: white; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; }
+        .plan-meta { font-size: 13px; color: #999999; margin-bottom: 12px; }
+        .plan-stats { display: flex; gap: 16px; margin-bottom: 12px; }
+        .stat-item { display: flex; align-items: center; gap: 4px; font-size: 12px; color: #595959; }
+        .stat-icon { color: #2E5BFF; }
+        .plan-desc { font-size: 13px; color: #595959; line-height: 1.6; margin-bottom: 12px; }
+        .plan-actions { display: flex; gap: 8px; }
+        .action-btn { flex: 1; border: none; border-radius: 6px; padding: 10px; font-size: 14px; font-weight: 500; cursor: pointer; }
+        .btn-preview { background: #F5F7FA; color: #595959; }
+        .btn-use { background: linear-gradient(135deg, #2E5BFF, #1E4BEF); color: white; }
+
+        .empty-state { text-align: center; padding: 80px 20px; }
+        .empty-icon { font-size: 64px; margin-bottom: 16px; opacity: 0.3; }
+        .empty-text { font-size: 16px; color: #999999; }
+
+        .fab { position: fixed; bottom: 80px; right: 20px; width: 56px; height: 56px; background: linear-gradient(135deg, #52c41a, #389e0d); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 24px; box-shadow: 0 4px 12px rgba(82, 196, 26, 0.4); cursor: pointer; z-index: 50; }
+        .fab:active { transform: scale(0.95); }
+
+        /* Font Awesome图标样式优化 */
+        .fa-solid, .fa-regular { font-weight: 400; }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="navbar">
+        <button class="back-btn" onclick="Router.back()">←</button>
+        <div class="navbar-title">计划库</div>
+    </div>
+
+    <div class="header-card">
+        <div class="header-title">选择阅读计划</div>
+        <div class="header-desc">从平台精选的季度计划中选择，或创建自己的简化计划</div>
+    </div>
+
+    <div class="filter-bar">
+        <button class="filter-btn active" data-grade="all" onclick="filterPlans('all')">全部</button>
+        <button class="filter-btn" data-grade="primary" onclick="filterPlans('primary')">小学</button>
+        <button class="filter-btn" data-grade="middle" onclick="filterPlans('middle')">初中</button>
+        <button class="filter-btn" data-grade="high" onclick="filterPlans('high')">高中</button>
+        <button class="filter-btn" data-season="spring" onclick="filterPlans('spring')">春季</button>
+        <button class="filter-btn" data-season="autumn" onclick="filterPlans('autumn')">秋季</button>
+    </div>
+
+    <div class="plans-container" id="plansContainer">
+        <!-- 计划卡片将通过JavaScript动态生成 -->
+    </div>
+
+    <!-- 快速创建简化计划按钮 -->
+    <div class="fab" onclick="createSimplePlan()" title="创建简化计划">
+        <i class="fa-solid fa-plus"></i>
+    </div>
+
+    <script src="../router.js"></script>
+    <script>
+        // 模拟计划库数据（实际应从后端获取）
+        const mockPlans = [
+            {
+                id: 1,
+                name: '2026年春季阅读计划',
+                season: 'spring',
+                grade: 'middle',
+                startDate: '2026-03-01',
+                endDate: '2026-05-31',
+                booksCount: 5,
+                levelsCount: 25,
+                tasksCount: 75,
+                usedCount: 128,
+                description: '精选5本经典文学作品，通过游戏化关卡设计，培养学生的阅读兴趣和理解能力',
+                recommended: true
+            },
+            {
+                id: 2,
+                name: '小学三年级春季计划',
+                season: 'spring',
+                grade: 'primary',
+                startDate: '2026-03-01',
+                endDate: '2026-05-31',
+                booksCount: 4,
+                levelsCount: 16,
+                tasksCount: 48,
+                usedCount: 89,
+                description: '适合小学三年级学生的阅读计划，包含童话、寓言等适龄读物',
+                recommended: false
+            },
+            {
+                id: 3,
+                name: '高中文学经典阅读',
+                season: 'autumn',
+                grade: 'high',
+                startDate: '2026-09-01',
+                endDate: '2026-11-30',
+                booksCount: 6,
+                levelsCount: 30,
+                tasksCount: 90,
+                usedCount: 156,
+                description: '高中语文必读书目，深度解读经典文学作品，提升文学素养',
+                recommended: true
+            }
+        ];
+
+        let currentFilter = 'all';
+        let filteredPlans = [...mockPlans];
+
+        // 页面加载时初始化
+        window.addEventListener('DOMContentLoaded', () => {
+            renderPlans();
+        });
+
+        // 渲染计划列表
+        function renderPlans() {
+            const container = document.getElementById('plansContainer');
+
+            if (filteredPlans.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">📚</div>
+                        <div class="empty-text">暂无符合条件的计划</div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = filteredPlans.map(plan => `
+                <div class="plan-card">
+                    <div class="plan-header">
+                        <div>
+                            <div class="plan-title">${plan.name}</div>
+                            <div class="plan-meta">
+                                <i class="fa-solid fa-calendar"></i>
+                                ${plan.startDate} 至 ${plan.endDate}
+                            </div>
+                        </div>
+                        ${plan.recommended ? '<div class="plan-badge">推荐</div>' : ''}
+                    </div>
+                    <div class="plan-stats">
+                        <div class="stat-item">
+                            <i class="fa-solid fa-book stat-icon"></i>
+                            <span>${plan.booksCount}本书</span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fa-solid fa-gamepad stat-icon"></i>
+                            <span>${plan.levelsCount}个关卡</span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fa-solid fa-users stat-icon"></i>
+                            <span>${plan.usedCount}人使用</span>
+                        </div>
+                    </div>
+                    <div class="plan-desc">${plan.description}</div>
+                    <div class="plan-actions">
+                        <button class="action-btn btn-preview" onclick="previewPlan(${plan.id})">
+                            <i class="fa-solid fa-eye"></i> 预览
+                        </button>
+                        <button class="action-btn btn-use" onclick="usePlan(${plan.id})">
+                            <i class="fa-solid fa-check"></i> 使用此计划
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 筛选计划
+        function filterPlans(filter) {
+            currentFilter = filter;
+
+            // 更新按钮状态
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // 筛选数据
+            if (filter === 'all') {
+                filteredPlans = [...mockPlans];
+            } else if (filter === 'primary' || filter === 'middle' || filter === 'high') {
+                filteredPlans = mockPlans.filter(plan => plan.grade === filter);
+            } else if (filter === 'spring' || filter === 'autumn') {
+                filteredPlans = mockPlans.filter(plan => plan.season === filter);
+            }
+
+            renderPlans();
+        }
+
+        // 预览计划
+        function previewPlan(planId) {
+            // 跳转到计划详情预览页面
+            window.location.href = `36-计划详情预览.html?planId=${planId}`;
+        }
+
+        // 使用计划
+        function usePlan(planId) {
+            const plan = mockPlans.find(p => p.id === planId);
+            if (!plan) return;
+
+            if (confirm(`确定要使用"${plan.name}"吗？\n\n该计划包含${plan.booksCount}本书、${plan.levelsCount}个关卡、${plan.tasksCount}个任务`)) {
+                // 跳转到发布设置页面，选择要发布的班级
+                window.location.href = `37-发布计划到班级.html?planId=${planId}`;
+            }
+        }
+
+        // 创建简化计划
+        function createSimplePlan() {
+            // 跳转到原有的创建阅读计划页面（简化版）
+            window.location.href = '02-创建阅读计划.html';
+        }
+    </script>
+</body>
+</html>

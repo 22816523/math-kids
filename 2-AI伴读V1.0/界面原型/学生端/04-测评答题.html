@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>测评答题 - 校校读吧-学生端</title>
+    <link rel="stylesheet" href="design-system.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: #f5f5f5;
+            width: 375px;
+            margin: 0 auto;
+            padding-bottom: 80px;
+            opacity: 0;
+        }
+
+        /* 顶部导航栏 */
+        .navbar {
+            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+            color: white;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            box-shadow: 0 2px 8px rgba(54, 207, 201, 0.15);
+        }
+
+        .back-btn {
+            font-size: 20px;
+            cursor: pointer;
+            margin-right: 12px;
+        }
+
+        .navbar-title {
+            font-size: 18px;
+            font-weight: 600;
+            line-height: 1.4;
+            flex: 1;
+        }
+
+        .timer {
+            font-size: 14px;
+            line-height: 1.6;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 4px 12px;
+            border-radius: 12px;
+        }
+
+        /* 进度条 */
+        .progress-bar {
+            background: white;
+            padding: 12px 16px;
+            margin: 12px 16px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .progress-text {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #595959;
+        }
+
+        .progress-line {
+            flex: 1;
+            height: 4px;
+            background: #f0f0f0;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--color-primary);
+            width: 20%;
+            transition: width 0.3s;
+        }
+
+        /* 题目卡片 */
+        .question-card {
+            background: white;
+            margin: 0 16px 12px;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .question-number {
+            font-size: 13px;
+            line-height: 1.5;
+            color: #8c8c8c;
+            margin-bottom: 8px;
+        }
+
+        .question-text {
+            font-size: 16px;
+            font-weight: 600;
+            line-height: 1.6;
+            color: #262626;
+            margin-bottom: 16px;
+        }
+
+        /* 选项 */
+        .option {
+            background: #fafafa;
+            padding: 12px 16px;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .option:last-child {
+            margin-bottom: 0;
+        }
+
+        .option:hover {
+            background: #e6f7ff;
+        }
+
+        .option.selected {
+            background: #e6f7ff;
+            border-color: var(--color-primary);
+        }
+
+        .option-label {
+            font-weight: 600;
+            margin-right: 8px;
+            color: #262626;
+        }
+
+        /* 底部操作栏 */
+        .bottom-bar {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 375px;
+            background: white;
+            padding: 12px 16px;
+            display: flex;
+            gap: 12px;
+            box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .btn {
+            flex: 1;
+            height: 44px;
+            border: 1px solid #d9d9d9;
+            background: white;
+            border-radius: 4px;
+            font-size: 16px;
+            line-height: 1.4;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn:hover {
+            background: #fafafa;
+            border-color: var(--color-primary);
+        }
+
+        .btn.primary {
+            background: var(--color-primary);
+            color: white;
+            border-color: var(--color-primary);
+            font-weight: 600;
+        }
+
+        .btn.primary:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        /* 题目列表弹窗 */
+        .question-list-overlay {
+            position: fixed;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 375px;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 200;
+            display: none;
+            align-items: flex-end;
+            justify-content: center;
+        }
+
+        .question-list-overlay.show {
+            display: flex;
+        }
+
+        .question-list-modal {
+            width: 100%;
+            background: white;
+            border-radius: 16px 16px 0 0;
+            padding: 20px;
+            max-height: 70vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        .question-list-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .question-list-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #262626;
+        }
+
+        .question-list-close {
+            width: 28px;
+            height: 28px;
+            border: none;
+            background: #f5f5f5;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .question-list-stats {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 16px;
+            padding: 12px;
+            background: #f5f5f5;
+            border-radius: 8px;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            color: #595959;
+        }
+
+        .stat-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .stat-dot.done {
+            background: var(--color-primary);
+        }
+
+        .stat-dot.undone {
+            background: #d9d9d9;
+        }
+
+        .stat-dot.current {
+            background: #1890ff;
+        }
+
+        .question-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+        }
+
+        .question-num {
+            width: 100%;
+            aspect-ratio: 1;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+        }
+
+        .question-num.done {
+            background: rgba(0, 200, 167, 0.15);
+            color: var(--color-primary);
+            border-color: var(--color-primary);
+        }
+
+        .question-num.undone {
+            background: #f5f5f5;
+            color: #8c8c8c;
+        }
+
+        .question-num.current {
+            background: rgba(24, 144, 255, 0.15);
+            color: #1890ff;
+            border-color: #1890ff;
+        }
+
+        .question-num:hover {
+            transform: scale(1.05);
+        }
+
+        /* Font Awesome图标样式优化 */
+        .fa-solid, .fa-regular {
+            font-weight: 400;
+            color: #595959;
+            opacity: 0.85;
+        }
+
+        /* 导航栏和标题中的图标保持原色 */
+        .navbar .fa-solid,
+        .section-title .fa-solid,
+        .task-title .fa-solid {
+            color: inherit;
+            opacity: 1;
+        }
+
+        /* 徽章图标使用白色，与金色背景形成对比 */
+        .badge-icon .fa-solid {
+            color: white;
+            opacity: 1;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 成就图标特殊样式 */
+        .achievement-section .badge-icon .fa-solid {
+            font-size: 32px;
+        }
+    
+        /* 选中状态图标颜色优化 */
+        .tab-item.active .tab-icon .fa-solid,
+        .tab-item.active .fa-solid {
+            color: #00C9A7;
+            opacity: 1;
+        }
+
+        /* 其他选中状态 */
+        .menu-item.active .menu-icon .fa-solid,
+        .nav-item.active .fa-solid,
+        .list-item.selected .fa-solid,
+        .card.active .fa-solid,
+        .btn.active .fa-solid,
+        .filter-btn.active .fa-solid {
+            color: #00C9A7;
+            opacity: 1;
+        }
+    </style>    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="navbar">
+        <div class="back-btn" onclick="Router.toStudentPage('home')"><i class="fa-solid fa-chevron-left"></i></div>
+        <div class="navbar-title">《三体》测评题</div>
+    </div>
+
+    <div class="progress-bar">
+        <div class="progress-text">第 20 / 20 题</div>
+        <div class="progress-line">
+            <div class="progress-fill" style="width: 100%;"></div>
+        </div>
+        <div style="color: var(--color-primary); font-size: 14px; cursor: pointer;" onclick="openQuestionList()">
+            <i class="fa-solid fa-th"></i>
+        </div>
+    </div>
+
+    <div class="question-card">
+        <div class="question-number">【单选题】2分</div>
+        <div class="question-text">在《三体》中，"黑暗森林法则"的核心内容是什么？</div>
+
+        <div class="option">
+            <span class="option-label">A.</span>
+            <span>宇宙中的文明应该互相帮助</span>
+        </div>
+        <div class="option">
+            <span class="option-label">B.</span>
+            <span>宇宙资源是无限的</span>
+        </div>
+        <div class="option selected">
+            <span class="option-label">C.</span>
+            <span>宇宙中的文明会隐藏自己并消灭其他文明</span>
+        </div>
+        <div class="option">
+            <span class="option-label">D.</span>
+            <span>所有文明最终会走向联合</span>
+        </div>
+    </div>
+
+    <div class="bottom-bar">
+        <button class="btn" onclick="prevQuestion()">上一题</button>
+        <button class="btn primary" onclick="submitExam()">提交测评</button>
+    </div>
+
+    <!-- 题目列表弹窗 -->
+    <div class="question-list-overlay" id="questionListModal" onclick="closeQuestionList(event)">
+        <div class="question-list-modal" onclick="event.stopPropagation()">
+            <div class="question-list-header">
+                <div class="question-list-title">题目列表</div>
+                <button class="question-list-close" onclick="closeQuestionList()">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="question-list-stats">
+                <div class="stat-item">
+                    <span class="stat-dot done"></span>
+                    <span>已答 19 题</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-dot undone"></span>
+                    <span>未答 1 题</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-dot current"></span>
+                    <span>当前</span>
+                </div>
+            </div>
+            <div class="question-grid">
+                <div class="question-num done" onclick="goToQuestion(1)">1</div>
+                <div class="question-num done" onclick="goToQuestion(2)">2</div>
+                <div class="question-num done" onclick="goToQuestion(3)">3</div>
+                <div class="question-num done" onclick="goToQuestion(4)">4</div>
+                <div class="question-num done" onclick="goToQuestion(5)">5</div>
+                <div class="question-num done" onclick="goToQuestion(6)">6</div>
+                <div class="question-num done" onclick="goToQuestion(7)">7</div>
+                <div class="question-num done" onclick="goToQuestion(8)">8</div>
+                <div class="question-num done" onclick="goToQuestion(9)">9</div>
+                <div class="question-num done" onclick="goToQuestion(10)">10</div>
+                <div class="question-num done" onclick="goToQuestion(11)">11</div>
+                <div class="question-num done" onclick="goToQuestion(12)">12</div>
+                <div class="question-num done" onclick="goToQuestion(13)">13</div>
+                <div class="question-num done" onclick="goToQuestion(14)">14</div>
+                <div class="question-num done" onclick="goToQuestion(15)">15</div>
+                <div class="question-num done" onclick="goToQuestion(16)">16</div>
+                <div class="question-num done" onclick="goToQuestion(17)">17</div>
+                <div class="question-num done" onclick="goToQuestion(18)">18</div>
+                <div class="question-num done" onclick="goToQuestion(19)">19</div>
+                <div class="question-num current" onclick="goToQuestion(20)">20</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入路由管理脚本 -->
+    <script src="./router.js"></script>
+    <script src="modals.js"></script>
+    <script>
+        // 当前题号（实际应用中会动态获取）
+        let currentQuestion = 20;
+        const totalQuestions = 20;
+
+        // 上一题
+        function prevQuestion() {
+            if (currentQuestion > 1) {
+                currentQuestion--;
+                updateButtons();
+                alert('切换到第 ' + currentQuestion + ' 题');
+            }
+        }
+
+        // 下一题
+        function nextQuestion() {
+            if (currentQuestion < totalQuestions) {
+                currentQuestion++;
+                updateButtons();
+                alert('切换到第 ' + currentQuestion + ' 题');
+            }
+        }
+
+        // 跳过当前题
+        function skipQuestion() {
+            if (currentQuestion < totalQuestions) {
+                currentQuestion++;
+                updateButtons();
+                alert('已跳过，切换到第 ' + currentQuestion + ' 题');
+            } else {
+                alert('已是最后一题');
+            }
+        }
+
+        // 更新按钮显示
+        function updateButtons() {
+            const bottomBar = document.querySelector('.bottom-bar');
+            if (currentQuestion === totalQuestions) {
+                // 最后一题显示提交按钮
+                bottomBar.innerHTML = `
+                    <button class="btn" onclick="prevQuestion()">上一题</button>
+                    <button class="btn primary" onclick="submitExam()">提交测评</button>
+                `;
+            } else {
+                // 非最后一题显示下一题按钮
+                bottomBar.innerHTML = `
+                    <button class="btn" onclick="prevQuestion()">上一题</button>
+                    <button class="btn" onclick="skipQuestion()">跳过</button>
+                    <button class="btn primary" onclick="nextQuestion()">下一题</button>
+                `;
+            }
+        }
+
+        // 提交测评
+        function submitExam() {
+            if (confirm('确定要提交测评吗？')) {
+                showModal('examCompleteModal');
+            }
+        }
+
+        // 打开题目列表
+        function openQuestionList() {
+            document.getElementById('questionListModal').classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // 关闭题目列表
+        function closeQuestionList(event) {
+            if (event && event.target !== event.currentTarget) return;
+            document.getElementById('questionListModal').classList.remove('show');
+            document.body.style.overflow = '';
+        }
+
+        // 跳转到指定题目
+        function goToQuestion(num) {
+            currentQuestion = num;
+            updateButtons();
+            closeQuestionList();
+            alert('跳转到第 ' + num + ' 题');
+        }
+    </script>
+</body>
+</html>

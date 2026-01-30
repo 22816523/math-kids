@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>打卡 - 校校读吧-学生端</title>
+    <link rel="stylesheet" href="design-system.css">
+    <style>
+        body {
+            padding-bottom: 80px;
+            opacity: 0;
+        }
+
+        /* 顶部导航栏 */
+        .navbar {
+            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+            color: white;
+            height: var(--navbar-height);
+            display: flex;
+            align-items: center;
+            padding: 0 var(--spacing-lg);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .back-btn {
+            font-size: 20px;
+            cursor: pointer;
+            margin-right: 12px;
+        }
+
+        .navbar-title {
+            font-size: var(--font-size-body);
+            font-weight: 600;
+            line-height: 1.4;
+            flex: 1;
+        }
+
+        /* 任务信息卡片 */
+        .task-info {
+            background: var(--color-bg-primary);
+            padding: var(--spacing-lg);
+            margin: 0 var(--spacing-lg) var(--spacing-md);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .task-title {
+            font-size: 16px;
+            font-weight: 600;
+            line-height: 1.4;
+            color: #262626;
+            margin-bottom: 8px;
+        }
+
+        .task-detail {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #595959;
+        }
+
+        /* 标签页 */
+        .tabs {
+            background: white;
+            display: flex;
+            padding: 0 16px;
+            margin: 0 16px;
+            border-radius: 8px 8px 0 0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .tab {
+            flex: 1;
+            padding: 12px 0;
+            text-align: center;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #8c8c8c;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .tab.active {
+            color: #00C9A7;
+            font-weight: 600;
+            border-bottom-color: #00C9A7;
+        }
+
+        /* 打卡区域 */
+        .checkin-area {
+            background: white;
+            padding: 16px;
+            margin: 0 16px 12px;
+            border-radius: 0 0 8px 8px;
+            min-height: 300px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .textarea {
+            width: 100%;
+            min-height: 200px;
+            border: 1px solid #d9d9d9;
+            border-radius: 4px;
+            padding: 12px;
+            font-size: 14px;
+            line-height: 1.6;
+            resize: vertical;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        .textarea:focus {
+            outline: none;
+            border-color: #00C9A7;
+        }
+
+        .char-count {
+            text-align: right;
+            font-size: 12px;
+            line-height: 1.5;
+            color: #8c8c8c;
+            margin-top: 8px;
+        }
+
+        .tip {
+            background: #e6f7ff;
+            border-left: 3px solid #00C9A7;
+            padding: 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            line-height: 1.6;
+            color: #595959;
+            margin-top: 12px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            height: 48px;
+            background: linear-gradient(135deg, #00C9A7, #00B4D8);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            line-height: 1.4;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 16px;
+            transition: all 0.3s;
+        }
+
+        .submit-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        .submit-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        /* 上传区域 */
+        .upload-area {
+            border: 2px dashed #d9d9d9;
+            border-radius: 8px;
+            padding: 40px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .upload-area:hover {
+            border-color: #00C9A7;
+            background: #f0f9f7;
+        }
+
+        .remove-btn {
+            width: 100%;
+            height: 36px;
+            background: #ff4d4f;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 8px;
+        }
+
+        /* 测试题样式 */
+        .exam-info {
+            background: #e6f7ff;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+        }
+
+        .exam-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #262626;
+            margin-bottom: 8px;
+        }
+
+        .exam-meta {
+            display: flex;
+            gap: 16px;
+            font-size: 12px;
+            color: #595959;
+        }
+
+        .exam-questions {
+            margin-bottom: 16px;
+        }
+
+        .question-item {
+            background: #fafafa;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+
+        .question-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #262626;
+            margin-bottom: 12px;
+        }
+
+        .question-options {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .option-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .option-item:hover {
+            background: white;
+        }
+
+        .option-item input[type="radio"] {
+            cursor: pointer;
+        }
+
+        /* 全局浮动AI助手 */
+        .floating-ai {
+            position: fixed;
+            right: 16px;
+            bottom: 80px;
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 28px;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+            cursor: pointer;
+            z-index: 999;
+            transition: all 0.3s;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .floating-ai:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 16px rgba(102, 126, 234, 0.6);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* 底部Tab栏 */
+        .tabbar {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 375px;
+            height: 50px;
+            background: white;
+            border-top: 1px solid #f0f0f0;
+            display: flex;
+            box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .tab-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .tab-item:hover {
+            background: #fafafa;
+        }
+
+        .tab-icon {
+            font-size: 20px;
+            line-height: 1.2;
+        }
+
+        .tab-label {
+            font-size: 10px;
+            line-height: 1.4;
+            color: #8c8c8c;
+        }
+
+        .tab-item.active .tab-label {
+            color: #00C9A7;
+        }
+
+        .tab-item.active .tab-icon {
+            transform: scale(1.1);
+        }
+    
+        /* Font Awesome图标样式优化 */
+        .fa-solid, .fa-regular {
+            font-weight: 400;
+            color: #595959;
+            opacity: 0.85;
+        }
+
+        /* 导航栏和标题中的图标保持原色 */
+        .navbar .fa-solid,
+        .section-title .fa-solid,
+        .task-title .fa-solid {
+            color: inherit;
+            opacity: 1;
+        }
+
+        /* 徽章图标使用白色，与金色背景形成对比 */
+        .badge-icon .fa-solid {
+            color: white;
+            opacity: 1;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 成就图标特殊样式 */
+        .achievement-section .badge-icon .fa-solid {
+            font-size: 32px;
+        }
+    
+        /* 选中状态图标颜色优化 */
+        .tab-item.active .tab-icon .fa-solid,
+        .tab-item.active .fa-solid {
+            color: #00C9A7;
+            opacity: 1;
+        }
+
+        /* 其他选中状态 */
+        .menu-item.active .menu-icon .fa-solid,
+        .nav-item.active .fa-solid,
+        .list-item.selected .fa-solid,
+        .card.active .fa-solid,
+        .btn.active .fa-solid,
+        .filter-btn.active .fa-solid {
+            color: #00C9A7;
+            opacity: 1;
+        }
+    </style>    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="navbar">
+        <div class="back-btn" onclick="Router.toStudentPage('aiIntro')"><i class="fa-solid fa-chevron-left"></i></div>
+        <div class="navbar-title">每日打卡</div>
+    </div>
+
+    <div class="task-info" style="margin-top: 16px;">
+        <div class="task-title"><i class="fa-solid fa-book-open"></i> 今日阅读任务</div>
+        <div class="task-detail">阅读《三体》第15-30页<br>完成导读单二</div>
+        <div class="task-detail" style="margin-top: 8px; font-size: 12px; color: #bfbfbf;"><i class="fa-solid fa-clock"></i> 今日剩余时间：18小时32分</div>
+    </div>
+
+    <!-- 图文打卡 -->
+    <div class="checkin-area" id="image-checkin" style="margin: 0 16px 12px; border-radius: 8px;">
+        <div class="upload-area" onclick="document.getElementById('imageInput').click()">
+            <i class="fa-solid fa-camera" style="font-size: 48px; color: #00C9A7; margin-bottom: 12px;"></i>
+            <div style="font-size: 16px; color: #262626; margin-bottom: 8px;">上传导读单、阅读书籍图片</div>
+            <div style="font-size: 12px; color: #8c8c8c;">支持JPG、PNG格式，最多9张，每张最大5MB</div>
+            <input type="file" id="imageInput" accept="image/*" multiple style="display: none;" onchange="previewImages(this)">
+        </div>
+        <div id="imagePreview" style="display: none; margin-top: 12px;">
+            <div id="imageGrid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;"></div>
+            <button class="remove-btn" style="margin-top: 12px;" onclick="document.getElementById('imageInput').click()"><i class="fa-solid fa-plus"></i> 继续添加</button>
+        </div>
+        <textarea class="textarea" style="margin-top: 12px; min-height: 120px;" placeholder="写下你的阅读心得与收获..."></textarea>
+        <div class="char-count">0 / 500</div>
+
+        <div class="tip">
+            <i class="fa-solid fa-lightbulb"></i> 打卡可获得积分奖励，完成打卡+5积分
+        </div>
+
+        <button class="submit-btn" onclick="submitImageCheckin()">提交打卡</button>
+    </div>
+
+    <div class="tabbar">
+        <div class="tab-item" onclick="Router.toStudentPage('home')">
+            <div class="tab-icon"><i class="fa-solid fa-house"></i></div>
+            <div class="tab-label">首页</div>
+        </div>
+        <div class="tab-item" onclick="Router.toStudentPage('bookshelf')">
+            <div class="tab-icon"><i class="fa-solid fa-book"></i></div>
+            <div class="tab-label">书架</div>
+        </div>
+        <div class="tab-item" onclick="Router.toStudentPage('profile')">
+            <div class="tab-icon"><i class="fa-solid fa-user"></i></div>
+            <div class="tab-label">我的</div>
+        </div>
+    </div>
+
+    <!-- 引入路由管理脚本 -->
+    <script src="./router.js"></script>
+    <script src="modals.js"></script>
+    <script>
+        let uploadedImages = [];
+
+        function submitImageCheckin() {
+            // 打卡成功后直接跳转到导读单参考答案页面
+            Router.toStudentPage('worksheetAnswer');
+        }
+
+        function previewImages(input) {
+            if (input.files && input.files.length > 0) {
+                const files = Array.from(input.files);
+                files.forEach(file => {
+                    if (uploadedImages.length < 9) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            uploadedImages.push(e.target.result);
+                            renderImageGrid();
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+                document.querySelector('#image-checkin .upload-area').style.display = 'none';
+                document.getElementById('imagePreview').style.display = 'block';
+            }
+        }
+
+        function renderImageGrid() {
+            const grid = document.getElementById('imageGrid');
+            grid.innerHTML = uploadedImages.map((src, index) => `
+                <div style="position: relative;">
+                    <img src="${src}" style="width: 100%; height: 80px; object-fit: cover; border-radius: 8px;">
+                    <button onclick="removeImage(${index})" style="position: absolute; top: 4px; right: 4px; width: 20px; height: 20px; border-radius: 50%; background: rgba(0,0,0,0.5); color: white; border: none; cursor: pointer; font-size: 10px;">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function removeImage(index) {
+            uploadedImages.splice(index, 1);
+            if (uploadedImages.length === 0) {
+                document.querySelector('#image-checkin .upload-area').style.display = 'block';
+                document.getElementById('imagePreview').style.display = 'none';
+            } else {
+                renderImageGrid();
+            }
+            document.getElementById('imageInput').value = '';
+        }
+    </script>
+</body>
+</html>

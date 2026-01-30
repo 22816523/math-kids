@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>测评列表 - 校校读吧-学生端</title>
+    <link rel="stylesheet" href="design-system.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background-color: #f5f5f5; width: 375px; margin: 0 auto; min-height: 100vh; opacity: 0; }
+
+        .navbar { background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary) 100%); color: white; height: 44px; display: flex; align-items: center; padding: 0 16px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0, 201, 167, 0.15); }
+        .back-btn { background: none; border: none; color: white; font-size: 18px; line-height: 1.4; cursor: pointer; padding: 0; margin-right: 12px; }
+        .navbar-title { font-size: 18px; line-height: 1.4; font-weight: 600; }
+
+        .search-bar { background: white; padding: 12px 16px; position: sticky; top: 44px; z-index: 99; box-shadow: 0 2px 4px rgba(0,0,0,0.04); }
+        .search-input { width: 100%; height: 36px; background: #f5f5f5; border: none; border-radius: 18px; padding: 0 16px; font-size: 14px; line-height: 1.6; color: #262626; }
+        .search-input::placeholder { color: #bfbfbf; }
+
+        .tabs-bar { background: white; display: flex; border-bottom: 1px solid #f0f0f0; position: sticky; top: 104px; z-index: 98; }
+        .tab-item { flex: 1; text-align: center; padding: 14px 0; font-size: 15px; line-height: 1.6; color: #595959; cursor: pointer; position: relative; transition: all 0.3s; }
+        .tab-item.active { color: var(--color-primary); font-weight: 600; }
+        .tab-item.active::after { content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 24px; height: 3px; background: linear-gradient(135deg, var(--color-primary), var(--color-secondary)); border-radius: 2px; }
+        .tab-badge { display: inline-block; background: #ff4d4f; color: white; font-size: 10px; line-height: 1.4; padding: 2px 6px; border-radius: 10px; margin-left: 4px; }
+
+        .exam-container { padding: 12px 16px; }
+
+        .exam-card { background: white; border-radius: 8px; padding: 16px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); transition: all 0.3s; }
+        .exam-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); transform: translateY(-2px); }
+
+        .exam-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 12px; }
+        .exam-title { font-size: 16px; line-height: 1.4; font-weight: 600; color: #262626; flex: 1; margin-right: 8px; }
+        .exam-status { padding: 4px 12px; border-radius: 12px; font-size: 12px; line-height: 1.5; font-weight: 600; white-space: nowrap; }
+        .status-pending { background: #fff7e6; color: #fa8c16; }
+        .status-ongoing { background: #e6f7ff; color: var(--color-primary); }
+        .status-completed { background: #f6ffed; color: #52c41a; }
+        .status-expired { background: #fff1f0; color: #ff4d4f; }
+
+        .exam-meta { display: flex; gap: 16px; margin-bottom: 12px; flex-wrap: wrap; }
+        .meta-item { display: flex; align-items: center; gap: 6px; font-size: 13px; line-height: 1.5; color: #595959; }
+        .meta-icon { font-size: 14px; line-height: 1.6; }
+
+        .exam-deadline { display: flex; align-items: center; gap: 6px; font-size: 13px; line-height: 1.5; color: #ff4d4f; margin-bottom: 12px; }
+        .exam-deadline.safe { color: #52c41a; }
+
+        .exam-progress { margin-bottom: 12px; }
+        .progress-label { font-size: 12px; line-height: 1.5; color: #8c8c8c; margin-bottom: 6px; display: flex; justify-content: space-between; }
+        .progress-bar { width: 100%; height: 6px; background: #f0f0f0; border-radius: 3px; overflow: hidden; }
+        .progress-fill { height: 100%; background: linear-gradient(135deg, var(--color-primary), var(--color-secondary)); border-radius: 3px; transition: width 0.3s; }
+
+        .exam-score { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+        .score-value { font-size: 24px; line-height: 1.2; font-weight: 700; color: var(--color-primary); }
+        .score-label { font-size: 13px; line-height: 1.5; color: #8c8c8c; }
+        .score-rank { padding: 4px 8px; background: #fff7e6; color: #fa8c16; border-radius: 4px; font-size: 12px; line-height: 1.5; font-weight: 600; }
+
+        .exam-actions { display: flex; gap: 8px; }
+        .btn { flex: 1; height: 36px; border-radius: 18px; font-size: 14px; line-height: 1.6; font-weight: 600; cursor: pointer; transition: all 0.3s; border: none; }
+        .btn-primary { background: linear-gradient(135deg, var(--color-primary), var(--color-secondary)); color: white; box-shadow: 0 2px 8px rgba(0, 201, 167, 0.3); }
+        .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+        .btn-secondary { background: white; border: 1px solid var(--color-primary); color: var(--color-primary); }
+        .btn-secondary:hover { background: #e6f7ff; }
+        .btn-disabled { background: #f5f5f5; color: #bfbfbf; cursor: not-allowed; }
+
+        .empty-state { text-align: center; padding: 80px 20px; }
+        .empty-icon { font-size: 64px; margin-bottom: 16px; opacity: 0.5; }
+        .empty-text { font-size: 14px; line-height: 1.6; color: #8c8c8c; margin-bottom: 8px; }
+        .empty-hint { font-size: 12px; line-height: 1.5; color: #bfbfbf; }
+
+        .tabbar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 375px; height: 50px; background: white; border-top: 1px solid #f0f0f0; display: flex; box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.06); }
+        .tab { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; cursor: pointer; transition: all 0.3s; }
+        .tab:hover { background: #fafafa; }
+        .tab-icon { font-size: 20px; line-height: 1.2; }
+        .tab-label { font-size: 10px; line-height: 1.4; color: #8c8c8c; }
+        .tab.active .tab-label { color: var(--color-primary); }
+        .tab.active .tab-icon { transform: scale(1.1); }
+    
+        /* Font Awesome图标样式优化 */
+        .fa-solid, .fa-regular {
+            font-weight: 400;
+            color: #595959;
+            opacity: 0.85;
+        }
+
+        /* 导航栏和标题中的图标保持原色 */
+        .navbar .fa-solid,
+        .section-title .fa-solid,
+        .task-title .fa-solid {
+            color: inherit;
+            opacity: 1;
+        }
+
+        /* 徽章图标使用白色，与金色背景形成对比 */
+        .badge-icon .fa-solid {
+            color: white;
+            opacity: 1;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 成就图标特殊样式 */
+        .achievement-section .badge-icon .fa-solid {
+            font-size: 32px;
+        }
+    
+        /* 选中状态图标颜色优化 */
+        .tab-item.active .tab-icon .fa-solid,
+        .tab-item.active .fa-solid {
+            color: var(--color-primary);
+            opacity: 1;
+        }
+
+        /* 其他选中状态 */
+        .menu-item.active .menu-icon .fa-solid,
+        .nav-item.active .fa-solid,
+        .list-item.selected .fa-solid,
+        .card.active .fa-solid,
+        .btn.active .fa-solid,
+        .filter-btn.active .fa-solid {
+            color: var(--color-primary);
+            opacity: 1;
+        }
+    </style>    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="navbar">
+        <button class="back-btn" onclick="Router.back()">←</button>
+        <div class="navbar-title">测评列表</div>
+    </div>
+
+    <div class="search-bar">
+        <input type="text" class="search-input" placeholder="搜索测评名称" oninput="searchExam(this.value)">
+    </div>
+
+    <div class="tabs-bar">
+        <div class="tab-item active" onclick="switchTab('pending')">
+            待完成<span class="tab-badge">2</span>
+        </div>
+        <div class="tab-item" onclick="switchTab('completed')">已完成</div>
+        <div class="tab-item" onclick="switchTab('expired')">已过期</div>
+    </div>
+
+    <div class="exam-container" id="pendingContent">
+        <div class="exam-card" onclick="viewExamDetail(1, 'pending')" style="cursor: pointer;">
+            <div class="exam-header">
+                <div class="exam-title">《三体》阅读测评</div>
+                <div class="exam-status status-pending">待完成</div>
+            </div>
+            <div class="exam-meta">
+                <div class="meta-item">
+                    <span class="meta-icon"><i class="fa-solid fa-pen-to-square"></i></span>
+                    <span>20道题</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-icon"><i class="fa-solid fa-award"></i></span>
+                    <span>总分100分</span>
+                </div>
+            </div>
+            <div class="exam-deadline">
+                <span><i class="fa-solid fa-clock"></i></span>
+                <span>截止时间：2025-01-10 23:59</span>
+            </div>
+            <div class="exam-actions">
+                <button class="btn btn-primary" onclick="startExam(1); event.stopPropagation();">开始测评</button>
+            </div>
+        </div>
+
+        <div class="exam-card" onclick="showNotStartedTip()" style="cursor: pointer;">
+            <div class="exam-header">
+                <div class="exam-title">《活着》阅读测评</div>
+                <div class="exam-status status-pending">待完成</div>
+            </div>
+            <div class="exam-meta">
+                <div class="meta-item">
+                    <span class="meta-icon"><i class="fa-solid fa-pen-to-square"></i></span>
+                    <span>20道题</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-icon"><i class="fa-solid fa-award"></i></span>
+                    <span>总分100分</span>
+                </div>
+            </div>
+            <div class="exam-deadline safe">
+                <span><i class="fa-solid fa-clock"></i></span>
+                <span>截止时间：2025-02-15 23:59</span>
+            </div>
+            <div class="exam-actions">
+                <button class="btn btn-disabled" disabled>2月1日开始</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="exam-container" id="completedContent" style="display: none;">
+        <div class="exam-card" onclick="viewExamDetail(4, 'completed')">
+            <div class="exam-header">
+                <div class="exam-title">《红楼梦》阅读测评</div>
+                <div class="exam-status status-completed">已完成</div>
+            </div>
+            <div class="exam-meta">
+                <div class="meta-item">
+                    <span class="meta-icon"><i class="fa-solid fa-pen-to-square"></i></span>
+                    <span>20道题</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-icon"><i class="fa-solid fa-award"></i></span>
+                    <span>总分100分</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-icon"><i class="fa-solid fa-circle-check"></i></span>
+                    <span>完成于 2025-01-04</span>
+                </div>
+            </div>
+            <div class="exam-score">
+                <div class="score-value">85</div>
+                <div class="score-label">分</div>
+                <div class="score-rank">班级第3名</div>
+            </div>
+            <div class="exam-progress">
+                <div class="progress-label">
+                    <span>正确率</span>
+                    <span>17/20</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 85%;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="exam-container" id="expiredContent" style="display: none;">
+        <div class="exam-card" onclick="viewExamDetail(7, 'expired')">
+            <div class="exam-header">
+                <div class="exam-title">《骆驼祥子》阅读测评</div>
+                <div class="exam-status status-expired">已过期</div>
+            </div>
+            <div class="exam-meta">
+                <div class="meta-item">
+                    <span class="meta-icon"><i class="fa-solid fa-pen-to-square"></i></span>
+                    <span>20道题</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-icon"><i class="fa-solid fa-award"></i></span>
+                    <span>总分100分</span>
+                </div>
+            </div>
+            <div class="exam-deadline">
+                <span><i class="fa-solid fa-clock"></i></span>
+                <span>已于 2025-01-01 23:59 过期</span>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="./router.js"></script>
+    <script>
+        function switchTab(type) {
+            // 切换Tab样式
+            document.querySelectorAll('.tab-item').forEach(tab => {
+                tab.classList.remove('active')
+            })
+            event.target.classList.add('active')
+
+            // 切换内容显示
+            document.getElementById('pendingContent').style.display = 'none'
+            document.getElementById('completedContent').style.display = 'none'
+            document.getElementById('expiredContent').style.display = 'none'
+
+            if (type === 'pending') {
+                document.getElementById('pendingContent').style.display = 'block'
+            } else if (type === 'completed') {
+                document.getElementById('completedContent').style.display = 'block'
+            } else if (type === 'expired') {
+                document.getElementById('expiredContent').style.display = 'block'
+            }
+        }
+
+        function searchExam(keyword) {
+            console.log('搜索测评：', keyword)
+            // 实际应用中会根据关键词过滤测评列表
+        }
+
+        function startExam(examId) {
+            window.location.href = '04-测评答题.html?examId=125'
+        }
+
+        function continueExam(examId) {
+            alert('继续答题 ID: ' + examId)
+            // 实际应用中会跳转到答题页面，恢复之前的答题进度
+            // Router.toStudentPage('exam', {examId: examId, continue: true})
+        }
+
+        function viewExamDetail(examId, status) {
+            Router.toStudentPage('examDetail', {examId: examId, status: status})
+        }
+
+        function viewAnswers(examId) {
+            alert('查看答案和解析 ID: ' + examId)
+            // 实际应用中会跳转到答案解析页面
+            // Router.toStudentPage('examResult', {examId: examId})
+        }
+
+        function showNotStartedTip() {
+            alert('测评尚未开始，请在开始时间后再来')
+        }
+    </script>
+</body>
+</html>

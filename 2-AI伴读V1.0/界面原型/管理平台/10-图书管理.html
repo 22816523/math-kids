@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>书库管理 - 校校读吧小管家管理平台</title>
+    <link rel="stylesheet" href="common/admin-common.css">    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="admin-layout">
+        <!-- 侧边栏 -->
+        <div class="admin-sidebar">
+            <div class="sidebar-header"></div>
+            <div class="sidebar-menu"></div>
+        </div>
+
+        <!-- 主内容区域 -->
+        <div class="admin-main">
+            <!-- 顶部导航栏 -->
+            <div class="admin-header"></div>
+
+            <!-- 内容区域 -->
+            <div class="admin-content">
+                <div class="page-header">
+                    <h1 class="page-title">书库管理</h1>
+                    <p class="page-description">管理系统中的所有书籍资源</p>
+                </div>
+
+                <!-- 操作栏 -->
+                <div class="action-bar">
+                    <div class="action-left">
+                        <button class="btn btn-primary" onclick="showModal('addBookModal')">
+                            <span><i class="fa-solid fa-plus"></i></span>
+                            <span>添加书籍</span>
+                        </button>
+                        <button class="btn btn-secondary">
+                            <span><i class="fa-solid fa-download"></i></span>
+                            <span>批量导入</span>
+                        </button>
+                        <button class="btn btn-secondary">
+                            <span><i class="fa-solid fa-upload"></i></span>
+                            <span>导出数据</span>
+                        </button>
+                    </div>
+                    <div class="action-right">
+                        <div class="search-bar">
+                            <input type="text" class="form-input search-input" placeholder="搜索书名、作者、ISBN..." id="searchInput">
+                            <button class="btn btn-primary">搜索</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 筛选栏 -->
+                <div class="card">
+                    <div class="card-body">
+                        <div style="display: flex; gap: 16px; align-items: center;">
+                            <div style="font-size: 14px; color: #595959;">筛选条件：</div>
+                            <select class="form-select" style="width: 150px;">
+                                <option>全部分类</option>
+                                <option>文学</option>
+                                <option>科幻</option>
+                                <option>历史</option>
+                                <option>科普</option>
+                            </select>
+                            <select class="form-select" style="width: 150px;">
+                                <option>全部年级</option>
+                                <option>小学</option>
+                                <option>初中</option>
+                                <option>高中</option>
+                            </select>
+                            <select class="form-select" style="width: 150px;">
+                                <option>全部状态</option>
+                                <option>上架</option>
+                                <option>下架</option>
+                            </select>
+                            <button class="btn btn-text" onclick="resetFilters()">重置</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 书籍卡片列表 -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px;">
+                    <!-- 书籍卡片 1 -->
+                    <div class="card" style="cursor: pointer; transition: all 0.3s;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 4px 16px rgba(0,0,0,0.1)'" onmouseout="this.style.transform=''; this.style.boxShadow=''">
+                        <div style="width: 100%; height: 180px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 8px 8px 0 0; display: flex; align-items: center; justify-content: center; color: white; font-size: 32px; font-weight: 700;">三体</div>
+                        <div class="card-body">
+                            <h3 style="font-size: 16px; font-weight: 600; color: #262626; margin-bottom: 8px;">三体</h3>
+                            <p style="font-size: 13px; color: #8c8c8c; margin-bottom: 12px;">作者：刘慈欣</p>
+                            <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px;">
+                                <span class="tag tag-blue">科幻</span>
+                                <span class="tag tag-orange">初中</span>
+                                <span class="tag tag-green">获奖作品</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 12px; color: #8c8c8c;">
+                                <span>约30万字</span>
+                                <span>被使用 156 次</span>
+                            </div>
+                            <div style="display: flex; gap: 8px;">
+                                <button class="btn btn-primary btn-sm" style="flex: 1;" onclick="viewBook(1)">查看</button>
+                                <button class="btn btn-secondary btn-sm" onclick="editBook(1)">编辑</button>
+                                <button class="btn btn-secondary btn-sm" style="color: #ff4d4f;" onclick="deleteBook(1)">删除</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 书籍卡片 2 -->
+                    <div class="card" style="cursor: pointer; transition: all 0.3s;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 4px 16px rgba(0,0,0,0.1)'" onmouseout="this.style.transform=''; this.style.boxShadow=''">
+                        <div style="width: 100%; height: 180px; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border-radius: 8px 8px 0 0; display: flex; align-items: center; justify-content: center; color: white; font-size: 28px; font-weight: 700; text-align: center; padding: 20px;">红楼梦</div>
+                        <div class="card-body">
+                            <h3 style="font-size: 16px; font-weight: 600; color: #262626; margin-bottom: 8px;">红楼梦</h3>
+                            <p style="font-size: 13px; color: #8c8c8c; margin-bottom: 12px;">作者：曹雪芹</p>
+                            <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px;">
+                                <span class="tag tag-purple">文学</span>
+                                <span class="tag tag-orange">高中</span>
+                                <span class="tag tag-green">经典名著</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 12px; color: #8c8c8c;">
+                                <span>约80万字</span>
+                                <span>被使用 234 次</span>
+                            </div>
+                            <div style="display: flex; gap: 8px;">
+                                <button class="btn btn-primary btn-sm" style="flex: 1;" onclick="viewBook(2)">查看</button>
+                                <button class="btn btn-secondary btn-sm" onclick="editBook(2)">编辑</button>
+                                <button class="btn btn-secondary btn-sm" style="color: #ff4d4f;" onclick="deleteBook(2)">删除</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 书籍卡片 3 -->
+                    <div class="card" style="cursor: pointer; transition: all 0.3s;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 4px 16px rgba(0,0,0,0.1)'" onmouseout="this.style.transform=''; this.style.boxShadow=''">
+                        <div style="width: 100%; height: 180px; background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); border-radius: 8px 8px 0 0; display: flex; align-items: center; justify-content: center; color: white; font-size: 24px; font-weight: 700; text-align: center; padding: 20px;">海底两万里</div>
+                        <div class="card-body">
+                            <h3 style="font-size: 16px; font-weight: 600; color: #262626; margin-bottom: 8px;">海底两万里</h3>
+                            <p style="font-size: 13px; color: #8c8c8c; margin-bottom: 12px;">作者：儒勒·凡尔纳</p>
+                            <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px;">
+                                <span class="tag tag-blue">科幻</span>
+                                <span class="tag tag-orange">初中</span>
+                                <span class="tag tag-green">推荐阅读</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 12px; color: #8c8c8c;">
+                                <span>约25万字</span>
+                                <span>被使用 189 次</span>
+                            </div>
+                            <div style="display: flex; gap: 8px;">
+                                <button class="btn btn-primary btn-sm" style="flex: 1;" onclick="viewBook(3)">查看</button>
+                                <button class="btn btn-secondary btn-sm" onclick="editBook(3)">编辑</button>
+                                <button class="btn btn-secondary btn-sm" style="color: #ff4d4f;" onclick="deleteBook(3)">删除</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 书籍卡片 4 -->
+                    <div class="card" style="cursor: pointer; transition: all 0.3s;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 4px 16px rgba(0,0,0,0.1)'" onmouseout="this.style.transform=''; this.style.boxShadow=''">
+                        <div style="width: 100%; height: 180px; background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); border-radius: 8px 8px 0 0; display: flex; align-items: center; justify-content: center; color: white; font-size: 24px; font-weight: 700; text-align: center; padding: 20px;">骆驼祥子</div>
+                        <div class="card-body">
+                            <h3 style="font-size: 16px; font-weight: 600; color: #262626; margin-bottom: 8px;">骆驼祥子</h3>
+                            <p style="font-size: 13px; color: #8c8c8c; margin-bottom: 12px;">作者：老舍</p>
+                            <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px;">
+                                <span class="tag tag-purple">文学</span>
+                                <span class="tag tag-orange">初中</span>
+                                <span class="tag tag-green">经典名著</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 12px; color: #8c8c8c;">
+                                <span>约15万字</span>
+                                <span>被使用 267 次</span>
+                            </div>
+                            <div style="display: flex; gap: 8px;">
+                                <button class="btn btn-primary btn-sm" style="flex: 1;" onclick="viewBook(4)">查看</button>
+                                <button class="btn btn-secondary btn-sm" onclick="editBook(4)">编辑</button>
+                                <button class="btn btn-secondary btn-sm" style="color: #ff4d4f;" onclick="deleteBook(4)">删除</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 书籍卡片 5 -->
+                    <div class="card" style="cursor: pointer; transition: all 0.3s;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 4px 16px rgba(0,0,0,0.1)'" onmouseout="this.style.transform=''; this.style.boxShadow=''">
+                        <div style="width: 100%; height: 180px; background: linear-gradient(135deg, #30cfd0 0%, #330867 100%); border-radius: 8px 8px 0 0; display: flex; align-items: center; justify-content: center; color: white; font-size: 24px; font-weight: 700; text-align: center; padding: 20px;">西游记</div>
+                        <div class="card-body">
+                            <h3 style="font-size: 16px; font-weight: 600; color: #262626; margin-bottom: 8px;">西游记</h3>
+                            <p style="font-size: 13px; color: #8c8c8c; margin-bottom: 12px;">作者：吴承恩</p>
+                            <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px;">
+                                <span class="tag tag-purple">文学</span>
+                                <span class="tag tag-blue">小学</span>
+                                <span class="tag tag-green">四大名著</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 12px; color: #8c8c8c;">
+                                <span>约60万字</span>
+                                <span>被使用 412 次</span>
+                            </div>
+                            <div style="display: flex; gap: 8px;">
+                                <button class="btn btn-primary btn-sm" style="flex: 1;" onclick="viewBook(5)">查看</button>
+                                <button class="btn btn-secondary btn-sm" onclick="editBook(5)">编辑</button>
+                                <button class="btn btn-secondary btn-sm" style="color: #ff4d4f;" onclick="deleteBook(5)">删除</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 书籍卡片 6 -->
+                    <div class="card" style="cursor: pointer; transition: all 0.3s;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 4px 16px rgba(0,0,0,0.1)'" onmouseout="this.style.transform=''; this.style.boxShadow=''">
+                        <div style="width: 100%; height: 180px; background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); border-radius: 8px 8px 0 0; display: flex; align-items: center; justify-content: center; color: #333; font-size: 24px; font-weight: 700; text-align: center; padding: 20px;">昆虫记</div>
+                        <div class="card-body">
+                            <h3 style="font-size: 16px; font-weight: 600; color: #262626; margin-bottom: 8px;">昆虫记</h3>
+                            <p style="font-size: 13px; color: #8c8c8c; margin-bottom: 12px;">作者：法布尔</p>
+                            <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px;">
+                                <span class="tag tag-green">科普</span>
+                                <span class="tag tag-blue">小学</span>
+                                <span class="tag tag-orange">推荐阅读</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 12px; color: #8c8c8c;">
+                                <span>约35万字</span>
+                                <span>被使用 298 次</span>
+                            </div>
+                            <div style="display: flex; gap: 8px;">
+                                <button class="btn btn-primary btn-sm" style="flex: 1;" onclick="viewBook(6)">查看</button>
+                                <button class="btn btn-secondary btn-sm" onclick="editBook(6)">编辑</button>
+                                <button class="btn btn-secondary btn-sm" style="color: #ff4d4f;" onclick="deleteBook(6)">删除</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 分页 -->
+                <div class="pagination">
+                    <div class="pagination-item disabled">上一页</div>
+                    <div class="pagination-item active">1</div>
+                    <div class="pagination-item">2</div>
+                    <div class="pagination-item">3</div>
+                    <div class="pagination-item">4</div>
+                    <div class="pagination-item">5</div>
+                    <div class="pagination-item">...</div>
+                    <div class="pagination-item">118</div>
+                    <div class="pagination-item">下一页</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 添加书籍模态框 -->
+    <div class="modal-overlay" id="addBookModal" style="display: none;">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">添加书籍</h3>
+                <span class="modal-close" onclick="hideModal('addBookModal')">×</span>
+            </div>
+            <div class="modal-body">
+                <form id="addBookForm">
+                    <div class="form-group">
+                        <label class="form-label">书名 <span class="required">*</span></label>
+                        <input type="text" class="form-input" placeholder="请输入书名" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">作者 <span class="required">*</span></label>
+                        <input type="text" class="form-input" placeholder="请输入作者" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">ISBN</label>
+                        <input type="text" class="form-input" placeholder="请输入ISBN">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">分类 <span class="required">*</span></label>
+                        <select class="form-select" required>
+                            <option value="">请选择分类</option>
+                            <option>文学</option>
+                            <option>科幻</option>
+                            <option>历史</option>
+                            <option>科普</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">适合年级 <span class="required">*</span></label>
+                        <select class="form-select" required>
+                            <option value="">请选择年级</option>
+                            <option>小学</option>
+                            <option>初中</option>
+                            <option>高中</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">字数</label>
+                        <input type="number" class="form-input" placeholder="请输入字数（万字）">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">书籍简介</label>
+                        <textarea class="form-textarea" placeholder="请输入书籍简介"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="hideModal('addBookModal')">取消</button>
+                <button class="btn btn-primary" onclick="submitAddBook()">确定</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="common/admin-common.js"></script>
+    <script>
+        // 页面初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            pageManager.renderHeader(['内容管理', '书库管理']);
+        });
+
+        // 重置筛选条件
+        function resetFilters() {
+            const selects = document.querySelectorAll('.form-select');
+            selects.forEach(select => select.selectedIndex = 0);
+            showToast('筛选条件已重置');
+        }
+
+        // 查看书籍详情
+        function viewBook(id) {
+            showToast('查看书籍详情功能开发中', 'info');
+        }
+
+        // 编辑书籍
+        function editBook(id) {
+            showToast('编辑书籍功能开发中', 'info');
+        }
+
+        // 删除书籍
+        function deleteBook(id) {
+            showConfirm('确定要删除这本书吗？', () => {
+                showToast('删除成功');
+            });
+        }
+
+        // 提交添加书籍
+        function submitAddBook() {
+            const form = document.getElementById('addBookForm');
+            if (form.checkValidity()) {
+                hideModal('addBookModal');
+                showToast('添加书籍成功');
+                form.reset();
+            } else {
+                form.reportValidity();
+            }
+        }
+    </script>
+</body>
+</html>

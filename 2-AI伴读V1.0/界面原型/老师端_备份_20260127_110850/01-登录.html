@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>登录 - 校校读吧-老师端</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: "Source Han Sans CN", "Noto Sans CJK SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background: #F5F7FA; width: 375px; margin: 0 auto; min-height: 100vh; display: flex; flex-direction: column; }
+
+        .login-header { padding: 48px 24px 24px; text-align: center; }
+        .logo { width: 64px; height: 64px; background: linear-gradient(135deg, #2E5BFF 0%, #1E4BEF 100%); border-radius: 16px; margin: 0 auto 12px; display: flex; align-items: center; justify-content: center; font-size: 28px; box-shadow: 0 4px 12px rgba(46, 91, 255, 0.3); }
+        .app-title { font-size: 20px; font-weight: 600; color: #333333; margin-bottom: 4px; }
+        .app-subtitle { font-size: 13px; color: #999999; }
+
+        .login-content { flex: 1; padding: 20px; }
+
+        .tab-bar { display: flex; background: white; border-radius: 10px; padding: 4px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+        .tab-item { flex: 1; padding: 10px 0; text-align: center; font-size: 14px; color: #666666; cursor: pointer; border-radius: 6px; transition: all 0.3s; }
+        .tab-item.active { background: #2E5BFF; color: white; font-weight: 500; }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        .wechat-section { background: white; border-radius: 12px; padding: 28px 20px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+        .wechat-icon { width: 56px; height: 56px; background: #07C160; border-radius: 50%; margin: 0 auto 14px; display: flex; align-items: center; justify-content: center; }
+        .wechat-icon i { font-size: 28px; color: white; }
+        .wechat-title { font-size: 15px; color: #333333; margin-bottom: 6px; font-weight: 500; }
+        .wechat-desc { font-size: 12px; color: #999999; margin-bottom: 20px; }
+        .wechat-btn { width: 100%; padding: 13px; background: #07C160; color: white; border: none; border-radius: 8px; font-size: 15px; font-weight: 500; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.3s; }
+        .wechat-btn:active { background: #06AD56; transform: scale(0.98); }
+        .wechat-btn i { font-size: 18px; }
+
+        .phone-section { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+        .form-group { margin-bottom: 14px; }
+        .input-wrapper { position: relative; }
+        .input-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #999999; font-size: 15px; }
+        .form-input { width: 100%; padding: 12px 12px 12px 38px; border: 1px solid #e8e8e8; border-radius: 8px; font-size: 14px; color: #333333; background: #fafafa; transition: all 0.3s; }
+        .form-input:focus { outline: none; border-color: #2E5BFF; background: white; box-shadow: 0 0 0 3px rgba(46, 91, 255, 0.1); }
+        .form-input::placeholder { color: #bfbfbf; }
+        .form-input.error { border-color: #ff4d4f; }
+
+        .error-tip { font-size: 12px; color: #ff4d4f; margin-top: 4px; display: none; }
+        .error-tip.show { display: block; }
+
+        .code-input-group { display: flex; gap: 10px; }
+        .code-input-group .input-wrapper { flex: 1; }
+        .get-code-btn { padding: 12px 14px; background: #2E5BFF; color: white; border: none; border-radius: 8px; font-size: 13px; cursor: pointer; white-space: nowrap; transition: all 0.3s; }
+        .get-code-btn:active { background: #1E4BEF; }
+        .get-code-btn:disabled { background: #d9d9d9; cursor: not-allowed; }
+
+        .login-btn { width: 100%; padding: 13px; background: linear-gradient(135deg, #2E5BFF, #1E4BEF); color: white; border: none; border-radius: 8px; font-size: 15px; font-weight: 500; cursor: pointer; transition: all 0.3s; margin-top: 6px; }
+        .login-btn:active { transform: scale(0.98); }
+        .login-btn:disabled { background: #d9d9d9; cursor: not-allowed; }
+
+        .footer-tip { text-align: center; padding: 16px; font-size: 13px; color: #999999; }
+        .footer-link { color: #2E5BFF; text-decoration: none; }
+
+        .agreement { text-align: center; padding: 16px 20px 32px; font-size: 12px; color: #bfbfbf; line-height: 1.6; margin-top: auto; }
+        .agreement a { color: #999999; text-decoration: none; }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="login-header">
+        <div class="logo">📚</div>
+        <div class="app-title">校校读吧</div>
+        <div class="app-subtitle">老师端</div>
+    </div>
+
+    <div class="login-content">
+        <div class="tab-bar">
+            <div class="tab-item active" onclick="switchTab('wechat')">微信登录</div>
+            <div class="tab-item" onclick="switchTab('phone')">手机号登录</div>
+        </div>
+
+        <!-- 微信授权登录（默认显示） -->
+        <div class="tab-content active" id="wechat-tab">
+            <div class="wechat-section">
+                <div class="wechat-icon">
+                    <i class="fa-brands fa-weixin"></i>
+                </div>
+                <div class="wechat-title">微信快捷登录</div>
+                <div class="wechat-desc">授权后即可快速登录，无需输入账号密码</div>
+                <button class="wechat-btn" onclick="wechatLogin()">
+                    微信一键登录
+                </button>
+            </div>
+        </div>
+
+        <!-- 手机验证码登录 -->
+        <div class="tab-content" id="phone-tab">
+            <div class="phone-section">
+                <form onsubmit="return handleCodeLogin(event)">
+                    <div class="form-group">
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-mobile-screen input-icon"></i>
+                            <input type="tel" class="form-input" id="phoneInput" placeholder="请输入手机号" maxlength="11">
+                            <div class="error-tip" id="phoneError">请输入正确的11位手机号</div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="code-input-group">
+                            <div class="input-wrapper">
+                                <i class="fa-solid fa-shield-halved input-icon"></i>
+                                <input type="text" class="form-input" id="codeInput" placeholder="请输入验证码" maxlength="6">
+                                <div class="error-tip" id="codeError">请输入6位验证码</div>
+                            </div>
+                            <button type="button" class="get-code-btn" id="getCodeBtn" onclick="getVerificationCode()">获取验证码</button>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="login-btn">登录</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="footer-tip">
+            首次使用？<a href="javascript:void(0)" class="footer-link" onclick="alert('请联系管理员开通账号')">联系管理员</a>
+        </div>
+    </div>
+
+    <div class="agreement">
+        登录即表示同意 <a href="#">用户协议</a> 和 <a href="#">隐私政策</a>
+    </div>
+
+    <script src="./router.js"></script>
+    <script>
+        let countdown = 0
+        let countdownTimer = null
+
+        // 切换Tab
+        function switchTab(tab) {
+            // 更新Tab样式
+            document.querySelectorAll('.tab-item').forEach((item, index) => {
+                item.classList.toggle('active', (tab === 'wechat' && index === 0) || (tab === 'phone' && index === 1))
+            })
+
+            // 更新内容显示
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'))
+            document.getElementById(`${tab}-tab`).classList.add('active')
+
+            // 清空表单
+            clearAllForms()
+        }
+
+        // 清空所有表单
+        function clearAllForms() {
+            document.querySelectorAll('.form-input').forEach(input => {
+                input.value = ''
+                input.classList.remove('error')
+            })
+            document.querySelectorAll('.error-tip').forEach(tip => tip.classList.remove('show'))
+        }
+
+        // 微信授权登录
+        function wechatLogin() {
+            // 模拟微信授权登录
+            console.log('微信授权登录')
+
+            // 保存登录状态
+            localStorage.setItem('isLoggedIn', 'true')
+            localStorage.setItem('userInfo', JSON.stringify({
+                name: '王老师',
+                account: 'wx_138****8888',
+                title: '语文教师 · 初中部'
+            }))
+
+            alert('微信授权登录成功！')
+
+            // 跳转到首页
+            wx.redirectTo({ url: '06-阅读计划列表.html' })
+        }
+
+        // 验证码登录
+        function handleCodeLogin(event) {
+            event.preventDefault()
+
+            const phone = document.getElementById('phoneInput').value.trim()
+            const code = document.getElementById('codeInput').value.trim()
+
+            // 验证
+            let isValid = true
+
+            const phoneRegex = /^1[3-9]\d{9}$/
+            if (!phoneRegex.test(phone)) {
+                showError('phoneInput', 'phoneError', '请输入正确的11位手机号')
+                isValid = false
+            } else {
+                hideError('phoneInput', 'phoneError')
+            }
+
+            if (code.length !== 6) {
+                showError('codeInput', 'codeError', '请输入6位验证码')
+                isValid = false
+            } else {
+                hideError('codeInput', 'codeError')
+            }
+
+            if (!isValid) return false
+
+            // 模拟登录
+            console.log('验证码登录:', { phone, code })
+
+            // 保存登录状态
+            localStorage.setItem('isLoggedIn', 'true')
+            localStorage.setItem('userInfo', JSON.stringify({
+                name: '王老师',
+                account: phone,
+                title: '语文教师 · 初中部'
+            }))
+
+            alert('登录成功！')
+
+            // 跳转到首页
+            wx.redirectTo({ url: '06-阅读计划列表.html' })
+
+            return false
+        }
+
+        // 获取验证码
+        function getVerificationCode() {
+            const phone = document.getElementById('phoneInput').value.trim()
+            const phoneRegex = /^1[3-9]\d{9}$/
+
+            if (!phoneRegex.test(phone)) {
+                showError('phoneInput', 'phoneError', '请输入正确的11位手机号')
+                return
+            }
+
+            hideError('phoneInput', 'phoneError')
+
+            // 开始倒计时
+            countdown = 60
+            updateCodeButton()
+
+            countdownTimer = setInterval(() => {
+                countdown--
+                if (countdown <= 0) {
+                    clearInterval(countdownTimer)
+                    countdown = 0
+                }
+                updateCodeButton()
+            }, 1000)
+
+            // 模拟发送验证码
+            console.log('发送验证码到:', phone)
+            alert('验证码已发送，请注意查收')
+        }
+
+        // 更新验证码按钮状态
+        function updateCodeButton() {
+            const btn = document.getElementById('getCodeBtn')
+            if (countdown > 0) {
+                btn.textContent = `${countdown}秒后重试`
+                btn.disabled = true
+            } else {
+                btn.textContent = '获取验证码'
+                btn.disabled = false
+            }
+        }
+
+        // 显示错误
+        function showError(inputId, errorId, message) {
+            const input = document.getElementById(inputId)
+            const error = document.getElementById(errorId)
+            input.classList.add('error')
+            error.textContent = message
+            error.classList.add('show')
+        }
+
+        // 隐藏错误
+        function hideError(inputId, errorId) {
+            const input = document.getElementById(inputId)
+            const error = document.getElementById(errorId)
+            input.classList.remove('error')
+            error.classList.remove('show')
+        }
+    </script>
+</body>
+</html>

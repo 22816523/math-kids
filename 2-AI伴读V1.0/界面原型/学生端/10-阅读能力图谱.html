@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>阅读能力图谱 - 校校读吧-学生端</title>
+    <link rel="stylesheet" href="design-system.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background: #f5f5f5; width: 375px; margin: 0 auto; min-height: 100vh; padding-bottom: 80px; opacity: 0; }
+
+        .navbar { background: linear-gradient(135deg, var(--color-primary), var(--color-secondary)); color: white; height: 44px; display: flex; align-items: center; padding: 0 16px; }
+        .back-btn { font-size: 20px; cursor: pointer; margin-right: 12px; }
+        .navbar-title { font-size: 18px; line-height: 1.4; font-weight: 600; flex: 1; }
+
+        .header-card { background: linear-gradient(135deg, var(--color-primary), var(--color-secondary)); color: white; padding: 20px 16px; margin: 0 0 16px; }
+        .user-info { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+        .user-avatar { width: 48px; height: 48px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 600; color: var(--color-primary); }
+        .user-meta { flex: 1; }
+        .user-name { font-size: 18px; font-weight: 600; margin-bottom: 4px; }
+        .user-level { font-size: 13px; opacity: 0.9; }
+        .overall-score { text-align: center; background: rgba(255, 255, 255, 0.15); border-radius: 12px; padding: 16px; }
+        .score-label { font-size: 13px; opacity: 0.9; margin-bottom: 8px; }
+        .score-value { font-size: 48px; font-weight: 700; }
+        .score-rank { font-size: 13px; opacity: 0.9; margin-top: 8px; }
+        .refresh-tip { font-size: 12px; opacity: 0.8; margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255, 255, 255, 0.2); display: flex; align-items: center; justify-content: center; gap: 6px; }
+        .refresh-tip i { font-size: 14px; color: white; opacity: 1; }
+
+        .content-container { padding: 0 16px; }
+
+        .radar-card { background: white; border-radius: 12px; padding: 16px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06); }
+        .card-title { font-size: 16px; font-weight: 600; color: #262626; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+        .card-title i { color: var(--color-primary); }
+
+        .radar-container { position: relative; width: 280px; height: 280px; margin: 0 auto; }
+        .radar-svg { width: 100%; height: 100%; }
+        .radar-axis { stroke: #e8e8e8; stroke-width: 1; fill: none; }
+        .radar-grid { stroke: #f0f0f0; stroke-width: 1; fill: none; }
+        .radar-area { fill: rgba(0, 201, 167, 0.2); stroke: var(--color-primary); stroke-width: 2; }
+        .radar-point { fill: var(--color-primary); }
+        .radar-label { font-size: 12px; fill: #595959; text-anchor: middle; }
+
+        .ability-list { margin-top: 20px; }
+        .ability-item { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid #f5f5f5; }
+        .ability-item:last-child { border-bottom: none; }
+        .ability-icon { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; color: white; }
+        .ability-icon i { color: white; opacity: 1; }
+        .ability-info { flex: 1; }
+        .ability-name { font-size: 14px; font-weight: 600; color: #262626; margin-bottom: 4px; }
+        .ability-bar { height: 6px; background: #f0f0f0; border-radius: 3px; overflow: hidden; }
+        .ability-fill { height: 100%; border-radius: 3px; transition: width 0.5s ease; }
+        .ability-score { font-size: 16px; font-weight: 600; color: #262626; min-width: 40px; text-align: right; }
+
+        .suggestion-card { background: white; border-radius: 12px; padding: 16px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06); }
+        .suggestion-item { display: flex; gap: 12px; padding: 12px; background: #f9f9f9; border-radius: 8px; margin-bottom: 12px; }
+        .suggestion-item:last-child { margin-bottom: 0; }
+        .suggestion-icon { width: 40px; height: 40px; background: linear-gradient(135deg, #fff7e6, #ffe7ba); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+        .suggestion-content { flex: 1; }
+        .suggestion-title { font-size: 14px; font-weight: 600; color: #262626; margin-bottom: 4px; }
+        .suggestion-desc { font-size: 13px; color: #8c8c8c; line-height: 1.5; }
+
+        .history-card { background: white; border-radius: 12px; padding: 16px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06); }
+        .history-chart { display: flex; align-items: flex-end; justify-content: space-between; height: 120px; padding: 0 8px; }
+        .history-bar { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+        .bar-value { font-size: 11px; color: #8c8c8c; }
+        .bar-fill { width: 24px; border-radius: 4px 4px 0 0; background: linear-gradient(180deg, var(--color-primary), var(--color-secondary)); transition: height 0.5s ease; }
+        .bar-label { font-size: 11px; color: #8c8c8c; }
+
+        .tabbar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 375px; height: 50px; background: white; border-top: 1px solid #f0f0f0; display: flex; box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.06); }
+        .tab-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; cursor: pointer; transition: all 0.3s; }
+        .tab-item:hover { background: #fafafa; }
+        .tab-icon { font-size: 20px; line-height: 1.2; }
+        .tab-label { font-size: 10px; line-height: 1.4; color: #8c8c8c; }
+        .tab-item.active .tab-label { color: var(--color-primary); }
+        .tab-item.active .tab-icon .fa-solid { color: var(--color-primary); opacity: 1; }
+
+        /* Font Awesome图标样式优化 */
+        .fa-solid, .fa-regular {
+            font-weight: 400;
+            color: #595959;
+            opacity: 0.85;
+        }
+        .navbar .fa-solid,
+        .card-title .fa-solid {
+            color: inherit;
+            opacity: 1;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="navbar">
+        <div class="back-btn" onclick="history.back()"><i class="fa-solid fa-chevron-left"></i></div>
+        <div class="navbar-title">阅读能力图谱</div>
+    </div>
+
+    <div class="header-card">
+        <div class="user-info">
+            <div class="user-avatar">小明</div>
+            <div class="user-meta">
+                <div class="user-name">小明</div>
+            </div>
+        </div>
+        <div class="overall-score">
+            <div class="score-label">综合阅读能力</div>
+            <div class="score-value">85</div>
+            <div class="score-rank">超过 78% 的同学</div>
+            <div class="refresh-tip"><i class="fa-solid fa-sync-alt"></i> 每完成一本书的测评后更新</div>
+        </div>
+    </div>
+
+    <div class="content-container">
+        <div class="radar-card">
+            <div class="card-title"><i class="fa-solid fa-chart-pie"></i> 能力雷达图</div>
+            <div class="radar-container">
+                <svg class="radar-svg" viewBox="0 0 280 280">
+                    <!-- 背景网格 -->
+                    <polygon class="radar-grid" points="140,40 220,90 220,190 140,240 60,190 60,90"/>
+                    <polygon class="radar-grid" points="140,65 195,102.5 195,177.5 140,215 85,177.5 85,102.5"/>
+                    <polygon class="radar-grid" points="140,90 170,115 170,165 140,190 110,165 110,115"/>
+                    <!-- 轴线 -->
+                    <line class="radar-axis" x1="140" y1="140" x2="140" y2="40"/>
+                    <line class="radar-axis" x1="140" y1="140" x2="220" y2="90"/>
+                    <line class="radar-axis" x1="140" y1="140" x2="220" y2="190"/>
+                    <line class="radar-axis" x1="140" y1="140" x2="140" y2="240"/>
+                    <line class="radar-axis" x1="140" y1="140" x2="60" y2="190"/>
+                    <line class="radar-axis" x1="140" y1="140" x2="60" y2="90"/>
+                    <!-- 数据区域 -->
+                    <polygon class="radar-area" points="140,55 200,95 195,175 140,210 75,170 80,100"/>
+                    <!-- 数据点 -->
+                    <circle class="radar-point" cx="140" cy="55" r="4"/>
+                    <circle class="radar-point" cx="200" cy="95" r="4"/>
+                    <circle class="radar-point" cx="195" cy="175" r="4"/>
+                    <circle class="radar-point" cx="140" cy="210" r="4"/>
+                    <circle class="radar-point" cx="75" cy="170" r="4"/>
+                    <circle class="radar-point" cx="80" cy="100" r="4"/>
+                    <!-- 标签 -->
+                    <text class="radar-label" x="140" y="25">理解能力</text>
+                    <text class="radar-label" x="235" y="85">分析能力</text>
+                    <text class="radar-label" x="235" y="200">表达能力</text>
+                    <text class="radar-label" x="140" y="265">思辨能力</text>
+                    <text class="radar-label" x="45" y="200">创造能力</text>
+                    <text class="radar-label" x="45" y="85">记忆能力</text>
+                </svg>
+            </div>
+
+            <div class="ability-list">
+                <div class="ability-item">
+                    <div class="ability-icon" style="background: linear-gradient(135deg, #667eea, #764ba2);"><i class="fa-solid fa-brain"></i></div>
+                    <div class="ability-info">
+                        <div class="ability-name">理解能力</div>
+                        <div class="ability-bar"><div class="ability-fill" style="width: 90%; background: linear-gradient(90deg, #667eea, #764ba2);"></div></div>
+                    </div>
+                    <div class="ability-score">90</div>
+                </div>
+                <div class="ability-item">
+                    <div class="ability-icon" style="background: linear-gradient(135deg, #f093fb, #f5576c);"><i class="fa-solid fa-magnifying-glass-chart"></i></div>
+                    <div class="ability-info">
+                        <div class="ability-name">分析能力</div>
+                        <div class="ability-bar"><div class="ability-fill" style="width: 85%; background: linear-gradient(90deg, #f093fb, #f5576c);"></div></div>
+                    </div>
+                    <div class="ability-score">85</div>
+                </div>
+                <div class="ability-item">
+                    <div class="ability-icon" style="background: linear-gradient(135deg, #4facfe, #00f2fe);"><i class="fa-solid fa-comment-dots"></i></div>
+                    <div class="ability-info">
+                        <div class="ability-name">表达能力</div>
+                        <div class="ability-bar"><div class="ability-fill" style="width: 80%; background: linear-gradient(90deg, #4facfe, #00f2fe);"></div></div>
+                    </div>
+                    <div class="ability-score">80</div>
+                </div>
+                <div class="ability-item">
+                    <div class="ability-icon" style="background: linear-gradient(135deg, #43e97b, #38f9d7);"><i class="fa-solid fa-scale-balanced"></i></div>
+                    <div class="ability-info">
+                        <div class="ability-name">思辨能力</div>
+                        <div class="ability-bar"><div class="ability-fill" style="width: 75%; background: linear-gradient(90deg, #43e97b, #38f9d7);"></div></div>
+                    </div>
+                    <div class="ability-score">75</div>
+                </div>
+                <div class="ability-item">
+                    <div class="ability-icon" style="background: linear-gradient(135deg, #fa709a, #fee140);"><i class="fa-solid fa-lightbulb"></i></div>
+                    <div class="ability-info">
+                        <div class="ability-name">创造能力</div>
+                        <div class="ability-bar"><div class="ability-fill" style="width: 82%; background: linear-gradient(90deg, #fa709a, #fee140);"></div></div>
+                    </div>
+                    <div class="ability-score">82</div>
+                </div>
+                <div class="ability-item">
+                    <div class="ability-icon" style="background: linear-gradient(135deg, #a8edea, #fed6e3);"><i class="fa-solid fa-database"></i></div>
+                    <div class="ability-info">
+                        <div class="ability-name">记忆能力</div>
+                        <div class="ability-bar"><div class="ability-fill" style="width: 88%; background: linear-gradient(90deg, #a8edea, #fed6e3);"></div></div>
+                    </div>
+                    <div class="ability-score">88</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="suggestion-card">
+            <div class="card-title"><i class="fa-solid fa-wand-magic-sparkles"></i> 提升建议</div>
+            <div class="suggestion-item">
+                <div class="suggestion-icon">💡</div>
+                <div class="suggestion-content">
+                    <div class="suggestion-title">多思考多提问</div>
+                    <div class="suggestion-desc">读完故事后想一想：为什么主人公会这样做？如果是你会怎么做？</div>
+                </div>
+            </div>
+            <div class="suggestion-item">
+                <div class="suggestion-icon">📝</div>
+                <div class="suggestion-content">
+                    <div class="suggestion-title">写写读后感</div>
+                    <div class="suggestion-desc">每次读完书后写几句话，说说你最喜欢的人物或情节</div>
+                </div>
+            </div>
+            <div class="suggestion-item">
+                <div class="suggestion-icon">📚</div>
+                <div class="suggestion-content">
+                    <div class="suggestion-title">推荐阅读</div>
+                    <div class="suggestion-desc">《夏洛的网》《小王子》《窗边的小豆豆》</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="history-card">
+            <div class="card-title"><i class="fa-solid fa-chart-line"></i> 能力成长趋势</div>
+            <div class="history-chart">
+                <div class="history-bar">
+                    <div class="bar-value">72</div>
+                    <div class="bar-fill" style="height: 72px;"></div>
+                    <div class="bar-label">9月</div>
+                </div>
+                <div class="history-bar">
+                    <div class="bar-value">75</div>
+                    <div class="bar-fill" style="height: 75px;"></div>
+                    <div class="bar-label">10月</div>
+                </div>
+                <div class="history-bar">
+                    <div class="bar-value">78</div>
+                    <div class="bar-fill" style="height: 78px;"></div>
+                    <div class="bar-label">11月</div>
+                </div>
+                <div class="history-bar">
+                    <div class="bar-value">82</div>
+                    <div class="bar-fill" style="height: 82px;"></div>
+                    <div class="bar-label">12月</div>
+                </div>
+                <div class="history-bar">
+                    <div class="bar-value">85</div>
+                    <div class="bar-fill" style="height: 85px;"></div>
+                    <div class="bar-label">1月</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tabbar">
+        <div class="tab-item" onclick="Router.toStudentPage('home')">
+            <div class="tab-icon"><i class="fa-solid fa-house"></i></div>
+            <div class="tab-label">首页</div>
+        </div>
+        <div class="tab-item" onclick="Router.toStudentPage('bookshelf')">
+            <div class="tab-icon"><i class="fa-solid fa-book"></i></div>
+            <div class="tab-label">书架</div>
+        </div>
+        <div class="tab-item" onclick="Router.toStudentPage('profile')">
+            <div class="tab-icon"><i class="fa-solid fa-user"></i></div>
+            <div class="tab-label">我的</div>
+        </div>
+    </div>
+
+    <!-- 引入路由管理脚本 -->
+    <script src="./router.js"></script>
+</body>
+</html>

@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI导语 - 校校读吧-学生端</title>
+    <link rel="stylesheet" href="design-system.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background: linear-gradient(180deg, #e6f7ff 0%, #f5f5f5 100%); width: 375px; margin: 0 auto; min-height: 100vh; opacity: 0; }
+
+        .navbar { background: linear-gradient(135deg, var(--color-primary), var(--color-secondary)); color: white; height: 44px; display: flex; align-items: center; padding: 0 16px; }
+        .back-btn { font-size: 20px; cursor: pointer; margin-right: 12px; }
+        .navbar-title { font-size: 18px; line-height: 1.4; font-weight: 600; flex: 1; }
+
+        .welcome-line { padding: 12px 16px; font-size: 14px; color: #595959; background: rgba(255,255,255,0.6); }
+
+        .ai-container { padding: 24px 16px; display: flex; flex-direction: column; align-items: center; }
+
+        .ai-avatar { width: 120px; height: 120px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 60px; color: white; box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4); margin-bottom: 16px; animation: bounce 2s ease-in-out infinite; }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .ai-name { font-size: 20px; font-weight: 600; color: #262626; margin-bottom: 6px; }
+        .ai-intro { font-size: 12px; color: #595959; margin-bottom: 20px; }
+
+        .speech-bubble { background: white; border-radius: 16px; padding: 14px; margin-bottom: 12px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); position: relative; width: 100%; }
+        .speech-bubble::before { content: ''; position: absolute; top: -10px; left: 50%; transform: translateX(-50%); border-left: 10px solid transparent; border-right: 10px solid transparent; border-bottom: 10px solid white; }
+
+        .speech-title { font-size: 14px; font-weight: 600; color: #262626; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; }
+        .speech-title span { display: flex; align-items: center; gap: 8px; }
+        .sound-btn { width: 32px; height: 32px; border-radius: 50%; background: #e6fff9; border: none; font-size: 14px; color: var(--color-primary); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s; }
+        .sound-btn:hover { background: #d0f5ed; }
+        .sound-btn.muted { background: #fff2f0; color: #ff4d4f; }
+        .speech-content { font-size: 13px; line-height: 1.6; color: #595959; }
+        .speech-content p { margin-bottom: 8px; }
+        .speech-content p:last-child { margin-bottom: 0; }
+
+        .book-info { background: white; border-radius: 12px; padding: 12px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06); width: 100%; display: flex; align-items: center; gap: 12px; }
+        .book-cover { width: 40px; height: 54px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-size: 18px; flex-shrink: 0; }
+        .book-meta { flex: 1; }
+        .book-title { font-size: 14px; font-weight: 600; color: #262626; margin-bottom: 2px; }
+        .book-author { font-size: 12px; color: #8c8c8c; font-weight: 400; }
+        .book-chapter { font-size: 12px; color: var(--color-primary); font-weight: 500; }
+
+        .reading-tips { background: #fff7e6; border-radius: 8px; padding: 12px; }
+        .tips-title { font-size: 13px; font-weight: 600; color: #fa8c16; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+        .tips-list { font-size: 13px; color: #595959; line-height: 1.8; }
+        .tips-list li { margin-bottom: 4px; }
+
+        .action-btns { display: flex; gap: 12px; width: 100%; flex-wrap: wrap; }
+        .btn { flex: 1; height: 48px; border-radius: 24px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px; min-width: calc(50% - 6px); }
+        .btn-secondary { background: white; color: var(--color-primary); border: 2px solid var(--color-primary); }
+        .btn-secondary:hover { background: #e6fff9; }
+        .btn-primary { background: linear-gradient(135deg, var(--color-primary), var(--color-secondary)); color: white; border: none; }
+        .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+        .btn-audio { background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; width: 100%; flex: none; }
+        .btn-audio:hover { opacity: 0.9; transform: translateY(-1px); }
+
+        /* 导读视频播放器 */
+        .video-player { background: white; border-radius: 12px; padding: 16px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06); width: 100%; }
+        .video-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+        .video-title { font-size: 14px; font-weight: 600; color: #262626; display: flex; align-items: center; gap: 8px; }
+        .video-container { position: relative; width: 100%; padding-top: 56.25%; background: #000; border-radius: 8px; overflow: hidden; margin-bottom: 12px; }
+        .video-placeholder { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: linear-gradient(135deg, #1a1a2e, #16213e); color: white; }
+        .video-play-btn { width: 60px; height: 60px; border-radius: 50%; background: rgba(255,255,255,0.2); border: 2px solid white; display: flex; align-items: center; justify-content: center; font-size: 24px; cursor: pointer; transition: all 0.3s; margin-bottom: 12px; }
+        .video-play-btn:hover { background: rgba(255,255,255,0.3); transform: scale(1.1); }
+        .video-duration { font-size: 12px; color: rgba(255,255,255,0.8); }
+        .video-info { display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: #8c8c8c; }
+        .video-progress { flex: 1; height: 4px; background: #f0f0f0; border-radius: 2px; margin: 0 12px; overflow: hidden; }
+        .video-progress-fill { height: 100%; background: linear-gradient(135deg, #667eea, #764ba2); width: 0%; }
+
+        /* 听书播放器 */
+        .audio-player { background: white; border-radius: 12px; padding: 16px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06); width: 100%; display: none; }
+        .audio-player.show { display: block; }
+        .audio-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+        .audio-title { font-size: 14px; font-weight: 600; color: #262626; display: flex; align-items: center; gap: 8px; }
+        .audio-close { width: 28px; height: 28px; border-radius: 50%; background: #f5f5f5; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #999; }
+        .audio-progress { margin-bottom: 12px; }
+        .progress-bar { height: 4px; background: #f0f0f0; border-radius: 2px; overflow: hidden; }
+        .progress-fill { height: 100%; background: linear-gradient(135deg, #667eea, #764ba2); width: 35%; transition: width 0.3s; }
+        .progress-time { display: flex; justify-content: space-between; font-size: 12px; color: #999; margin-top: 4px; }
+        .audio-controls { display: flex; align-items: center; justify-content: center; gap: 24px; }
+        .audio-btn { width: 36px; height: 36px; border-radius: 50%; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; background: #f5f5f5; color: #595959; transition: all 0.3s; }
+        .audio-btn:hover { background: #e6e6e6; }
+        .audio-btn.play { width: 48px; height: 48px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; font-size: 18px; }
+        .audio-btn.play:hover { opacity: 0.9; }
+        .speed-btn { font-size: 12px; font-weight: 600; width: auto; padding: 0 12px; }
+
+        /* 播放状态指示器 */
+        .playing-indicator { display: flex; align-items: center; gap: 2px; height: 16px; }
+        .playing-indicator .bar { width: 3px; background: #667eea; border-radius: 2px; animation: soundWave 0.8s ease-in-out infinite; }
+        .playing-indicator .bar:nth-child(1) { height: 8px; animation-delay: 0s; }
+        .playing-indicator .bar:nth-child(2) { height: 14px; animation-delay: 0.2s; }
+        .playing-indicator .bar:nth-child(3) { height: 10px; animation-delay: 0.4s; }
+        .playing-indicator .bar:nth-child(4) { height: 16px; animation-delay: 0.1s; }
+        .playing-indicator.paused .bar { animation: none; height: 6px; background: #bfbfbf; }
+        @keyframes soundWave {
+            0%, 100% { transform: scaleY(0.5); }
+            50% { transform: scaleY(1); }
+        }
+
+        /* Font Awesome图标样式优化 */
+        .fa-solid, .fa-regular {
+            font-weight: 400;
+            color: #595959;
+            opacity: 0.85;
+        }
+        .navbar .fa-solid,
+        .ai-avatar .fa-solid,
+        .btn .fa-solid {
+            color: inherit;
+            opacity: 1;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="navbar">
+        <div class="back-btn" onclick="Router.toStudentPage('home')"><i class="fa-solid fa-chevron-left"></i></div>
+        <div class="navbar-title">AI导读</div>
+    </div>
+
+    <div class="welcome-line">你的专属阅读伙伴，小读</div>
+
+    <div class="ai-container">
+        <div class="ai-avatar">
+            <i class="fa-solid fa-robot"></i>
+        </div>
+
+        <div class="speech-bubble">
+            <div class="speech-title">
+                <span><i class="fa-solid fa-comment-dots" style="color: var(--color-primary);"></i> 小读说</span>
+                <button class="sound-btn" onclick="toggleMute(this)" title="静音">
+                    <i class="fa-solid fa-volume-high"></i>
+                </button>
+            </div>
+            <div class="speech-content">
+                <p>同学你好！今天我们要一起阅读《三体》，这本书非常精彩哦！</p>
+                <p>在这一章中，我们将跟随主人公进入一个神秘的世界，了解三体文明的起源。阅读时要注意作者对科学概念的描写方式。</p>
+                <p>今日任务：<span style="color: #ff6b00; font-weight: 600;">阅读15-30页，完成导读单二</span>，完成后记得打卡哦！</p>
+                <button class="btn btn-primary" style="width: 100%; margin-top: 12px;" onclick="Router.toStudentPage('checkin')">
+                    去打卡 <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- 导读视频播放器 -->
+        <div class="video-player" id="videoPlayer">
+            <div class="video-header">
+                <div class="video-title"><i class="fa-solid fa-video" style="color: #667eea;"></i> 导读视频：《三体》第一章导读</div>
+            </div>
+            <div class="video-container">
+                <div class="video-placeholder">
+                    <div class="video-play-btn" onclick="playVideo()">
+                        <i class="fa-solid fa-play" style="margin-left: 4px;"></i>
+                    </div>
+                    <div class="video-duration">时长 08:32</div>
+                </div>
+            </div>
+            <div class="video-info">
+                <span>00:00</span>
+                <div class="video-progress">
+                    <div class="video-progress-fill" id="videoProgressFill"></div>
+                </div>
+                <span>08:32</span>
+            </div>
+        </div>
+
+        <!-- 听书播放器 -->
+        <div class="audio-player show" id="audioPlayer">
+            <div class="audio-header">
+                <div class="audio-title">
+                    <i class="fa-solid fa-headphones" style="color: #667eea;"></i> 听书：第15-30页
+                    <div class="playing-indicator" id="playingIndicator">
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="audio-progress">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div class="progress-time">
+                    <span id="currentTime">05:23</span>
+                    <span id="totalTime">15:30</span>
+                </div>
+            </div>
+            <div class="audio-controls">
+                <button class="audio-btn" onclick="restartAudio()"><i class="fa-solid fa-rotate-left"></i></button>
+                <button class="audio-btn" onclick="seekBackward()"><i class="fa-solid fa-backward"></i></button>
+                <button class="audio-btn play" id="playBtn" onclick="togglePlay()"><i class="fa-solid fa-pause"></i></button>
+                <button class="audio-btn" onclick="seekForward()"><i class="fa-solid fa-forward"></i></button>
+                <button class="audio-btn speed-btn" onclick="changeSpeed()">1.0x</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入路由管理脚本 -->
+    <script src="./router.js"></script>
+    <script>
+        function toggleMute(btn) {
+            btn.classList.toggle('muted');
+            const icon = btn.querySelector('i');
+            if (btn.classList.contains('muted')) {
+                icon.className = 'fa-solid fa-volume-xmark';
+            } else {
+                icon.className = 'fa-solid fa-volume-high';
+            }
+        }
+
+        // 听书播放器功能
+        let isPlaying = true;
+        let playbackSpeed = 1.0;
+        const speeds = [0.5, 0.75, 1.0, 1.25, 1.5, 2.0];
+
+        function toggleAudioPlayer() {
+            const player = document.getElementById('audioPlayer');
+            player.classList.toggle('show');
+        }
+
+        function togglePlay() {
+            isPlaying = !isPlaying;
+            const btn = document.getElementById('playBtn');
+            const icon = btn.querySelector('i');
+            const indicator = document.getElementById('playingIndicator');
+            icon.className = isPlaying ? 'fa-solid fa-pause' : 'fa-solid fa-play';
+            indicator.classList.toggle('paused', !isPlaying);
+        }
+
+        function seekBackward() {
+            // 后退15秒
+            console.log('后退15秒');
+        }
+
+        function seekForward() {
+            // 前进15秒
+            console.log('前进15秒');
+        }
+
+        function restartAudio() {
+            // 从头开始
+            document.getElementById('progressFill').style.width = '0%';
+            document.getElementById('currentTime').textContent = '00:00';
+            console.log('从头开始');
+        }
+
+        function changeSpeed() {
+            const currentIndex = speeds.indexOf(playbackSpeed);
+            const nextIndex = (currentIndex + 1) % speeds.length;
+            playbackSpeed = speeds[nextIndex];
+            document.querySelector('.speed-btn').textContent = playbackSpeed + 'x';
+        }
+
+        // 导读视频播放功能
+        function playVideo() {
+            console.log('播放导读视频');
+            // 实际项目中这里会调用视频播放器
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据导出 - 校校读吧小管家管理平台</title>
+    <link rel="stylesheet" href="common/admin-common.css">    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="admin-layout">
+        <div class="admin-sidebar">
+            <div class="sidebar-header"></div>
+            <div class="sidebar-menu"></div>
+        </div>
+
+        <div class="admin-main">
+            <div class="admin-header"></div>
+
+            <div class="admin-content">
+                <div class="page-header">
+                    <h1 class="page-title">数据导出</h1>
+                    <p class="page-description">导出系统中的各类数据报表</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">快速导出</h3>
+                    </div>
+                    <div class="card-body">
+                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+                            <div class="card" style="padding: 24px; cursor: pointer; transition: all 0.3s; border: 2px solid #f0f0f0;" onmouseover="this.style.borderColor='#1890FF'" onmouseout="this.style.borderColor='#f0f0f0'" onclick="quickExport('student')">
+                                <div style="font-size: 48px; text-align: center; margin-bottom: 16px;"><i class="fa-solid fa-user"></i></div>
+                                <div style="font-size: 16px; font-weight: 600; color: #262626; text-align: center; margin-bottom: 8px;">学生数据</div>
+                                <div style="font-size: 13px; color: #8c8c8c; text-align: center; margin-bottom: 16px;">导出所有学生的基本信息和阅读数据</div>
+                                <button class="btn btn-primary btn-sm" style="width: 100%;">立即导出</button>
+                            </div>
+
+                            <div class="card" style="padding: 24px; cursor: pointer; transition: all 0.3s; border: 2px solid #f0f0f0;" onmouseover="this.style.borderColor='#1890FF'" onmouseout="this.style.borderColor='#f0f0f0'" onclick="quickExport('teacher')">
+                                <div style="font-size: 48px; text-align: center; margin-bottom: 16px;"><i class="fa-solid fa-users"></i></div>
+                                <div style="font-size: 16px; font-weight: 600; color: #262626; text-align: center; margin-bottom: 8px;">教师数据</div>
+                                <div style="font-size: 13px; color: #8c8c8c; text-align: center; margin-bottom: 16px;">导出所有教师的基本信息和管理数据</div>
+                                <button class="btn btn-primary btn-sm" style="width: 100%;">立即导出</button>
+                            </div>
+
+                            <div class="card" style="padding: 24px; cursor: pointer; transition: all 0.3s; border: 2px solid #f0f0f0;" onmouseover="this.style.borderColor='#1890FF'" onmouseout="this.style.borderColor='#f0f0f0'" onclick="quickExport('class')">
+                                <div style="font-size: 48px; text-align: center; margin-bottom: 16px;"><i class="fa-solid fa-graduation-cap"></i></div>
+                                <div style="font-size: 16px; font-weight: 600; color: #262626; text-align: center; margin-bottom: 8px;">班级数据</div>
+                                <div style="font-size: 13px; color: #8c8c8c; text-align: center; margin-bottom: 16px;">导出所有班级的统计数据和排名</div>
+                                <button class="btn btn-primary btn-sm" style="width: 100%;">立即导出</button>
+                            </div>
+
+                            <div class="card" style="padding: 24px; cursor: pointer; transition: all 0.3s; border: 2px solid #f0f0f0;" onmouseover="this.style.borderColor='#1890FF'" onmouseout="this.style.borderColor='#f0f0f0'" onclick="quickExport('checkin')">
+                                <div style="font-size: 48px; text-align: center; margin-bottom: 16px;"><i class="fa-solid fa-book-open"></i></div>
+                                <div style="font-size: 16px; font-weight: 600; color: #262626; text-align: center; margin-bottom: 8px;">打卡记录</div>
+                                <div style="font-size: 13px; color: #8c8c8c; text-align: center; margin-bottom: 16px;">导出学生的阅读打卡记录</div>
+                                <button class="btn btn-primary btn-sm" style="width: 100%;">立即导出</button>
+                            </div>
+
+                            <div class="card" style="padding: 24px; cursor: pointer; transition: all 0.3s; border: 2px solid #f0f0f0;" onmouseover="this.style.borderColor='#1890FF'" onmouseout="this.style.borderColor='#f0f0f0'" onclick="quickExport('assessment')">
+                                <div style="font-size: 48px; text-align: center; margin-bottom: 16px;"><i class="fa-solid fa-circle-check"></i></div>
+                                <div style="font-size: 16px; font-weight: 600; color: #262626; text-align: center; margin-bottom: 8px;">测评数据</div>
+                                <div style="font-size: 13px; color: #8c8c8c; text-align: center; margin-bottom: 16px;">导出学生的测评成绩和答题记录</div>
+                                <button class="btn btn-primary btn-sm" style="width: 100%;">立即导出</button>
+                            </div>
+
+                            <div class="card" style="padding: 24px; cursor: pointer; transition: all 0.3s; border: 2px solid #f0f0f0;" onmouseover="this.style.borderColor='#1890FF'" onmouseout="this.style.borderColor='#f0f0f0'" onclick="quickExport('points')">
+                                <div style="font-size: 48px; text-align: center; margin-bottom: 16px;"><i class="fa-solid fa-star"></i></div>
+                                <div style="font-size: 16px; font-weight: 600; color: #262626; text-align: center; margin-bottom: 8px;">积分记录</div>
+                                <div style="font-size: 13px; color: #8c8c8c; text-align: center; margin-bottom: 16px;">导出学生的积分获取和消耗记录</div>
+                                <button class="btn btn-primary btn-sm" style="width: 100%;">立即导出</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">自定义导出</h3>
+                    </div>
+                    <div class="card-body">
+                        <form id="customExportForm">
+                            <div class="form-group">
+                                <label class="form-label">数据类型 <span class="required">*</span></label>
+                                <select class="form-select" required>
+                                    <option value="">请选择数据类型</option>
+                                    <option>学生数据</option>
+                                    <option>教师数据</option>
+                                    <option>班级数据</option>
+                                    <option>打卡记录</option>
+                                    <option>测评数据</option>
+                                    <option>积分记录</option>
+                                    <option>商城订单</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">时间范围 <span class="required">*</span></label>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                                    <input type="date" class="form-input" required>
+                                    <input type="date" class="form-input" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">筛选条件</label>
+                                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
+                                    <select class="form-select">
+                                        <option value="">选择学校</option>
+                                        <option>示范中学</option>
+                                        <option>实验小学</option>
+                                        <option>第一中学</option>
+                                    </select>
+                                    <select class="form-select">
+                                        <option value="">选择班级</option>
+                                        <option>一年级1班</option>
+                                        <option>一年级2班</option>
+                                        <option>二年级1班</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">导出格式 <span class="required">*</span></label>
+                                <div style="display: flex; gap: 16px;">
+                                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                        <input type="radio" name="format" value="excel" checked>
+                                        <span>Excel (.xlsx)</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                        <input type="radio" name="format" value="csv">
+                                        <span>CSV (.csv)</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                        <input type="radio" name="format" value="pdf">
+                                        <span>PDF (.pdf)</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">选择字段</label>
+                                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; padding: 16px; background: #fafafa; border-radius: 8px;">
+                                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                        <input type="checkbox" checked>
+                                        <span style="font-size: 13px;">姓名</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                        <input type="checkbox" checked>
+                                        <span style="font-size: 13px;">学号</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                        <input type="checkbox" checked>
+                                        <span style="font-size: 13px;">班级</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                        <input type="checkbox" checked>
+                                        <span style="font-size: 13px;">阅读数</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                        <input type="checkbox">
+                                        <span style="font-size: 13px;">打卡率</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                        <input type="checkbox">
+                                        <span style="font-size: 13px;">测评分数</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                        <input type="checkbox">
+                                        <span style="font-size: 13px;">积分</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                        <input type="checkbox">
+                                        <span style="font-size: 13px;">等级</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div style="display: flex; gap: 12px;">
+                                <button type="submit" class="btn btn-primary">开始导出</button>
+                                <button type="button" class="btn btn-secondary">重置</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">导出历史</h3>
+                    </div>
+                    <div class="card-body" style="padding: 0;">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>文件名</th>
+                                    <th style="width: 150px">数据类型</th>
+                                    <th style="width: 150px">导出时间</th>
+                                    <th style="width: 100px">文件大小</th>
+                                    <th style="width: 100px">状态</th>
+                                    <th style="width: 150px">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>学生数据_2026-01-04.xlsx</td>
+                                    <td>学生数据</td>
+                                    <td>2026-01-04 10:30</td>
+                                    <td>2.5 MB</td>
+                                    <td><span class="tag tag-green">已完成</span></td>
+                                    <td>
+                                        <button class="btn btn-primary btn-sm" onclick="downloadFile(1)">下载</button>
+                                        <button class="btn btn-secondary btn-sm" onclick="deleteFile(1)">删除</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>打卡记录_2026-01-03.xlsx</td>
+                                    <td>打卡记录</td>
+                                    <td>2026-01-03 15:20</td>
+                                    <td>1.8 MB</td>
+                                    <td><span class="tag tag-green">已完成</span></td>
+                                    <td>
+                                        <button class="btn btn-primary btn-sm" onclick="downloadFile(2)">下载</button>
+                                        <button class="btn btn-secondary btn-sm" onclick="deleteFile(2)">删除</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>测评数据_2026-01-02.xlsx</td>
+                                    <td>测评数据</td>
+                                    <td>2026-01-02 09:45</td>
+                                    <td>3.2 MB</td>
+                                    <td><span class="tag tag-green">已完成</span></td>
+                                    <td>
+                                        <button class="btn btn-primary btn-sm" onclick="downloadFile(3)">下载</button>
+                                        <button class="btn btn-secondary btn-sm" onclick="deleteFile(3)">删除</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>班级数据_2026-01-01.xlsx</td>
+                                    <td>班级数据</td>
+                                    <td>2026-01-01 14:10</td>
+                                    <td>0.9 MB</td>
+                                    <td><span class="tag tag-green">已完成</span></td>
+                                    <td>
+                                        <button class="btn btn-primary btn-sm" onclick="downloadFile(4)">下载</button>
+                                        <button class="btn btn-secondary btn-sm" onclick="deleteFile(4)">删除</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="common/admin-common.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            pageManager.renderHeader(['数据分析', '数据导出']);
+        });
+
+        function quickExport(type) {
+            showToast('正在导出数据，请稍候...', 'info');
+            setTimeout(() => {
+                showToast('导出成功');
+            }, 2000);
+        }
+
+        document.getElementById('customExportForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            showToast('正在导出数据，请稍候...', 'info');
+            setTimeout(() => {
+                showToast('导出成功');
+            }, 2000);
+        });
+
+        function downloadFile(id) {
+            showToast('开始下载文件', 'info');
+        }
+
+        function deleteFile(id) {
+            showConfirm('确定要删除这个文件吗？', () => {
+                showToast('删除成功');
+            });
+        }
+    </script>
+</body>
+</html>

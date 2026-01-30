@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>测评批改 - 校校读吧小管家（教师端）</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: "Source Han Sans CN", "Noto Sans CJK SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background: #F5F7FA; width: 375px; margin: 0 auto; padding-bottom: 80px; }
+        .navbar { background: linear-gradient(135deg, #2E5BFF, #1E4BEF); color: white; height: 44px; display: flex; align-items: center; padding: 0 16px; }
+        .navbar-back { font-size: 18px;
+            line-height: 1.4; cursor: pointer; }
+        .navbar-title { flex: 1; text-align: center; font-size: 18px;
+            line-height: 1.4; font-weight: 600; }
+        .student-info { background: white; padding: 16px; display: flex; align-items: center; gap: 12px; }
+        .avatar { width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, #667eea, #764ba2); color: white; display: flex; align-items: center; justify-content: center; font-size: 18px;
+            line-height: 1.4; font-weight: 600; }
+        .info-text { flex: 1; }
+        .name { font-size: 16px;
+            line-height: 1.4; font-weight: 600; margin-bottom: 4px; }
+        .meta { font-size: 12px;
+            line-height: 1.5; color: #999999; }
+        .question-card { background: white; margin: 12px 16px; padding: 16px; border-radius: 8px; }
+        .question-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .question-number { font-size: 14px;
+            line-height: 1.6; color: #999999; }
+        .question-score { font-size: 14px;
+            line-height: 1.6; color: #2E5BFF; font-weight: 600; }
+        .question-text { font-size: 15px; color: #333333; line-height: 1.6; margin-bottom: 12px; }
+        .answer-section { background: #fafafa; padding: 12px; border-radius: 4px; margin-bottom: 12px; }
+        .answer-label { font-size: 12px;
+            line-height: 1.5; color: #999999; margin-bottom: 8px; }
+        .answer-text { font-size: 14px; color: #333333; line-height: 1.6; }
+        .correct-answer { background: #f6ffed; border-left: 3px solid #52c41a; }
+        .student-answer { background: #fff7e6; border-left: 3px solid #faad14; }
+        .score-input { display: flex; gap: 8px; align-items: center; }
+        .score-btn { width: 40px; height: 44px; border: 1px solid #d9d9d9; background: white; border-radius: 4px; font-size: 16px;
+            line-height: 1.4; cursor: pointer; }
+        .score-btn.active { background: #52c41a; color: white; border-color: #52c41a; }
+        .comment-box { width: 100%; min-height: 80px; border: 1px solid #d9d9d9; border-radius: 4px; padding: 8px; font-size: 14px;
+            line-height: 1.6; margin-top: 8px; }
+        .action-bar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 375px; background: white; padding: 12px 16px; display: flex; gap: 12px; box-shadow: 0 -2px 8px rgba(0,0,0,0.06); }
+        .btn { flex: 1; height: 44px; border: none; border-radius: 4px; font-size: 16px;
+            line-height: 1.4; cursor: pointer; }
+        .btn-secondary { background: #f0f0f0; color: #595959; }
+        .btn-primary { background: #2E5BFF; color: white; }
+    
+        /* Font Awesome图标样式优化 */
+        .fa-solid, .fa-regular {
+            font-weight: 400;
+            color: #595959;
+            opacity: 0.85;
+        }
+
+        /* 导航栏和标题中的图标保持原色 */
+        .navbar .fa-solid,
+        .section-title .fa-solid,
+        .task-title .fa-solid {
+            color: inherit;
+            opacity: 1;
+        }
+
+        /* 徽章图标使用白色，与金色背景形成对比 */
+        .badge-icon .fa-solid {
+            color: white;
+            opacity: 1;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 成就图标特殊样式 */
+        .achievement-section .badge-icon .fa-solid {
+            font-size: 32px;
+        }
+    
+        /* 选中状态图标颜色优化 */
+        .tab-item.active .tab-icon .fa-solid,
+        .tab-item.active .fa-solid {
+            color: #2E5BFF;
+            opacity: 1;
+        }
+
+        /* 其他选中状态 */
+        .menu-item.active .menu-icon .fa-solid,
+        .nav-item.active .fa-solid,
+        .list-item.selected .fa-solid,
+        .card.active .fa-solid,
+        .btn.active .fa-solid,
+        .filter-btn.active .fa-solid {
+            color: #2E5BFF;
+            opacity: 1;
+        }
+    </style>    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="navbar">
+        <div class="navbar-back" onclick="Router.back()">←</div>
+        <div class="navbar-title">测评批改</div>
+        <div style="width: 20px;"></div>
+    </div>
+
+    <div class="student-info">
+        <div class="avatar">张三</div>
+        <div class="info-text">
+            <div class="name">张三 - 《三体》第一章测评</div>
+            <div class="meta">提交时间：2025-01-30 20:30 · 用时：28分钟</div>
+        </div>
+    </div>
+
+    <div class="question-card">
+        <div class="question-header">
+            <div class="question-number">【简答题】第1题</div>
+            <div class="question-score">满分10分</div>
+        </div>
+        <div class="question-text">
+            请简述叶文洁在红岸基地的主要工作内容，以及她为什么要向三体文明发送地球坐标？
+        </div>
+
+        <div class="answer-section student-answer">
+            <div class="answer-label">学生答案：</div>
+            <div class="answer-text">
+                叶文洁在红岸基地负责监听来自宇宙的信号。她向三体文明发送地球坐标是因为在文革中经历了父亲被批斗致死等创伤，对人类文明失去了信心，认为只有外部力量才能拯救人类。她希望三体文明能够改造地球文明。
+            </div>
+        </div>
+
+        <div class="answer-section correct-answer">
+            <div class="answer-label">参考答案：</div>
+            <div class="answer-text">
+                叶文洁在红岸基地的主要工作是监听和分析来自宇宙的电磁信号，同时也负责向太空发送信号。她向三体文明发送地球坐标的原因包括：1）文革期间的创伤经历，特别是父亲的死亡；2）对人类文明的深刻失望；3）认为人类无法自我拯救，需要外部力量的介入。
+            </div>
+        </div>
+
+        <div style="margin-top: 12px;">
+            <div class="answer-label">评分：</div>
+            <div class="score-input">
+                <button class="score-btn">0</button>
+                <button class="score-btn">2</button>
+                <button class="score-btn">4</button>
+                <button class="score-btn">6</button>
+                <button class="score-btn active">8</button>
+                <button class="score-btn">10</button>
+            </div>
+            <textarea class="comment-box" placeholder="批改评语（选填）...">回答较为完整，准确把握了叶文洁的工作内容和动机。建议补充更多关于她心理变化的细节。</textarea>
+        </div>
+    </div>
+
+    <div class="question-card">
+        <div class="question-header">
+            <div class="question-number">【简答题】第2题</div>
+            <div class="question-score">满分10分</div>
+        </div>
+        <div class="question-text">
+            三体世界的环境有什么特点？三体人为什么要寻找新的家园？
+        </div>
+
+        <div class="answer-section student-answer">
+            <div class="answer-label">学生答案：</div>
+            <div class="answer-text">
+                三体世界有三个太阳，导致环境极不稳定，有时候会特别热，有时候会特别冷。三体人的文明经常被毁灭，所以他们需要找一个稳定的星球生存。
+            </div>
+        </div>
+
+        <div class="answer-section correct-answer">
+            <div class="answer-label">参考答案：</div>
+            <div class="answer-text">
+                三体世界位于半人马座α星系，拥有三颗恒星，导致环境极度不稳定。表现为：1）恒星运动无规律，导致"乱纪元"和"恒纪元"交替；2）乱纪元中温度剧变，文明难以延续；3）三体文明已经历200多次毁灭和重生。因此三体人迫切需要寻找一个稳定的单星系统作为新家园。
+            </div>
+        </div>
+
+        <div style="margin-top: 12px;">
+            <div class="answer-label">评分：</div>
+            <div class="score-input">
+                <button class="score-btn">0</button>
+                <button class="score-btn">2</button>
+                <button class="score-btn">4</button>
+                <button class="score-btn active">6</button>
+                <button class="score-btn">8</button>
+                <button class="score-btn">10</button>
+            </div>
+            <textarea class="comment-box" placeholder="批改评语（选填）...">基本概念正确，但缺少具体细节。建议补充"乱纪元"和"恒纪元"的概念，以及文明毁灭的次数。</textarea>
+        </div>
+    </div>
+
+    <div class="action-bar">
+        <button class="btn btn-secondary" onclick="alert('保存草稿成功')">保存草稿</button>
+        <button class="btn btn-primary" onclick="alert('提交批改成功'); Router.toTeacherPage('examManage')">提交批改</button>
+    </div>
+
+    <script src="../router.js"></script>
+</body>
+</html>

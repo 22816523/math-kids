@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据同步日志 - 客户管理系统V1.1</title>
+    <link rel="stylesheet" href="common.css">
+</head>
+<body>
+    <div class="container">
+        <div class="breadcrumb">
+            <a href="index.html">首页</a>
+            <span>></span>
+            <a href="#">系统集成</a>
+            <span>></span>
+            <span>数据同步日志</span>
+        </div>
+
+        <div class="page-header">
+            <h1 class="page-title">🔄 数据同步日志</h1>
+            <p class="page-subtitle">Data Synchronization Log</p>
+        </div>
+
+        <div class="alert alert-info">
+            <strong>功能说明：</strong> 实时监控各系统间的数据同步状态，记录同步日志，确保数据准确性和时效性
+        </div>
+
+        <div class="search-box">
+            <div class="search-row">
+                <span class="search-label">系统名称：</span>
+                <select class="search-input">
+                    <option>全部系统</option>
+                    <option>智慧九科星</option>
+                    <option>中课云系统</option>
+                    <option>研究院稿费报销</option>
+                </select>
+                <span class="search-label">同步状态：</span>
+                <select class="search-input">
+                    <option>全部状态</option>
+                    <option>成功</option>
+                    <option>失败</option>
+                    <option>进行中</option>
+                </select>
+            </div>
+            <div class="search-row">
+                <span class="search-label">时间范围：</span>
+                <input type="date" class="search-input">
+                <span style="margin: 0 10px;">至</span>
+                <input type="date" class="search-input">
+                <button class="btn btn-primary">搜索</button>
+                <button class="btn btn-secondary">重置</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">同步日志列表</div>
+            <div class="card-body">
+                <div class="btn-group">
+                    <button class="btn btn-success">手动触发同步</button>
+                    <button class="btn btn-warning">重试失败任务</button>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>同步时间</th>
+                                <th>系统名称</th>
+                                <th>数据类型</th>
+                                <th>同步方向</th>
+                                <th>数据量</th>
+                                <th>耗时</th>
+                                <th>状态</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>2024-01-15 16:30:25</td>
+                                <td>智慧九科星</td>
+                                <td>客户信息</td>
+                                <td>主系统 → 智慧九科星</td>
+                                <td>156条</td>
+                                <td>2.3秒</td>
+                                <td><span class="badge badge-success">成功</span></td>
+                                <td><a href="#" class="action-link">查看详情</a></td>
+                            </tr>
+                            <tr>
+                                <td>2024-01-15 16:30:18</td>
+                                <td>中课云系统</td>
+                                <td>联系人信息</td>
+                                <td>中课云系统 → 主系统</td>
+                                <td>89条</td>
+                                <td>1.8秒</td>
+                                <td><span class="badge badge-success">成功</span></td>
+                                <td><a href="#" class="action-link">查看详情</a></td>
+                            </tr>
+                            <tr>
+                                <td>2024-01-15 16:15:42</td>
+                                <td>智慧九科星</td>
+                                <td>联系人信息</td>
+                                <td>主系统 → 智慧九科星</td>
+                                <td>234条</td>
+                                <td>-</td>
+                                <td><span class="badge badge-danger">失败</span></td>
+                                <td>
+                                    <a href="#" class="action-link">查看详情</a>
+                                    <a href="#" class="action-link">重试</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2024-01-15 16:00:35</td>
+                                <td>中课云系统</td>
+                                <td>客户信息</td>
+                                <td>主系统 → 中课云系统</td>
+                                <td>178条</td>
+                                <td>3.1秒</td>
+                                <td><span class="badge badge-success">成功</span></td>
+                                <td><a href="#" class="action-link">查看详情</a></td>
+                            </tr>
+                            <tr>
+                                <td>2024-01-15 15:45:20</td>
+                                <td>智慧九科星</td>
+                                <td>客户信息</td>
+                                <td>智慧九科星 → 主系统</td>
+                                <td>45条</td>
+                                <td>1.2秒</td>
+                                <td><span class="badge badge-success">成功</span></td>
+                                <td><a href="#" class="action-link">查看详情</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="pagination">
+                    <a href="#">上一页</a>
+                    <span class="active">1</span>
+                    <a href="#">2</a>
+                    <a href="#">3</a>
+                    <a href="#">下一页</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">同步统计</div>
+            <div class="card-body">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-label">今日同步次数</div>
+                        <div class="stat-value">48</div>
+                    </div>
+                    <div class="stat-card green">
+                        <div class="stat-label">成功</div>
+                        <div class="stat-value">45</div>
+                    </div>
+                    <div class="stat-card red">
+                        <div class="stat-label">失败</div>
+                        <div class="stat-value">3</div>
+                    </div>
+                    <div class="stat-card orange">
+                        <div class="stat-label">同步数据量</div>
+                        <div class="stat-value">2,345</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>找回密码 - 校校读吧小管家（教师端）</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: "Source Han Sans CN", "Noto Sans CJK SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background-color: #F5F7FA; width: 375px; margin: 0 auto; min-height: 100vh; }
+
+        .navbar { background: linear-gradient(135deg, #2E5BFF 0%, #1E4BEF 100%); color: white; height: 44px; display: flex; align-items: center; padding: 0 16px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(24, 144, 255, 0.15); }
+        .back-btn { background: none; border: none; color: white; font-size: 18px; cursor: pointer; padding: 0; margin-right: 12px; }
+        .navbar-title { font-size: 18px; font-weight: 600; flex: 1; }
+
+        .steps-container { background: white; padding: 24px 16px; margin-bottom: 12px; }
+        .steps { display: flex; align-items: center; justify-content: space-between; position: relative; }
+        .step-item { flex: 1; display: flex; flex-direction: column; align-items: center; position: relative; z-index: 2; }
+        .step-number { width: 32px; height: 32px; border-radius: 50%; background: #f0f0f0; color: #999999; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; margin-bottom: 8px; transition: all 0.3s; }
+        .step-item.active .step-number { background: #2E5BFF; color: white; }
+        .step-item.completed .step-number { background: #52c41a; color: white; }
+        .step-text { font-size: 12px; color: #999999; }
+        .step-item.active .step-text { color: #2E5BFF; font-weight: 600; }
+        .step-item.completed .step-text { color: #52c41a; }
+        .step-line { position: absolute; top: 16px; left: 0; right: 0; height: 2px; background: #f0f0f0; z-index: 1; }
+        .step-line-progress { position: absolute; top: 16px; left: 0; height: 2px; background: #52c41a; z-index: 1; transition: width 0.3s; }
+
+        .content-section { background: white; margin: 12px 16px; border-radius: 8px; padding: 24px; }
+
+        .form-group { margin-bottom: 20px; }
+        .form-label { font-size: 14px; color: #333333; margin-bottom: 8px; display: block; }
+        .input-wrapper { position: relative; }
+        .input-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #999999; font-size: 16px; }
+        .form-input { width: 100%; padding: 12px 12px 12px 40px; border: 1px solid #e0e0e0; border-radius: 8px; font-size: 15px; color: #333333; transition: all 0.3s; }
+        .form-input:focus { outline: none; border-color: #2E5BFF; box-shadow: 0 0 0 3px rgba(46, 91, 255, 0.1); }
+        .form-input::placeholder { color: #bfbfbf; }
+        .form-input.error { border-color: #ff4d4f; }
+
+        .password-toggle { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: #999999; cursor: pointer; font-size: 16px; }
+        .password-toggle:hover { color: #666666; }
+
+        .error-tip { font-size: 12px; color: #ff4d4f; margin-top: 4px; display: none; }
+        .error-tip.show { display: block; }
+
+        .code-input-group { display: flex; gap: 8px; }
+        .code-input-group .input-wrapper { flex: 1; }
+        .get-code-btn { padding: 12px 16px; background: #2E5BFF; color: white; border: none; border-radius: 8px; font-size: 14px; cursor: pointer; white-space: nowrap; transition: all 0.3s; }
+        .get-code-btn:hover { background: #1E4BEF; }
+        .get-code-btn:disabled { background: #d9d9d9; cursor: not-allowed; }
+
+        .password-strength { margin-top: 8px; }
+        .strength-bar { height: 4px; background: #f0f0f0; border-radius: 2px; overflow: hidden; margin-bottom: 4px; }
+        .strength-bar-fill { height: 100%; transition: all 0.3s; }
+        .strength-bar-fill.weak { width: 33%; background: #ff4d4f; }
+        .strength-bar-fill.medium { width: 66%; background: #faad14; }
+        .strength-bar-fill.strong { width: 100%; background: #52c41a; }
+        .strength-text { font-size: 12px; }
+        .strength-text.weak { color: #ff4d4f; }
+        .strength-text.medium { color: #faad14; }
+        .strength-text.strong { color: #52c41a; }
+
+        .password-tips { font-size: 12px; color: #999999; margin-top: 8px; line-height: 1.6; }
+
+        .action-btn { width: 100%; padding: 14px; background: linear-gradient(135deg, #2E5BFF, #1E4BEF); color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 12px rgba(46, 91, 255, 0.3); margin-top: 24px; }
+        .action-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(46, 91, 255, 0.4); }
+        .action-btn:active { transform: translateY(0); }
+        .action-btn:disabled { background: #d9d9d9; cursor: not-allowed; box-shadow: none; }
+
+        .success-section { text-align: center; padding: 40px 20px; }
+        .success-icon { font-size: 64px; color: #52c41a; margin-bottom: 16px; }
+        .success-title { font-size: 20px; font-weight: 600; color: #333333; margin-bottom: 8px; }
+        .success-text { font-size: 14px; color: #666666; margin-bottom: 32px; }
+
+        .step-content { display: none; }
+        .step-content.active { display: block; }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="navbar">
+        <button class="back-btn" onclick="Router.back()">←</button>
+        <div class="navbar-title">找回密码</div>
+    </div>
+
+    <div class="steps-container">
+        <div class="steps">
+            <div class="step-line"></div>
+            <div class="step-line-progress" id="stepProgress" style="width: 0%;"></div>
+
+            <div class="step-item active" id="step1">
+                <div class="step-number">1</div>
+                <div class="step-text">验证身份</div>
+            </div>
+            <div class="step-item" id="step2">
+                <div class="step-number">2</div>
+                <div class="step-text">设置密码</div>
+            </div>
+            <div class="step-item" id="step3">
+                <div class="step-number">3</div>
+                <div class="step-text">完成</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <!-- 步骤1：验证身份 -->
+        <div class="step-content active" id="content1">
+            <div class="form-group">
+                <label class="form-label">手机号</label>
+                <div class="input-wrapper">
+                    <i class="fa-solid fa-mobile-screen input-icon"></i>
+                    <input type="tel" class="form-input" id="phoneInput" placeholder="请输入手机号" maxlength="11">
+                    <div class="error-tip" id="phoneError">请输入正确的11位手机号</div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">验证码</label>
+                <div class="code-input-group">
+                    <div class="input-wrapper">
+                        <i class="fa-solid fa-shield-halved input-icon"></i>
+                        <input type="text" class="form-input" id="codeInput" placeholder="请输入验证码" maxlength="6">
+                        <div class="error-tip" id="codeError">请输入6位验证码</div>
+                    </div>
+                    <button type="button" class="get-code-btn" id="getCodeBtn" onclick="getVerificationCode()">获取验证码</button>
+                </div>
+            </div>
+
+            <button class="action-btn" onclick="nextStep(1)">下一步</button>
+        </div>
+
+        <!-- 步骤2：设置新密码 -->
+        <div class="step-content" id="content2">
+            <div class="form-group">
+                <label class="form-label">新密码</label>
+                <div class="input-wrapper">
+                    <i class="fa-solid fa-lock input-icon"></i>
+                    <input type="password" class="form-input" id="newPasswordInput" placeholder="请输入新密码" oninput="checkPasswordStrength()">
+                    <i class="fa-solid fa-eye password-toggle" id="newPasswordToggle" onclick="togglePassword('newPasswordInput', 'newPasswordToggle')"></i>
+                    <div class="error-tip" id="newPasswordError">请输入8-20位密码，包含字母和数字</div>
+                </div>
+                <div class="password-strength" id="passwordStrength" style="display: none;">
+                    <div class="strength-bar">
+                        <div class="strength-bar-fill" id="strengthBar"></div>
+                    </div>
+                    <div class="strength-text" id="strengthText"></div>
+                </div>
+                <div class="password-tips">密码长度8-20位，建议包含字母、数字和特殊字符</div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">确认密码</label>
+                <div class="input-wrapper">
+                    <i class="fa-solid fa-lock input-icon"></i>
+                    <input type="password" class="form-input" id="confirmPasswordInput" placeholder="请再次输入新密码">
+                    <i class="fa-solid fa-eye password-toggle" id="confirmPasswordToggle" onclick="togglePassword('confirmPasswordInput', 'confirmPasswordToggle')"></i>
+                    <div class="error-tip" id="confirmPasswordError">两次输入的密码不一致</div>
+                </div>
+            </div>
+
+            <button class="action-btn" onclick="nextStep(2)">完成</button>
+        </div>
+
+        <!-- 步骤3：完成 -->
+        <div class="step-content" id="content3">
+            <div class="success-section">
+                <div class="success-icon">
+                    <i class="fa-solid fa-circle-check"></i>
+                </div>
+                <div class="success-title">密码重置成功</div>
+                <div class="success-text">您的密码已成功重置，请使用新密码登录</div>
+                <button class="action-btn" onclick="goToLogin()">返回登录</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../router.js"></script>
+    <script>
+        let currentStep = 1
+        let countdown = 0
+        let countdownTimer = null
+
+        // 下一步
+        function nextStep(step) {
+            if (step === 1) {
+                // 验证手机号和验证码
+                if (!validateStep1()) return
+
+                // 进入步骤2
+                currentStep = 2
+                updateSteps()
+            } else if (step === 2) {
+                // 验证新密码
+                if (!validateStep2()) return
+
+                // 模拟重置密码
+                console.log('重置密码成功')
+
+                // 进入步骤3
+                currentStep = 3
+                updateSteps()
+            }
+        }
+
+        // 更新步骤显示
+        function updateSteps() {
+            // 更新步骤状态
+            for (let i = 1; i <= 3; i++) {
+                const stepItem = document.getElementById(`step${i}`)
+                const content = document.getElementById(`content${i}`)
+
+                if (i < currentStep) {
+                    stepItem.classList.add('completed')
+                    stepItem.classList.remove('active')
+                } else if (i === currentStep) {
+                    stepItem.classList.add('active')
+                    stepItem.classList.remove('completed')
+                } else {
+                    stepItem.classList.remove('active', 'completed')
+                }
+
+                content.classList.toggle('active', i === currentStep)
+            }
+
+            // 更新进度条
+            const progress = ((currentStep - 1) / 2) * 100
+            document.getElementById('stepProgress').style.width = `${progress}%`
+        }
+
+        // 验证步骤1
+        function validateStep1() {
+            const phone = document.getElementById('phoneInput').value.trim()
+            const code = document.getElementById('codeInput').value.trim()
+            let isValid = true
+
+            const phoneRegex = /^1[3-9]\d{9}$/
+            if (!phoneRegex.test(phone)) {
+                showError('phoneInput', 'phoneError', '请输入正确的11位手机号')
+                isValid = false
+            } else {
+                hideError('phoneInput', 'phoneError')
+            }
+
+            if (code.length !== 6) {
+                showError('codeInput', 'codeError', '请输入6位验证码')
+                isValid = false
+            } else {
+                hideError('codeInput', 'codeError')
+            }
+
+            return isValid
+        }
+
+        // 验证步骤2
+        function validateStep2() {
+            const newPassword = document.getElementById('newPasswordInput').value
+            const confirmPassword = document.getElementById('confirmPasswordInput').value
+            let isValid = true
+
+            // 验证新密码
+            const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*#?&]{8,20}$/
+            if (!passwordRegex.test(newPassword)) {
+                showError('newPasswordInput', 'newPasswordError', '请输入8-20位密码，包含字母和数字')
+                isValid = false
+            } else {
+                hideError('newPasswordInput', 'newPasswordError')
+            }
+
+            // 验证确认密码
+            if (newPassword !== confirmPassword) {
+                showError('confirmPasswordInput', 'confirmPasswordError', '两次输入的密码不一致')
+                isValid = false
+            } else {
+                hideError('confirmPasswordInput', 'confirmPasswordError')
+            }
+
+            return isValid
+        }
+
+        // 获取验证码
+        function getVerificationCode() {
+            const phone = document.getElementById('phoneInput').value.trim()
+            const phoneRegex = /^1[3-9]\d{9}$/
+
+            if (!phoneRegex.test(phone)) {
+                showError('phoneInput', 'phoneError', '请输入正确的11位手机号')
+                return
+            }
+
+            hideError('phoneInput', 'phoneError')
+
+            // 开始倒计时
+            countdown = 60
+            updateCodeButton()
+
+            countdownTimer = setInterval(() => {
+                countdown--
+                if (countdown <= 0) {
+                    clearInterval(countdownTimer)
+                    countdown = 0
+                }
+                updateCodeButton()
+            }, 1000)
+
+            // 模拟发送验证码
+            console.log('发送验证码到:', phone)
+            alert('验证码已发送，请注意查收')
+        }
+
+        // 更新验证码按钮状态
+        function updateCodeButton() {
+            const btn = document.getElementById('getCodeBtn')
+            if (countdown > 0) {
+                btn.textContent = `${countdown}秒后重试`
+                btn.disabled = true
+            } else {
+                btn.textContent = '获取验证码'
+                btn.disabled = false
+            }
+        }
+
+        // 密码显示/隐藏切换
+        function togglePassword(inputId, iconId) {
+            const input = document.getElementById(inputId)
+            const icon = document.getElementById(iconId)
+
+            if (input.type === 'password') {
+                input.type = 'text'
+                icon.classList.remove('fa-eye')
+                icon.classList.add('fa-eye-slash')
+            } else {
+                input.type = 'password'
+                icon.classList.remove('fa-eye-slash')
+                icon.classList.add('fa-eye')
+            }
+        }
+
+        // 检查密码强度
+        function checkPasswordStrength() {
+            const password = document.getElementById('newPasswordInput').value
+            const strengthContainer = document.getElementById('passwordStrength')
+            const strengthBar = document.getElementById('strengthBar')
+            const strengthText = document.getElementById('strengthText')
+
+            if (!password) {
+                strengthContainer.style.display = 'none'
+                return
+            }
+
+            strengthContainer.style.display = 'block'
+
+            let strength = 'weak'
+            let text = '弱'
+
+            // 判断强度
+            if (password.length >= 12 && /[A-Za-z]/.test(password) && /\d/.test(password) && /[@$!%*#?&]/.test(password)) {
+                strength = 'strong'
+                text = '强'
+            } else if (password.length >= 8 && /[A-Za-z]/.test(password) && /\d/.test(password)) {
+                strength = 'medium'
+                text = '中'
+            }
+
+            strengthBar.className = `strength-bar-fill ${strength}`
+            strengthText.className = `strength-text ${strength}`
+            strengthText.textContent = `密码强度：${text}`
+        }
+
+        // 返回登录
+        function goToLogin() {
+            wx.redirectTo({ url: '00-登录.html' })
+        }
+
+        // 显示错误
+        function showError(inputId, errorId, message) {
+            const input = document.getElementById(inputId)
+            const error = document.getElementById(errorId)
+            input.classList.add('error')
+            error.textContent = message
+            error.classList.add('show')
+        }
+
+        // 隐藏错误
+        function hideError(inputId, errorId) {
+            const input = document.getElementById(inputId)
+            const error = document.getElementById(errorId)
+            input.classList.remove('error')
+            error.classList.remove('show')
+        }
+    </script>
+</body>
+</html>

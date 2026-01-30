@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>阅读书籍 - 校校读吧-学生端</title>
+    <link rel="stylesheet" href="design-system.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background-color: #f9f6f0; width: 375px; margin: 0 auto; min-height: 100vh; opacity: 0; }
+
+        .reader-header { background: rgba(249, 246, 240, 0.95); height: 44px; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; position: fixed; top: 0; left: 50%; transform: translateX(-50%); width: 375px; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.05); transition: all 0.3s; }
+        .reader-header.hidden { transform: translateX(-50%) translateY(-100%); }
+        .header-left { display: flex; align-items: center; gap: 12px; }
+        .back-btn { background: none; border: none; color: #262626; font-size: 18px;
+            line-height: 1.4; cursor: pointer; padding: 0; }
+        .chapter-title { font-size: 14px;
+            line-height: 1.6; color: #595959; max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .header-right { display: flex; align-items: center; gap: 16px; }
+        .header-icon { font-size: 18px;
+            line-height: 1.4; color: #595959; cursor: pointer; }
+
+        .reader-content { padding: 60px 24px 80px; min-height: 100vh; }
+        .book-title { font-size: 22px; font-weight: 700; color: #262626; text-align: center; margin-bottom: 8px; }
+        .chapter-name { font-size: 16px;
+            line-height: 1.4; color: #8c8c8c; text-align: center; margin-bottom: 32px; }
+        .reading-text { font-size: 18px; line-height: 2; color: #262626; text-align: justify; text-indent: 2em; }
+        .reading-text p { margin-bottom: 1.5em; }
+
+        .reader-footer { background: rgba(249, 246, 240, 0.95); height: 60px; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 375px; z-index: 100; box-shadow: 0 -2px 8px rgba(0,0,0,0.05); transition: all 0.3s; }
+        .reader-footer.hidden { transform: translateX(-50%) translateY(100%); }
+        .progress-info { font-size: 12px;
+            line-height: 1.5; color: #8c8c8c; }
+        .page-nav { display: flex; gap: 16px; }
+        .nav-btn { width: 36px; height: 36px; background: white; border: 1px solid #d9d9d9; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 16px;
+            line-height: 1.4; color: #595959; transition: all 0.3s; }
+        .nav-btn:hover { background: #f0f0f0; border-color: var(--color-primary); color: var(--color-primary); }
+        .nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+        .menu-panel { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%) translateY(100%); width: 375px; background: white; border-radius: 16px 16px 0 0; box-shadow: 0 -4px 16px rgba(0,0,0,0.1); z-index: 200; transition: all 0.3s; max-height: 70vh; overflow-y: auto; }
+        .menu-panel.show { transform: translateX(-50%) translateY(0); }
+        .menu-header { padding: 16px; border-bottom: 1px solid #f0f0f0; display: flex; align-items: center; justify-content: space-between; }
+        .menu-title { font-size: 16px;
+            line-height: 1.4; font-weight: 600; color: #262626; }
+        .menu-close { font-size: 20px;
+            line-height: 1.2; color: #8c8c8c; cursor: pointer; }
+        .menu-content { padding: 16px; }
+
+        .chapter-list-item { display: flex; align-items: center; gap: 12px; padding: 12px; background: #fafafa; border-radius: 8px; margin-bottom: 8px; cursor: pointer; transition: all 0.3s; }
+        .chapter-list-item:hover { background: #f0f9ff; }
+        .chapter-list-item.active { background: #e6f7ff; border: 1px solid var(--color-primary); }
+        .chapter-list-item:last-child { margin-bottom: 0; }
+        .chapter-num { width: 32px; height: 36px; background: var(--color-primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px;
+            line-height: 1.5; font-weight: 600; }
+        .chapter-list-item.active .chapter-num { background: #52c41a; }
+        .chapter-info { flex: 1; }
+        .chapter-list-title { font-size: 14px;
+            line-height: 1.6; color: #262626; margin-bottom: 2px; }
+        .chapter-pages { font-size: 12px;
+            line-height: 1.5; color: #8c8c8c; }
+
+        .settings-group { margin-bottom: 20px; }
+        .settings-group:last-child { margin-bottom: 0; }
+        .settings-label { font-size: 14px;
+            line-height: 1.6; color: #595959; margin-bottom: 12px; display: block; }
+        .font-size-control { display: flex; align-items: center; gap: 12px; }
+        .font-btn { flex: 1; height: 36px; background: #fafafa; border: 1px solid #d9d9d9; border-radius: 4px; font-size: 14px;
+            line-height: 1.6; cursor: pointer; transition: all 0.3s; }
+        .font-btn:hover { background: #f0f9ff; border-color: var(--color-primary); }
+        .font-size-slider { flex: 2; }
+        .theme-options { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+        .theme-option { height: 60px; border-radius: 8px; cursor: pointer; border: 2px solid transparent; transition: all 0.3s; display: flex; align-items: center; justify-content: center; font-size: 12px;
+            line-height: 1.5; }
+        .theme-option.active { border-color: var(--color-primary); }
+        .theme-default { background: #f9f6f0; color: #262626; }
+        .theme-night { background: #1a1a1a; color: #d9d9d9; }
+        .theme-green { background: #e8f5e9; color: #2e7d32; }
+
+        .bookmark-list { }
+        .bookmark-item { padding: 12px; background: #fafafa; border-radius: 8px; margin-bottom: 8px; cursor: pointer; }
+        .bookmark-item:last-child { margin-bottom: 0; }
+        .bookmark-text { font-size: 13px; color: #595959; line-height: 1.6; margin-bottom: 6px; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+        .bookmark-info { display: flex; justify-content: space-between; font-size: 11px;
+            line-height: 1.4; color: #8c8c8c; }
+
+        .overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 150; display: none; }
+        .overlay.show { display: block; }
+    
+        /* Font Awesome图标样式优化 */
+        .fa-solid, .fa-regular {
+            font-weight: 400;
+            color: #595959;
+            opacity: 0.85;
+        }
+
+        /* 导航栏和标题中的图标保持原色 */
+        .navbar .fa-solid,
+        .section-title .fa-solid,
+        .task-title .fa-solid {
+            color: inherit;
+            opacity: 1;
+        }
+
+        /* 徽章图标使用白色，与金色背景形成对比 */
+        .badge-icon .fa-solid {
+            color: white;
+            opacity: 1;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 成就图标特殊样式 */
+        .achievement-section .badge-icon .fa-solid {
+            font-size: 32px;
+        }
+    
+        /* 选中状态图标颜色优化 */
+        .tab-item.active .tab-icon .fa-solid,
+        .tab-item.active .fa-solid {
+            color: var(--color-primary);
+            opacity: 1;
+        }
+
+        /* 其他选中状态 */
+        .menu-item.active .menu-icon .fa-solid,
+        .nav-item.active .fa-solid,
+        .list-item.selected .fa-solid,
+        .card.active .fa-solid,
+        .btn.active .fa-solid,
+        .filter-btn.active .fa-solid {
+            color: var(--color-primary);
+            opacity: 1;
+        }
+    </style>    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="reader-header" id="readerHeader">
+        <div class="header-left">
+            <button class="back-btn" onclick="Router.back()">←</button>
+            <div class="chapter-title">第一部分：地球往事</div>
+        </div>
+        <div class="header-right">
+            <span class="header-icon" onclick="toggleMenu('chapters')"><i class="fa-solid fa-book"></i></span>
+            <span class="header-icon" onclick="toggleMenu('settings')"><i class="fa-solid fa-gear"></i></span>
+            <span class="header-icon" onclick="addBookmark()"><i class="fa-solid fa-bookmark"></i></span>
+        </div>
+    </div>
+
+    <div class="reader-content" id="readerContent" onclick="toggleControls()">
+        <div class="book-title">三体</div>
+        <div class="chapter-name">第一部分：地球往事</div>
+        <div class="reading-text">
+            <p>文化大革命如火如荼进行的同时，军方探寻外星文明的绝秘计划"红岸工程"取得了突破性进展</p>
+            <p>但在按下发射键的那一刻，历史没有记录，她彻底改变了人类的命运。地球文明向宇宙发出的第一声啼鸣，以太阳为中心，以光速向宇宙深处飞驰</p>
+            <p>四光年外，"三体文明"正苦苦挣扎——三颗无规则运行的太阳主导下的百余次毁灭与重生逼迫他们逃离母星。而恰在此时，他们接收到了地球发来的信息</p>
+            <p>对人性绝望的叶文洁向三体人暴露了地球的坐标，彻底改变了人类的命运</p>
+            <p>地球的基本物理规律被三体人锁死，科学不再进步。三体舰队开始向地球进发，人类的末日悄然来临</p>
+            <p>叶文洁第一次来到红岸基地时，正值隆冬时节。基地位于大兴安岭深处，四周是茫茫林海，白雪覆盖着一切</p>
+            <p>她被带到基地最高处的一座建筑前，那是一个巨大的抛物面天线，在雪地中显得格外醒目</p>
+            <p>这就是红岸工程的核心设施，一个向宇宙深处发射电磁波的超级发射器</p>
+            <p>叶文洁站在天线下，仰望着这个庞然大物，心中涌起一种难以名状的感觉</p>
+            <p>她不知道，这个看似普通的科研项目，将彻底改变人类的命运</p>
+        </div>
+    </div>
+
+    <div class="reader-footer" id="readerFooter">
+        <div class="progress-info">第 35 / 120 页</div>
+        <div class="page-nav">
+            <button class="nav-btn" onclick="prevPage()">←</button>
+            <button class="nav-btn" onclick="nextPage()">→</button>
+        </div>
+    </div>
+
+    <div class="overlay" id="overlay" onclick="closeAllMenus()"></div>
+
+    <div class="menu-panel" id="chaptersMenu">
+        <div class="menu-header">
+            <div class="menu-title">章节目录</div>
+            <div class="menu-close" onclick="closeAllMenus()">×</div>
+        </div>
+        <div class="menu-content">
+            <div class="chapter-list-item active" onclick="switchChapter(1)">
+                <div class="chapter-num"><i class="fa-solid fa-check"></i></div>
+                <div class="chapter-info">
+                    <div class="chapter-list-title">第一部分：地球往事</div>
+                    <div class="chapter-pages">第1-120页</div>
+                </div>
+            </div>
+            <div class="chapter-list-item" onclick="switchChapter(2)">
+                <div class="chapter-num">2</div>
+                <div class="chapter-info">
+                    <div class="chapter-list-title">第二部分：三体世界</div>
+                    <div class="chapter-pages">第121-240页</div>
+                </div>
+            </div>
+            <div class="chapter-list-item" onclick="switchChapter(3)">
+                <div class="chapter-num">3</div>
+                <div class="chapter-info">
+                    <div class="chapter-list-title">第三部分：红岸基地</div>
+                    <div class="chapter-pages">第241-360页</div>
+                </div>
+            </div>
+            <div class="chapter-list-item" onclick="switchChapter(4)">
+                <div class="chapter-num">4</div>
+                <div class="chapter-info">
+                    <div class="chapter-list-title">第四部分：智子降临</div>
+                    <div class="chapter-pages">第361-480页</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="menu-panel" id="settingsMenu">
+        <div class="menu-header">
+            <div class="menu-title">阅读设置</div>
+            <div class="menu-close" onclick="closeAllMenus()">×</div>
+        </div>
+        <div class="menu-content">
+            <div class="settings-group">
+                <label class="settings-label">字体大小</label>
+                <div class="font-size-control">
+                    <button class="font-btn" onclick="changeFontSize(-1)">A-</button>
+                    <input type="range" class="font-size-slider" min="14" max="24" value="18" oninput="setFontSize(this.value)">
+                    <button class="font-btn" onclick="changeFontSize(1)">A+</button>
+                </div>
+            </div>
+            <div class="settings-group">
+                <label class="settings-label">阅读主题</label>
+                <div class="theme-options">
+                    <div class="theme-option theme-default active" onclick="setTheme('default', this)">默认</div>
+                    <div class="theme-option theme-night" onclick="setTheme('night', this)">夜间</div>
+                    <div class="theme-option theme-green" onclick="setTheme('green', this)">护眼</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="./router.js"></script>
+    <script>
+        let controlsVisible = true
+        let currentFontSize = 18
+
+        function toggleControls() {
+            controlsVisible = !controlsVisible
+            const header = document.getElementById('readerHeader')
+            const footer = document.getElementById('readerFooter')
+
+            if (controlsVisible) {
+                header.classList.remove('hidden')
+                footer.classList.remove('hidden')
+            } else {
+                header.classList.add('hidden')
+                footer.classList.add('hidden')
+            }
+        }
+
+        function toggleMenu(menuType) {
+            closeAllMenus()
+            const menu = document.getElementById(menuType + 'Menu')
+            const overlay = document.getElementById('overlay')
+            menu.classList.add('show')
+            overlay.classList.add('show')
+        }
+
+        function closeAllMenus() {
+            document.querySelectorAll('.menu-panel').forEach(menu => {
+                menu.classList.remove('show')
+            })
+            document.getElementById('overlay').classList.remove('show')
+        }
+
+        function prevPage() {
+            alert('上一页')
+        }
+
+        function nextPage() {
+            alert('下一页')
+        }
+
+        function switchChapter(chapterNum) {
+            alert('切换到第' + chapterNum + '章节')
+            closeAllMenus()
+        }
+
+        function addBookmark() {
+            alert('已添加书签\n\n当前位置：第一部分 第35页')
+        }
+
+        function changeFontSize(delta) {
+            currentFontSize += delta
+            if (currentFontSize < 14) currentFontSize = 14
+            if (currentFontSize > 24) currentFontSize = 24
+            setFontSize(currentFontSize)
+            document.querySelector('.font-size-slider').value = currentFontSize
+        }
+
+        function setFontSize(size) {
+            currentFontSize = parseInt(size)
+            document.querySelector('.reading-text').style.fontSize = size + 'px'
+        }
+
+        function setTheme(theme, element) {
+            document.querySelectorAll('.theme-option').forEach(opt => {
+                opt.classList.remove('active')
+            })
+            element.classList.add('active')
+
+            const body = document.body
+            const content = document.getElementById('readerContent')
+
+            if (theme === 'night') {
+                body.style.backgroundColor = '#1a1a1a'
+                content.style.color = '#d9d9d9'
+            } else if (theme === 'green') {
+                body.style.backgroundColor = '#e8f5e9'
+                content.style.color = '#2e7d32'
+            } else {
+                body.style.backgroundColor = '#f9f6f0'
+                content.style.color = '#262626'
+            }
+        }
+    </script>
+</body>
+</html>

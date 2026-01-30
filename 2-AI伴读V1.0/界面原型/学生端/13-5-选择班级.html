@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>选择班级 - 校校读吧-学生端</title>
+    <link rel="stylesheet" href="design-system.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background-color: #f5f5f5; width: 375px; margin: 0 auto; min-height: 100vh; opacity: 0; }
+
+        .navbar { background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%); color: white; height: 44px; display: flex; align-items: center; padding: 0 16px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0, 200, 167, 0.15); }
+        .back-btn { background: none; border: none; color: white; font-size: 18px; cursor: pointer; padding: 0; margin-right: 12px; }
+        .navbar-title { font-size: 18px; font-weight: 600; flex: 1; }
+        .save-btn { background: none; border: none; color: white; font-size: 15px; cursor: pointer; font-weight: 500; }
+        .save-btn:hover { opacity: 0.8; }
+
+        .info-tip { background: #e6fffb; border-left: 3px solid var(--color-primary); padding: 12px 16px; margin: 12px 16px; border-radius: 4px; }
+        .info-tip-text { font-size: 13px; color: #666666; line-height: 1.6; }
+
+        .form-section { background: white; margin: 12px 16px; border-radius: 8px; padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+        .form-group { margin-bottom: 16px; }
+        .form-group:last-child { margin-bottom: 0; }
+        .form-label { font-size: 14px; color: #333333; margin-bottom: 8px; display: block; font-weight: 500; }
+        .form-label .required { color: #ff4d4f; margin-left: 4px; }
+
+        .form-select { width: 100%; height: 44px; border: 1px solid #d9d9d9; border-radius: 8px; padding: 0 12px; font-size: 15px; color: #333333; background: white; cursor: pointer; transition: all 0.3s; }
+        .form-select:focus { outline: none; border-color: var(--color-primary); box-shadow: 0 0 0 2px rgba(0, 200, 167, 0.1); }
+
+        .class-select-row { display: flex; gap: 8px; }
+        .class-select-row .form-select { flex: 1; }
+        .class-select-row .form-input { flex: 1; display: none; }
+
+        .form-input { width: 100%; height: 44px; border: 1px solid #d9d9d9; border-radius: 8px; padding: 0 12px; font-size: 15px; color: #333333; transition: all 0.3s; }
+        .form-input:focus { outline: none; border-color: var(--color-primary); box-shadow: 0 0 0 2px rgba(0, 200, 167, 0.1); }
+        .form-input::placeholder { color: #bfbfbf; }
+
+        .class-preview { margin-top: 12px; padding: 12px; background: #e6fffb; border-radius: 8px; font-size: 15px; color: var(--color-primary); font-weight: 500; text-align: center; display: none; }
+        .class-preview.show { display: block; }
+
+        /* Font Awesome图标样式 */
+        .navbar .fa-solid { color: white; }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="navbar">
+        <button class="back-btn" onclick="Router.back()"><i class="fa-solid fa-chevron-left"></i></button>
+        <div class="navbar-title">选择班级</div>
+        <button class="save-btn" onclick="saveClass()">保存</button>
+    </div>
+
+    <div class="info-tip">
+        <div class="info-tip-text">请选择您所在的年级和班级</div>
+    </div>
+
+    <div class="form-section">
+        <div class="form-group">
+            <label class="form-label">年级<span class="required">*</span></label>
+            <select class="form-select" id="gradeSelect" onchange="updateClassPreview()">
+                <option value="">选择年级</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">班级<span class="required">*</span></label>
+            <div class="class-select-row">
+                <select class="form-select" id="classNumberSelect" onchange="handleClassChange()">
+                    <option value="">选择班级</option>
+                </select>
+                <input type="text" class="form-input" id="customClassInput" placeholder="请输入班级名称" oninput="updateClassPreview()">
+            </div>
+        </div>
+
+        <div class="class-preview" id="classPreview"></div>
+    </div>
+
+    <script src="./router.js"></script>
+    <script>
+        // 当前选中的值
+        let currentGrade = '三年级';
+        let currentClassNumber = '1';
+
+        // 年级配置
+        const grades = [
+            '一年级', '二年级', '三年级', '四年级', '五年级', '六年级'
+        ];
+
+        // 初始化年级选择器
+        function initGradeSelect() {
+            const gradeSelect = document.getElementById('gradeSelect');
+            grades.forEach(grade => {
+                const option = document.createElement('option');
+                option.value = grade;
+                option.textContent = grade;
+                if (grade === currentGrade) {
+                    option.selected = true;
+                }
+                gradeSelect.appendChild(option);
+            });
+        }
+
+        // 初始化班级选择器（自定义 + 1-99）
+        function initClassNumberSelect() {
+            const classNumberSelect = document.getElementById('classNumberSelect');
+
+            // 先添加自定义选项
+            const customOption = document.createElement('option');
+            customOption.value = 'custom';
+            customOption.textContent = '自定义';
+            classNumberSelect.appendChild(customOption);
+
+            // 再添加1-99班
+            for (let i = 1; i <= 99; i++) {
+                const option = document.createElement('option');
+                option.value = i;
+                option.textContent = `${i}班`;
+                if (i.toString() === currentClassNumber) {
+                    option.selected = true;
+                }
+                classNumberSelect.appendChild(option);
+            }
+        }
+
+        // 处理班级选择变化
+        function handleClassChange() {
+            const classNumberSelect = document.getElementById('classNumberSelect');
+            const customClassInput = document.getElementById('customClassInput');
+
+            if (classNumberSelect.value === 'custom') {
+                customClassInput.style.display = 'block';
+                customClassInput.focus();
+            } else {
+                customClassInput.style.display = 'none';
+                customClassInput.value = '';
+            }
+
+            updateClassPreview();
+        }
+
+        // 更新班级名称预览
+        function updateClassPreview() {
+            const grade = document.getElementById('gradeSelect').value;
+            const classNumberSelect = document.getElementById('classNumberSelect');
+            const customClassInput = document.getElementById('customClassInput');
+            const preview = document.getElementById('classPreview');
+
+            let className = '';
+
+            if (grade) {
+                if (classNumberSelect.value === 'custom' && customClassInput.value.trim()) {
+                    className = `${grade}${customClassInput.value.trim()}`;
+                } else if (classNumberSelect.value && classNumberSelect.value !== 'custom') {
+                    className = `${grade}(${classNumberSelect.value})班`;
+                }
+            }
+
+            if (className) {
+                preview.textContent = `班级名称：${className}`;
+                preview.classList.add('show');
+            } else {
+                preview.classList.remove('show');
+            }
+        }
+
+        // 获取完整的班级名称
+        function getFullClassName() {
+            const grade = document.getElementById('gradeSelect').value;
+            const classNumberSelect = document.getElementById('classNumberSelect');
+            const customClassInput = document.getElementById('customClassInput');
+
+            if (grade) {
+                if (classNumberSelect.value === 'custom' && customClassInput.value.trim()) {
+                    return `${grade}${customClassInput.value.trim()}`;
+                } else if (classNumberSelect.value && classNumberSelect.value !== 'custom') {
+                    return `${grade}(${classNumberSelect.value})班`;
+                }
+            }
+            return '';
+        }
+
+        // 保存
+        function saveClass() {
+            const grade = document.getElementById('gradeSelect').value;
+            const classNumberSelect = document.getElementById('classNumberSelect');
+            const customClassInput = document.getElementById('customClassInput');
+
+            if (!grade) {
+                alert('请选择年级');
+                return;
+            }
+
+            const hasValidClass = (classNumberSelect.value === 'custom' && customClassInput.value.trim()) ||
+                                  (classNumberSelect.value && classNumberSelect.value !== 'custom');
+
+            if (!hasValidClass) {
+                alert('请选择或输入班级');
+                return;
+            }
+
+            const className = getFullClassName();
+            console.log('保存班级:', className);
+            alert('保存成功');
+            Router.back();
+        }
+
+        // 页面加载时初始化
+        window.addEventListener('DOMContentLoaded', () => {
+            initGradeSelect();
+            initClassNumberSelect();
+            updateClassPreview();
+        });
+    </script>
+</body>
+</html>

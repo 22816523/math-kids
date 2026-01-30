@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>计划详情预览 - 校校读吧小管家（教师端）</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: "Source Han Sans CN", "Noto Sans CJK SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background: #F5F7FA; width: 375px; margin: 0 auto; min-height: 100vh; padding-bottom: 100px; position: relative; z-index: 0; }
+
+        .navbar { background: linear-gradient(135deg, #2E5BFF 0%, #1E4BEF 100%); color: white; height: 44px; display: flex; align-items: center; padding: 0 16px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(24, 144, 255, 0.15); }
+        .back-btn { background: none; border: none; color: white; font-size: 18px; line-height: 1.4; cursor: pointer; padding: 4px; }
+        .navbar-title { flex: 1; text-align: center; font-size: 18px; line-height: 1.4; font-weight: 600; }
+        .share-btn { background: none; border: none; color: white; font-size: 18px; line-height: 1.4; cursor: pointer; padding: 4px; }
+        .share-btn:active { opacity: 0.7; }
+
+        .plan-header { background: linear-gradient(135deg, #2E5BFF 0%, #1E4BEF 100%); padding: 20px 16px; color: white; position: relative; z-index: 1; }
+        .plan-title-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 8px; }
+        .plan-title { flex: 1; font-size: 22px; font-weight: 700; }
+        .desc-btn-inline { background: rgba(255, 255, 255, 0.2); border: none; color: white; font-size: 13px; padding: 4px 12px; border-radius: 12px; cursor: pointer; white-space: nowrap; flex-shrink: 0; }
+        .desc-btn-inline:active { background: rgba(255, 255, 255, 0.3); }
+        .plan-meta { font-size: 13px; opacity: 0.9; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+        .plan-meta-left { display: flex; align-items: center; gap: 6px; }
+        .plan-meta-right { display: flex; align-items: center; gap: 6px; }
+        .plan-stats { display: flex; align-items: center; gap: 16px; font-size: 13px; color: rgba(255, 255, 255, 0.9); }
+        .stat-item { display: flex; align-items: baseline; gap: 4px; }
+        .stat-value { font-size: 18px; font-weight: 700; }
+        .stat-label { font-size: 13px; opacity: 0.9; }
+
+        /* 弹窗样式 */
+        .modal-mask { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.5); z-index: 999; opacity: 0; visibility: hidden; transition: all 0.3s; }
+        .modal-mask.show { opacity: 1; visibility: visible; }
+        .modal-container { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 335px; max-height: 80vh; background: white; border-radius: 16px; z-index: 1000; opacity: 0; visibility: hidden; transition: all 0.3s; display: flex; flex-direction: column; }
+        .modal-container.show { opacity: 1; visibility: visible; }
+        .modal-header { padding: 20px 20px 16px; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
+        .modal-title { font-size: 16px; font-weight: 600; color: #333333; }
+        .modal-close { background: none; border: none; color: #999999; font-size: 20px; cursor: pointer; padding: 0; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; }
+        .modal-close:active { color: #666666; }
+        .modal-body { padding: 20px; font-size: 14px; color: #595959; line-height: 1.8; overflow-y: auto; flex: 1; }
+
+        /* 分享弹窗样式 */
+        .share-modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 1500; display: none; }
+        .share-modal.active { display: block; }
+        .share-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.5); animation: fadeIn 0.3s; }
+        .share-content { position: absolute; bottom: 0; left: 0; right: 0; background: white; border-radius: 16px 16px 0 0; padding: 20px 16px; max-width: 375px; margin: 0 auto; animation: slideUp 0.3s; }
+        .share-title { font-size: 16px; font-weight: 600; color: #333333; text-align: center; margin-bottom: 20px; }
+        .share-options { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+        .share-option { display: flex; align-items: center; padding: 16px; border-radius: 8px; cursor: pointer; transition: all 0.3s; background: white; }
+        .share-option:hover { background: #f5f5f5; }
+        .share-option:active { background: #e8e8e8; }
+        .share-option-icon { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; margin-right: 12px; flex-shrink: 0; }
+        .share-option-icon.wechat { background: #07C160; color: white; }
+        .share-option-icon.link { background: #e6f7ff; color: #2E5BFF; }
+        .share-option-text { flex: 1; }
+        .share-option-title { font-size: 15px; font-weight: 500; color: #333333; margin-bottom: 2px; }
+        .share-option-desc { font-size: 12px; color: #999999; }
+        .share-cancel { width: 100%; padding: 14px; background: #f5f5f5; border: none; border-radius: 8px; font-size: 15px; color: #595959; cursor: pointer; margin-top: 8px; }
+        .share-cancel:active { background: #e8e8e8; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        .books-section { padding: 0 16px; margin-top: 12px; position: relative; z-index: 1; }
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .section-title { font-size: 16px; font-weight: 600; color: #333333; }
+        .section-count { font-size: 13px; color: #999999; }
+
+        /* 书籍列表 - 横向卡片布局 */
+        .books-list { padding: 0; }
+
+        .book-card { background: white; border-radius: 12px; margin-bottom: 12px; padding: 12px; display: flex; gap: 12px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06); cursor: pointer; transition: all 0.3s; position: relative; }
+        .book-card:active { transform: scale(0.98); }
+
+        .book-cover { width: 90px; height: 120px; border-radius: 8px; background: linear-gradient(135deg, #667eea, #764ba2); flex-shrink: 0; position: relative; }
+
+        /* 序号徽章 - 右上角 */
+        .book-order-badge { position: absolute; top: -6px; right: -6px; width: 28px; height: 28px; background: linear-gradient(135deg, #FFD700, #FFA500); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; box-shadow: 0 2px 6px rgba(255, 165, 0, 0.4); border: 2px solid white; z-index: 2; }
+
+        .book-info { flex: 1; display: flex; flex-direction: column; justify-content: space-between; min-width: 0; }
+
+        .book-header { margin-bottom: 8px; }
+        .book-title { font-size: 15px; font-weight: 600; color: #333333; line-height: 1.4; margin-bottom: 6px; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+        .book-author-publisher { font-size: 12px; color: #999999; line-height: 1.4; }
+
+        .book-meta { display: flex; flex-direction: column; gap: 4px; }
+        .book-date { font-size: 12px; color: #999999; display: flex; align-items: center; gap: 4px; }
+        .book-date i { font-size: 11px; color: #2E5BFF; }
+
+        /* 提示文字 */
+        .books-tip { font-size: 11px; color: #999999; margin-bottom: 12px; line-height: 1.4; }
+        .books-tip i { font-size: 11px; color: #bfbfbf; margin-right: 4px; }
+
+        .action-bar { position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 1px solid #e8e8e8; padding: 12px 16px; display: flex; gap: 12px; max-width: 375px; margin: 0 auto; z-index: 90; }
+        .action-btn { flex: 1; border: none; border-radius: 8px; padding: 14px; font-size: 16px; font-weight: 600; cursor: pointer; }
+        .btn-share { background: white; color: #2E5BFF; border: 1px solid #2E5BFF; }
+        .btn-use { background: linear-gradient(135deg, #2E5BFF, #1E4BEF); color: white; }
+
+        /* Font Awesome图标样式优化 */
+        .fa-solid, .fa-regular { font-weight: 400; }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="navbar">
+        <button class="back-btn" onclick="Router.back()">←</button>
+        <div class="navbar-title">计划详情预览</div>
+        <div style="width: 26px;"></div>
+    </div>
+
+    <div class="plan-header">
+        <div class="plan-title-row">
+            <div class="plan-title" id="planTitle">2026年春季阅读计划</div>
+            <button class="desc-btn-inline" onclick="showDescModal()">简介</button>
+        </div>
+        <div class="plan-meta">
+            <div class="plan-meta-left">
+                <i class="fa-solid fa-calendar"></i>
+                <span id="planDate">2026-03-01 至 2026-05-31</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="books-section">
+        <div class="section-header">
+            <div class="section-title">阅读路线图</div>
+        </div>
+
+        <div class="books-tip">
+            <i class="fa-solid fa-lightbulb"></i>
+            点击书籍卡片，可以查看每本书的详细阅读计划
+        </div>
+
+        <div class="books-list" id="booksList">
+            <!-- 书籍列表将通过JavaScript动态生成 -->
+        </div>
+    </div>
+
+    <div class="action-bar" id="actionBar">
+        <!-- 按钮将通过JavaScript动态生成 -->
+    </div>
+
+    <!-- 计划简介弹窗 -->
+    <div class="modal-mask" id="descModal" onclick="hideDescModal()"></div>
+    <div class="modal-container" id="descModalContainer">
+        <div class="modal-header">
+            <div class="modal-title">计划简介</div>
+            <button class="modal-close" onclick="hideDescModal()">
+                <i class="fa-solid fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body" id="modalDescText">
+            精选5本经典文学作品，通过游戏化关卡设计，培养学生的阅读兴趣和理解能力。每本书都设计了多个关卡，包含阅读任务、视频导读、理解测评等多种形式，让学生在游戏化的体验中完成阅读目标
+        </div>
+    </div>
+
+    <!-- 分享弹窗 -->
+    <div class="share-modal" id="shareModal">
+        <div class="share-overlay" onclick="closeShareModal()"></div>
+        <div class="share-content">
+            <div class="share-title">分享书单</div>
+            <div class="share-options">
+                <div class="share-option" onclick="shareToWechat()">
+                    <div class="share-option-icon wechat">
+                        <i class="fa-brands fa-weixin"></i>
+                    </div>
+                    <div class="share-option-text">
+                        <div class="share-option-title">分享给微信好友</div>
+                        <div class="share-option-desc">推荐给其他教师或家长</div>
+                    </div>
+                </div>
+                <div class="share-option" onclick="shareToMoments()">
+                    <div class="share-option-icon wechat">
+                        <i class="fa-brands fa-weixin"></i>
+                    </div>
+                    <div class="share-option-text">
+                        <div class="share-option-title">分享到朋友圈</div>
+                        <div class="share-option-desc">让更多人看到这个书单</div>
+                    </div>
+                </div>
+                <div class="share-option" onclick="copyLink()">
+                    <div class="share-option-icon link">
+                        <i class="fa-solid fa-link"></i>
+                    </div>
+                    <div class="share-option-text">
+                        <div class="share-option-title">复制链接</div>
+                        <div class="share-option-desc">复制后可在任何地方分享</div>
+                    </div>
+                </div>
+            </div>
+            <button class="share-cancel" onclick="closeShareModal()">取消</button>
+        </div>
+    </div>
+
+    <script src="./router.js"></script>
+    <script>
+        // 模拟计划数据
+        const mockPlan = {
+            id: 1,
+            name: '2026年春季阅读计划',
+            startDate: '2026-03-01',
+            endDate: '2026-05-31',
+            timeStatus: 'upcoming', // 'upcoming' | 'ongoing' | 'ended'
+            teacherPublished: false, // 是否已报名
+            description: '精选5本经典文学作品，通过游戏化关卡设计，培养学生的阅读兴趣和理解能力。每本书都设计了多个关卡，包含阅读任务、视频导读、理解测评等多种形式，让学生在游戏化的体验中完成阅读目标',
+            booksCount: 5,
+            levelsCount: 25,
+            tasksCount: 75,
+            usedCount: 128,
+            books: [
+                {
+                    id: 1,
+                    order: 1,
+                    title: '三体',
+                    author: '刘慈欣',
+                    publisher: '重庆出版社',
+                    pages: 302,
+                    category: '科幻',
+                    levels: [
+                        { id: 1, name: '初识三体世界', type: 'normal', tasksCount: 3 },
+                        { id: 2, name: '三体危机', type: 'normal', tasksCount: 4 },
+                        { id: 3, name: '终极对决', type: 'boss', tasksCount: 5 }
+                    ]
+                },
+                {
+                    id: 2,
+                    order: 2,
+                    title: '活着',
+                    author: '余华',
+                    publisher: '作家出版社',
+                    pages: 191,
+                    category: '文学',
+                    levels: [
+                        { id: 4, name: '福贵的童年', type: 'normal', tasksCount: 3 },
+                        { id: 5, name: '命运的转折', type: 'normal', tasksCount: 3 },
+                        { id: 6, name: '生命的意义', type: 'boss', tasksCount: 4 }
+                    ]
+                },
+                {
+                    id: 4,
+                    order: 3,
+                    title: '平凡的世界',
+                    author: '路遥',
+                    publisher: '北京十月文艺出版社',
+                    pages: 428,
+                    category: '文学',
+                    levels: [
+                        { id: 7, name: '黄土高原', type: 'normal', tasksCount: 4 },
+                        { id: 8, name: '少年时代', type: 'normal', tasksCount: 4 },
+                        { id: 9, name: '奋斗之路', type: 'normal', tasksCount: 4 },
+                        { id: 10, name: '人生抉择', type: 'boss', tasksCount: 5 }
+                    ]
+                },
+                {
+                    id: 3,
+                    order: 4,
+                    title: '骆驼祥子',
+                    author: '老舍',
+                    publisher: '人民文学出版社',
+                    pages: 224,
+                    category: '文学',
+                    levels: [
+                        { id: 11, name: '祥子的梦想', type: 'normal', tasksCount: 3 },
+                        { id: 12, name: '命运的捉弄', type: 'normal', tasksCount: 3 },
+                        { id: 13, name: '理想的破灭', type: 'boss', tasksCount: 4 }
+                    ]
+                },
+                {
+                    id: 5,
+                    order: 5,
+                    title: '红楼梦',
+                    author: '曹雪芹',
+                    publisher: '人民文学出版社',
+                    pages: 856,
+                    category: '古典名著',
+                    levels: [
+                        { id: 14, name: '大观园初探', type: 'normal', tasksCount: 5 },
+                        { id: 15, name: '宝黛初会', type: 'normal', tasksCount: 4 },
+                        { id: 16, name: '诗社雅集', type: 'normal', tasksCount: 4 },
+                        { id: 17, name: '家族兴衰', type: 'normal', tasksCount: 5 },
+                        { id: 18, name: '红楼一梦', type: 'boss', tasksCount: 6 }
+                    ]
+                }
+            ]
+        };
+
+        let currentPlan = null;
+
+        // 页面加载时初始化
+        window.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const planId = urlParams.get('id') || urlParams.get('planId'); // 兼容两种参数名
+
+            if (planId) {
+                loadPlanData(planId);
+            } else {
+                // 如果没有参数，使用默认数据进行展示
+                loadPlanData(1);
+            }
+        });
+
+        // 加载计划数据
+        function loadPlanData(planId) {
+            // 实际应从后端加载
+            currentPlan = mockPlan;
+            currentPlan.id = parseInt(planId);
+
+            // 根据 planId 设置不同的状态（模拟不同计划的状态）
+            if (planId == 4 || planId == 5 || planId == 6) {
+                currentPlan.timeStatus = 'ended'; // 已结束的计划
+                currentPlan.teacherPublished = true;
+            } else if (planId == 1) {
+                currentPlan.timeStatus = 'upcoming'; // 未开始的计划
+                currentPlan.teacherPublished = false;
+            } else if (planId == 3) {
+                currentPlan.timeStatus = 'ongoing'; // 进行中的计划
+                currentPlan.teacherPublished = true; // 已报名
+            } else {
+                currentPlan.timeStatus = 'ongoing'; // 进行中的计划
+                currentPlan.teacherPublished = false;
+            }
+
+            document.getElementById('planTitle').textContent = currentPlan.name;
+            document.getElementById('planDate').textContent = `${currentPlan.startDate} 至 ${currentPlan.endDate}`;
+            document.getElementById('modalDescText').textContent = currentPlan.description;
+
+            renderBooks();
+            renderActionBar();
+        }
+
+        // 渲染底部操作栏
+        function renderActionBar() {
+            const actionBar = document.getElementById('actionBar');
+
+            if (currentPlan.timeStatus === 'ended') {
+                // 已结束的计划：分享书单按钮 + 禁用的报名按钮
+                actionBar.innerHTML = `
+                    <button class="action-btn btn-share" onclick="showShareModal()">分享书单</button>
+                    <button class="action-btn btn-use" disabled style="opacity: 0.5; cursor: not-allowed;">活动已结束</button>
+                `;
+            } else if (currentPlan.timeStatus === 'upcoming') {
+                // 未开始的计划：分享书单按钮 + 禁用的报名按钮
+                actionBar.innerHTML = `
+                    <button class="action-btn btn-share" onclick="showShareModal()">分享书单</button>
+                    <button class="action-btn btn-use" disabled style="opacity: 0.5; cursor: not-allowed;">活动未开始</button>
+                `;
+            } else if (currentPlan.timeStatus === 'ongoing' && currentPlan.teacherPublished) {
+                // 进行中且已报名的计划：分享书单按钮 + 追加班级按钮
+                actionBar.innerHTML = `
+                    <button class="action-btn btn-share" onclick="showShareModal()">分享书单</button>
+                    <button class="action-btn btn-use" onclick="usePlan()">追加班级</button>
+                `;
+            } else {
+                // 进行中未报名的计划：分享书单按钮 + 正常的报名按钮
+                actionBar.innerHTML = `
+                    <button class="action-btn btn-share" onclick="showShareModal()">分享书单</button>
+                    <button class="action-btn btn-use" onclick="usePlan()">报名</button>
+                `;
+            }
+        }
+
+        // 显示计划简介弹窗
+        function showDescModal() {
+            document.getElementById('descModal').classList.add('show');
+            document.getElementById('descModalContainer').classList.add('show');
+        }
+
+        // 隐藏计划简介弹窗
+        function hideDescModal() {
+            document.getElementById('descModal').classList.remove('show');
+            document.getElementById('descModalContainer').classList.remove('show');
+        }
+
+        // 渲染书籍列表（横向卡片布局）- 只显示前3本
+        function renderBooks() {
+            const booksList = document.getElementById('booksList');
+
+            // 计算每本书的开始日期（假设每本书间隔15天）
+            const planStartDate = new Date(currentPlan.startDate);
+
+            // 只显示三体和平凡的世界
+            booksList.innerHTML = currentPlan.books.filter((book, index) => [0, 2].includes(index)).map((book, index) => {
+                // 计算当前书籍的开始日期
+                const bookStartDate = new Date(planStartDate);
+                bookStartDate.setDate(bookStartDate.getDate() + (index * 15));
+                const month = String(bookStartDate.getMonth() + 1).padStart(2, '0');
+                const day = String(bookStartDate.getDate()).padStart(2, '0');
+                const dateStr = `${month}月${day}日开始`;
+
+                return `
+                    <div class="book-card" onclick="viewBookDetail(${book.id})">
+                        <div class="book-cover">
+                            <div class="book-order-badge">${index + 1}</div>
+                        </div>
+                        <div class="book-info">
+                            <div class="book-header">
+                                <div class="book-title">${book.title}</div>
+                                <div class="book-author-publisher">${book.author} · ${book.publisher}</div>
+                            </div>
+                            <div class="book-meta">
+                                <div class="book-date">
+                                    <i class="fa-solid fa-calendar"></i>
+                                    <span>${dateStr}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // 查看书籍关卡详情
+        function viewBookDetail(bookId) {
+            window.location.href = `13-书籍关卡详情.html?planId=${currentPlan.id}&bookId=${bookId}`;
+        }
+
+        // 使用计划
+        function usePlan() {
+            if (!currentPlan) return;
+
+            // 检查计划状态
+            if (currentPlan.timeStatus === 'ended') {
+                alert('该活动已结束，无法报名');
+                return;
+            }
+
+            if (currentPlan.timeStatus === 'upcoming') {
+                alert('该活动尚未开始，无法报名');
+                return;
+            }
+
+            window.location.href = `10-报名阅读计划.html?planId=${currentPlan.id}`;
+        }
+
+        // 显示分享弹窗
+        function showShareModal() {
+            const modal = document.getElementById('shareModal');
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden'; // 防止背景滚动
+        }
+
+        // 关闭分享弹窗
+        function closeShareModal() {
+            const modal = document.getElementById('shareModal');
+            modal.classList.remove('active');
+            document.body.style.overflow = ''; // 恢复滚动
+        }
+
+        // 分享给微信好友
+        function shareToWechat() {
+            // 原型中模拟提示
+            alert('分享功能需要在微信环境中使用\n\n实际应用中将调用微信分享API，分享内容：\n标题：' + currentPlan.name + '\n描述：' + currentPlan.books.length + '本书籍 · ' + currentPlan.startDate + ' 至 ' + currentPlan.endDate);
+            closeShareModal();
+
+            // 实际应用中的代码示例（需要先配置微信JS-SDK）：
+            // wx.updateAppMessageShareData({
+            //     title: currentPlan.name,
+            //     desc: currentPlan.books.length + '本书籍 · ' + currentPlan.startDate + ' 至 ' + currentPlan.endDate,
+            //     link: window.location.href,
+            //     imgUrl: 'https://example.com/share-image.jpg',
+            //     success: function() {
+            //         alert('分享成功');
+            //     }
+            // });
+        }
+
+        // 分享到朋友圈
+        function shareToMoments() {
+            alert('分享功能需要在微信环境中使用\n\n实际应用中将调用微信朋友圈分享API');
+            closeShareModal();
+
+            // 实际应用中的代码示例（需要先配置微信JS-SDK）：
+            // wx.updateTimelineShareData({
+            //     title: currentPlan.name + ' - 校校读吧',
+            //     link: window.location.href,
+            //     imgUrl: 'https://example.com/share-image.jpg',
+            //     success: function() {
+            //         alert('分享成功');
+            //     }
+            // });
+        }
+
+        // 复制链接
+        function copyLink() {
+            const link = window.location.href;
+
+            // 使用 Clipboard API
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(link).then(() => {
+                    alert('链接已复制到剪贴板\n\n可在微信或其他应用中粘贴分享');
+                    closeShareModal();
+                }).catch(() => {
+                    // 降级方案
+                    fallbackCopyLink(link);
+                });
+            } else {
+                // 降级方案：使用传统方法
+                fallbackCopyLink(link);
+            }
+        }
+
+        // 降级复制方案
+        function fallbackCopyLink(link) {
+            const textarea = document.createElement('textarea');
+            textarea.value = link;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                document.execCommand('copy');
+                alert('链接已复制到剪贴板\n\n可在微信或其他应用中粘贴分享');
+            } catch (err) {
+                alert('复制失败，请手动复制链接：\n' + link);
+            }
+            document.body.removeChild(textarea);
+            closeShareModal();
+        }
+    </script>
+</body>
+</html>

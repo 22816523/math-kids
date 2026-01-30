@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>全局搜索与权限控制 - 客户管理系统V1.1</title>
+    <link rel="stylesheet" href="common.css">
+</head>
+<body>
+    <div class="container">
+        <div class="breadcrumb">
+            <a href="index.html">首页</a>
+            <span>></span>
+            <a href="#">联系人管理</a>
+            <span>></span>
+            <span>全局搜索与权限控制</span>
+        </div>
+
+        <div class="page-header">
+            <h1 class="page-title">🔍 全局搜索与权限控制</h1>
+            <p class="page-subtitle">Global Search and Permission Control</p>
+        </div>
+
+        
+        <div class="alert alert-info">
+            <strong>功能说明：</strong> 提供公司级联系人搜索功能，任何授权用户可根据姓名、电话、学校搜索。业务员默认只能查看和操作自己负责的联系人；管理层可查看团队或全公司联系人
+        </div>
+
+        <div class="card">
+            <div class="card-header">全局搜索</div>
+            <div class="card-body">
+                <div class="search-box">
+                    <div class="search-row">
+                        <span class="search-label">搜索关键词：</span>
+                        <input type="text" class="search-input" placeholder="请输入姓名、手机号或学校名称" style="flex: 2;">
+                        <button class="btn btn-primary">搜索</button>
+                    </div>
+                    <div class="search-row">
+                        <span class="search-label">高级筛选：</span>
+                        <select class="search-input">
+                            <option>全部范围</option>
+                            <option>我的联系人</option>
+                            <option>我的团队</option>
+                            <option>全公司</option>
+                        </select>
+                        <select class="search-input">
+                            <option>全部状态</option>
+                            <option>已审核</option>
+                            <option>待审核</option>
+                        </select>
+                        <select class="search-input">
+                            <option>全部部门</option>
+                            <option>销售部</option>
+                            <option>市场部</option>
+                            <option>客服部</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="alert alert-warning">
+                    <strong>当前权限：</strong> 您是<strong>销售部经理</strong>，可以查看<strong>销售部全部联系人</strong>的信息
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>联系人姓名</th>
+                                <th>手机号</th>
+                                <th>所属学校</th>
+                                <th>职务</th>
+                                <th>归属业务员</th>
+                                <th>来源部门</th>
+                                <th>可见权限</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>张老师</td>
+                                <td>138****5678</td>
+                                <td>北京市第一中学</td>
+                                <td>年级主任</td>
+                                <td>李明</td>
+                                <td>销售部</td>
+                                <td><span class="badge badge-success">完全可见</span></td>
+                                <td>
+                                    <a href="#" class="action-link">查看</a>
+                                    <a href="#" class="action-link">编辑</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>王老师</td>
+                                <td>139****1234</td>
+                                <td>上海市实验中学</td>
+                                <td>数学老师</td>
+                                <td>王芳</td>
+                                <td>销售部</td>
+                                <td><span class="badge badge-success">完全可见</span></td>
+                                <td>
+                                    <a href="#" class="action-link">查看</a>
+                                    <a href="#" class="action-link">编辑</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>李老师</td>
+                                <td>136****9876</td>
+                                <td>广州市第三中学</td>
+                                <td>校长</td>
+                                <td>赵强</td>
+                                <td>市场部</td>
+                                <td><span class="badge badge-warning">仅查看</span></td>
+                                <td>
+                                    <a href="#" class="action-link">查看</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">权限配置</div>
+            <div class="card-body">
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>角色</th>
+                                <th>可见范围</th>
+                                <th>查看权限</th>
+                                <th>编辑权限</th>
+                                <th>分配权限</th>
+                                <th>导出权限</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>系统管理员</strong></td>
+                                <td>全公司</td>
+                                <td><span class="badge badge-success">✓</span></td>
+                                <td><span class="badge badge-success">✓</span></td>
+                                <td><span class="badge badge-success">✓</span></td>
+                                <td><span class="badge badge-danger">✗</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>部门经理</strong></td>
+                                <td>本部门</td>
+                                <td><span class="badge badge-success">✓</span></td>
+                                <td><span class="badge badge-success">✓</span></td>
+                                <td><span class="badge badge-success">✓</span></td>
+                                <td><span class="badge badge-danger">✗</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>业务员</strong></td>
+                                <td>我的联系人</td>
+                                <td><span class="badge badge-success">✓</span></td>
+                                <td><span class="badge badge-success">✓</span></td>
+                                <td><span class="badge badge-danger">✗</span></td>
+                                <td><span class="badge badge-danger">✗</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>客服人员</strong></td>
+                                <td>我的联系人</td>
+                                <td><span class="badge badge-success">✓</span></td>
+                                <td><span class="badge badge-danger">✗</span></td>
+                                <td><span class="badge badge-danger">✗</span></td>
+                                <td><span class="badge badge-danger">✗</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</body>
+</html>

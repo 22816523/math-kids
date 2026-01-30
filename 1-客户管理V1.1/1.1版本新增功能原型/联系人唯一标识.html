@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>联系人唯一标识 - 客户管理系统V1.1</title>
+    <link rel="stylesheet" href="common.css">
+</head>
+<body>
+    <div class="container">
+        <div class="breadcrumb">
+            <a href="index.html">首页</a>
+            <span>></span>
+            <a href="#">联系人管理</a>
+            <span>></span>
+            <span>联系人唯一标识</span>
+        </div>
+
+        <div class="page-header">
+            <h1 class="page-title">👤 联系人唯一标识管理</h1>
+            <p class="page-subtitle">Contact Unique Identifier Management</p>
+        </div>
+
+        <div class="alert alert-info">
+            <strong>功能说明：</strong> 以"所属学校+姓名+手机号"作为唯一标识，整合分散在各业务员名下的老师信息，形成公司级统一数据库
+        </div>
+
+        <div class="card">
+            <div class="card-header">联系人基本信息</div>
+            <div class="card-body">
+                <div class="info-row">
+                    <div class="info-label">唯一标识：</div>
+                    <div class="info-value"><strong style="color: #667eea; font-size: 16px;">CON-BJ001-张老师-138****5678</strong></div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">姓名：</div>
+                    <div class="info-value">张老师</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">手机号：</div>
+                    <div class="info-value">138****5678 <span class="badge badge-warning">已脱敏</span></div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">所属学校：</div>
+                    <div class="info-value">北京市第一中学</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">科目：</div>
+                    <div class="info-value">数学</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">职务：</div>
+                    <div class="info-value">
+                        <span class="badge badge-info">年级主任</span>
+                        <span class="badge badge-info">数学老师</span>
+                    </div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">年级：</div>
+                    <div class="info-value">高三</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">身份证号：</div>
+                    <div class="info-value">110***********1234 <span class="badge badge-warning">已脱敏</span></div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">收货地址：</div>
+                    <div class="info-value">北京市海淀区中关村大街1号（学校地址）</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">收货人：</div>
+                    <div class="info-value">张老师</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">归属权信息</div>
+            <div class="card-body">
+                <div class="info-row">
+                    <div class="info-label">当前归属：</div>
+                    <div class="info-value">李明（销售部）<span class="badge badge-success">跟进权</span></div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">来源部门：</div>
+                    <div class="info-value">销售部</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">创建时间：</div>
+                    <div class="info-value">2024-01-10 14:20:35</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">审核状态：</div>
+                    <div class="info-value"><span class="badge badge-success">已审核</span></div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">审核人：</div>
+                    <div class="info-value">王经理</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">审核时间：</div>
+                    <div class="info-value">2024-01-10 15:30:12</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">共享使用情况</div>
+            <div class="card-body">
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>业务员</th>
+                                <th>所属部门</th>
+                                <th>权限类型</th>
+                                <th>获取方式</th>
+                                <th>获取时间</th>
+                                <th>状态</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>李明</td>
+                                <td>销售部</td>
+                                <td><span class="badge badge-success">归属权</span></td>
+                                <td>创建</td>
+                                <td>2024-01-10 14:20:35</td>
+                                <td><span class="badge badge-success">使用中</span></td>
+                            </tr>
+                            <tr>
+                                <td>王芳</td>
+                                <td>销售部</td>
+                                <td><span class="badge badge-info">跟进权</span></td>
+                                <td>复制</td>
+                                <td>2024-01-12 09:15:20</td>
+                                <td><span class="badge badge-success">使用中</span></td>
+                            </tr>
+                            <tr>
+                                <td>赵强</td>
+                                <td>市场部</td>
+                                <td><span class="badge badge-info">跟进权</span></td>
+                                <td>管理员分配</td>
+                                <td>2024-01-13 16:45:10</td>
+                                <td><span class="badge badge-success">使用中</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">操作历史</div>
+            <div class="card-body">
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>操作时间</th>
+                                <th>操作类型</th>
+                                <th>操作人</th>
+                                <th>操作内容</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>2024-01-13 16:45:10</td>
+                                <td><span class="badge badge-info">分配</span></td>
+                                <td>王经理（管理员）</td>
+                                <td>将联系人分配给赵强（市场部）</td>
+                            </tr>
+                            <tr>
+                                <td>2024-01-12 09:15:20</td>
+                                <td><span class="badge badge-info">复制</span></td>
+                                <td>李明</td>
+                                <td>将联系人复制给王芳（销售部）</td>
+                            </tr>
+                            <tr>
+                                <td>2024-01-10 15:30:12</td>
+                                <td><span class="badge badge-success">审核通过</span></td>
+                                <td>王经理（管理员）</td>
+                                <td>审核通过联系人信息</td>
+                            </tr>
+                            <tr>
+                                <td>2024-01-10 14:20:35</td>
+                                <td><span class="badge badge-success">创建</span></td>
+                                <td>李明（销售部）</td>
+                                <td>创建联系人档案</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="btn-group">
+            <button class="btn btn-primary">编辑联系人</button>
+            <button class="btn btn-warning">转移归属权</button>
+            <button class="btn btn-success">复制联系人</button>
+            <button class="btn btn-secondary">返回列表</button>
+        </div>
+    </div>
+</body>
+</html>

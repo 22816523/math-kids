@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>选择学校 - 校校读吧-学生端</title>
+    <link rel="stylesheet" href="design-system.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background-color: #f5f5f5; width: 375px; margin: 0 auto; min-height: 100vh; opacity: 0; }
+
+        .navbar { background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%); color: white; height: 44px; display: flex; align-items: center; padding: 0 16px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0, 200, 167, 0.15); }
+        .back-btn { background: none; border: none; color: white; font-size: 18px; cursor: pointer; padding: 0; margin-right: 12px; }
+        .navbar-title { font-size: 18px; font-weight: 600; flex: 1; }
+        .save-btn { background: none; border: none; color: white; font-size: 15px; cursor: pointer; font-weight: 500; }
+        .save-btn:hover { opacity: 0.8; }
+
+        .search-section { background: white; padding: 12px 16px; border-bottom: 1px solid #f0f0f0; }
+        .search-box { display: flex; align-items: center; background: #f5f5f5; border-radius: 8px; padding: 8px 12px; }
+        .search-icon { color: #999999; font-size: 16px; margin-right: 8px; }
+        .search-input { flex: 1; border: none; background: none; font-size: 15px; color: #333333; outline: none; }
+        .search-input::placeholder { color: #bfbfbf; }
+        .clear-btn { color: #999999; font-size: 16px; cursor: pointer; display: none; }
+        .clear-btn.show { display: block; }
+
+        .region-filter { background: white; padding: 12px 16px; border-bottom: 1px solid #f0f0f0; }
+        .region-selector { display: flex; align-items: center; gap: 8px; }
+        .region-btn { flex: 1; padding: 8px 12px; background: #f5f5f5; border: 1px solid #e0e0e0; border-radius: 6px; font-size: 14px; color: #666666; cursor: pointer; text-align: center; display: flex; align-items: center; justify-content: space-between; }
+        .region-btn:active { background: #e8e8e8; }
+        .region-btn .text { flex: 1; text-align: left; }
+        .region-btn .arrow { color: #999999; font-size: 12px; }
+        .region-btn.selected { background: #e6fffb; border-color: var(--color-primary); color: var(--color-primary); }
+        .region-clear { padding: 8px; color: #999999; cursor: pointer; font-size: 14px; }
+
+        .region-modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.5); z-index: 1000; display: none; }
+        .region-modal.show { display: flex; align-items: flex-end; justify-content: center; }
+        .region-picker { background: white; width: 375px; border-radius: 12px 12px 0 0; max-height: 60vh; display: flex; flex-direction: column; }
+        .region-header { display: flex; align-items: center; justify-content: space-between; padding: 16px; border-bottom: 1px solid #f0f0f0; }
+        .region-title { font-size: 16px; font-weight: 600; color: #333333; }
+        .region-cancel { color: #999999; font-size: 15px; cursor: pointer; }
+        .region-confirm { color: var(--color-primary); font-size: 15px; cursor: pointer; font-weight: 500; }
+        .region-content { display: flex; flex: 1; overflow: hidden; }
+        .region-column { flex: 1; overflow-y: auto; border-right: 1px solid #f0f0f0; }
+        .region-column:last-child { border-right: none; }
+        .region-option { padding: 12px 16px; font-size: 14px; color: #333333; cursor: pointer; text-align: center; }
+        .region-option:active { background: #f5f5f5; }
+        .region-option.active { background: #e6fffb; color: var(--color-primary); font-weight: 500; }
+
+        .option-list { background: white; }
+        .option-item { padding: 16px; border-bottom: 1px solid #f0f0f0; display: flex; align-items: center; justify-content: space-between; cursor: pointer; }
+        .option-item:last-child { border-bottom: none; }
+        .option-item:active { background: #f5f5f5; }
+        .option-text { font-size: 16px; color: #333333; flex: 1; }
+        .option-desc { font-size: 12px; color: #999999; margin-top: 4px; }
+        .option-check { color: var(--color-primary); font-size: 20px; }
+
+        .loading { text-align: center; padding: 40px 16px; color: #999999; font-size: 14px; }
+        .empty { text-align: center; padding: 40px 16px; color: #999999; font-size: 14px; }
+
+        /* Font Awesome图标样式 */
+        .navbar .fa-solid { color: white; }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="navbar">
+        <button class="back-btn" onclick="Router.back()"><i class="fa-solid fa-chevron-left"></i></button>
+        <div class="navbar-title">选择学校</div>
+        <button class="save-btn" onclick="saveSchool()">保存</button>
+    </div>
+
+    <div class="search-section">
+        <div class="search-box">
+            <div class="search-icon">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </div>
+            <input type="text" class="search-input" id="searchInput" placeholder="搜索学校名称" oninput="handleSearch()">
+            <div class="clear-btn" id="clearBtn" onclick="clearSearch()">
+                <i class="fa-solid fa-circle-xmark"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="region-filter">
+        <div class="region-selector">
+            <div class="region-btn" id="provinceBtn" onclick="openRegionPicker()">
+                <span class="text">选择省份</span>
+                <span class="arrow">▼</span>
+            </div>
+            <div class="region-btn" id="cityBtn" onclick="openRegionPicker()">
+                <span class="text">选择城市</span>
+                <span class="arrow">▼</span>
+            </div>
+            <div class="region-btn" id="districtBtn" onclick="openRegionPicker()">
+                <span class="text">选择区县</span>
+                <span class="arrow">▼</span>
+            </div>
+            <div class="region-clear" id="regionClearBtn" onclick="clearRegion()" style="display: none;">
+                <i class="fa-solid fa-xmark"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- 地区选择弹窗 -->
+    <div class="region-modal" id="regionModal" onclick="closeRegionPicker(event)">
+        <div class="region-picker" onclick="event.stopPropagation()">
+            <div class="region-header">
+                <div class="region-cancel" onclick="closeRegionPicker()">取消</div>
+                <div class="region-title">选择地区</div>
+                <div class="region-confirm" onclick="confirmRegion()">确定</div>
+            </div>
+            <div class="region-content">
+                <div class="region-column" id="provinceColumn"></div>
+                <div class="region-column" id="cityColumn"></div>
+                <div class="region-column" id="districtColumn"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="option-list" id="optionList">
+        <div class="loading">加载中...</div>
+    </div>
+
+    <script src="./router.js"></script>
+    <script>
+        let currentSchool = '阳光小学'
+        let selectedSchool = currentSchool
+        let allSchools = []
+        let filteredSchools = []
+
+        let selectedProvince = null
+        let selectedCity = null
+        let selectedDistrict = null
+        let tempProvince = null
+        let tempCity = null
+        let tempDistrict = null
+
+        const regionData = {
+            provinces: [
+                {
+                    id: 1,
+                    name: '北京市',
+                    cities: [
+                        {
+                            id: 101,
+                            name: '北京市',
+                            districts: [
+                                { id: 10101, name: '东城区' },
+                                { id: 10102, name: '西城区' },
+                                { id: 10103, name: '朝阳区' },
+                                { id: 10104, name: '海淀区' }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    id: 2,
+                    name: '上海市',
+                    cities: [
+                        {
+                            id: 201,
+                            name: '上海市',
+                            districts: [
+                                { id: 20101, name: '黄浦区' },
+                                { id: 20102, name: '徐汇区' },
+                                { id: 20103, name: '长宁区' }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    id: 3,
+                    name: '广东省',
+                    cities: [
+                        {
+                            id: 301,
+                            name: '广州市',
+                            districts: [
+                                { id: 30101, name: '天河区' },
+                                { id: 30102, name: '越秀区' }
+                            ]
+                        },
+                        {
+                            id: 302,
+                            name: '深圳市',
+                            districts: [
+                                { id: 30201, name: '福田区' },
+                                { id: 30202, name: '南山区' }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            loadSchools()
+        })
+
+        function loadSchools() {
+            allSchools = [
+                { id: 1, name: '阳光小学', provinceId: 1, cityId: 101, districtId: 10104, address: '北京市海淀区' },
+                { id: 2, name: '北京市第一小学', provinceId: 1, cityId: 101, districtId: 10101, address: '北京市东城区' },
+                { id: 3, name: '北京市第二小学', provinceId: 1, cityId: 101, districtId: 10102, address: '北京市西城区' },
+                { id: 4, name: '清华附属小学', provinceId: 1, cityId: 101, districtId: 10104, address: '北京市海淀区' },
+                { id: 5, name: '北大附属小学', provinceId: 1, cityId: 101, districtId: 10104, address: '北京市海淀区' },
+                { id: 6, name: '上海市第一小学', provinceId: 2, cityId: 201, districtId: 20101, address: '上海市黄浦区' },
+                { id: 7, name: '上海市实验小学', provinceId: 2, cityId: 201, districtId: 20102, address: '上海市徐汇区' },
+                { id: 8, name: '广州市第一小学', provinceId: 3, cityId: 301, districtId: 30101, address: '广东省广州市天河区' },
+                { id: 9, name: '深圳市实验小学', provinceId: 3, cityId: 302, districtId: 30201, address: '广东省深圳市福田区' }
+            ]
+            applyFilters()
+        }
+
+        function applyFilters() {
+            let schools = allSchools
+            if (selectedDistrict) {
+                schools = schools.filter(s => s.districtId === selectedDistrict.id)
+            } else if (selectedCity) {
+                schools = schools.filter(s => s.cityId === selectedCity.id)
+            } else if (selectedProvince) {
+                schools = schools.filter(s => s.provinceId === selectedProvince.id)
+            }
+
+            const keyword = document.getElementById('searchInput').value.trim()
+            if (keyword) {
+                schools = schools.filter(school =>
+                    school.name.includes(keyword) || school.address.includes(keyword)
+                )
+            }
+
+            filteredSchools = schools
+            renderSchools(filteredSchools)
+        }
+
+        function renderSchools(schools) {
+            if (schools.length === 0) {
+                document.getElementById('optionList').innerHTML = '<div class="empty">未找到相关学校</div>'
+                return
+            }
+
+            const listHtml = schools.map(school => {
+                const isSelected = school.name === selectedSchool
+                return `
+                    <div class="option-item" onclick="selectSchool('${school.name}')">
+                        <div style="flex: 1;">
+                            <div class="option-text">${school.name}</div>
+                            <div class="option-desc">${school.address}</div>
+                        </div>
+                        <div class="option-check" style="display: ${isSelected ? 'block' : 'none'};">
+                            <i class="fa-solid fa-check"></i>
+                        </div>
+                    </div>
+                `
+            }).join('')
+
+            document.getElementById('optionList').innerHTML = listHtml
+        }
+
+        function handleSearch() {
+            const keyword = document.getElementById('searchInput').value.trim()
+            const clearBtn = document.getElementById('clearBtn')
+            if (keyword) {
+                clearBtn.classList.add('show')
+            } else {
+                clearBtn.classList.remove('show')
+            }
+            applyFilters()
+        }
+
+        function clearSearch() {
+            document.getElementById('searchInput').value = ''
+            document.getElementById('clearBtn').classList.remove('show')
+            applyFilters()
+        }
+
+        function openRegionPicker() {
+            tempProvince = selectedProvince
+            tempCity = selectedCity
+            tempDistrict = selectedDistrict
+            renderProvinces()
+            if (tempProvince) {
+                renderCities(tempProvince)
+                if (tempCity) {
+                    renderDistricts(tempCity)
+                }
+            }
+            document.getElementById('regionModal').classList.add('show')
+        }
+
+        function closeRegionPicker(event) {
+            if (event && event.target !== event.currentTarget) return
+            document.getElementById('regionModal').classList.remove('show')
+        }
+
+        function renderProvinces() {
+            const html = regionData.provinces.map(province => {
+                const isActive = tempProvince && tempProvince.id === province.id
+                return `<div class="region-option ${isActive ? 'active' : ''}" onclick="selectProvince(${province.id})">${province.name}</div>`
+            }).join('')
+            document.getElementById('provinceColumn').innerHTML = html
+        }
+
+        function renderCities(province) {
+            if (!province || !province.cities) {
+                document.getElementById('cityColumn').innerHTML = ''
+                return
+            }
+            const html = province.cities.map(city => {
+                const isActive = tempCity && tempCity.id === city.id
+                return `<div class="region-option ${isActive ? 'active' : ''}" onclick="selectCity(${province.id}, ${city.id})">${city.name}</div>`
+            }).join('')
+            document.getElementById('cityColumn').innerHTML = html
+        }
+
+        function renderDistricts(city) {
+            if (!city || !city.districts) {
+                document.getElementById('districtColumn').innerHTML = ''
+                return
+            }
+            const html = city.districts.map(district => {
+                const isActive = tempDistrict && tempDistrict.id === district.id
+                return `<div class="region-option ${isActive ? 'active' : ''}" onclick="selectDistrict(${city.id}, ${district.id})">${district.name}</div>`
+            }).join('')
+            document.getElementById('districtColumn').innerHTML = html
+        }
+
+        function selectProvince(provinceId) {
+            tempProvince = regionData.provinces.find(p => p.id === provinceId)
+            tempCity = null
+            tempDistrict = null
+            renderProvinces()
+            renderCities(tempProvince)
+            renderDistricts(null)
+        }
+
+        function selectCity(provinceId, cityId) {
+            const province = regionData.provinces.find(p => p.id === provinceId)
+            tempCity = province.cities.find(c => c.id === cityId)
+            tempDistrict = null
+            renderCities(province)
+            renderDistricts(tempCity)
+        }
+
+        function selectDistrict(cityId, districtId) {
+            const province = regionData.provinces.find(p => p.cities.some(c => c.id === cityId))
+            const city = province.cities.find(c => c.id === cityId)
+            tempDistrict = city.districts.find(d => d.id === districtId)
+            renderDistricts(city)
+        }
+
+        function confirmRegion() {
+            selectedProvince = tempProvince
+            selectedCity = tempCity
+            selectedDistrict = tempDistrict
+            updateRegionButtons()
+            closeRegionPicker()
+            applyFilters()
+        }
+
+        function updateRegionButtons() {
+            const provinceBtn = document.getElementById('provinceBtn')
+            const cityBtn = document.getElementById('cityBtn')
+            const districtBtn = document.getElementById('districtBtn')
+            const clearBtn = document.getElementById('regionClearBtn')
+
+            if (selectedProvince) {
+                provinceBtn.querySelector('.text').textContent = selectedProvince.name
+                provinceBtn.classList.add('selected')
+                clearBtn.style.display = 'block'
+            } else {
+                provinceBtn.querySelector('.text').textContent = '选择省份'
+                provinceBtn.classList.remove('selected')
+                clearBtn.style.display = 'none'
+            }
+
+            if (selectedCity) {
+                cityBtn.querySelector('.text').textContent = selectedCity.name
+                cityBtn.classList.add('selected')
+            } else {
+                cityBtn.querySelector('.text').textContent = '选择城市'
+                cityBtn.classList.remove('selected')
+            }
+
+            if (selectedDistrict) {
+                districtBtn.querySelector('.text').textContent = selectedDistrict.name
+                districtBtn.classList.add('selected')
+            } else {
+                districtBtn.querySelector('.text').textContent = '选择区县'
+                districtBtn.classList.remove('selected')
+            }
+        }
+
+        function clearRegion() {
+            selectedProvince = null
+            selectedCity = null
+            selectedDistrict = null
+            updateRegionButtons()
+            applyFilters()
+        }
+
+        function selectSchool(school) {
+            selectedSchool = school
+            renderSchools(filteredSchools)
+        }
+
+        function saveSchool() {
+            currentSchool = selectedSchool
+            alert('保存成功')
+            Router.back()
+        }
+    </script>
+</body>
+</html>

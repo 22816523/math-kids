@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>编辑科目 - 校校读吧小管家管理平台</title>
+    <link rel="stylesheet" href="common/admin-common.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .form-section {
+            background: white;
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 16px;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #262626;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .icon-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .icon-item {
+            width: 60px;
+            height: 60px;
+            border: 2px solid #e8e8e8;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: white;
+        }
+
+        .icon-item:hover {
+            border-color: #1890FF;
+            transform: scale(1.05);
+        }
+
+        .icon-item.selected {
+            border-color: #1890FF;
+            background: #e6f7ff;
+            color: #1890FF;
+        }
+
+        .color-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .color-item {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 3px solid transparent;
+            position: relative;
+        }
+
+        .color-item:hover {
+            transform: scale(1.1);
+        }
+
+        .color-item.selected {
+            border-color: #262626;
+        }
+
+        .color-item.selected::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+            text-shadow: 0 0 3px rgba(0,0,0,0.5);
+        }
+
+        .preview-card {
+            background: white;
+            border: 1px solid #e8e8e8;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .preview-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            color: white;
+            margin: 0 auto 16px;
+        }
+
+        .preview-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #262626;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            padding-top: 24px;
+            border-top: 1px solid #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-layout">
+        <div class="admin-sidebar">
+            <div class="sidebar-header"></div>
+            <div class="sidebar-menu"></div>
+        </div>
+
+        <div class="admin-main">
+            <div class="admin-header"></div>
+
+            <div class="admin-content">
+                <div class="page-header">
+                    <div>
+                        <h1 class="page-title" id="pageTitle">添加科目</h1>
+                        <p class="page-description">配置科目的基本信息和显示样式</p>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 300px; gap: 16px;">
+                    <div>
+                        <div class="form-section">
+                            <div class="section-title">基本信息</div>
+                            <div class="form-group">
+                                <label class="form-label required">科目名称</label>
+                                <input type="text" class="form-input" id="subjectName" placeholder="请输入科目名称" maxlength="10" oninput="updatePreview()">
+                                <p class="form-help">建议2-4个字，如"语文"、"数学"</p>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label required">排序序号</label>
+                                <input type="number" class="form-input" id="sortOrder" placeholder="数字越小越靠前" min="1" value="1" oninput="updatePreview()">
+                                <p class="form-help">控制科目在列表中的显示顺序</p>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">科目描述</label>
+                                <textarea class="form-textarea" id="description" rows="3" placeholder="选填，简要描述该科目"></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">状态</label>
+                                <div style="display: flex; align-items: center; gap: 16px;">
+                                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                        <input type="radio" name="status" value="enabled" checked onchange="updatePreview()">
+                                        <span>启用</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                        <input type="radio" name="status" value="disabled" onchange="updatePreview()">
+                                        <span>禁用</span>
+                                    </label>
+                                </div>
+                                <p class="form-help">禁用后教师创建班级时无法选择该科目</p>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <div class="section-title">选择图标</div>
+                            <div class="icon-selector" id="iconSelector">
+                                <!-- 图标选择器将通过JavaScript生成 -->
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <div class="section-title">选择颜色</div>
+                            <div class="color-selector" id="colorSelector">
+                                <!-- 颜色选择器将通过JavaScript生成 -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="form-section" style="position: sticky; top: 80px;">
+                            <div class="section-title">预览效果</div>
+                            <div class="preview-card">
+                                <div class="preview-icon" id="previewIcon">
+                                    <i class="fa-solid fa-book"></i>
+                                </div>
+                                <div class="preview-name" id="previewName">科目名称</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <div class="form-actions">
+                        <button class="btn btn-secondary" onclick="goBack()">取消</button>
+                        <button class="btn btn-primary" onclick="saveSubject()">
+                            <i class="fa-solid fa-save"></i> 保存
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="common/admin-common.js"></script>
+    <script>
+        // 可选图标列表
+        const icons = [
+            'fa-book', 'fa-calculator', 'fa-language', 'fa-atom', 'fa-flask',
+            'fa-dna', 'fa-landmark', 'fa-globe', 'fa-scale-balanced', 'fa-music',
+            'fa-palette', 'fa-running', 'fa-microscope', 'fa-brain', 'fa-graduation-cap',
+            'fa-pen', 'fa-pencil', 'fa-book-open', 'fa-chalkboard', 'fa-lightbulb'
+        ];
+
+        // 可选颜色列表
+        const colors = [
+            '#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#ffeaa7',
+            '#74b9ff', '#a29bfe', '#fd79a8', '#fdcb6e', '#e17055',
+            '#00b894', '#0984e3', '#6c5ce7', '#d63031', '#fdcb6e',
+            '#e84393', '#00cec9', '#ff7675', '#fab1a0', '#55efc4'
+        ];
+
+        let selectedIcon = 'fa-book';
+        let selectedColor = '#ff6b6b';
+        let editingId = null;
+
+        // 页面加载时初始化
+        window.addEventListener('DOMContentLoaded', () => {
+            // 检查是否是编辑模式
+            const urlParams = new URLSearchParams(window.location.search);
+            editingId = urlParams.get('id');
+
+            if (editingId) {
+                document.getElementById('pageTitle').textContent = '编辑科目';
+                loadSubjectData(editingId);
+            }
+
+            // 渲染图标选择器
+            renderIconSelector();
+
+            // 渲染颜色选择器
+            renderColorSelector();
+
+            // 初始化预览
+            updatePreview();
+        });
+
+        // 渲染图标选择器
+        function renderIconSelector() {
+            const selector = document.getElementById('iconSelector');
+            selector.innerHTML = icons.map(icon => `
+                <div class="icon-item ${icon === selectedIcon ? 'selected' : ''}" onclick="selectIcon('${icon}')">
+                    <i class="fa-solid ${icon}"></i>
+                </div>
+            `).join('');
+        }
+
+        // 渲染颜色选择器
+        function renderColorSelector() {
+            const selector = document.getElementById('colorSelector');
+            selector.innerHTML = colors.map(color => `
+                <div class="color-item ${color === selectedColor ? 'selected' : ''}"
+                     style="background: ${color};"
+                     onclick="selectColor('${color}')">
+                </div>
+            `).join('');
+        }
+
+        // 选择图标
+        function selectIcon(icon) {
+            selectedIcon = icon;
+            renderIconSelector();
+            updatePreview();
+        }
+
+        // 选择颜色
+        function selectColor(color) {
+            selectedColor = color;
+            renderColorSelector();
+            updatePreview();
+        }
+
+        // 更新预览
+        function updatePreview() {
+            const name = document.getElementById('subjectName').value || '科目名称';
+            const previewIcon = document.getElementById('previewIcon');
+            const previewName = document.getElementById('previewName');
+
+            previewIcon.style.background = selectedColor;
+            previewIcon.innerHTML = `<i class="fa-solid ${selectedIcon}"></i>`;
+            previewName.textContent = name;
+        }
+
+        // 加载科目数据（编辑模式）
+        function loadSubjectData(id) {
+            // 模拟从后端加载数据
+            const mockData = {
+                1: { name: '语文', icon: 'fa-book', color: '#ff6b6b', sort: 1, status: 'enabled', description: '中文语言文学' },
+                2: { name: '数学', icon: 'fa-calculator', color: '#4ecdc4', sort: 2, status: 'enabled', description: '数学计算与逻辑' },
+                3: { name: '英语', icon: 'fa-language', color: '#45b7d1', sort: 3, status: 'enabled', description: '英语语言学习' }
+            };
+
+            const data = mockData[id];
+            if (data) {
+                document.getElementById('subjectName').value = data.name;
+                document.getElementById('sortOrder').value = data.sort;
+                document.getElementById('description').value = data.description || '';
+                document.querySelector(`input[name="status"][value="${data.status}"]`).checked = true;
+
+                selectedIcon = data.icon;
+                selectedColor = data.color;
+
+                renderIconSelector();
+                renderColorSelector();
+                updatePreview();
+            }
+        }
+
+        // 保存科目
+        function saveSubject() {
+            const name = document.getElementById('subjectName').value.trim();
+            const sortOrder = document.getElementById('sortOrder').value;
+            const description = document.getElementById('description').value.trim();
+            const status = document.querySelector('input[name="status"]:checked').value;
+
+            // 验证
+            if (!name) {
+                alert('请输入科目名称');
+                document.getElementById('subjectName').focus();
+                return;
+            }
+
+            if (!sortOrder || sortOrder < 1) {
+                alert('请输入有效的排序序号');
+                document.getElementById('sortOrder').focus();
+                return;
+            }
+
+            // 构建数据
+            const data = {
+                name,
+                icon: selectedIcon,
+                color: selectedColor,
+                sort: parseInt(sortOrder),
+                status,
+                description
+            };
+
+            console.log('保存科目数据:', data);
+
+            // 实际应调用API保存数据
+            showToast(editingId ? '保存成功' : '添加成功');
+
+            setTimeout(() => {
+                window.location.href = '29-科目管理.html';
+            }, 1500);
+        }
+
+        // 返回
+        function goBack() {
+            if (confirm('确认放弃当前编辑吗？')) {
+                window.location.href = '29-科目管理.html';
+            }
+        }
+
+        // 显示提示
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = message;
+            toast.style.cssText = 'position: fixed; top: 20px; right: 20px; background: rgba(0,0,0,0.8); color: white; padding: 12px 24px; border-radius: 4px; z-index: 10000;';
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.remove();
+            }, 2000);
+        }
+    </script>
+</body>
+</html>

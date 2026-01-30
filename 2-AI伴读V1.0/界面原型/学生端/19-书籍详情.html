@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>书籍详情 - 校校读吧-学生端</title>
+    <link rel="stylesheet" href="design-system.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background-color: #f5f5f5; width: 375px; margin: 0 auto; min-height: 100vh; padding-bottom: 80px; opacity: 0; }
+
+        .navbar { background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%); color: white; height: 44px; display: flex; align-items: center; padding: 0 16px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(54, 207, 201, 0.15); }
+        .back-btn { background: none; border: none; color: white; font-size: 18px;
+            line-height: 1.4; cursor: pointer; padding: 0; margin-right: 12px; }
+        .navbar-title { flex: 1; font-size: 18px;
+            line-height: 1.4; font-weight: 600; }
+
+        .book-header { background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%); padding: 20px 16px; color: white; }
+        .book-cover-container { display: flex; gap: 16px; margin-bottom: 16px; }
+        .book-cover { width: 80px; height: 106px; border-radius: 8px; background: linear-gradient(135deg, #667eea, #764ba2); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); flex-shrink: 0; display: flex; align-items: center; justify-content: center; color: white; font-size: 14px; font-weight: 600; text-align: center; padding: 8px; }
+        .book-basic-info { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+        .book-title { font-size: 18px; font-weight: 700; margin-bottom: 6px; display: flex; align-items: center; justify-content: space-between; }
+        .intro-link { font-size: 12px; font-weight: 400; color: rgba(255,255,255,0.8); cursor: pointer; white-space: nowrap; text-decoration: underline; }
+        .book-author { font-size: 13px; opacity: 0.9; margin-bottom: 6px; }
+        .book-meta { display: flex; gap: 12px; font-size: 12px; opacity: 0.9; flex-wrap: wrap; }
+        .book-meta-item { display: flex; align-items: center; gap: 4px; }
+        .book-meta-item i { font-size: 11px; color: white; opacity: 0.9; }
+
+        .book-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+        .stat-box { background: rgba(255, 255, 255, 0.2); border-radius: 8px; padding: 10px 12px; display: flex; align-items: center; justify-content: center; gap: 6px; }
+        .stat-label { font-size: 13px; opacity: 0.9; }
+        .stat-value { font-size: 18px; font-weight: 700; }
+
+        .section { background: white; margin: 12px 16px; padding: 16px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+        .section-title { font-size: 16px;
+            line-height: 1.4; font-weight: 600; color: #262626; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+        .section-content { font-size: 14px; color: #595959; line-height: 1.8; }
+
+        .progress-bar { background: #e0e0e0; height: 8px; border-radius: 4px; overflow: hidden; margin-bottom: 8px; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--color-primary), var(--color-secondary)); transition: width 0.3s; }
+        .progress-text { font-size: 12px;
+            line-height: 1.5; color: #8c8c8c; text-align: right; }
+
+        .chapter-list { }
+        .chapter-item { display: flex; align-items: center; gap: 12px; padding: 12px; background: #fafafa; border-radius: 8px; margin-bottom: 8px; cursor: pointer; transition: all 0.3s; }
+        .chapter-item:hover { background: #f0f9ff; }
+        .chapter-item.completed { background: #e6f7ff; }
+        .chapter-number { width: 36px; height: 36px; background: var(--color-primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px;
+            line-height: 1.6; font-weight: 600; }
+        .chapter-item.completed .chapter-number { background: #52c41a; }
+        .chapter-content { flex: 1; }
+        .chapter-title { font-size: 14px;
+            line-height: 1.6; color: #262626; margin-bottom: 4px; font-weight: 500; }
+        .chapter-pages { font-size: 12px;
+            line-height: 1.5; color: #8c8c8c; }
+        .chapter-status { font-size: 12px;
+            line-height: 1.5; color: #52c41a; }
+
+        .resource-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+        .resource-card { padding: 12px; background: #fafafa; border-radius: 8px; text-align: center; cursor: pointer; transition: all 0.3s; }
+        .resource-card:hover { background: #f0f9ff; transform: translateY(-2px); }
+        .resource-icon { font-size: 32px; margin-bottom: 8px; }
+        .resource-name { font-size: 13px;
+            line-height: 1.5; color: #262626; font-weight: 500; }
+
+        .bottom-bar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 375px; background: white; padding: 12px 16px; box-shadow: 0 -2px 8px rgba(0,0,0,0.06); display: flex; gap: 12px; }
+        .btn-secondary { flex: 1; height: 44px; background: white; border: 1px solid var(--color-primary); color: var(--color-primary); border-radius: 22px; font-size: 16px;
+            line-height: 1.4; cursor: pointer; transition: all 0.3s; }
+        .btn-secondary:hover { background: #e6f7ff; }
+        .btn-primary { flex: 2; height: 44px; background: linear-gradient(135deg, var(--color-primary), var(--color-secondary)); color: white; border: none; border-radius: 22px; font-size: 16px;
+            line-height: 1.4; font-weight: 600; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 12px rgba(54, 207, 201, 0.3); }
+        .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+
+        /* 内容简介弹窗 */
+        .intro-modal { display: none; position: fixed; top: 0; left: 50%; transform: translateX(-50%); width: 375px; height: 100vh; background: rgba(0,0,0,0.6); z-index: 1000; align-items: center; justify-content: center; }
+        .intro-modal.show { display: flex; }
+        .intro-content { background: white; border-radius: 16px; width: 320px; max-height: 70vh; overflow: hidden; }
+        .intro-header { padding: 16px; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center; }
+        .intro-title { font-size: 16px; font-weight: 600; color: #262626; }
+        .intro-close { background: none; border: none; font-size: 20px; color: #999; cursor: pointer; }
+        .intro-body { padding: 16px; font-size: 14px; color: #595959; line-height: 1.8; max-height: 50vh; overflow-y: auto; }
+
+        /* 页签样式 */
+        .tab-container { background: white; margin: 12px 16px 0; border-radius: 10px; padding: 4px; display: flex; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+        .tab-item { flex: 1; padding: 10px 0; text-align: center; font-size: 14px; color: #666666; cursor: pointer; border-radius: 6px; transition: all 0.3s; }
+        .tab-item.active { background: var(--color-primary); color: white; font-weight: 500; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* 资源区域样式 */
+        .resource-section { padding: 16px; }
+        .resource-group { margin-bottom: 24px; }
+        .resource-group:last-child { margin-bottom: 0; }
+        .resource-group-title { font-size: 15px; font-weight: 600; color: #333333; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+        .resource-group-title i { color: var(--color-primary); font-size: 14px; }
+
+        /* 导读视频列表 */
+        .video-list { display: flex; flex-direction: column; gap: 12px; }
+        .video-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.06); cursor: pointer; transition: all 0.3s; }
+        .video-card:active { transform: scale(0.98); }
+        .video-cover { width: 100%; height: 160px; position: relative; display: flex; align-items: center; justify-content: center; }
+        .video-cover-placeholder { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: linear-gradient(135deg, var(--color-primary), var(--color-secondary)); color: white; }
+        .video-cover-placeholder i { font-size: 32px; margin-bottom: 8px; opacity: 0.8; color: white; }
+        .video-cover-placeholder span { font-size: 12px; opacity: 0.7; }
+        .video-play-btn { position: absolute; width: 48px; height: 48px; background: rgba(255,255,255,0.9); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .video-play-btn i { color: var(--color-primary); font-size: 20px; margin-left: 3px; }
+        .video-duration { position: absolute; bottom: 8px; right: 8px; background: rgba(0,0,0,0.7); color: white; padding: 2px 8px; border-radius: 4px; font-size: 12px; }
+        .video-info { padding: 12px; }
+        .video-title { font-size: 14px; font-weight: 500; color: #333333; margin-bottom: 4px; line-height: 1.4; }
+        .video-desc { font-size: 12px; color: #999999; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+        /* 导读单网格 */
+        .guide-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .guide-card { background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.06); cursor: pointer; transition: all 0.3s; }
+        .guide-card:active { transform: scale(0.96); }
+        .guide-cover { width: 100%; aspect-ratio: 1/1.414; background: #f5f5f5; position: relative; }
+        .guide-cover-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #52c41a, #73d13d); color: white; font-size: 24px; }
+        .guide-cover-placeholder i { color: white; }
+        .guide-name { padding: 8px; font-size: 12px; color: #333333; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+        /* 测评区域样式 */
+        .exam-section { padding: 16px; }
+        .exam-card { background: white; border-radius: 12px; padding: 16px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06); cursor: pointer; transition: all 0.3s; }
+        .exam-card:active { transform: scale(0.98); }
+        .exam-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+        .exam-icon { width: 40px; height: 40px; border-radius: 8px; background: linear-gradient(135deg, #52c41a, #73d13d); display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+        .exam-info { flex: 1; }
+        .exam-title { font-size: 15px; font-weight: 600; color: #333333; margin-bottom: 4px; }
+        .exam-count { font-size: 13px; color: #999999; }
+        .exam-header > i { color: #999999; font-size: 16px; }
+        .exam-stats { display: flex; flex-wrap: wrap; gap: 12px; font-size: 12px; color: #666666; }
+        .exam-stat-item { display: flex; align-items: center; gap: 4px; }
+        .exam-stat-item i { font-size: 10px; color: #52c41a; }
+
+        /* 资源锁定状态 */
+        .video-card.locked, .guide-card.locked { position: relative; }
+        .video-card.locked .video-cover-placeholder,
+        .guide-card.locked .guide-cover-placeholder { filter: grayscale(0.5); opacity: 0.7; }
+        .video-card.locked .video-play-btn { display: none; }
+        .lock-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; border-radius: 12px 12px 0 0; }
+        .guide-card.locked .lock-overlay { border-radius: 8px 8px 0 0; }
+        .lock-icon { width: 40px; height: 40px; background: rgba(255,255,255,0.9); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .lock-icon i { color: #999; font-size: 18px; }
+        .locked-hint { font-size: 12px; color: #999; text-align: center; margin-top: 8px; padding: 0 16px; }
+
+        /* 关卡列表样式 */
+        .levels-section { padding: 16px; }
+        .level-card { background: white; border-radius: 12px; margin-bottom: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06); }
+        .level-header { padding: 16px; cursor: pointer; display: flex; align-items: center; gap: 12px; transition: all 0.3s; }
+        .level-header:active { background: #fafafa; }
+        .level-icon { width: 40px; height: 40px; border-radius: 8px; background: linear-gradient(135deg, var(--color-primary), var(--color-secondary)); color: white; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+        .level-info { flex: 1; min-width: 0; }
+        .level-name { font-size: 15px; font-weight: 600; color: #333333; margin-bottom: 4px; }
+        .level-task-count { font-size: 12px; color: #999999; }
+        .expand-icon { color: #999999; font-size: 14px; transition: transform 0.3s; }
+        .expand-icon.expanded { transform: rotate(180deg); }
+        .level-tasks { display: none; padding: 0 16px 16px; border-top: 1px solid #f0f0f0; }
+        .level-tasks.show { display: block; }
+        .task-list { list-style: none; }
+        .task-item { padding: 10px 0; border-bottom: 1px solid #f5f5f5; display: flex; align-items: flex-start; gap: 10px; }
+        .task-item:last-child { border-bottom: none; }
+        .task-number { width: 20px; height: 20px; background: #F5F7FA; color: #595959; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; flex-shrink: 0; margin-top: 2px; }
+        .task-content { flex: 1; }
+        .task-name { font-size: 14px; color: #333333; margin-bottom: 4px; }
+        .task-type { font-size: 12px; color: #999999; display: flex; align-items: center; gap: 4px; }
+        .task-type i { font-size: 11px; }
+        .task-status { flex-shrink: 0; margin-top: 2px; }
+        .task-status .completed-icon { width: 20px; height: 20px; background: #52c41a; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .task-status .completed-icon i { color: white; font-size: 10px; }
+    
+        /* Font Awesome图标样式优化 */
+        .fa-solid, .fa-regular {
+            font-weight: 400;
+            color: #595959;
+            opacity: 0.85;
+        }
+
+        /* 导航栏和标题中的图标保持原色 */
+        .navbar .fa-solid,
+        .section-title .fa-solid,
+        .task-title .fa-solid {
+            color: inherit;
+            opacity: 1;
+        }
+
+        /* 徽章图标使用白色，与金色背景形成对比 */
+        .badge-icon .fa-solid {
+            color: white;
+            opacity: 1;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 成就图标特殊样式 */
+        .achievement-section .badge-icon .fa-solid {
+            font-size: 32px;
+        }
+    
+        /* 选中状态图标颜色优化 */
+        .tab-item.active .tab-icon .fa-solid,
+        .tab-item.active .fa-solid {
+            color: var(--color-primary);
+            opacity: 1;
+        }
+
+        /* 其他选中状态 */
+        .menu-item.active .menu-icon .fa-solid,
+        .nav-item.active .fa-solid,
+        .list-item.selected .fa-solid,
+        .card.active .fa-solid,
+        .btn.active .fa-solid,
+        .filter-btn.active .fa-solid {
+            color: var(--color-primary);
+            opacity: 1;
+        }
+    </style>    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="navbar">
+        <button class="back-btn" onclick="Router.back()">←</button>
+        <div class="navbar-title">书籍详情</div>
+    </div>
+
+    <div class="book-header">
+        <div class="book-cover-container">
+            <div class="book-cover">三体</div>
+            <div class="book-basic-info">
+                <div class="book-title">
+                    <span>三体</span>
+                    <span class="intro-link" onclick="showIntroModal()">简介</span>
+                </div>
+                <div class="book-author">刘慈欣 著</div>
+                <div class="book-meta">
+                    <div class="book-meta-item">
+                        <i class="fa-solid fa-building"></i>
+                        <span>人民文学出版社</span>
+                    </div>
+                    <div class="book-meta-item">
+                        <i class="fa-solid fa-book"></i>
+                        <span>480页</span>
+                    </div>
+                    <div class="book-meta-item">
+                        <i class="fa-solid fa-tag"></i>
+                        <span>科幻</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="book-stats">
+            <div class="stat-box">
+                <div class="stat-label">已阅读次数</div>
+                <div class="stat-value">8/10</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">已完成</div>
+                <div class="stat-value">35%</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页签切换 -->
+    <div class="tab-container">
+        <div class="tab-item active" onclick="switchTab('list')">列表</div>
+        <div class="tab-item" onclick="switchTab('resource')">资源</div>
+    </div>
+
+    <!-- 列表内容 -->
+    <div class="tab-content active" id="list-tab">
+        <div class="levels-section">
+            <div class="level-card">
+                <div class="level-header" onclick="toggleTasks(1)">
+                    <div class="level-icon">🎮</div>
+                    <div class="level-info">
+                        <div class="level-name">第一单元</div>
+                        <div class="level-task-count"><i class="fa-solid fa-list-check"></i> 2个任务</div>
+                    </div>
+                    <i class="fa-solid fa-chevron-down expand-icon expanded" id="expandIcon1"></i>
+                </div>
+                <div class="level-tasks show" id="tasks1">
+                    <ul class="task-list">
+                        <li class="task-item">
+                            <div class="task-number">1</div>
+                            <div class="task-content">
+                                <div class="task-name">观看导读视频：三体背景介绍</div>
+                                <div class="task-type"><i class="fa-solid fa-video"></i> 视频</div>
+                            </div>
+                            <div class="task-status">
+                                <div class="completed-icon"><i class="fa-solid fa-check"></i></div>
+                            </div>
+                        </li>
+                        <li class="task-item">
+                            <div class="task-number">2</div>
+                            <div class="task-content">
+                                <div class="task-name">阅读第1-50页</div>
+                                <div class="task-type"><i class="fa-solid fa-book-open"></i> 阅读</div>
+                            </div>
+                            <div class="task-status">
+                                <div class="completed-icon"><i class="fa-solid fa-check"></i></div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="level-card">
+                <div class="level-header" onclick="toggleTasks(2)">
+                    <div class="level-icon">🎮</div>
+                    <div class="level-info">
+                        <div class="level-name">第二单元</div>
+                        <div class="level-task-count"><i class="fa-solid fa-list-check"></i> 3个任务</div>
+                    </div>
+                    <i class="fa-solid fa-chevron-down expand-icon" id="expandIcon2"></i>
+                </div>
+                <div class="level-tasks" id="tasks2">
+                    <ul class="task-list">
+                        <li class="task-item">
+                            <div class="task-number">1</div>
+                            <div class="task-content">
+                                <div class="task-name">阅读第51-100页</div>
+                                <div class="task-type"><i class="fa-solid fa-book-open"></i> 阅读</div>
+                            </div>
+                            <div class="task-status">
+                                <div class="completed-icon"><i class="fa-solid fa-check"></i></div>
+                            </div>
+                        </li>
+                        <li class="task-item">
+                            <div class="task-number">2</div>
+                            <div class="task-content">
+                                <div class="task-name">完成导读单一</div>
+                                <div class="task-type"><i class="fa-solid fa-clipboard-check"></i> 练习</div>
+                            </div>
+                        </li>
+                        <li class="task-item">
+                            <div class="task-number">3</div>
+                            <div class="task-content">
+                                <div class="task-name">观看分享课：三体世界观解析</div>
+                                <div class="task-type"><i class="fa-solid fa-video"></i> 视频</div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="level-card">
+                <div class="level-header" onclick="toggleTasks(3)">
+                    <div class="level-icon">🎮</div>
+                    <div class="level-info">
+                        <div class="level-name">第三单元</div>
+                        <div class="level-task-count"><i class="fa-solid fa-list-check"></i> 2个任务</div>
+                    </div>
+                    <i class="fa-solid fa-chevron-down expand-icon" id="expandIcon3"></i>
+                </div>
+                <div class="level-tasks" id="tasks3">
+                    <ul class="task-list">
+                        <li class="task-item">
+                            <div class="task-number">1</div>
+                            <div class="task-content">
+                                <div class="task-name">阅读第101-150页</div>
+                                <div class="task-type"><i class="fa-solid fa-book-open"></i> 阅读</div>
+                            </div>
+                        </li>
+                        <li class="task-item">
+                            <div class="task-number">2</div>
+                            <div class="task-content">
+                                <div class="task-name">完成导读单二</div>
+                                <div class="task-type"><i class="fa-solid fa-clipboard-check"></i> 练习</div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 资源内容 -->
+    <div class="tab-content" id="resource-tab">
+        <div class="resource-section">
+            <div class="resource-group">
+                <div class="resource-group-title">
+                    <i class="fa-solid fa-video"></i>
+                    <span>导读视频</span>
+                </div>
+                <div class="video-list">
+                    <div class="video-card locked" onclick="showLockedTip('video')">
+                        <div class="video-cover">
+                            <div class="video-cover-placeholder">
+                                <i class="fa-solid fa-video"></i>
+                                <span>导读视频</span>
+                            </div>
+                            <div class="lock-overlay">
+                                <div class="lock-icon"><i class="fa-solid fa-lock"></i></div>
+                            </div>
+                            <div class="video-duration">5:30</div>
+                        </div>
+                        <div class="video-info">
+                            <div class="video-title">导读视频：三体背景介绍</div>
+                            <div class="video-desc">介绍《三体》小说的创作背景、作者刘慈欣的创作历程</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="locked-hint">阅读日期未到，暂时无法播放视频</div>
+            </div>
+
+            <div class="resource-group">
+                <div class="resource-group-title">
+                    <i class="fa-solid fa-file-lines"></i>
+                    <span>导读单</span>
+                </div>
+                <div class="guide-grid">
+                    <div class="guide-card locked" onclick="showLockedTip('guide')">
+                        <div class="guide-cover">
+                            <div class="guide-cover-placeholder">
+                                <i class="fa-solid fa-file-lines"></i>
+                            </div>
+                            <div class="lock-overlay">
+                                <div class="lock-icon"><i class="fa-solid fa-lock"></i></div>
+                            </div>
+                        </div>
+                        <div class="guide-name">导读单1</div>
+                    </div>
+                    <div class="guide-card locked" onclick="showLockedTip('guide')">
+                        <div class="guide-cover">
+                            <div class="guide-cover-placeholder">
+                                <i class="fa-solid fa-file-lines"></i>
+                            </div>
+                            <div class="lock-overlay">
+                                <div class="lock-icon"><i class="fa-solid fa-lock"></i></div>
+                            </div>
+                        </div>
+                        <div class="guide-name">导读单2</div>
+                    </div>
+                    <div class="guide-card locked" onclick="showLockedTip('guide')">
+                        <div class="guide-cover">
+                            <div class="guide-cover-placeholder">
+                                <i class="fa-solid fa-file-lines"></i>
+                            </div>
+                            <div class="lock-overlay">
+                                <div class="lock-icon"><i class="fa-solid fa-lock"></i></div>
+                            </div>
+                        </div>
+                        <div class="guide-name">导读单3</div>
+                    </div>
+                </div>
+                <div class="locked-hint">阅读日期未到，暂时无法查看导读单</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 内容简介弹窗 -->
+    <div class="intro-modal" id="introModal">
+        <div class="intro-content">
+            <div class="intro-header">
+                <div class="intro-title">内容简介</div>
+                <button class="intro-close" onclick="closeIntroModal()">×</button>
+            </div>
+            <div class="intro-body">
+                文化大革命如火如荼进行的同时，军方探寻外星文明的绝秘计划"红岸工程"取得了突破性进展。但在按下发射键的那一刻，历史没有记录，她彻底改变了人类的命运。地球文明向宇宙发出的第一声啼鸣，以太阳为中心，以光速向宇宙深处飞驰...
+            </div>
+        </div>
+    </div>
+
+    <script src="./router.js"></script>
+    <script>
+        function readChapter(chapterNum) {
+            Router.toStudentPage('readBook', {bookId: 1, chapter: chapterNum})
+        }
+
+        function startReading() {
+            Router.toStudentPage('readBook', {bookId: 1})
+        }
+
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-container .tab-item').forEach((item, index) => {
+                item.classList.toggle('active', (tab === 'list' && index === 0) || (tab === 'resource' && index === 1))
+            })
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'))
+            document.getElementById(`${tab}-tab`).classList.add('active')
+        }
+
+        function toggleTasks(levelId) {
+            const tasksDiv = document.getElementById(`tasks${levelId}`)
+            const expandIcon = document.getElementById(`expandIcon${levelId}`)
+            if (tasksDiv.classList.contains('show')) {
+                tasksDiv.classList.remove('show')
+                expandIcon.classList.remove('expanded')
+            } else {
+                tasksDiv.classList.add('show')
+                expandIcon.classList.add('expanded')
+            }
+        }
+
+        function showIntroModal() {
+            document.getElementById('introModal').classList.add('show')
+        }
+
+        function closeIntroModal() {
+            document.getElementById('introModal').classList.remove('show')
+        }
+
+        function playVideo() {
+            alert('播放导读视频')
+        }
+
+        function viewGuide(num) {
+            alert('查看导读单' + num)
+        }
+
+        function showLockedTip(type) {
+            if (type === 'video') {
+                alert('阅读日期未到，暂时无法播放视频')
+            } else {
+                alert('阅读日期未到，暂时无法查看导读单')
+            }
+        }
+
+        // 点击弹窗背景关闭
+        document.getElementById('introModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeIntroModal()
+            }
+        })
+    </script>
+</body>
+</html>

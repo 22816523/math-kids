@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>个人信息 - 校校读吧小管家（教师端）</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: "Source Han Sans CN", "Noto Sans CJK SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background-color: #F5F7FA; width: 375px; margin: 0 auto; min-height: 100vh; opacity: 0; }
+
+        .navbar { background: linear-gradient(135deg, #2E5BFF 0%, #1E4BEF 100%); color: white; height: 44px; display: flex; align-items: center; padding: 0 16px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(24, 144, 255, 0.15); }
+        .back-btn { background: none; border: none; color: white; font-size: 18px; line-height: 1.4; cursor: pointer; padding: 0; margin-right: 12px; }
+        .navbar-title { font-size: 18px; line-height: 1.4; font-weight: 600; flex: 1; }
+        .save-btn { background: none; border: none; color: white; font-size: 15px; line-height: 1.6; cursor: pointer; font-weight: 500; }
+        .save-btn:hover { opacity: 0.8; }
+
+        .avatar-section { background: white; padding: 24px 16px; text-align: center; margin-bottom: 12px; }
+        .avatar-upload { width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, #2E5BFF, #1E4BEF); color: white; display: inline-flex; align-items: center; justify-content: center; font-size: 32px; line-height: 1.2; font-weight: 700; cursor: pointer; position: relative; overflow: hidden; }
+        .avatar-upload:hover { opacity: 0.9; }
+        .avatar-tip { font-size: 12px; line-height: 1.5; color: #999999; margin-top: 12px; }
+
+        .form-section { background: white; margin-bottom: 12px; }
+        .form-item { padding: 16px; border-bottom: 1px solid #f0f0f0; display: flex; align-items: center; }
+        .form-item:last-child { border-bottom: none; }
+        .form-label { width: 80px; font-size: 15px; line-height: 1.6; color: #333333; }
+        .form-label.required::after { content: '*'; color: #ff4d4f; margin-left: 4px; }
+        .form-input { flex: 1; border: none; font-size: 15px; line-height: 1.6; color: #333333; outline: none; text-align: right; }
+        .form-input::placeholder { color: #bfbfbf; }
+        .form-arrow { color: #bfbfbf; font-size: 18px; line-height: 1.4; margin-left: 8px; }
+        .form-value { flex: 1; font-size: 15px; line-height: 1.6; color: #595959; text-align: right; }
+        .form-textarea { flex: 1; border: none; font-size: 15px; line-height: 1.6; color: #333333; outline: none; resize: none; min-height: 80px; font-family: inherit; }
+        .form-textarea::placeholder { color: #bfbfbf; }
+
+        .gender-selector { display: flex; gap: 12px; flex: 1; justify-content: flex-end; }
+        .gender-btn { padding: 6px 16px; border: 1px solid #d9d9d9; background: white; color: #595959; border-radius: 4px; font-size: 14px; line-height: 1.6; cursor: pointer; transition: all 0.3s; }
+        .gender-btn.active { background: #2E5BFF; color: white; border-color: #2E5BFF; }
+        .gender-btn:hover { border-color: #2E5BFF; color: #2E5BFF; }
+        .gender-btn.active:hover { color: white; }
+
+        .submit-btn { margin: 24px 16px; padding: 14px; background: linear-gradient(135deg, #2E5BFF, #1E4BEF); color: white; border: none; border-radius: 8px; font-size: 16px; line-height: 1.5; font-weight: 500; cursor: pointer; width: calc(100% - 32px); box-shadow: 0 4px 12px rgba(24, 144, 255, 0.3); }
+        .submit-btn:hover { opacity: 0.9; }
+        .submit-btn:active { transform: scale(0.98); }
+    
+        /* Font Awesome图标样式优化 */
+        .fa-solid, .fa-regular {
+            font-weight: 400;
+            color: #595959;
+            opacity: 0.85;
+        }
+
+        /* 导航栏和标题中的图标保持原色 */
+        .navbar .fa-solid,
+        .section-title .fa-solid,
+        .task-title .fa-solid {
+            color: inherit;
+            opacity: 1;
+        }
+
+        /* 徽章图标使用白色，与金色背景形成对比 */
+        .badge-icon .fa-solid {
+            color: white;
+            opacity: 1;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 成就图标特殊样式 */
+        .achievement-section .badge-icon .fa-solid {
+            font-size: 32px;
+        }
+    
+        /* 选中状态图标颜色优化 */
+        .tab-item.active .tab-icon .fa-solid,
+        .tab-item.active .fa-solid {
+            color: #2E5BFF;
+            opacity: 1;
+        }
+
+        /* 其他选中状态 */
+        .menu-item.active .menu-icon .fa-solid,
+        .nav-item.active .fa-solid,
+        .list-item.selected .fa-solid,
+        .card.active .fa-solid,
+        .btn.active .fa-solid,
+        .filter-btn.active .fa-solid {
+            color: #2E5BFF;
+            opacity: 1;
+        }
+    </style>    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="navbar">
+        <button class="back-btn" onclick="Router.back()">←</button>
+        <div class="navbar-title">个人信息</div>
+    </div>
+
+    <div class="avatar-section">
+        <div class="avatar-upload" onclick="uploadAvatar()">
+            王
+        </div>
+        <div class="avatar-tip">点击更换头像</div>
+    </div>
+
+    <div class="form-section">
+        <div class="form-item" onclick="editName()">
+            <div class="form-label required">姓名</div>
+            <div class="form-value">王老师</div>
+            <div class="form-arrow">→</div>
+        </div>
+        <div class="form-item" onclick="editGender()">
+            <div class="form-label">性别</div>
+            <div class="form-value">女</div>
+            <div class="form-arrow">→</div>
+        </div>
+        <div class="form-item" onclick="editPhone()">
+            <div class="form-label required">手机号</div>
+            <div class="form-value">138****8888</div>
+            <div class="form-arrow">→</div>
+        </div>
+        <div class="form-item" onclick="editEmail()">
+            <div class="form-label">邮箱</div>
+            <div class="form-value">wang@example.com</div>
+            <div class="form-arrow">→</div>
+        </div>
+    </div>
+
+    <div class="form-section">
+        <div class="form-item" onclick="selectStage()">
+            <div class="form-label required">学段</div>
+            <div class="form-value">初中</div>
+            <div class="form-arrow">→</div>
+        </div>
+        <div class="form-item" onclick="selectSchool()">
+            <div class="form-label required">学校</div>
+            <div class="form-value">北京市第一中学</div>
+            <div class="form-arrow">→</div>
+        </div>
+        <div class="form-item" onclick="selectSubject()">
+            <div class="form-label required">学科</div>
+            <div class="form-value">语文</div>
+            <div class="form-arrow">→</div>
+        </div>
+        <div class="form-item" onclick="selectTeachingYears()">
+            <div class="form-label">教龄</div>
+            <div class="form-value">10年</div>
+            <div class="form-arrow">→</div>
+        </div>
+    </div>
+
+    <div class="form-section">
+        <div class="form-item" onclick="editBio()">
+            <div class="form-label">个人简介</div>
+            <div class="form-value">从事语文教学10年，热爱阅读，致力于培养学生的阅读兴趣和能力</div>
+            <div class="form-arrow">→</div>
+        </div>
+    </div>
+
+    <script src="./router.js"></script>
+    <script>
+        function uploadAvatar() {
+            window.location.href = '28-更换头像.html'
+        }
+
+        function editName() {
+            window.location.href = '29-编辑姓名.html'
+        }
+
+        function editGender() {
+            window.location.href = '30-选择性别.html'
+        }
+
+        function editPhone() {
+            window.location.href = '38-修改手机号.html'
+        }
+
+        function editEmail() {
+            window.location.href = '39-绑定邮箱.html?hasEmail=true'
+        }
+
+        function editBio() {
+            window.location.href = '31-编辑个人简介.html'
+        }
+
+        function selectStage() {
+            window.location.href = '32-选择学段.html'
+        }
+
+        function selectSchool() {
+            window.location.href = '33-选择学校.html'
+        }
+
+        function selectSubject() {
+            window.location.href = '34-选择学科.html'
+        }
+
+        function selectTeachingYears() {
+            window.location.href = '35-选择教龄.html'
+        }
+    </script>
+</body>
+</html>

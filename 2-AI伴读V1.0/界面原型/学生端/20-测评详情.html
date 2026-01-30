@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>测评详情 - 校校读吧-学生端</title>
+    <link rel="stylesheet" href="design-system.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background-color: #f5f5f5; width: 375px; margin: 0 auto; min-height: 100vh; padding-bottom: 80px; opacity: 0; }
+
+        .navbar { background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary) 100%); color: white; height: 44px; display: flex; align-items: center; padding: 0 16px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0, 201, 167, 0.15); }
+        .back-btn { background: none; border: none; color: white; font-size: 18px;
+            line-height: 1.4; cursor: pointer; padding: 0; margin-right: 12px; }
+        .navbar-title { font-size: 18px;
+            line-height: 1.4; font-weight: 600; }
+
+        .exam-header { background: white; padding: 20px 16px; margin-bottom: 12px; }
+        .exam-title { font-size: 20px;
+            line-height: 1.2; font-weight: 700; color: #262626; margin-bottom: 12px; }
+        .exam-meta { display: flex; gap: 16px; margin-bottom: 16px; }
+        .meta-item { display: flex; align-items: center; gap: 6px; font-size: 13px;
+            line-height: 1.5; color: #595959; }
+        .meta-icon { font-size: 16px;
+            line-height: 1.4; }
+        .exam-status { display: inline-block; padding: 6px 16px; background: #e6f7ff; color: var(--color-primary); border-radius: 16px; font-size: 13px;
+            line-height: 1.5; font-weight: 600; }
+        .exam-status.completed { background: #f6ffed; color: #52c41a; }
+        .exam-status.expired { background: #fff1f0; color: #ff4d4f; }
+
+        .section { background: white; margin: 0 16px 12px; padding: 16px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+        .section-title { font-size: 16px;
+            line-height: 1.4; font-weight: 600; color: #262626; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+        .section-content { font-size: 14px; color: #595959; line-height: 1.8; }
+
+        .info-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+        .info-card { background: #fafafa; padding: 12px; border-radius: 8px; text-align: center; }
+        .info-value { font-size: 20px;
+            line-height: 1.2; font-weight: 700; color: var(--color-primary); margin-bottom: 4px; }
+        .info-label { font-size: 12px;
+            line-height: 1.5; color: #8c8c8c; }
+
+        .score-card { background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary) 100%); padding: 20px; border-radius: 12px; text-align: center; color: white; margin-bottom: 16px; }
+        .score-value { font-size: 48px; font-weight: 700; margin-bottom: 8px; }
+        .score-label { font-size: 14px;
+            line-height: 1.6; opacity: 0.9; }
+        .score-detail { display: flex; justify-content: space-around; margin-top: 16px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.3); }
+        .score-item { text-align: center; }
+        .score-item-value { font-size: 18px;
+            line-height: 1.4; font-weight: 600; margin-bottom: 4px; }
+        .score-item-label { font-size: 12px;
+            line-height: 1.5; opacity: 0.8; }
+
+        .history-list { }
+        .history-item { display: flex; align-items: center; justify-content: space-between; padding: 12px; background: #fafafa; border-radius: 8px; margin-bottom: 8px; }
+        .history-item:last-child { margin-bottom: 0; }
+        .history-left { flex: 1; }
+        .history-date { font-size: 13px;
+            line-height: 1.5; color: #262626; margin-bottom: 4px; font-weight: 500; }
+        .history-time { font-size: 12px;
+            line-height: 1.5; color: #8c8c8c; }
+        .history-score { font-size: 20px;
+            line-height: 1.2; font-weight: 700; color: var(--color-primary); }
+
+        .requirement-list { }
+        .requirement-item { display: flex; gap: 8px; margin-bottom: 12px; font-size: 14px; color: #595959; line-height: 1.6; }
+        .requirement-item:last-child { margin-bottom: 0; }
+        .requirement-icon { color: var(--color-primary); font-weight: 600; }
+
+        .question-preview { }
+        .question-item { padding: 12px; background: #fafafa; border-radius: 8px; margin-bottom: 8px; }
+        .question-item:last-child { margin-bottom: 0; }
+        .question-type { display: inline-block; padding: 2px 8px; background: #e6f7ff; color: var(--color-primary); border-radius: 4px; font-size: 11px;
+            line-height: 1.4; margin-bottom: 6px; }
+        .question-text { font-size: 13px; color: #262626; line-height: 1.6; }
+
+        .tip-box { background: #fff7e6; border-left: 3px solid #ffa940; padding: 12px; border-radius: 4px; font-size: 12px; color: #595959; line-height: 1.6; }
+
+        /* 题目卡片样式 */
+        .questions-container { padding: 0 16px 16px; }
+        .question-type-section { margin-bottom: 16px; }
+        .type-header { font-size: 15px; font-weight: 600; color: #262626; margin-bottom: 12px; padding-left: 8px; border-left: 3px solid var(--color-primary); }
+        .question-card { background: white; border-radius: 12px; padding: 16px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06); }
+        .question-number { display: inline-block; width: 24px; height: 24px; border-radius: 50%; background: linear-gradient(135deg, var(--color-primary), var(--color-secondary)); color: white; text-align: center; line-height: 24px; font-size: 12px; font-weight: 600; margin-right: 8px; }
+        .question-content { font-size: 14px; color: #262626; line-height: 1.8; margin-bottom: 8px; }
+        .question-options { margin-left: 32px; margin-top: 12px; }
+        .option-item { padding: 8px 12px; margin-bottom: 8px; background: #f5f5f5; border-radius: 8px; font-size: 13px; color: #595959; line-height: 1.6; }
+        .option-item.correct { background: rgba(0, 201, 167, 0.1); border: 1px solid var(--color-primary); }
+        .option-item.wrong { background: rgba(255, 77, 79, 0.1); border: 1px solid #ff4d4f; }
+        .option-label { font-weight: 600; color: #262626; margin-right: 6px; }
+
+        /* 学生答案区域 */
+        .student-answer-section { margin-top: 12px; padding: 12px; background: rgba(24, 144, 255, 0.08); border-left: 3px solid #1890ff; border-radius: 8px; }
+        .student-answer-label { font-size: 13px; font-weight: 600; color: #1890ff; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+        .student-answer-content { font-size: 13px; color: #262626; line-height: 1.8; }
+
+        /* 正确答案区域 */
+        .answer-section { margin-top: 12px; padding: 12px; background: rgba(0, 201, 167, 0.08); border-left: 3px solid var(--color-primary); border-radius: 8px; }
+        .answer-label { font-size: 13px; font-weight: 600; color: var(--color-primary); margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+        .answer-content { font-size: 13px; color: #262626; line-height: 1.8; }
+
+        /* 解析区域 */
+        .analysis-section { margin-top: 12px; padding: 12px; background: rgba(250, 173, 20, 0.08); border-left: 3px solid #faad14; border-radius: 8px; }
+        .analysis-label { font-size: 13px; font-weight: 600; color: #faad14; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+        .analysis-content { font-size: 13px; color: #595959; line-height: 1.8; }
+
+        /* 答题状态标记 */
+        .answer-status { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; margin-left: 8px; }
+        .answer-status.correct { background: rgba(0, 201, 167, 0.1); color: var(--color-primary); }
+        .answer-status.wrong { background: rgba(255, 77, 79, 0.1); color: #ff4d4f; }
+
+        /* AI评价卡片样式 */
+        .ai-evaluation-card { background: white; margin: 0 16px 12px; padding: 16px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+        .ai-header { display: flex; align-items: center; justify-content: space-between; cursor: pointer; }
+        .ai-header .section-title { margin-bottom: 0; }
+        .collapse-btn { background: none; border: none; color: #8c8c8c; font-size: 14px; cursor: pointer; display: flex; align-items: center; gap: 4px; padding: 4px 8px; }
+        .collapse-btn:hover { color: var(--color-primary); }
+        .collapse-btn i { transition: transform 0.3s; }
+        .collapse-btn.collapsed i { transform: rotate(-90deg); }
+        .ai-content { overflow: hidden; transition: max-height 0.3s ease-out; }
+        .ai-content.collapsed { max-height: 0 !important; }
+        .evaluation-text { font-size: 14px; line-height: 1.8; color: #595959; margin-bottom: 16px; margin-top: 16px; text-indent: 2em; }
+        .ability-analysis { margin-bottom: 16px; }
+        .ability-title { font-size: 14px; font-weight: 600; color: #262626; margin-bottom: 12px; }
+        .ability-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; background: #fafafa; border-radius: 6px; margin-bottom: 8px; }
+        .ability-item:last-child { margin-bottom: 0; }
+        .ability-name { font-size: 14px; color: #262626; }
+        .ability-level { font-size: 12px; padding: 3px 10px; border-radius: 12px; font-weight: 500; }
+        .ability-level.excellent { background: #f6ffed; color: #52c41a; }
+        .ability-level.good { background: #e6f7ff; color: #1890ff; }
+        .ability-level.need-improve { background: #fff7e6; color: #faad14; }
+        .suggestions { margin-top: 16px; }
+        .suggestion-item { display: flex; gap: 8px; margin-bottom: 12px; font-size: 14px; line-height: 1.6; color: #595959; }
+        .suggestion-item:last-child { margin-bottom: 0; }
+        .suggestion-number { flex-shrink: 0; width: 20px; height: 20px; background: var(--color-primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; }
+
+        .bottom-bar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 375px; background: white; padding: 12px 16px; box-shadow: 0 -2px 8px rgba(0,0,0,0.06); display: flex; gap: 12px; }
+        .btn-secondary { flex: 1; height: 44px; background: white; border: 1px solid var(--color-primary); color: var(--color-primary); border-radius: 22px; font-size: 16px;
+            line-height: 1.4; cursor: pointer; transition: all 0.3s; }
+        .btn-secondary:hover { background: #e6f7ff; }
+        .btn-primary { flex: 2; height: 44px; background: linear-gradient(135deg, var(--color-primary), var(--color-secondary)); color: white; border: none; border-radius: 22px; font-size: 16px;
+            line-height: 1.4; font-weight: 600; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 12px rgba(0, 201, 167, 0.3); }
+        .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+        .btn-primary:disabled { background: #d9d9d9; box-shadow: none; cursor: not-allowed; }
+    
+        /* Font Awesome图标样式优化 */
+        .fa-solid, .fa-regular {
+            font-weight: 400;
+            color: #595959;
+            opacity: 0.85;
+        }
+
+        /* 导航栏和标题中的图标保持原色 */
+        .navbar .fa-solid,
+        .section-title .fa-solid,
+        .task-title .fa-solid {
+            color: inherit;
+            opacity: 1;
+        }
+
+        /* 徽章图标使用白色，与金色背景形成对比 */
+        .badge-icon .fa-solid {
+            color: white;
+            opacity: 1;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 成就图标特殊样式 */
+        .achievement-section .badge-icon .fa-solid {
+            font-size: 32px;
+        }
+    
+        /* 选中状态图标颜色优化 */
+        .tab-item.active .tab-icon .fa-solid,
+        .tab-item.active .fa-solid {
+            color: var(--color-primary);
+            opacity: 1;
+        }
+
+        /* 其他选中状态 */
+        .menu-item.active .menu-icon .fa-solid,
+        .nav-item.active .fa-solid,
+        .list-item.selected .fa-solid,
+        .card.active .fa-solid,
+        .btn.active .fa-solid,
+        .filter-btn.active .fa-solid {
+            color: var(--color-primary);
+            opacity: 1;
+        }
+    </style>    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="navbar">
+        <button class="back-btn" onclick="Router.back()">←</button>
+        <div class="navbar-title">测评详情</div>
+    </div>
+
+    <div class="exam-header">
+        <div class="exam-title">《三体》测评详情</div>
+        <div class="exam-meta">
+            <div class="meta-item">
+                <span class="meta-icon">⏱️</span>
+                <span>2025-01-04 14:30</span>
+            </div>
+            <div class="meta-item">
+                <span class="meta-icon"><i class="fa-solid fa-pen-to-square"></i></span>
+                <span>20道题</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI智能评价卡片 -->
+    <div class="ai-evaluation-card">
+        <div class="ai-header" onclick="toggleAiContent()">
+            <div class="section-title">
+                <span><i class="fa-solid fa-robot"></i></span>
+                <span>AI智能评价</span>
+            </div>
+            <button class="collapse-btn" id="collapseBtn">
+                <span>收起</span>
+                <i class="fa-solid fa-chevron-down"></i>
+            </button>
+        </div>
+
+        <div class="ai-content" id="aiContent">
+            <div class="evaluation-text">
+                你在本次《三体》整本书测评中表现良好，得分85分。你对小说的主要情节和核心概念掌握较好，特别是对黑暗森林法则、智子等关键内容理解到位。在部分细节题目上还有提升空间，建议加强对科幻作品深层主题的思考和理解
+            </div>
+
+            <div class="ability-analysis">
+                <div class="ability-title">阅读能力分析</div>
+                <div class="ability-item">
+                    <div class="ability-name">信息提取能力</div>
+                    <div class="ability-level excellent">优秀</div>
+                </div>
+                <div class="ability-item">
+                    <div class="ability-name">推理判断能力</div>
+                    <div class="ability-level good">良好</div>
+                </div>
+                <div class="ability-item">
+                    <div class="ability-name">主题理解能力</div>
+                    <div class="ability-level good">良好</div>
+                </div>
+                <div class="ability-item">
+                    <div class="ability-name">人物分析能力</div>
+                    <div class="ability-level excellent">优秀</div>
+                </div>
+                <div class="ability-item">
+                    <div class="ability-name">批判性思维</div>
+                    <div class="ability-level need-improve">待提升</div>
+                </div>
+            </div>
+
+            <div class="suggestions">
+                <div class="ability-title">改进建议</div>
+                <div class="suggestion-item">
+                    <div class="suggestion-number">1</div>
+                    <div>加强深度思考：建议在阅读时多思考"为什么"，不仅要知道情节发展，更要理解背后的原因和意义</div>
+                </div>
+                <div class="suggestion-item">
+                    <div class="suggestion-number">2</div>
+                    <div>注意细节记忆：部分题目涉及小说中的具体细节，建议阅读时做好笔记，加深印象</div>
+                </div>
+                <div class="suggestion-item">
+                    <div class="suggestion-number">3</div>
+                    <div>拓展阅读视野：可以阅读一些科幻文学评论或相关科学知识，这将帮助你更深入地理解科幻作品的内涵</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">
+            <span><i class="fa-solid fa-list-check"></i></span>
+            <span>答题详情</span>
+        </div>
+    </div>
+
+    <div class="questions-container" id="questionsContainer">
+        <!-- 题目列表将通过JavaScript动态生成 -->
+    </div>
+
+    <div class="bottom-bar">
+        <button class="btn-primary" style="flex: 1;" onclick="Router.toStudentPage('home')">回到首页</button>
+    </div>
+
+    <script src="./router.js"></script>
+    <script>
+        // 获取URL参数中的状态
+        const urlParams = new URLSearchParams(window.location.search);
+        const examStatus = urlParams.get('status') || 'completed'; // 默认为已完成
+        const isCompleted = examStatus === 'completed';
+
+        // AI评价收起/展开功能
+        function toggleAiContent() {
+            const content = document.getElementById('aiContent');
+            const btn = document.getElementById('collapseBtn');
+            const isCollapsed = content.classList.contains('collapsed');
+
+            if (isCollapsed) {
+                content.classList.remove('collapsed');
+                content.style.maxHeight = content.scrollHeight + 'px';
+                btn.classList.remove('collapsed');
+                btn.querySelector('span').textContent = '收起';
+            } else {
+                content.style.maxHeight = content.scrollHeight + 'px';
+                content.offsetHeight; // 触发重排
+                content.classList.add('collapsed');
+                btn.classList.add('collapsed');
+                btn.querySelector('span').textContent = '展开';
+            }
+        }
+
+        // 页面加载时设置初始高度和根据状态控制显示
+        window.addEventListener('DOMContentLoaded', () => {
+            // 根据状态隐藏AI评价卡片
+            const aiCard = document.querySelector('.ai-evaluation-card');
+            if (!isCompleted && aiCard) {
+                aiCard.style.display = 'none';
+            } else if (aiCard) {
+                const content = document.getElementById('aiContent');
+                content.style.maxHeight = content.scrollHeight + 'px';
+            }
+
+            // 更新页面标题
+            const examHeader = document.querySelector('.exam-header');
+            if (!isCompleted) {
+                // 修改标题显示
+                const titleEl = examHeader.querySelector('.exam-title');
+                titleEl.textContent = examStatus === 'expired' ? '《骆驼祥子》测评题目' : '《三体》测评题目';
+            }
+
+            renderQuestions();
+        });
+
+        // 模拟测评题数据（包含学生答案）
+        const examData = {
+            questions: [
+                // 选择题 (12道)
+                {
+                    id: 1,
+                    type: 'choice',
+                    question: '《三体》的作者是谁',
+                    options: [
+                        { label: 'A', text: '刘慈欣' },
+                        { label: 'B', text: '王晋康' },
+                        { label: 'C', text: '韩松' },
+                        { label: 'D', text: '何夕' }
+                    ],
+                    answer: 'A',
+                    studentAnswer: 'A',
+                    analysis: '刘慈欣是中国著名科幻作家，《三体》三部曲是他的代表作，获得了雨果奖最佳长篇小说奖'
+                },
+                {
+                    id: 2,
+                    type: 'choice',
+                    question: '叶文洁第一次接收到三体文明的信息是在哪里',
+                    options: [
+                        { label: 'A', text: '红岸基地' },
+                        { label: 'B', text: '北京天文台' },
+                        { label: 'C', text: '上海天文台' },
+                        { label: 'D', text: '紫金山天文台' }
+                    ],
+                    answer: 'A',
+                    studentAnswer: 'A',
+                    analysis: '红岸基地是小说中用于探索外星文明的秘密军事基地，叶文洁在此工作期间接收到了三体文明的回复'
+                },
+                {
+                    id: 3,
+                    type: 'choice',
+                    question: '三体世界有几颗太阳',
+                    options: [
+                        { label: 'A', text: '一颗' },
+                        { label: 'B', text: '两颗' },
+                        { label: 'C', text: '三颗' },
+                        { label: 'D', text: '四颗' }
+                    ],
+                    answer: 'C',
+                    studentAnswer: 'B',
+                    analysis: '三体世界位于半人马座α星系，该星系是一个三合星系统，有三颗恒星，这也是"三体"名称的由来'
+                },
+                {
+                    id: 4,
+                    type: 'choice',
+                    question: '汪淼在视网膜上看到的倒计时数字代表什么',
+                    options: [
+                        { label: 'A', text: '地球毁灭倒计时' },
+                        { label: 'B', text: '三体舰队到达时间' },
+                        { label: 'C', text: '宇宙微波背景辐射的闪烁' },
+                        { label: 'D', text: '他的生命倒计时' }
+                    ],
+                    answer: 'C',
+                    studentAnswer: 'C',
+                    analysis: '智子通过干扰宇宙微波背景辐射，在汪淼的视网膜上制造出倒计时数字，以此威胁他停止纳米材料研究'
+                },
+                {
+                    id: 5,
+                    type: 'choice',
+                    question: '智子是什么',
+                    options: [
+                        { label: 'A', text: '三体人的名字' },
+                        { label: 'B', text: '一种超级计算机' },
+                        { label: 'C', text: '二维展开的质子' },
+                        { label: 'D', text: '一种武器' }
+                    ],
+                    answer: 'C',
+                    studentAnswer: 'C',
+                    analysis: '智子是三体文明将质子二维展开后刻蚀电路，再折叠回高维空间制成的智能粒子，可以锁死地球基础科学'
+                },
+                {
+                    id: 6,
+                    type: 'choice',
+                    question: '地球三体组织的最高统帅是谁',
+                    options: [
+                        { label: 'A', text: '叶文洁' },
+                        { label: 'B', text: '伊文斯' },
+                        { label: 'C', text: '潘寒' },
+                        { label: 'D', text: '申玉菲' }
+                    ],
+                    answer: 'A',
+                    studentAnswer: 'B',
+                    analysis: '叶文洁是地球三体组织的精神领袖和最高统帅，伊文斯虽然是实际运营者，但地位在叶文洁之下'
+                },
+                {
+                    id: 7,
+                    type: 'choice',
+                    question: '三体游戏中，秦始皇用什么方法来进行计算',
+                    options: [
+                        { label: 'A', text: '算盘' },
+                        { label: 'B', text: '人列计算机' },
+                        { label: 'C', text: '竹简' },
+                        { label: 'D', text: '石板' }
+                    ],
+                    answer: 'B',
+                    studentAnswer: 'B',
+                    analysis: '在三体游戏中，秦始皇组织三千万士兵组成人列计算机，用人来模拟计算机的逻辑门运算'
+                },
+                {
+                    id: 8,
+                    type: 'choice',
+                    question: '罗辑在《三体》系列中的职业身份是什么',
+                    options: [
+                        { label: 'A', text: '物理学家' },
+                        { label: 'B', text: '社会学家' },
+                        { label: 'C', text: '天文学家' },
+                        { label: 'D', text: '军事战略家' }
+                    ],
+                    answer: 'B',
+                    studentAnswer: 'B',
+                    analysis: '罗辑是一名社会学家，他通过宇宙社会学的思考推导出了黑暗森林法则'
+                },
+                {
+                    id: 9,
+                    type: 'choice',
+                    question: '三体文明距离地球多远',
+                    options: [
+                        { label: 'A', text: '1光年' },
+                        { label: 'B', text: '4光年' },
+                        { label: 'C', text: '10光年' },
+                        { label: 'D', text: '100光年' }
+                    ],
+                    answer: 'B',
+                    studentAnswer: 'B',
+                    analysis: '三体文明位于半人马座α星系，距离地球约4.22光年，是距离太阳系最近的恒星系统'
+                },
+                {
+                    id: 10,
+                    type: 'choice',
+                    question: '汪淼是什么职业',
+                    options: [
+                        { label: 'A', text: '物理学家' },
+                        { label: 'B', text: '纳米材料科学家' },
+                        { label: 'C', text: '天文学家' },
+                        { label: 'D', text: '生物学家' }
+                    ],
+                    answer: 'B',
+                    studentAnswer: 'B',
+                    analysis: '汪淼是纳米材料科学家，他研发的"飞刃"纳米材料在后来的"古筝行动"中发挥了关键作用'
+                },
+                {
+                    id: 11,
+                    type: 'choice',
+                    question: '红岸基地的主要任务是什么',
+                    options: [
+                        { label: 'A', text: '军事通讯' },
+                        { label: 'B', text: '寻找外星文明' },
+                        { label: 'C', text: '气象观测' },
+                        { label: 'D', text: '导弹预警' }
+                    ],
+                    answer: 'B',
+                    studentAnswer: 'B',
+                    analysis: '红岸基地表面上是军事设施，实际主要任务是向宇宙发送信号并监听外星文明的回复'
+                },
+                {
+                    id: 12,
+                    type: 'choice',
+                    question: '三体舰队到达地球需要多长时间',
+                    options: [
+                        { label: 'A', text: '100年' },
+                        { label: 'B', text: '200年' },
+                        { label: 'C', text: '400年' },
+                        { label: 'D', text: '1000年' }
+                    ],
+                    answer: 'C',
+                    studentAnswer: 'C',
+                    analysis: '三体舰队以约1%光速航行，从4光年外到达地球需要约400年时间'
+                },
+                // 判断题 (5道)
+                {
+                    id: 13,
+                    type: 'judge',
+                    question: '三体文明的科技水平远超地球文明',
+                    answer: true,
+                    studentAnswer: true,
+                    analysis: '三体文明能够制造智子、进行星际航行，其科技水平确实远超当时的地球文明'
+                },
+                {
+                    id: 14,
+                    type: 'judge',
+                    question: '叶文洁最终后悔向三体文明发送了地球坐标',
+                    answer: true,
+                    studentAnswer: true,
+                    analysis: '在小说结尾，叶文洁表达了对自己行为的反思和悔恨，认识到自己的决定给人类带来了灾难'
+                },
+                {
+                    id: 15,
+                    type: 'judge',
+                    question: '三体世界的恒纪元和乱纪元是可以预测的',
+                    answer: false,
+                    studentAnswer: true,
+                    analysis: '三体问题在数学上是不可解的，三颗恒星的运动轨迹无法精确预测，因此恒纪元和乱纪元的出现是随机的'
+                },
+                {
+                    id: 16,
+                    type: 'judge',
+                    question: '智子可以锁死地球的基础科学研究',
+                    answer: true,
+                    studentAnswer: true,
+                    analysis: '智子通过干扰粒子加速器的实验结果，使地球科学家无法获得正确的实验数据，从而锁死基础物理学的发展'
+                },
+                {
+                    id: 17,
+                    type: 'judge',
+                    question: '地球三体组织的所有成员都希望三体文明毁灭人类',
+                    answer: false,
+                    studentAnswer: false,
+                    analysis: '地球三体组织内部分为不同派系，有的希望三体文明帮助改造人类社会，有的则希望彻底毁灭人类'
+                },
+                // 填空题 (2道)
+                {
+                    id: 18,
+                    type: 'fill',
+                    question: '叶文洁在红岸基地向宇宙发送的第一条信息内容是："_____"',
+                    answer: '不要回答！不要回答！不要回答！',
+                    studentAnswer: '不要回答',
+                    analysis: '这是三体文明中的和平主义者发给地球的警告，提醒地球不要回复，否则会暴露位置'
+                },
+                {
+                    id: 19,
+                    type: 'fill',
+                    question: '三体游戏中，玩家需要帮助三体文明预测_____和_____的出现规律',
+                    answer: '恒纪元、乱纪元',
+                    studentAnswer: '恒纪元、乱纪元',
+                    analysis: '恒纪元是三体世界气候稳定的时期，乱纪元则是极端气候时期，三体文明的生存取决于对这两种时期的预测'
+                },
+                // 问答题 (1道)
+                {
+                    id: 20,
+                    type: 'essay',
+                    question: '请简述"黑暗森林法则"的核心内容，并分析它在小说中的意义',
+                    answer: '黑暗森林法则认为宇宙就像一座黑暗森林，每个文明都是带枪的猎人，潜行在林间。由于宇宙资源有限、文明之间存在猜疑链和技术爆炸的可能性，任何暴露自己位置的文明都可能被其他文明视为威胁而消灭。这一法则揭示了宇宙文明之间残酷的生存竞争关系，解释了费米悖论（为什么人类至今未发现外星文明），是《三体》系列的核心理论基础，也是人类与三体文明博弈的关键所在',
+                    studentAnswer: '黑暗森林法则是指宇宙中的文明就像黑暗森林中的猎人，为了自身安全会消灭任何暴露位置的文明。这个法则解释了为什么宇宙中看起来很安静，也是罗辑用来威慑三体文明的关键',
+                    analysis: '黑暗森林法则是《三体》系列最核心的理论，它基于两个公理（生存是文明的第一需要、文明不断增长和扩张）和两个概念（猜疑链、技术爆炸）推导而出'
+                }
+            ]
+        };
+
+        // 渲染题目列表
+        function renderQuestions() {
+            const container = document.getElementById('questionsContainer');
+
+            // 按题型分组
+            const choiceQuestions = examData.questions.filter(q => q.type === 'choice');
+            const judgeQuestions = examData.questions.filter(q => q.type === 'judge');
+            const fillQuestions = examData.questions.filter(q => q.type === 'fill');
+            const essayQuestions = examData.questions.filter(q => q.type === 'essay');
+
+            let html = '';
+
+            // 选择题
+            if (choiceQuestions.length > 0) {
+                html += `
+                    <div class="question-type-section">
+                        <div class="type-header">一、选择题（共${choiceQuestions.length}题）</div>
+                        ${choiceQuestions.map(q => {
+                            const isCorrect = q.studentAnswer === q.answer;
+                            return `
+                            <div class="question-card">
+                                <div class="question-content">
+                                    <span class="question-number">${q.id}</span>
+                                    ${q.question}
+                                    ${isCompleted ? `
+                                    <span class="answer-status ${isCorrect ? 'correct' : 'wrong'}">
+                                        <i class="fa-solid ${isCorrect ? 'fa-check' : 'fa-xmark'}"></i>
+                                        ${isCorrect ? '正确' : '错误'}
+                                    </span>` : ''}
+                                </div>
+                                <div class="question-options">
+                                    ${q.options.map(opt => {
+                                        let optClass = '';
+                                        if (isCompleted) {
+                                            if (opt.label === q.answer) optClass = 'correct';
+                                            else if (opt.label === q.studentAnswer && q.studentAnswer !== q.answer) optClass = 'wrong';
+                                        }
+                                        return `
+                                        <div class="option-item ${optClass}">
+                                            <span class="option-label">${opt.label}.</span>${opt.text}
+                                        </div>
+                                    `;}).join('')}
+                                </div>
+                                ${isCompleted ? `
+                                <div class="analysis-section">
+                                    <div class="analysis-label">
+                                        <i class="fa-solid fa-lightbulb"></i>
+                                        解析
+                                    </div>
+                                    <div class="analysis-content">${q.analysis}</div>
+                                </div>` : ''}
+                            </div>
+                        `;}).join('')}
+                    </div>
+                `;
+            }
+
+            // 判断题
+            if (judgeQuestions.length > 0) {
+                html += `
+                    <div class="question-type-section">
+                        <div class="type-header">二、判断题（共${judgeQuestions.length}题）</div>
+                        ${judgeQuestions.map(q => {
+                            const isCorrect = q.studentAnswer === q.answer;
+                            return `
+                            <div class="question-card">
+                                <div class="question-content">
+                                    <span class="question-number">${q.id}</span>
+                                    ${q.question}
+                                    ${isCompleted ? `
+                                    <span class="answer-status ${isCorrect ? 'correct' : 'wrong'}">
+                                        <i class="fa-solid ${isCorrect ? 'fa-check' : 'fa-xmark'}"></i>
+                                        ${isCorrect ? '正确' : '错误'}
+                                    </span>` : ''}
+                                </div>
+                                ${isCompleted ? `
+                                <div class="student-answer-section">
+                                    <div class="student-answer-label">
+                                        <i class="fa-solid fa-user"></i>
+                                        学生答案
+                                    </div>
+                                    <div class="student-answer-content">${q.studentAnswer ? '正确 ✓' : '错误 ✗'}</div>
+                                </div>
+                                <div class="answer-section">
+                                    <div class="answer-label">
+                                        <i class="fa-solid fa-circle-check"></i>
+                                        正确答案
+                                    </div>
+                                    <div class="answer-content">${q.answer ? '正确 ✓' : '错误 ✗'}</div>
+                                </div>
+                                <div class="analysis-section">
+                                    <div class="analysis-label">
+                                        <i class="fa-solid fa-lightbulb"></i>
+                                        解析
+                                    </div>
+                                    <div class="analysis-content">${q.analysis}</div>
+                                </div>` : ''}
+                            </div>
+                        `;}).join('')}
+                    </div>
+                `;
+            }
+
+            // 填空题
+            if (fillQuestions.length > 0) {
+                html += `
+                    <div class="question-type-section">
+                        <div class="type-header">三、填空题（共${fillQuestions.length}题）</div>
+                        ${fillQuestions.map(q => {
+                            const isCorrect = q.studentAnswer === q.answer;
+                            return `
+                            <div class="question-card">
+                                <div class="question-content">
+                                    <span class="question-number">${q.id}</span>
+                                    ${q.question}
+                                    ${isCompleted ? `
+                                    <span class="answer-status ${isCorrect ? 'correct' : 'wrong'}">
+                                        <i class="fa-solid ${isCorrect ? 'fa-check' : 'fa-xmark'}"></i>
+                                        ${isCorrect ? '正确' : '错误'}
+                                    </span>` : ''}
+                                </div>
+                                ${isCompleted ? `
+                                <div class="student-answer-section">
+                                    <div class="student-answer-label">
+                                        <i class="fa-solid fa-user"></i>
+                                        学生答案
+                                    </div>
+                                    <div class="student-answer-content">${q.studentAnswer}</div>
+                                </div>
+                                <div class="answer-section">
+                                    <div class="answer-label">
+                                        <i class="fa-solid fa-circle-check"></i>
+                                        正确答案
+                                    </div>
+                                    <div class="answer-content">${q.answer}</div>
+                                </div>
+                                <div class="analysis-section">
+                                    <div class="analysis-label">
+                                        <i class="fa-solid fa-lightbulb"></i>
+                                        解析
+                                    </div>
+                                    <div class="analysis-content">${q.analysis}</div>
+                                </div>` : ''}
+                            </div>
+                        `;}).join('')}
+                    </div>
+                `;
+            }
+
+            // 问答题
+            if (essayQuestions.length > 0) {
+                html += `
+                    <div class="question-type-section">
+                        <div class="type-header">四、问答题（共${essayQuestions.length}题）</div>
+                        ${essayQuestions.map(q => {
+                            return `
+                            <div class="question-card">
+                                <div class="question-content">
+                                    <span class="question-number">${q.id}</span>
+                                    ${q.question}
+                                </div>
+                                ${isCompleted ? `
+                                <div class="student-answer-section">
+                                    <div class="student-answer-label">
+                                        <i class="fa-solid fa-user"></i>
+                                        学生答案
+                                    </div>
+                                    <div class="student-answer-content">${q.studentAnswer}</div>
+                                </div>
+                                <div class="answer-section">
+                                    <div class="answer-label">
+                                        <i class="fa-solid fa-circle-check"></i>
+                                        参考答案
+                                    </div>
+                                    <div class="answer-content">${q.answer}</div>
+                                </div>
+                                <div class="analysis-section">
+                                    <div class="analysis-label">
+                                        <i class="fa-solid fa-lightbulb"></i>
+                                        解析
+                                    </div>
+                                    <div class="analysis-content">${q.analysis}</div>
+                                </div>` : ''}
+                            </div>
+                        `;}).join('')}
+                    </div>
+                `;
+            }
+
+            container.innerHTML = html;
+        }
+    </script>
+</body>
+</html>

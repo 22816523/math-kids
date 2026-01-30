@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录 - 校校读吧小管家管理平台</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            display: flex;
+            max-width: 900px;
+            width: 100%;
+        }
+
+        .login-left {
+            flex: 1;
+            background: linear-gradient(135deg, #1890FF 0%, #096DD9 100%);
+            padding: 60px 40px;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .login-logo {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .logo-icon {
+            width: 60px;
+            height: 60px;
+            background: white;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+        }
+
+        .logo-text {
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .login-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .login-subtitle {
+            font-size: 16px;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        .login-features {
+            margin-top: 40px;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+            font-size: 14px;
+        }
+
+        .feature-icon {
+            width: 32px;
+            height: 32px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .login-right {
+            flex: 1;
+            padding: 60px 40px;
+        }
+
+        .form-header {
+            margin-bottom: 32px;
+        }
+
+        .form-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #262626;
+            margin-bottom: 8px;
+        }
+
+        .form-subtitle {
+            font-size: 14px;
+            color: #8c8c8c;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: #262626;
+            margin-bottom: 8px;
+        }
+
+        .form-input {
+            width: 100%;
+            height: 44px;
+            border: 1px solid #d9d9d9;
+            border-radius: 8px;
+            padding: 0 16px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #1890FF;
+            box-shadow: 0 0 0 3px rgba(24, 144, 255, 0.1);
+        }
+
+        .role-selector {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .role-option {
+            padding: 16px;
+            border: 2px solid #d9d9d9;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .role-option:hover {
+            border-color: #1890FF;
+            background: #f0f5ff;
+        }
+
+        .role-option.selected {
+            border-color: #1890FF;
+            background: #e6f7ff;
+        }
+
+        .role-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .role-name {
+            font-size: 14px;
+            font-weight: 500;
+            color: #262626;
+        }
+
+        .role-desc {
+            font-size: 12px;
+            color: #8c8c8c;
+            margin-top: 4px;
+        }
+
+        .form-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: #595959;
+        }
+
+        .form-checkbox input {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+
+        .btn-login {
+            width: 100%;
+            height: 48px;
+            background: linear-gradient(135deg, #1890FF, #096DD9);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(24, 144, 255, 0.3);
+        }
+
+        .btn-login:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(24, 144, 255, 0.4);
+        }
+
+        .btn-login:active {
+            transform: translateY(0);
+        }
+
+        .form-footer {
+            margin-top: 24px;
+            text-align: center;
+            font-size: 13px;
+            color: #8c8c8c;
+        }
+
+        .form-footer a {
+            color: #1890FF;
+            text-decoration: none;
+        }
+
+        .form-footer a:hover {
+            text-decoration: underline;
+        }
+
+        .demo-tip {
+            background: #fff7e6;
+            border: 1px solid #ffd591;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-bottom: 24px;
+            font-size: 13px;
+            color: #d46b08;
+        }
+
+        @media (max-width: 768px) {
+            .login-container {
+                flex-direction: column;
+            }
+
+            .login-left {
+                padding: 40px 24px;
+            }
+
+            .login-right {
+                padding: 40px 24px;
+            }
+
+            .role-selector {
+                grid-template-columns: 1fr;
+            }
+        }
+    
+        /* Font Awesome图标样式优化 */
+        .fa-solid, .fa-regular {
+            font-weight: 400;
+            color: #595959;
+            opacity: 0.85;
+        }
+
+        /* 导航栏和标题中的图标保持原色 */
+        .navbar .fa-solid,
+        .section-title .fa-solid,
+        .task-title .fa-solid {
+            color: inherit;
+            opacity: 1;
+        }
+
+        /* 徽章图标使用白色，与金色背景形成对比 */
+        .badge-icon .fa-solid {
+            color: white;
+            opacity: 1;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 成就图标特殊样式 */
+        .achievement-section .badge-icon .fa-solid {
+            font-size: 32px;
+        }
+    
+        /* 选中状态图标颜色优化 */
+        .tab-item.active .tab-icon .fa-solid,
+        .tab-item.active .fa-solid {
+            color: #1890FF;
+            opacity: 1;
+        }
+
+        /* 其他选中状态 */
+        .menu-item.active .menu-icon .fa-solid,
+        .nav-item.active .fa-solid,
+        .list-item.selected .fa-solid,
+        .card.active .fa-solid,
+        .btn.active .fa-solid,
+        .filter-btn.active .fa-solid {
+            color: #1890FF;
+            opacity: 1;
+        }
+    </style>    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-left">
+            <div class="login-logo">
+                <div class="logo-icon"><i class="fa-solid fa-book"></i></div>
+                <div class="logo-text">校校读吧</div>
+            </div>
+            <div class="login-title">管理平台</div>
+            <div class="login-subtitle">AI赋能的K12整本书阅读教学管理系统，助力教育数字化转型</div>
+            <div class="login-features">
+                <div class="feature-item">
+                    <div class="feature-icon"><i class="fa-solid fa-star"></i></div>
+                    <div>AI智能辅助教学</div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon"><i class="fa-solid fa-chart-column"></i></div>
+                    <div>全方位数据分析</div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon"><i class="fa-solid fa-bullseye"></i></div>
+                    <div>个性化学习路径</div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon"><i class="fa-solid fa-lock"></i></div>
+                    <div>安全可靠的数据保护</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="login-right">
+            <div class="form-header">
+                <h2 class="form-title">欢迎登录</h2>
+                <p class="form-subtitle">请选择您的角色并登录系统</p>
+            </div>
+
+            <div class="demo-tip">
+                <i class="fa-solid fa-lightbulb"></i> 原型演示：请选择角色后点击登录，无需输入密码
+            </div>
+
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label class="form-label">用户名</label>
+                    <input type="text" class="form-input" id="username" placeholder="请输入用户名" value="admin">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">密码</label>
+                    <input type="password" class="form-input" id="password" placeholder="请输入密码" value="123456">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">选择角色</label>
+                    <div class="role-selector">
+                        <div class="role-option selected" data-role="super_admin" onclick="selectRole(this)">
+                            <div class="role-icon"><i class="fa-solid fa-crown"></i></div>
+                            <div class="role-name">超级管理员</div>
+                            <div class="role-desc">全局管理权限</div>
+                        </div>
+                        <div class="role-option" data-role="school_admin" onclick="selectRole(this)">
+                            <div class="role-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+                            <div class="role-name">学校管理员</div>
+                            <div class="role-desc">学校级管理</div>
+                        </div>
+                        <div class="role-option" data-role="teacher" onclick="selectRole(this)">
+                            <div class="role-icon"><i class="fa-solid fa-users"></i></div>
+                            <div class="role-name">教师</div>
+                            <div class="role-desc">班级管理</div>
+                        </div>
+                        <div class="role-option" data-role="content_manager" onclick="selectRole(this)">
+                            <div class="role-icon"><i class="fa-solid fa-pen-to-square"></i></div>
+                            <div class="role-name">内容管理员</div>
+                            <div class="role-desc">内容审核</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-checkbox">
+                        <input type="checkbox" checked>
+                        <span>记住我</span>
+                    </label>
+                </div>
+
+                <button type="submit" class="btn-login">登录</button>
+
+                <div class="form-footer">
+                    <a href="#">忘记密码？</a> · <a href="#">联系管理员</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let selectedRole = 'super_admin';
+
+        function selectRole(element) {
+            // 移除所有选中状态
+            document.querySelectorAll('.role-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+
+            // 添加选中状态
+            element.classList.add('selected');
+            selectedRole = element.dataset.role;
+        }
+
+        function handleLogin(event) {
+            event.preventDefault();
+
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            if (!username || !password) {
+                alert('请输入用户名和密码');
+                return;
+            }
+
+            // 创建用户信息
+            const user = {
+                id: 1,
+                name: username === 'admin' ? '张老师' : username,
+                role: selectedRole,
+                avatar: username.charAt(0).toUpperCase(),
+                school: '示范中学',
+                email: 'user@example.com'
+            };
+
+            // 保存到localStorage
+            localStorage.setItem('admin_user', JSON.stringify(user));
+
+            // 显示登录成功提示
+            const btn = document.querySelector('.btn-login');
+            btn.textContent = '登录成功，跳转中...';
+            btn.disabled = true;
+
+            // 跳转到仪表盘
+            setTimeout(() => {
+                window.location.href = '13-数据看板.html';
+            }, 1000);
+        }
+
+        // 页面加载动画
+        document.addEventListener('DOMContentLoaded', function() {
+            document.body.style.opacity = '0';
+            setTimeout(() => {
+                document.body.style.transition = 'opacity 0.5s';
+                document.body.style.opacity = '1';
+            }, 100);
+        });
+    </script>
+</body>
+</html>

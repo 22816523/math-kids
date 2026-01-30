@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>选择性别 - 校校读吧小管家（教师端）</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: "Source Han Sans CN", "Noto Sans CJK SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background-color: #F5F7FA; width: 375px; margin: 0 auto; min-height: 100vh; }
+
+        .navbar { background: linear-gradient(135deg, #2E5BFF 0%, #1E4BEF 100%); color: white; height: 44px; display: flex; align-items: center; padding: 0 16px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(24, 144, 255, 0.15); }
+        .back-btn { background: none; border: none; color: white; font-size: 18px; cursor: pointer; padding: 0; margin-right: 12px; }
+        .navbar-title { font-size: 18px; font-weight: 600; flex: 1; }
+        .save-btn { background: none; border: none; color: white; font-size: 15px; cursor: pointer; font-weight: 500; }
+        .save-btn:hover { opacity: 0.8; }
+
+        .option-list { background: white; margin: 12px 16px; border-radius: 8px; overflow: hidden; }
+        .option-item { padding: 16px; border-bottom: 1px solid #f0f0f0; display: flex; align-items: center; justify-content: space-between; cursor: pointer; }
+        .option-item:last-child { border-bottom: none; }
+        .option-item:active { background: #f5f5f5; }
+        .option-text { font-size: 16px; color: #333333; }
+        .option-check { color: #2E5BFF; font-size: 20px; }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="navbar">
+        <button class="back-btn" onclick="Router.back()">←</button>
+        <div class="navbar-title">选择性别</div>
+        <button class="save-btn" onclick="saveGender()">保存</button>
+    </div>
+
+    <div class="option-list">
+        <div class="option-item" onclick="selectGender('男')">
+            <div class="option-text">男</div>
+            <div class="option-check" id="check-male" style="display: none;">
+                <i class="fa-solid fa-check"></i>
+            </div>
+        </div>
+        <div class="option-item" onclick="selectGender('女')">
+            <div class="option-text">女</div>
+            <div class="option-check" id="check-female">
+                <i class="fa-solid fa-check"></i>
+            </div>
+        </div>
+    </div>
+
+    <script src="./router.js"></script>
+    <script>
+        // 当前选中的性别（从URL参数或localStorage获取）
+        let currentGender = '女'
+        let selectedGender = currentGender
+
+        // 页面加载时更新UI
+        window.addEventListener('DOMContentLoaded', () => {
+            updateGenderUI()
+        })
+
+        function updateGenderUI() {
+            // 隐藏所有勾选标记
+            document.getElementById('check-male').style.display = 'none'
+            document.getElementById('check-female').style.display = 'none'
+
+            // 显示当前选中的勾选标记
+            if (selectedGender === '男') {
+                document.getElementById('check-male').style.display = 'block'
+            } else if (selectedGender === '女') {
+                document.getElementById('check-female').style.display = 'block'
+            }
+        }
+
+        function selectGender(gender) {
+            // 只更新选中状态，不保存
+            selectedGender = gender
+            updateGenderUI()
+        }
+
+        function saveGender() {
+            // 实际应该调用API保存
+            currentGender = selectedGender
+            alert('保存成功')
+            Router.back()
+        }
+    </script>
+</body>
+</html>

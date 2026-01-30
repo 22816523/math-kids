@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>书籍测评统计 - 校校读吧小管家（教师端）</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: "Source Han Sans CN", "Noto Sans CJK SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background: #F5F7FA; width: 375px; margin: 0 auto; padding-bottom: 20px; }
+        .navbar { background: linear-gradient(135deg, #2E5BFF, #1E4BEF); color: white; height: 44px; display: flex; align-items: center; padding: 0 16px; position: sticky; top: 0; z-index: 100; }
+        .navbar-back { font-size: 18px; cursor: pointer; margin-right: 12px; }
+        .navbar-title { font-size: 18px; font-weight: 600; flex: 1; }
+
+        /* 班级选择器 */
+        .class-selector {
+            background: white;
+            margin: 12px 16px;
+            padding: 12px 16px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .class-selector-label {
+            font-size: 13px;
+            color: #666666;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .class-selector select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 15px;
+            color: #333333;
+            background: white;
+            cursor: pointer;
+        }
+        .class-selector select:focus {
+            outline: none;
+            border-color: #2E5BFF;
+        }
+
+        /* 书籍信息卡片 */
+        .book-info-card { background: white; margin: 16px; padding: 16px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+        .book-title { font-size: 18px; font-weight: 600; color: #333333; margin-bottom: 12px; }
+        .book-stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+        .book-stat-item { text-align: center; padding: 12px; background: #f5f5f5; border-radius: 8px; }
+        .book-stat-value { font-size: 20px; font-weight: 700; color: #2E5BFF; margin-bottom: 4px; }
+        .book-stat-label { font-size: 11px; color: #999999; }
+
+        /* 分数分布 */
+        .score-distribution { background: white; margin: 16px; padding: 16px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+        .section-title { font-size: 16px; font-weight: 600; color: #333333; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+        .score-bar-item { margin-bottom: 16px; }
+        .score-bar-item:last-child { margin-bottom: 0; }
+        .score-bar-header { display: flex; justify-content: space-between; font-size: 13px; color: #666666; margin-bottom: 6px; }
+        .score-bar { height: 24px; background: #f0f0f0; border-radius: 12px; overflow: hidden; position: relative; }
+        .score-bar-fill { height: 100%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; color: white; transition: width 0.3s; }
+        .score-excellent { background: linear-gradient(90deg, #52c41a, #73d13d); }
+        .score-good { background: linear-gradient(90deg, #2E5BFF, #40a9ff); }
+        .score-pass { background: linear-gradient(90deg, #faad14, #ffc53d); }
+        .score-fail { background: linear-gradient(90deg, #ff4d4f, #ff7875); }
+
+        /* 学生列表 */
+        .students-section { background: white; margin: 16px; padding: 16px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+        .filter-tabs { display: flex; gap: 8px; margin-bottom: 16px; }
+        .filter-tab { flex: 1; padding: 8px; background: #f5f5f5; border: none; border-radius: 6px; font-size: 13px; color: #666666; cursor: pointer; transition: all 0.3s; }
+        .filter-tab.active { background: #2E5BFF; color: white; }
+        .student-item { display: flex; align-items: center; justify-content: space-between; padding: 12px; margin-bottom: 8px; background: #fafafa; border-radius: 8px; cursor: pointer; transition: all 0.3s; }
+        .student-item:last-child { margin-bottom: 0; }
+        .student-item:active { background: #f0f0f0; }
+        .student-left { display: flex; align-items: center; gap: 12px; flex: 1; }
+        .student-avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #667eea, #764ba2); color: white; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; flex-shrink: 0; }
+        .student-info { flex: 1; }
+        .student-name { font-size: 14px; font-weight: 600; color: #333333; margin-bottom: 4px; }
+        .student-class-tag {
+            display: inline-block;
+            padding: 2px 6px;
+            margin-left: 6px;
+            background: #e6f7ff;
+            color: #1890ff;
+            font-size: 11px;
+            font-weight: 500;
+            border-radius: 4px;
+        }
+        .student-status { font-size: 12px; color: #999999; }
+        .status-submitted { color: #52c41a; }
+        .status-pending { color: #faad14; }
+        .student-score { font-size: 18px; font-weight: 700; }
+        .score-high { color: #52c41a; }
+        .score-medium { color: #2E5BFF; }
+        .score-low { color: #faad14; }
+        .score-none { color: #d9d9d9; }
+
+        /* 题目完成率 */
+        .questions-section { background: white; margin: 16px; padding: 16px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+        .question-item { display: flex; align-items: center; justify-content: space-between; padding: 12px; margin-bottom: 8px; background: #fafafa; border-radius: 8px; }
+        .question-item:last-child { margin-bottom: 0; }
+        .question-left { flex: 1; }
+        .question-title { font-size: 13px; color: #333333; margin-bottom: 6px; }
+        .question-progress { display: flex; align-items: center; gap: 8px; }
+        .question-progress-bar { flex: 1; height: 4px; background: #f0f0f0; border-radius: 2px; overflow: hidden; }
+        .question-progress-fill { height: 100%; transition: width 0.3s; }
+        .question-progress-text { font-size: 11px; color: #999999; white-space: nowrap; }
+        .question-rate { font-size: 16px; font-weight: 700; }
+        .rate-high { color: #52c41a; }
+        .rate-medium { color: #faad14; }
+        .rate-low { color: #ff4d4f; }
+
+        /* 可折叠区域样式 */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+            transition: background 0.3s;
+            padding: 4px 0;
+            margin-bottom: 16px;
+        }
+        .section-header:hover {
+            opacity: 0.8;
+        }
+        .toggle-icon {
+            font-size: 14px;
+            color: #999999;
+            transition: transform 0.3s ease;
+            margin-left: 8px;
+        }
+        .toggle-icon.rotated {
+            transform: rotate(180deg);
+        }
+        .collapsible-content {
+            max-height: 10000px;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out, opacity 0.3s ease-out;
+            opacity: 1;
+        }
+        .collapsible-content.collapsed {
+            max-height: 0;
+            opacity: 0;
+        }
+
+        .fa-solid, .fa-regular { font-weight: 400; }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="navbar">
+        <div class="navbar-back" onclick="Router.back()">←</div>
+        <div class="navbar-title" id="bookTitle">书籍测评统计</div>
+    </div>
+
+    <!-- 班级选择器 -->
+    <div class="class-selector">
+        <div class="class-selector-label">
+            <i class="fa-solid fa-filter"></i> 选择班级
+        </div>
+        <select id="classSelector" onchange="onClassChange()">
+            <!-- 选项将通过JavaScript动态生成 -->
+        </select>
+    </div>
+
+    <!-- 书籍信息 -->
+    <div class="book-info-card">
+        <div class="book-title" id="bookName">三体</div>
+        <div class="book-stats-grid">
+            <div class="book-stat-item">
+                <div class="book-stat-value" id="submitRate">88%</div>
+                <div class="book-stat-label">提交率</div>
+            </div>
+            <div class="book-stat-item">
+                <div class="book-stat-value" id="avgScore">85</div>
+                <div class="book-stat-label">平均分</div>
+            </div>
+            <div class="book-stat-item">
+                <div class="book-stat-value" id="questionCount">20</div>
+                <div class="book-stat-label">题目数</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 分数分布 -->
+    <div class="score-distribution">
+        <div class="section-title"><i class="fa-solid fa-chart-bar"></i> 分数分布</div>
+        <div class="score-bar-item">
+            <div class="score-bar-header">
+                <span>优秀 (90-100分)</span>
+                <span>15人 (32.6%)</span>
+            </div>
+            <div class="score-bar">
+                <div class="score-bar-fill score-excellent" style="width: 32.6%">32.6%</div>
+            </div>
+        </div>
+        <div class="score-bar-item">
+            <div class="score-bar-header">
+                <span>良好 (80-89分)</span>
+                <span>18人 (39.1%)</span>
+            </div>
+            <div class="score-bar">
+                <div class="score-bar-fill score-good" style="width: 39.1%">39.1%</div>
+            </div>
+        </div>
+        <div class="score-bar-item">
+            <div class="score-bar-header">
+                <span>及格 (60-79分)</span>
+                <span>10人 (21.7%)</span>
+            </div>
+            <div class="score-bar">
+                <div class="score-bar-fill score-pass" style="width: 21.7%">21.7%</div>
+            </div>
+        </div>
+        <div class="score-bar-item">
+            <div class="score-bar-header">
+                <span>不及格 (0-59分)</span>
+                <span>3人 (6.5%)</span>
+            </div>
+            <div class="score-bar">
+                <div class="score-bar-fill score-fail" style="width: 6.5%">6.5%</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 学生列表 -->
+    <div class="students-section">
+        <div class="section-header" onclick="toggleSection('students')">
+            <div class="section-title">
+                <i class="fa-solid fa-users"></i> 学生提交情况
+            </div>
+            <i class="fa-solid fa-chevron-up toggle-icon rotated" id="studentsIcon"></i>
+        </div>
+        <div class="collapsible-content" id="studentsContent">
+            <div class="filter-tabs">
+                <button class="filter-tab active" onclick="filterStudents('all')">全部 (52)</button>
+                <button class="filter-tab" onclick="filterStudents('submitted')">已提交 (46)</button>
+                <button class="filter-tab" onclick="filterStudents('pending')">未提交 (6)</button>
+            </div>
+            <div id="studentsList">
+                <!-- 学生列表将通过JavaScript动态生成 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 题目完成率 -->
+    <div class="questions-section">
+        <div class="section-header" onclick="toggleSection('questions')">
+            <div class="section-title">
+                <i class="fa-solid fa-clipboard-question"></i> 题目正确率
+            </div>
+            <i class="fa-solid fa-chevron-down toggle-icon" id="questionsIcon"></i>
+        </div>
+        <div class="collapsible-content collapsed" id="questionsContent">
+            <div id="questionsList">
+                <!-- 题目列表将通过JavaScript动态生成 -->
+            </div>
+        </div>
+    </div>
+
+    <script src="./router.js"></script>
+    <script>
+        // 获取URL参数，如果没有则使用默认值
+        const urlParams = new URLSearchParams(window.location.search);
+        const planId = parseInt(urlParams.get('planId')) || 1;  // 默认使用第一个计划
+        const bookId = parseInt(urlParams.get('bookId')) || 1;  // 默认使用第一本书
+
+        // 模拟计划数据（支持多班级）
+        const mockPlans = [
+            {
+                id: 1,
+                planName: '2026年春季阅读计划',
+                // 已报名的班级列表
+                enrolledClasses: [
+                    {
+                        classId: 1,
+                        className: '初一(3)班',
+                        studentCount: 52,
+                        books: [
+                            {
+                                id: 1,
+                                name: '三体',
+                                examCount: 20,
+                                submitted: 46,
+                                submitRate: 88,
+                                avgScore: 85,
+                                students: [
+                                    { id: 1, name: '张三', score: 95, submitted: true },
+                                    { id: 2, name: '李四', score: 92, submitted: true },
+                                    { id: 3, name: '王五', score: 89, submitted: true },
+                                    { id: 4, name: '赵六', score: 87, submitted: true },
+                                    { id: 5, name: '孙七', score: 85, submitted: true },
+                                    { id: 6, name: '周八', score: 83, submitted: true },
+                                    { id: 7, name: '吴九', score: 81, submitted: true },
+                                    { id: 8, name: '郑十', score: 79, submitted: true },
+                                    { id: 9, name: '钱十一', score: 77, submitted: true },
+                                    { id: 10, name: '陈十二', score: 75, submitted: true },
+                                    { id: 11, name: '刘十三', score: null, submitted: false },
+                                    { id: 12, name: '黄十四', score: null, submitted: false }
+                                ]
+                            },
+                            { id: 2, name: '活着', examCount: 20, submitted: 38, submitRate: 73, avgScore: 82 }
+                        ]
+                    },
+                    {
+                        classId: 2,
+                        className: '初一(4)班',
+                        studentCount: 50,
+                        books: [
+                            {
+                                id: 1,
+                                name: '三体',
+                                examCount: 20,
+                                submitted: 42,
+                                submitRate: 84,
+                                avgScore: 83,
+                                students: [
+                                    { id: 13, name: '杨十五', score: 93, submitted: true },
+                                    { id: 14, name: '朱十六', score: 90, submitted: true },
+                                    { id: 15, name: '秦十七', score: 88, submitted: true },
+                                    { id: 16, name: '尤十八', score: 86, submitted: true },
+                                    { id: 17, name: '许十九', score: 84, submitted: true },
+                                    { id: 18, name: '何二十', score: 82, submitted: true },
+                                    { id: 19, name: '吕二一', score: 80, submitted: true },
+                                    { id: 20, name: '施二二', score: 78, submitted: true },
+                                    { id: 21, name: '张二三', score: 76, submitted: true },
+                                    { id: 22, name: '孔二四', score: 74, submitted: true },
+                                    { id: 23, name: '曹二五', score: null, submitted: false },
+                                    { id: 24, name: '严二六', score: null, submitted: false }
+                                ]
+                            },
+                            { id: 2, name: '活着', examCount: 20, submitted: 40, submitRate: 80, avgScore: 84 }
+                        ]
+                    },
+                    {
+                        classId: 3,
+                        className: '初一(5)班',
+                        studentCount: 51,
+                        books: [
+                            {
+                                id: 1,
+                                name: '三体',
+                                examCount: 20,
+                                submitted: 42,
+                                submitRate: 82,
+                                avgScore: 84,
+                                students: [
+                                    { id: 25, name: '华二七', score: 94, submitted: true },
+                                    { id: 26, name: '金二八', score: 91, submitted: true },
+                                    { id: 27, name: '魏二九', score: 87, submitted: true },
+                                    { id: 28, name: '陶三十', score: 85, submitted: true },
+                                    { id: 29, name: '姜三一', score: 83, submitted: true },
+                                    { id: 30, name: '戚三二', score: 81, submitted: true },
+                                    { id: 31, name: '谢三三', score: 79, submitted: true },
+                                    { id: 32, name: '邹三四', score: 77, submitted: true },
+                                    { id: 33, name: '喻三五', score: 75, submitted: true },
+                                    { id: 34, name: '柏三六', score: 73, submitted: true },
+                                    { id: 35, name: '水三七', score: null, submitted: false },
+                                    { id: 36, name: '窦三八', score: null, submitted: false }
+                                ]
+                            },
+                            { id: 2, name: '活着', examCount: 20, submitted: 39, submitRate: 76, avgScore: 81 }
+                        ]
+                    }
+                ],
+                // 汇总数据（所有班级的汇总）
+                books: [
+                    { id: 1, name: '三体', examCount: 20, submitted: 130, total: 153, submitRate: 85, avgScore: 84 },
+                    { id: 2, name: '活着', examCount: 20, submitted: 117, total: 153, submitRate: 76, avgScore: 82 }
+                ]
+            },
+            {
+                id: 2,
+                planName: '2025年秋季阅读计划',
+                enrolledClasses: [
+                    {
+                        classId: 1,
+                        className: '初一(3)班',
+                        studentCount: 52,
+                        books: [
+                            { id: 6, name: '西游记', examCount: 20, submitted: 52, submitRate: 100, avgScore: 88 },
+                            { id: 7, name: '水浒传', examCount: 20, submitted: 51, submitRate: 98, avgScore: 86 }
+                        ]
+                    }
+                ],
+                books: [
+                    { id: 6, name: '西游记', examCount: 20, submitted: 52, total: 52, submitRate: 100, avgScore: 88 },
+                    { id: 7, name: '水浒传', examCount: 20, submitted: 51, total: 52, submitRate: 98, avgScore: 86 }
+                ]
+            }
+        ];
+
+        // 模拟题目数据
+        const mockQuestions = [
+            { id: 1, title: '第1题：三体文明位于哪个恒星系统？', correctRate: 95 },
+            { id: 2, title: '第2题：叶文洁的父亲是谁？', correctRate: 92 },
+            { id: 3, title: '第3题：红岸基地的主要任务是什么？', correctRate: 88 },
+            { id: 4, title: '第4题：汪淼发现的倒计时是什么？', correctRate: 85 },
+            { id: 5, title: '第5题：智子是什么？', correctRate: 82 },
+            { id: 6, title: '第6题：面壁计划的目的是什么？', correctRate: 78 },
+            { id: 7, title: '第7题：罗辑发现的黑暗森林法则是什么？', correctRate: 75 },
+            { id: 8, title: '第8题：罗辑在《三体》系列中的职业身份是什么？', correctRate: 72 },
+            { id: 9, title: '第9题：ETO组织的全称是什么？', correctRate: 68 },
+            { id: 10, title: '第10题：三体游戏的真实目的是什么？', correctRate: 65 },
+            { id: 11, title: '第11题：章北海的职业是什么？', correctRate: 62 },
+            { id: 12, title: '第12题：水滴的主要特性是什么？', correctRate: 60 },
+            { id: 13, title: '第13题：执剑人制度的作用是什么？', correctRate: 58 },
+            { id: 14, title: '第14题：程心为什么成为执剑人？', correctRate: 55 },
+            { id: 15, title: '第15题：云天明送给程心的礼物是什么？', correctRate: 53 },
+            { id: 16, title: '第16题：二向箔是什么武器？', correctRate: 51 },
+            { id: 17, title: '第17题：维德的主要目标是什么？', correctRate: 48 },
+            { id: 18, title: '第18题：云天明的童话隐藏了什么信息？', correctRate: 45 },
+            { id: 19, title: '第19题：降维打击的原理是什么？', correctRate: 42 },
+            { id: 20, title: '第20题：请简述"黑暗森林法则"的核心内容，并分析它在小说中的意义', correctRate: 40 }
+        ];
+
+        let currentFilter = 'all';
+        let currentClassId = 'all';  // 当前选中的班级ID
+        let currentPlan = null;
+        let currentBook = null;
+
+        // 页面加载时初始化
+        window.addEventListener('DOMContentLoaded', () => {
+            const plan = mockPlans.find(p => p.id === planId);
+            if (!plan) {
+                alert('计划不存在');
+                Router.back();
+                return;
+            }
+
+            currentPlan = plan;
+
+            // 从URL获取classId参数（可选）
+            const urlClassId = urlParams.get('classId');
+            if (urlClassId && urlClassId !== 'all') {
+                currentClassId = parseInt(urlClassId);
+            }
+
+            // 渲染班级选择器
+            renderClassSelector(plan.enrolledClasses);
+
+            // 获取并显示书籍数据
+            loadBookData();
+        });
+
+        // 渲染班级选择器
+        function renderClassSelector(enrolledClasses) {
+            const selector = document.getElementById('classSelector');
+
+            const options = [
+                `<option value="all">全部班级（${enrolledClasses.length}个班级）</option>`,
+                ...enrolledClasses.map(c =>
+                    `<option value="${c.classId}">${c.className}</option>`
+                )
+            ].join('');
+
+            selector.innerHTML = options;
+            selector.value = currentClassId;
+        }
+
+        // 班级切换事件
+        function onClassChange() {
+            const selector = document.getElementById('classSelector');
+            currentClassId = selector.value === 'all' ? 'all' : parseInt(selector.value);
+
+            // 重新加载数据
+            loadBookData();
+        }
+
+        // 加载书籍数据
+        function loadBookData() {
+            let bookData;
+            let students;
+
+            if (currentClassId === 'all') {
+                // 全部班级模式：使用汇总数据
+                bookData = currentPlan.books.find(b => b.id === bookId);
+                if (!bookData) {
+                    alert('书籍不存在');
+                    Router.back();
+                    return;
+                }
+
+                // 合并所有班级的学生数据
+                students = [];
+                currentPlan.enrolledClasses.forEach(classItem => {
+                    const classBook = classItem.books.find(b => b.id === bookId);
+                    if (classBook && classBook.students) {
+                        // 为每个学生添加班级信息
+                        const studentsWithClass = classBook.students.map(s => ({
+                            ...s,
+                            className: classItem.className
+                        }));
+                        students.push(...studentsWithClass);
+                    }
+                });
+            } else {
+                // 单个班级模式
+                const classItem = currentPlan.enrolledClasses.find(c => c.classId === currentClassId);
+                if (!classItem) {
+                    alert('班级不存在');
+                    return;
+                }
+
+                bookData = classItem.books.find(b => b.id === bookId);
+                if (!bookData) {
+                    alert('书籍不存在');
+                    Router.back();
+                    return;
+                }
+
+                students = bookData.students || [];
+            }
+
+            currentBook = bookData;
+
+            // 设置标题和基本信息
+            document.getElementById('bookTitle').textContent = bookData.name;
+            document.getElementById('bookName').textContent = bookData.name;
+            document.getElementById('submitRate').textContent = bookData.submitRate + '%';
+            document.getElementById('avgScore').textContent = bookData.avgScore;
+            document.getElementById('questionCount').textContent = bookData.examCount;
+
+            // 更新筛选按钮的数量
+            updateFilterCounts(students);
+
+            // 渲染学生列表
+            renderStudents(students);
+
+            // 渲染题目列表
+            renderQuestions();
+        }
+
+        // 更新筛选按钮的数量
+        function updateFilterCounts(students) {
+            const totalCount = students.length;
+            const submittedCount = students.filter(s => s.submitted).length;
+            const pendingCount = students.filter(s => !s.submitted).length;
+
+            const filterTabs = document.querySelectorAll('.filter-tab');
+            if (filterTabs.length >= 3) {
+                filterTabs[0].textContent = `全部 (${totalCount})`;
+                filterTabs[1].textContent = `已提交 (${submittedCount})`;
+                filterTabs[2].textContent = `未提交 (${pendingCount})`;
+            }
+        }
+
+        // 筛选学生
+        function filterStudents(filter) {
+            currentFilter = filter;
+
+            // 更新按钮状态
+            document.querySelectorAll('.filter-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // 重新加载数据以重新渲染列表
+            loadBookData();
+        }
+
+        // 渲染学生列表
+        function renderStudents(allStudents) {
+            const container = document.getElementById('studentsList');
+
+            let filteredStudents = allStudents;
+            if (currentFilter === 'submitted') {
+                filteredStudents = allStudents.filter(s => s.submitted);
+            } else if (currentFilter === 'pending') {
+                filteredStudents = allStudents.filter(s => !s.submitted);
+            }
+
+            // 在全部班级模式下，按分数从高到低排序
+            if (currentClassId === 'all') {
+                filteredStudents = [...filteredStudents].sort((a, b) => {
+                    // 未提交的学生排在最后
+                    if (a.score === null && b.score === null) return 0;
+                    if (a.score === null) return 1;
+                    if (b.score === null) return -1;
+                    // 按分数降序排列
+                    return b.score - a.score;
+                });
+            }
+
+            const html = filteredStudents.map(student => {
+                const statusClass = student.submitted ? 'status-submitted' : 'status-pending';
+                const statusText = student.submitted ? '已提交' : '未提交';
+
+                let scoreClass = 'score-none';
+                let scoreText = '-';
+                if (student.score !== null) {
+                    scoreText = student.score;
+                    if (student.score >= 90) scoreClass = 'score-high';
+                    else if (student.score >= 80) scoreClass = 'score-medium';
+                    else scoreClass = 'score-low';
+                }
+
+                // 在全部班级模式下显示班级标签
+                const classTag = currentClassId === 'all' && student.className
+                    ? `<span class="student-class-tag">${student.className}</span>`
+                    : '';
+
+                return `
+                    <div class="student-item" onclick="viewStudentExam(${student.id})">
+                        <div class="student-left">
+                            <div class="student-avatar">${student.name.substring(0, 2)}</div>
+                            <div class="student-info">
+                                <div class="student-name">${student.name}${classTag}</div>
+                                <div class="student-status ${statusClass}">${statusText}</div>
+                            </div>
+                        </div>
+                        <div class="student-score ${scoreClass}">${scoreText}</div>
+                    </div>
+                `;
+            }).join('');
+
+            container.innerHTML = html || '<div style="text-align: center; padding: 20px; color: #999999;">暂无数据</div>';
+        }
+
+        // 渲染题目列表
+        function renderQuestions() {
+            const container = document.getElementById('questionsList');
+
+            const html = mockQuestions.map(question => {
+                let rateClass = 'rate-high';
+                let fillClass = 'score-excellent';
+                if (question.correctRate < 80) {
+                    rateClass = 'rate-medium';
+                    fillClass = 'score-good';
+                }
+                if (question.correctRate < 60) {
+                    rateClass = 'rate-low';
+                    fillClass = 'score-fail';
+                }
+
+                return `
+                    <div class="question-item">
+                        <div class="question-left">
+                            <div class="question-title">${question.title}</div>
+                            <div class="question-progress">
+                                <div class="question-progress-bar">
+                                    <div class="question-progress-fill ${fillClass}" style="width: ${question.correctRate}%"></div>
+                                </div>
+                                <div class="question-progress-text">${question.correctRate}%正确</div>
+                            </div>
+                        </div>
+                        <div class="question-rate ${rateClass}">${question.correctRate}%</div>
+                    </div>
+                `;
+            }).join('');
+
+            container.innerHTML = html;
+        }
+
+        // 切换区域折叠状态
+        function toggleSection(sectionId) {
+            const content = document.getElementById(sectionId + 'Content');
+            const icon = document.getElementById(sectionId + 'Icon');
+
+            if (content.classList.contains('collapsed')) {
+                // 展开
+                content.classList.remove('collapsed');
+                icon.classList.add('rotated');
+            } else {
+                // 折叠
+                content.classList.add('collapsed');
+                icon.classList.remove('rotated');
+            }
+        }
+
+        // 查看学生测评详情
+        function viewStudentExam(studentId) {
+            // 跳转到测评详情页，传递planId、bookId和studentId
+            window.location.href = `09-测评详情.html?planId=${planId}&bookId=${bookId}&studentId=${studentId}`;
+        }
+    </script>
+</body>
+</html>

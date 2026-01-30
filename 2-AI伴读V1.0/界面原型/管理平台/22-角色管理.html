@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>角色权限管理 - 校校读吧小管家管理平台</title>
+    <link rel="stylesheet" href="common/admin-common.css">    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="admin-layout">
+        <div class="admin-sidebar">
+            <div class="sidebar-header"></div>
+            <div class="sidebar-menu"></div>
+        </div>
+        <div class="admin-main">
+            <div class="admin-header"></div>
+            <div class="admin-content">
+                <div class="page-header">
+                    <h1 class="page-title">角色权限管理</h1>
+                    <p class="page-description">配置不同角色的功能访问权限</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">权限矩阵</h3>
+                    </div>
+                    <div class="card-body" style="padding: 0; overflow-x: auto;">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th style="min-width: 150px;">功能模块</th>
+                                    <th style="text-align: center;">超级管理员</th>
+                                    <th style="text-align: center;">学校管理员</th>
+                                    <th style="text-align: center;">教师</th>
+                                    <th style="text-align: center;">内容管理员</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>学校管理</strong></td>
+                                    <td style="text-align: center;"><span class="tag tag-green">完全访问</span></td>
+                                    <td style="text-align: center;"><span class="tag tag-gray">无权限</span></td>
+                                    <td style="text-align: center;"><span class="tag tag-gray">无权限</span></td>
+                                    <td style="text-align: center;"><span class="tag tag-gray">无权限</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>角色权限</strong></td>
+                                    <td style="text-align: center;"><span class="tag tag-green">完全访问</span></td>
+                                    <td style="text-align: center;"><span class="tag tag-gray">无权限</span></td>
+                                    <td style="text-align: center;"><span class="tag tag-gray">无权限</span></td>
+                                    <td style="text-align: center;"><span class="tag tag-gray">无权限</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>教师管理</strong></td>
+                                    <td style="text-align: center;"><span class="tag tag-green">完全访问</span></td>
+                                    <td style="text-align: center;"><span class="tag tag-green">完全访问</span></td>
+                                    <td style="text-align: center;"><span class="tag tag-gray">无权限</span></td>
+                                    <td style="text-align: center;"><span class="tag tag-gray">无权限</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>学生管理</strong></td>
+                                    <td style="text-align: center;"><span class="tag tag-green">完全访问</span></td>
+                                    <td style="text-align: center;"><span class="tag tag-green">完全访问</span></td>
+                                    <td style="text-align: center;"><span class="tag tag-blue">只读</span></td>
+                                    <td style="text-align: center;"><span class="tag tag-gray">无权限</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>班级管理</strong></td>
+                                    <td style="text-align: center;"><span class="tag tag-green">完全访问</span></td>
+                                    <td style="text-align: center;"><span class="tag tag-green">完全访问</span></td>
+                                    <td style="text-align: center;"><span class="tag tag-blue">只读</span></td>
+                                    <td style="text-align: center;"><span class="tag tag-gray">无权限</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>书库管理</strong></td>
+                                    <td style="text-align: center;"><span class="tag tag-green">完全访问</span></td>
+                                    <td style="text-align: center;"><span class="tag tag-green">完全访问</span></td>
+                                    <td style="text-align: center;"><span class="tag tag-blue">只读</span></td>
+                                    <td style="text-align: center;"><span class="tag tag-green">完全访问</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>题库管理</strong></td>
+                                    <td style="text-align: center;"><span class="tag tag-green">完全访问</span></td>
+                                    <td style="text-align: center;"><span class="tag tag-green">完全访问</span></td>
+                                    <td style="text-align: center;"><span class="tag tag-gray">无权限</span></td>
+                                    <td style="text-align: center;"><span class="tag tag-green">完全访问</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>资源库</strong></td>
+                                    <td style="text-align: center;"><span class="tag tag-green">完全访问</span></td>
+                                    <td style="text-align: center;"><span class="tag tag-green">完全访问</span></td>
+                                    <td style="text-align: center;"><span class="tag tag-gray">无权限</span></td>
+                                    <td style="text-align: center;"><span class="tag tag-green">完全访问</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>内容审核</strong></td>
+                                    <td style="text-align: center;"><span class="tag tag-green">完全访问</span></td>
+                                    <td style="text-align: center;"><span class="tag tag-gray">无权限</span></td>
+                                    <td style="text-align: center;"><span class="tag tag-gray">无权限</span></td>
+                                    <td style="text-align: center;"><span class="tag tag-green">完全访问</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>积分规则</strong></td>
+                                    <td style="text-align: center;"><span class="tag tag-green">完全访问</span></td>
+                                    <td style="text-align: center;"><span class="tag tag-green">完全访问</span></td>
+                                    <td style="text-align: center;"><span class="tag tag-gray">无权限</span></td>
+                                    <td style="text-align: center;"><span class="tag tag-gray">无权限</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>商城管理</strong></td>
+                                    <td style="text-align: center;"><span class="tag tag-green">完全访问</span></td>
+                                    <td style="text-align: center;"><span class="tag tag-green">完全访问</span></td>
+                                    <td style="text-align: center;"><span class="tag tag-gray">无权限</span></td>
+                                    <td style="text-align: center;"><span class="tag tag-gray">无权限</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>消息推送</strong></td>
+                                    <td style="text-align: center;"><span class="tag tag-green">完全访问</span></td>
+                                    <td style="text-align: center;"><span class="tag tag-green">完全访问</span></td>
+                                    <td style="text-align: center;"><span class="tag tag-blue">只读</span></td>
+                                    <td style="text-align: center;"><span class="tag tag-gray">无权限</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>数据统计</strong></td>
+                                    <td style="text-align: center;"><span class="tag tag-green">完全访问</span></td>
+                                    <td style="text-align: center;"><span class="tag tag-green">完全访问</span></td>
+                                    <td style="text-align: center;"><span class="tag tag-blue">只读</span></td>
+                                    <td style="text-align: center;"><span class="tag tag-gray">无权限</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>系统参数</strong></td>
+                                    <td style="text-align: center;"><span class="tag tag-green">完全访问</span></td>
+                                    <td style="text-align: center;"><span class="tag tag-gray">无权限</span></td>
+                                    <td style="text-align: center;"><span class="tag tag-gray">无权限</span></td>
+                                    <td style="text-align: center;"><span class="tag tag-gray">无权限</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">权限说明</h3>
+                    </div>
+                    <div class="card-body">
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
+                            <div style="padding: 16px; background: #f6ffed; border-radius: 8px; border-left: 3px solid #52c41a;">
+                                <div style="font-size: 14px; font-weight: 600; color: #262626; margin-bottom: 8px;"><i class="fa-solid fa-circle-check"></i> 完全访问</div>
+                                <div style="font-size: 13px; color: #595959;">可以查看、创建、编辑、删除该模块的所有内容</div>
+                            </div>
+                            <div style="padding: 16px; background: #e6f7ff; border-radius: 8px; border-left: 3px solid #1890FF;">
+                                <div style="font-size: 14px; font-weight: 600; color: #262626; margin-bottom: 8px;"><i class="fa-solid fa-eye"></i> 只读</div>
+                                <div style="font-size: 13px; color: #595959;">只能查看该模块的内容，不能进行修改操作</div>
+                            </div>
+                            <div style="padding: 16px; background: #fafafa; border-radius: 8px; border-left: 3px solid #d9d9d9;">
+                                <div style="font-size: 14px; font-weight: 600; color: #262626; margin-bottom: 8px;"><i class="fa-solid fa-ban"></i> 无权限</div>
+                                <div style="font-size: 13px; color: #595959;">无法访问该模块，菜单中不显示该功能</div>
+                            </div>
+                            <div style="padding: 16px; background: #fff7e6; border-radius: 8px; border-left: 3px solid #fa8c16;">
+                                <div style="font-size: 14px; font-weight: 600; color: #262626; margin-bottom: 8px;"><i class="fa-solid fa-triangle-exclamation"></i> 数据范围</div>
+                                <div style="font-size: 13px; color: #595959;">不同角色看到的数据范围不同，如教师只能看到自己班级的数据</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="common/admin-common.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            pageManager.renderHeader(['学校管理', '角色权限']);
+        });
+    </script>
+</body>
+</html>

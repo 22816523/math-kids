@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>商城管理 - 校校读吧小管家管理平台</title>
+    <link rel="stylesheet" href="common/admin-common.css">    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="admin-layout">
+        <div class="admin-sidebar">
+            <div class="sidebar-header"></div>
+            <div class="sidebar-menu"></div>
+        </div>
+
+        <div class="admin-main">
+            <div class="admin-header"></div>
+
+            <div class="admin-content">
+                <div class="page-header">
+                    <h1 class="page-title">商城管理</h1>
+                    <p class="page-description">管理积分商城的商品和兑换记录</p>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 24px;">
+                    <div class="card" style="padding: 20px;">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div style="width: 48px; height: 48px; border-radius: 8px; background: linear-gradient(135deg, #1890FF, #096DD9); color: white; display: flex; align-items: center; justify-content: center; font-size: 24px;"><i class="fa-solid fa-gift"></i></div>
+                            <div>
+                                <div style="font-size: 24px; font-weight: 700; color: #262626;">45</div>
+                                <div style="font-size: 12px; color: #8c8c8c;">在售商品</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card" style="padding: 20px;">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div style="width: 48px; height: 48px; border-radius: 8px; background: linear-gradient(135deg, #52c41a, #73d13d); color: white; display: flex; align-items: center; justify-content: center; font-size: 24px;"><i class="fa-solid fa-box"></i></div>
+                            <div>
+                                <div style="font-size: 24px; font-weight: 700; color: #262626;">234</div>
+                                <div style="font-size: 12px; color: #8c8c8c;">本月兑换</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card" style="padding: 20px;">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div style="width: 48px; height: 48px; border-radius: 8px; background: linear-gradient(135deg, #fa8c16, #ffa940); color: white; display: flex; align-items: center; justify-content: center; font-size: 24px;"><i class="fa-solid fa-hourglass"></i></div>
+                            <div>
+                                <div style="font-size: 24px; font-weight: 700; color: #262626;">18</div>
+                                <div style="font-size: 12px; color: #8c8c8c;">待发货</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card" style="padding: 20px;">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div style="width: 48px; height: 48px; border-radius: 8px; background: linear-gradient(135deg, #722ed1, #9254de); color: white; display: flex; align-items: center; justify-content: center; font-size: 24px;"><i class="fa-solid fa-star"></i></div>
+                            <div>
+                                <div style="font-size: 24px; font-weight: 700; color: #262626;">12,450</div>
+                                <div style="font-size: 12px; color: #8c8c8c;">消耗积分</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">商品列表</h3>
+                        <button class="btn btn-primary btn-sm" onclick="showModal('addProductModal')">添加商品</button>
+                    </div>
+                    <div class="card-body">
+                        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px;">
+                            <div class="card" style="cursor: pointer; transition: all 0.3s;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 4px 16px rgba(0,0,0,0.1)'" onmouseout="this.style.transform=''; this.style.boxShadow=''">
+                                <div style="width: 100%; height: 180px; background: linear-gradient(135deg, #1890FF, #096DD9); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 64px; color: white; margin-bottom: 16px;">
+                                    <i class="fa-solid fa-book"></i>
+                                </div>
+                                <div style="margin-bottom: 12px;">
+                                    <div style="font-size: 16px; font-weight: 600; color: #262626; margin-bottom: 4px;">精美笔记本</div>
+                                    <div style="font-size: 12px; color: #8c8c8c;">文具类 · 库存：50</div>
+                                </div>
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+                                    <div style="font-size: 20px; font-weight: 700; color: #ff4d4f;">200积分</div>
+                                    <span class="tag tag-blue">在售</span>
+                                </div>
+                                <div style="font-size: 12px; color: #8c8c8c; margin-bottom: 12px;">已兑换：45次</div>
+                                <div style="display: flex; gap: 8px;">
+                                    <button class="btn btn-primary btn-sm" style="flex: 1;" onclick="editProduct(1)">编辑</button>
+                                    <button class="btn btn-secondary btn-sm" onclick="toggleProduct(1)">下架</button>
+                                </div>
+                            </div>
+
+                            <div class="card" style="cursor: pointer; transition: all 0.3s;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 4px 16px rgba(0,0,0,0.1)'" onmouseout="this.style.transform=''; this.style.boxShadow=''">
+                                <div style="width: 100%; height: 180px; background: linear-gradient(135deg, #52c41a, #73d13d); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 64px; color: white; margin-bottom: 16px;">
+                                    <i class="fa-solid fa-pen"></i>️
+                                </div>
+                                <div style="margin-bottom: 12px;">
+                                    <div style="font-size: 16px; font-weight: 600; color: #262626; margin-bottom: 4px;">彩色铅笔套装</div>
+                                    <div style="font-size: 12px; color: #8c8c8c;">文具类 · 库存：30</div>
+                                </div>
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+                                    <div style="font-size: 20px; font-weight: 700; color: #ff4d4f;">150积分</div>
+                                    <span class="tag tag-blue">在售</span>
+                                </div>
+                                <div style="font-size: 12px; color: #8c8c8c; margin-bottom: 12px;">已兑换：38次</div>
+                                <div style="display: flex; gap: 8px;">
+                                    <button class="btn btn-primary btn-sm" style="flex: 1;" onclick="editProduct(2)">编辑</button>
+                                    <button class="btn btn-secondary btn-sm" onclick="toggleProduct(2)">下架</button>
+                                </div>
+                            </div>
+
+                            <div class="card" style="cursor: pointer; transition: all 0.3s;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 4px 16px rgba(0,0,0,0.1)'" onmouseout="this.style.transform=''; this.style.boxShadow=''">
+                                <div style="width: 100%; height: 180px; background: linear-gradient(135deg, #fa8c16, #ffa940); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 64px; color: white; margin-bottom: 16px;">
+                                    <i class="fa-solid fa-bag-shopping"></i>
+                                </div>
+                                <div style="margin-bottom: 12px;">
+                                    <div style="font-size: 16px; font-weight: 600; color: #262626; margin-bottom: 4px;">卡通书包</div>
+                                    <div style="font-size: 12px; color: #8c8c8c;">生活用品 · 库存：20</div>
+                                </div>
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+                                    <div style="font-size: 20px; font-weight: 700; color: #ff4d4f;">500积分</div>
+                                    <span class="tag tag-blue">在售</span>
+                                </div>
+                                <div style="font-size: 12px; color: #8c8c8c; margin-bottom: 12px;">已兑换：23次</div>
+                                <div style="display: flex; gap: 8px;">
+                                    <button class="btn btn-primary btn-sm" style="flex: 1;" onclick="editProduct(3)">编辑</button>
+                                    <button class="btn btn-secondary btn-sm" onclick="toggleProduct(3)">下架</button>
+                                </div>
+                            </div>
+
+                            <div class="card" style="cursor: pointer; transition: all 0.3s;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 4px 16px rgba(0,0,0,0.1)'" onmouseout="this.style.transform=''; this.style.boxShadow=''">
+                                <div style="width: 100%; height: 180px; background: linear-gradient(135deg, #722ed1, #9254de); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 64px; color: white; margin-bottom: 16px;">
+                                    <i class="fa-solid fa-basketball"></i>
+                                </div>
+                                <div style="margin-bottom: 12px;">
+                                    <div style="font-size: 16px; font-weight: 600; color: #262626; margin-bottom: 4px;">运动篮球</div>
+                                    <div style="font-size: 12px; color: #8c8c8c;">体育用品 · 库存：15</div>
+                                </div>
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+                                    <div style="font-size: 20px; font-weight: 700; color: #ff4d4f;">800积分</div>
+                                    <span class="tag tag-blue">在售</span>
+                                </div>
+                                <div style="font-size: 12px; color: #8c8c8c; margin-bottom: 12px;">已兑换：12次</div>
+                                <div style="display: flex; gap: 8px;">
+                                    <button class="btn btn-primary btn-sm" style="flex: 1;" onclick="editProduct(4)">编辑</button>
+                                    <button class="btn btn-secondary btn-sm" onclick="toggleProduct(4)">下架</button>
+                                </div>
+                            </div>
+
+                            <div class="card" style="cursor: pointer; transition: all 0.3s; opacity: 0.6;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 4px 16px rgba(0,0,0,0.1)'" onmouseout="this.style.transform=''; this.style.boxShadow=''">
+                                <div style="width: 100%; height: 180px; background: linear-gradient(135deg, #eb2f96, #f759ab); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 64px; color: white; margin-bottom: 16px;">
+                                    <i class="fa-solid fa-headphones"></i>
+                                </div>
+                                <div style="margin-bottom: 12px;">
+                                    <div style="font-size: 16px; font-weight: 600; color: #262626; margin-bottom: 4px;">蓝牙耳机</div>
+                                    <div style="font-size: 12px; color: #8c8c8c;">电子产品 · 库存：0</div>
+                                </div>
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+                                    <div style="font-size: 20px; font-weight: 700; color: #ff4d4f;">1000积分</div>
+                                    <span class="tag tag-gray">已下架</span>
+                                </div>
+                                <div style="font-size: 12px; color: #8c8c8c; margin-bottom: 12px;">已兑换：56次</div>
+                                <div style="display: flex; gap: 8px;">
+                                    <button class="btn btn-primary btn-sm" style="flex: 1;" onclick="editProduct(5)">编辑</button>
+                                    <button class="btn btn-secondary btn-sm" onclick="toggleProduct(5)">上架</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">兑换记录</h3>
+                    </div>
+                    <div class="card-body" style="padding: 0;">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 100px">订单号</th>
+                                    <th style="width: 150px">学生</th>
+                                    <th>商品</th>
+                                    <th style="width: 100px">积分</th>
+                                    <th style="width: 150px">兑换时间</th>
+                                    <th style="width: 100px">状态</th>
+                                    <th style="width: 150px">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>#20001</td>
+                                    <td>
+                                        <div style="display: flex; align-items: center; gap: 8px;">
+                                            <div style="width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, #1890FF, #096DD9); color: white; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600;">张</div>
+                                            <span>张小明</span>
+                                        </div>
+                                    </td>
+                                    <td>精美笔记本</td>
+                                    <td style="text-align: center; color: #ff4d4f; font-weight: 600;">-200</td>
+                                    <td>2026-01-04 10:30</td>
+                                    <td><span class="tag tag-orange">待发货</span></td>
+                                    <td>
+                                        <button class="btn btn-primary btn-sm" onclick="shipOrder(1)">发货</button>
+                                        <button class="btn btn-secondary btn-sm" onclick="viewOrder(1)">详情</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>#20002</td>
+                                    <td>
+                                        <div style="display: flex; align-items: center; gap: 8px;">
+                                            <div style="width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, #52c41a, #73d13d); color: white; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600;">李</div>
+                                            <span>李小红</span>
+                                        </div>
+                                    </td>
+                                    <td>彩色铅笔套装</td>
+                                    <td style="text-align: center; color: #ff4d4f; font-weight: 600;">-150</td>
+                                    <td>2026-01-04 09:15</td>
+                                    <td><span class="tag tag-blue">已发货</span></td>
+                                    <td>
+                                        <button class="btn btn-secondary btn-sm" onclick="viewOrder(2)">详情</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>#20003</td>
+                                    <td>
+                                        <div style="display: flex; align-items: center; gap: 8px;">
+                                            <div style="width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, #fa8c16, #ffa940); color: white; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600;">王</div>
+                                            <span>王小刚</span>
+                                        </div>
+                                    </td>
+                                    <td>卡通书包</td>
+                                    <td style="text-align: center; color: #ff4d4f; font-weight: 600;">-500</td>
+                                    <td>2026-01-03 16:45</td>
+                                    <td><span class="tag tag-green">已完成</span></td>
+                                    <td>
+                                        <button class="btn btn-secondary btn-sm" onclick="viewOrder(3)">详情</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="pagination">
+                    <div class="pagination-item disabled">上一页</div>
+                    <div class="pagination-item active">1</div>
+                    <div class="pagination-item">2</div>
+                    <div class="pagination-item">3</div>
+                    <div class="pagination-item">下一页</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="addProductModal" style="display: none;">
+        <div class="modal" style="max-width: 600px;">
+            <div class="modal-header">
+                <h3 class="modal-title">添加商品</h3>
+                <span class="modal-close" onclick="hideModal('addProductModal')">×</span>
+            </div>
+            <div class="modal-body">
+                <form id="addProductForm">
+                    <div class="form-group">
+                        <label class="form-label">商品名称 <span class="required">*</span></label>
+                        <input type="text" class="form-input" placeholder="请输入商品名称" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">商品分类 <span class="required">*</span></label>
+                        <select class="form-select" required>
+                            <option value="">请选择分类</option>
+                            <option>文具类</option>
+                            <option>生活用品</option>
+                            <option>体育用品</option>
+                            <option>电子产品</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">所需积分 <span class="required">*</span></label>
+                        <input type="number" class="form-input" placeholder="请输入积分数量" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">库存数量 <span class="required">*</span></label>
+                        <input type="number" class="form-input" placeholder="请输入库存数量" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">商品图片</label>
+                        <div style="border: 2px dashed #d9d9d9; border-radius: 8px; padding: 40px; text-align: center; cursor: pointer;">
+                            <div style="font-size: 48px; margin-bottom: 12px;"><i class="fa-solid fa-camera"></i></div>
+                            <div style="font-size: 14px; color: #262626;">点击上传商品图片</div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">商品描述</label>
+                        <textarea class="form-textarea" placeholder="请输入商品描述" rows="3"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="hideModal('addProductModal')">取消</button>
+                <button class="btn btn-primary" onclick="submitAddProduct()">确定</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="common/admin-common.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            pageManager.renderHeader(['运营管理', '商城管理']);
+        });
+
+        function editProduct(id) {
+            showToast('编辑商品功能开发中', 'info');
+        }
+
+        function toggleProduct(id) {
+            showToast('商品状态已更新', 'success');
+        }
+
+        function shipOrder(id) {
+            showConfirm('确定要发货吗？', () => {
+                showToast('发货成功');
+            });
+        }
+
+        function viewOrder(id) {
+            showToast('查看订单详情功能开发中', 'info');
+        }
+
+        function submitAddProduct() {
+            const form = document.getElementById('addProductForm');
+            if (form.checkValidity()) {
+                hideModal('addProductModal');
+                showToast('添加商品成功');
+                form.reset();
+            } else {
+                form.reportValidity();
+            }
+        }
+    </script>
+</body>
+</html>

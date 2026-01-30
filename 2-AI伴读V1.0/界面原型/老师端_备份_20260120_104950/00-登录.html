@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>登录 - 校校读吧小管家（教师端）</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: "Source Han Sans CN", "Noto Sans CJK SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background: linear-gradient(135deg, #2E5BFF 0%, #1E4BEF 100%); width: 375px; margin: 0 auto; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+
+        .login-container { width: 100%; max-width: 335px; }
+        .logo-section { text-align: center; margin-bottom: 40px; }
+        .logo { width: 80px; height: 80px; background: white; border-radius: 20px; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center; font-size: 36px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); }
+        .app-title { font-size: 24px; font-weight: 600; color: white; margin-bottom: 8px; }
+        .app-subtitle { font-size: 14px; color: rgba(255, 255, 255, 0.8); }
+
+        .login-card { background: white; border-radius: 16px; padding: 24px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15); }
+
+        .tab-bar { display: flex; margin-bottom: 24px; border-bottom: 2px solid #f0f0f0; }
+        .tab-item { flex: 1; padding: 12px 0; text-align: center; font-size: 15px; color: #666666; cursor: pointer; position: relative; transition: all 0.3s; }
+        .tab-item.active { color: #2E5BFF; font-weight: 600; }
+        .tab-item.active::after { content: ''; position: absolute; bottom: -2px; left: 50%; transform: translateX(-50%); width: 40px; height: 2px; background: #2E5BFF; }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        .form-group { margin-bottom: 16px; }
+        .form-label { font-size: 14px; color: #333333; margin-bottom: 8px; display: block; }
+        .input-wrapper { position: relative; }
+        .input-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #999999; font-size: 16px; }
+        .form-input { width: 100%; padding: 12px 12px 12px 40px; border: 1px solid #e0e0e0; border-radius: 8px; font-size: 15px; color: #333333; transition: all 0.3s; }
+        .form-input:focus { outline: none; border-color: #2E5BFF; box-shadow: 0 0 0 3px rgba(46, 91, 255, 0.1); }
+        .form-input::placeholder { color: #bfbfbf; }
+        .form-input.error { border-color: #ff4d4f; }
+
+        .password-toggle { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: #999999; cursor: pointer; font-size: 16px; }
+        .password-toggle:hover { color: #666666; }
+
+        .error-tip { font-size: 12px; color: #ff4d4f; margin-top: 4px; display: none; }
+        .error-tip.show { display: block; }
+
+        .form-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+        .remember-me { display: flex; align-items: center; font-size: 14px; color: #666666; cursor: pointer; }
+        .remember-me input { margin-right: 6px; }
+        .forgot-password { font-size: 14px; color: #2E5BFF; cursor: pointer; text-decoration: none; }
+        .forgot-password:hover { text-decoration: underline; }
+
+        .code-input-group { display: flex; gap: 8px; }
+        .code-input-group .form-input { flex: 1; padding-left: 40px; }
+        .get-code-btn { padding: 12px 16px; background: #2E5BFF; color: white; border: none; border-radius: 8px; font-size: 14px; cursor: pointer; white-space: nowrap; transition: all 0.3s; }
+        .get-code-btn:hover { background: #1E4BEF; }
+        .get-code-btn:disabled { background: #d9d9d9; cursor: not-allowed; }
+
+        .login-btn { width: 100%; padding: 14px; background: linear-gradient(135deg, #2E5BFF, #1E4BEF); color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 12px rgba(46, 91, 255, 0.3); }
+        .login-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(46, 91, 255, 0.4); }
+        .login-btn:active { transform: translateY(0); }
+        .login-btn:disabled { background: #d9d9d9; cursor: not-allowed; box-shadow: none; }
+
+        .wechat-login { text-align: center; padding: 20px 0; }
+        .qrcode-box { width: 200px; height: 200px; margin: 0 auto 16px; background: #f5f5f5; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 80px; color: #52c41a; }
+        .wechat-tip { font-size: 14px; color: #666666; margin-bottom: 12px; }
+        .refresh-qrcode { font-size: 14px; color: #2E5BFF; cursor: pointer; }
+        .refresh-qrcode:hover { text-decoration: underline; }
+
+        .register-tip { text-align: center; margin-top: 20px; font-size: 14px; color: #666666; }
+        .register-link { color: #2E5BFF; cursor: pointer; text-decoration: none; }
+        .register-link:hover { text-decoration: underline; }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo-section">
+            <div class="logo">📚</div>
+            <div class="app-title">校校读吧小管家</div>
+            <div class="app-subtitle">教师端</div>
+        </div>
+
+        <div class="login-card">
+            <div class="tab-bar">
+                <div class="tab-item active" onclick="switchTab('account')">账号登录</div>
+                <div class="tab-item" onclick="switchTab('code')">验证码登录</div>
+                <div class="tab-item" onclick="switchTab('wechat')">微信登录</div>
+            </div>
+
+            <!-- 账号登录 -->
+            <div class="tab-content active" id="account-tab">
+                <form onsubmit="return handleAccountLogin(event)">
+                    <div class="form-group">
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-user input-icon"></i>
+                            <input type="text" class="form-input" id="accountInput" placeholder="请输入手机号/邮箱/用户名" autocomplete="username">
+                            <div class="error-tip" id="accountError">请输入正确的账号</div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-lock input-icon"></i>
+                            <input type="password" class="form-input" id="passwordInput" placeholder="请输入密码" autocomplete="current-password">
+                            <i class="fa-solid fa-eye password-toggle" id="passwordToggle" onclick="togglePassword('passwordInput', 'passwordToggle')"></i>
+                            <div class="error-tip" id="passwordError">请输入密码</div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <label class="remember-me">
+                            <input type="checkbox" id="rememberMe">
+                            <span>记住密码</span>
+                        </label>
+                        <a href="javascript:void(0)" class="forgot-password" onclick="goToForgotPassword()">忘记密码？</a>
+                    </div>
+
+                    <button type="submit" class="login-btn">登录</button>
+                </form>
+            </div>
+
+            <!-- 验证码登录 -->
+            <div class="tab-content" id="code-tab">
+                <form onsubmit="return handleCodeLogin(event)">
+                    <div class="form-group">
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-mobile-screen input-icon"></i>
+                            <input type="tel" class="form-input" id="phoneInput" placeholder="请输入手机号" maxlength="11">
+                            <div class="error-tip" id="phoneError">请输入正确的11位手机号</div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="code-input-group">
+                            <div class="input-wrapper" style="flex: 1;">
+                                <i class="fa-solid fa-shield-halved input-icon"></i>
+                                <input type="text" class="form-input" id="codeInput" placeholder="请输入验证码" maxlength="6">
+                                <div class="error-tip" id="codeError">请输入6位验证码</div>
+                            </div>
+                            <button type="button" class="get-code-btn" id="getCodeBtn" onclick="getVerificationCode()">获取验证码</button>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="login-btn" style="margin-top: 24px;">登录</button>
+                </form>
+            </div>
+
+            <!-- 微信登录 -->
+            <div class="tab-content" id="wechat-tab">
+                <div class="wechat-login">
+                    <div class="qrcode-box">
+                        <i class="fa-brands fa-weixin"></i>
+                    </div>
+                    <div class="wechat-tip">请使用微信扫码登录</div>
+                    <div class="refresh-qrcode" onclick="refreshQRCode()">
+                        <i class="fa-solid fa-rotate-right"></i> 刷新二维码
+                    </div>
+                </div>
+            </div>
+
+            <div class="register-tip">
+                首次使用？<a href="javascript:void(0)" class="register-link" onclick="alert('请联系管理员开通账号')">联系管理员</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="../router.js"></script>
+    <script>
+        let countdown = 0
+        let countdownTimer = null
+
+        // 切换Tab
+        function switchTab(tab) {
+            // 更新Tab样式
+            document.querySelectorAll('.tab-item').forEach(item => item.classList.remove('active'))
+            event.target.classList.add('active')
+
+            // 更新内容显示
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'))
+            document.getElementById(`${tab}-tab`).classList.add('active')
+
+            // 清空表单
+            clearAllForms()
+        }
+
+        // 清空所有表单
+        function clearAllForms() {
+            document.querySelectorAll('.form-input').forEach(input => {
+                input.value = ''
+                input.classList.remove('error')
+            })
+            document.querySelectorAll('.error-tip').forEach(tip => tip.classList.remove('show'))
+        }
+
+        // 密码显示/隐藏切换
+        function togglePassword(inputId, iconId) {
+            const input = document.getElementById(inputId)
+            const icon = document.getElementById(iconId)
+
+            if (input.type === 'password') {
+                input.type = 'text'
+                icon.classList.remove('fa-eye')
+                icon.classList.add('fa-eye-slash')
+            } else {
+                input.type = 'password'
+                icon.classList.remove('fa-eye-slash')
+                icon.classList.add('fa-eye')
+            }
+        }
+
+        // 账号登录
+        function handleAccountLogin(event) {
+            event.preventDefault()
+
+            const account = document.getElementById('accountInput').value.trim()
+            const password = document.getElementById('passwordInput').value
+            const remember = document.getElementById('rememberMe').checked
+
+            // 验证
+            let isValid = true
+
+            if (!account) {
+                showError('accountInput', 'accountError', '请输入账号')
+                isValid = false
+            } else {
+                hideError('accountInput', 'accountError')
+            }
+
+            if (!password) {
+                showError('passwordInput', 'passwordError', '请输入密码')
+                isValid = false
+            } else {
+                hideError('passwordInput', 'passwordError')
+            }
+
+            if (!isValid) return false
+
+            // 模拟登录
+            console.log('账号登录:', { account, password, remember })
+
+            // 保存登录状态
+            localStorage.setItem('isLoggedIn', 'true')
+            localStorage.setItem('userInfo', JSON.stringify({
+                name: '王老师',
+                account: account,
+                title: '语文教师 · 初中部'
+            }))
+
+            // 保存记住密码
+            if (remember) {
+                localStorage.setItem('savedAccount', account)
+                localStorage.setItem('savedPassword', password)
+            } else {
+                localStorage.removeItem('savedAccount')
+                localStorage.removeItem('savedPassword')
+            }
+
+            alert('登录成功！')
+
+            // 跳转到首页
+            wx.redirectTo({ url: '01-阅读计划列表.html' })
+
+            return false
+        }
+
+        // 验证码登录
+        function handleCodeLogin(event) {
+            event.preventDefault()
+
+            const phone = document.getElementById('phoneInput').value.trim()
+            const code = document.getElementById('codeInput').value.trim()
+
+            // 验证
+            let isValid = true
+
+            const phoneRegex = /^1[3-9]\d{9}$/
+            if (!phoneRegex.test(phone)) {
+                showError('phoneInput', 'phoneError', '请输入正确的11位手机号')
+                isValid = false
+            } else {
+                hideError('phoneInput', 'phoneError')
+            }
+
+            if (code.length !== 6) {
+                showError('codeInput', 'codeError', '请输入6位验证码')
+                isValid = false
+            } else {
+                hideError('codeInput', 'codeError')
+            }
+
+            if (!isValid) return false
+
+            // 模拟登录
+            console.log('验证码登录:', { phone, code })
+
+            // 保存登录状态
+            localStorage.setItem('isLoggedIn', 'true')
+            localStorage.setItem('userInfo', JSON.stringify({
+                name: '王老师',
+                account: phone,
+                title: '语文教师 · 初中部'
+            }))
+
+            alert('登录成功！')
+
+            // 跳转到首页
+            wx.redirectTo({ url: '01-阅读计划列表.html' })
+
+            return false
+        }
+
+        // 获取验证码
+        function getVerificationCode() {
+            const phone = document.getElementById('phoneInput').value.trim()
+            const phoneRegex = /^1[3-9]\d{9}$/
+
+            if (!phoneRegex.test(phone)) {
+                showError('phoneInput', 'phoneError', '请输入正确的11位手机号')
+                return
+            }
+
+            hideError('phoneInput', 'phoneError')
+
+            // 开始倒计时
+            countdown = 60
+            updateCodeButton()
+
+            countdownTimer = setInterval(() => {
+                countdown--
+                if (countdown <= 0) {
+                    clearInterval(countdownTimer)
+                    countdown = 0
+                }
+                updateCodeButton()
+            }, 1000)
+
+            // 模拟发送验证码
+            console.log('发送验证码到:', phone)
+            alert('验证码已发送，请注意查收')
+        }
+
+        // 更新验证码按钮状态
+        function updateCodeButton() {
+            const btn = document.getElementById('getCodeBtn')
+            if (countdown > 0) {
+                btn.textContent = `${countdown}秒后重试`
+                btn.disabled = true
+            } else {
+                btn.textContent = '获取验证码'
+                btn.disabled = false
+            }
+        }
+
+        // 刷新二维码
+        function refreshQRCode() {
+            alert('二维码已刷新')
+        }
+
+        // 跳转到找回密码页面
+        function goToForgotPassword() {
+            wx.navigateTo({ url: '00-找回密码.html' })
+        }
+
+        // 显示错误
+        function showError(inputId, errorId, message) {
+            const input = document.getElementById(inputId)
+            const error = document.getElementById(errorId)
+            input.classList.add('error')
+            error.textContent = message
+            error.classList.add('show')
+        }
+
+        // 隐藏错误
+        function hideError(inputId, errorId) {
+            const input = document.getElementById(inputId)
+            const error = document.getElementById(errorId)
+            input.classList.remove('error')
+            error.classList.remove('show')
+        }
+
+        // 页面加载时的初始化
+        window.addEventListener('DOMContentLoaded', () => {
+            // 检查是否已登录
+            const isLoggedIn = localStorage.getItem('isLoggedIn')
+            if (isLoggedIn === 'true') {
+                // 已登录，跳转到首页
+                window.location.href = '01-阅读计划列表.html'
+                return
+            }
+
+            // 检查是否有记住的密码
+            const savedAccount = localStorage.getItem('savedAccount')
+            const savedPassword = localStorage.getItem('savedPassword')
+
+            if (savedAccount && savedPassword) {
+                document.getElementById('accountInput').value = savedAccount
+                document.getElementById('passwordInput').value = savedPassword
+                document.getElementById('rememberMe').checked = true
+            }
+        })
+    </script>
+</body>
+</html>

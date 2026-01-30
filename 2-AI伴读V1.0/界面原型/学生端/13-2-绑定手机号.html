@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>绑定手机号 - 校校读吧-学生端</title>
+    <link rel="stylesheet" href="design-system.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background-color: #f5f5f5; width: 375px; margin: 0 auto; min-height: 100vh; opacity: 0; }
+
+        .navbar { background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%); color: white; height: 44px; display: flex; align-items: center; padding: 0 16px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0, 200, 167, 0.15); }
+        .back-btn { background: none; border: none; color: white; font-size: 18px; cursor: pointer; padding: 0; margin-right: 12px; }
+        .navbar-title { font-size: 18px; font-weight: 600; flex: 1; }
+
+        .steps-container { background: white; padding: 24px 16px; margin-bottom: 12px; }
+        .steps { display: flex; align-items: center; justify-content: center; position: relative; }
+        .step-item { flex: 1; display: flex; flex-direction: column; align-items: center; position: relative; z-index: 2; }
+        .step-number { width: 32px; height: 32px; border-radius: 50%; background: #f0f0f0; color: #999999; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; margin-bottom: 8px; transition: all 0.3s; }
+        .step-item.active .step-number { background: var(--color-primary); color: white; }
+        .step-item.completed .step-number { background: #52c41a; color: white; }
+        .step-text { font-size: 12px; color: #999999; }
+        .step-item.active .step-text { color: var(--color-primary); font-weight: 600; }
+        .step-item.completed .step-text { color: #52c41a; }
+        .step-line { position: absolute; top: 16px; left: 25%; right: 25%; height: 2px; background: #f0f0f0; z-index: 1; }
+        .step-line-progress { position: absolute; top: 16px; left: 25%; height: 2px; background: #52c41a; z-index: 1; transition: width 0.3s; width: 0; }
+
+        .content-section { background: white; margin: 12px 16px; border-radius: 8px; padding: 24px; }
+
+        .form-group { margin-bottom: 20px; }
+        .form-label { font-size: 14px; color: #333333; margin-bottom: 8px; display: block; }
+        .input-wrapper { position: relative; }
+        .input-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #999999; font-size: 16px; }
+        .form-input { width: 100%; padding: 12px 12px 12px 40px; border: 1px solid #e0e0e0; border-radius: 8px; font-size: 15px; color: #333333; transition: all 0.3s; }
+        .form-input:focus { outline: none; border-color: var(--color-primary); box-shadow: 0 0 0 3px rgba(0, 200, 167, 0.1); }
+        .form-input::placeholder { color: #bfbfbf; }
+        .form-input.error { border-color: #ff4d4f; }
+
+        .error-tip { font-size: 12px; color: #ff4d4f; margin-top: 4px; display: none; }
+        .error-tip.show { display: block; }
+
+        .code-input-group { display: flex; gap: 8px; }
+        .code-input-group .input-wrapper { flex: 1; }
+        .get-code-btn { padding: 12px 16px; background: var(--color-primary); color: white; border: none; border-radius: 8px; font-size: 14px; cursor: pointer; white-space: nowrap; transition: all 0.3s; }
+        .get-code-btn:hover { opacity: 0.9; }
+        .get-code-btn:disabled { background: #d9d9d9; cursor: not-allowed; }
+
+        .action-btn { width: 100%; padding: 14px; background: linear-gradient(135deg, var(--color-primary), var(--color-secondary)); color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 12px rgba(0, 200, 167, 0.3); margin-top: 24px; }
+        .action-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(0, 200, 167, 0.4); }
+        .action-btn:active { transform: translateY(0); }
+
+        .success-section { text-align: center; padding: 40px 20px; }
+        .success-icon { font-size: 64px; color: #52c41a; margin-bottom: 16px; }
+        .success-title { font-size: 20px; font-weight: 600; color: #333333; margin-bottom: 8px; }
+        .success-text { font-size: 14px; color: #666666; margin-bottom: 32px; }
+
+        .step-content { display: none; }
+        .step-content.active { display: block; }
+
+        .info-tip { background: #e6fffb; border-left: 3px solid var(--color-primary); padding: 12px 16px; margin-bottom: 20px; border-radius: 4px; }
+        .info-tip-text { font-size: 13px; color: #666666; line-height: 1.6; }
+
+        /* Font Awesome图标样式 */
+        .navbar .fa-solid { color: white; }
+        .input-icon .fa-solid { color: #999999; }
+        .success-icon .fa-solid { color: #52c41a; }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="navbar">
+        <button class="back-btn" onclick="Router.back()"><i class="fa-solid fa-chevron-left"></i></button>
+        <div class="navbar-title">绑定手机号</div>
+    </div>
+
+    <div class="steps-container">
+        <div class="steps">
+            <div class="step-line"></div>
+            <div class="step-line-progress" id="stepProgress"></div>
+
+            <div class="step-item active" id="step1">
+                <div class="step-number">1</div>
+                <div class="step-text">绑定手机号</div>
+            </div>
+            <div class="step-item" id="step2">
+                <div class="step-number">2</div>
+                <div class="step-text">完成</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <!-- 步骤1：绑定手机号 -->
+        <div class="step-content active" id="content1">
+            <div class="info-tip">
+                <div class="info-tip-text">绑定手机号后可用于登录和找回密码</div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">手机号</label>
+                <div class="input-wrapper">
+                    <i class="fa-solid fa-mobile-screen input-icon"></i>
+                    <input type="tel" class="form-input" id="phoneInput" placeholder="请输入手机号" maxlength="11">
+                    <div class="error-tip" id="phoneError">请输入正确的11位手机号</div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">验证码</label>
+                <div class="code-input-group">
+                    <div class="input-wrapper">
+                        <i class="fa-solid fa-shield-halved input-icon"></i>
+                        <input type="text" class="form-input" id="codeInput" placeholder="请输入验证码" maxlength="6">
+                        <div class="error-tip" id="codeError">请输入6位验证码</div>
+                    </div>
+                    <button type="button" class="get-code-btn" id="getCodeBtn" onclick="getVerificationCode()">获取验证码</button>
+                </div>
+            </div>
+
+            <button class="action-btn" onclick="bindPhone()">确认绑定</button>
+        </div>
+
+        <!-- 步骤2：完成 -->
+        <div class="step-content" id="content2">
+            <div class="success-section">
+                <div class="success-icon">
+                    <i class="fa-solid fa-circle-check"></i>
+                </div>
+                <div class="success-title">手机号绑定成功</div>
+                <div class="success-text">您的手机号已成功绑定</div>
+                <button class="action-btn" onclick="goBack()">返回</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="./router.js"></script>
+    <script>
+        let countdown = 0
+        let countdownTimer = null
+
+        // 绑定手机号
+        function bindPhone() {
+            const phone = document.getElementById('phoneInput').value.trim()
+            const code = document.getElementById('codeInput').value.trim()
+            let isValid = true
+
+            const phoneRegex = /^1[3-9]\d{9}$/
+            if (!phoneRegex.test(phone)) {
+                showError('phoneInput', 'phoneError', '请输入正确的11位手机号')
+                isValid = false
+            } else {
+                hideError('phoneInput', 'phoneError')
+            }
+
+            if (code.length !== 6) {
+                showError('codeInput', 'codeError', '请输入6位验证码')
+                isValid = false
+            } else {
+                hideError('codeInput', 'codeError')
+            }
+
+            if (!isValid) return
+
+            // 模拟绑定成功
+            document.getElementById('step1').classList.add('completed')
+            document.getElementById('step1').classList.remove('active')
+            document.getElementById('step2').classList.add('active')
+            document.getElementById('content1').classList.remove('active')
+            document.getElementById('content2').classList.add('active')
+            document.getElementById('stepProgress').style.width = '50%'
+        }
+
+        // 获取验证码
+        function getVerificationCode() {
+            const phone = document.getElementById('phoneInput').value.trim()
+            const phoneRegex = /^1[3-9]\d{9}$/
+
+            if (!phoneRegex.test(phone)) {
+                showError('phoneInput', 'phoneError', '请输入正确的11位手机号')
+                return
+            }
+
+            hideError('phoneInput', 'phoneError')
+
+            // 开始倒计时
+            countdown = 60
+            updateCodeButton()
+
+            countdownTimer = setInterval(() => {
+                countdown--
+                if (countdown <= 0) {
+                    clearInterval(countdownTimer)
+                    countdown = 0
+                }
+                updateCodeButton()
+            }, 1000)
+
+            alert('验证码已发送，请注意查收')
+        }
+
+        // 更新验证码按钮状态
+        function updateCodeButton() {
+            const btn = document.getElementById('getCodeBtn')
+            if (countdown > 0) {
+                btn.textContent = `${countdown}秒后重试`
+                btn.disabled = true
+            } else {
+                btn.textContent = '获取验证码'
+                btn.disabled = false
+            }
+        }
+
+        // 返回
+        function goBack() {
+            Router.back()
+        }
+
+        // 显示错误
+        function showError(inputId, errorId, message) {
+            const input = document.getElementById(inputId)
+            const error = document.getElementById(errorId)
+            input.classList.add('error')
+            error.textContent = message
+            error.classList.add('show')
+        }
+
+        // 隐藏错误
+        function hideError(inputId, errorId) {
+            const input = document.getElementById(inputId)
+            const error = document.getElementById(errorId)
+            input.classList.remove('error')
+            error.classList.remove('show')
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>消息详情 - 校校读吧小管家（教师端）</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: "Source Han Sans CN", "Noto Sans CJK SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background: #F5F7FA; width: 375px; margin: 0 auto; min-height: 100vh; opacity: 0; padding-bottom: 20px; }
+        .navbar { background: linear-gradient(135deg, #2E5BFF 0%, #1E4BEF 100%); color: white; height: 44px; display: flex; align-items: center; padding: 0 16px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(24, 144, 255, 0.15); }
+        .back-btn { background: none; border: none; color: white; font-size: 18px;
+            line-height: 1.4; cursor: pointer; padding: 4px; }
+        .navbar-title { flex: 1; text-align: center; font-size: 18px;
+            line-height: 1.4; font-weight: 600; margin-right: 28px; }
+        .message-header { background: white; padding: 20px 16px; border-bottom: 1px solid #f0f0f0; }
+        .message-title { font-size: 20px;
+            line-height: 1.2; font-weight: 600; margin-bottom: 12px; color: #333333; }
+        .message-meta { display: flex; gap: 16px; font-size: 13px;
+            line-height: 1.5; color: #999999; }
+        .meta-item { display: flex; align-items: center; gap: 4px; }
+        .message-content { background: white; padding: 20px 16px; margin-bottom: 12px; }
+        .content-text { font-size: 15px; line-height: 1.8; color: #595959; }
+        .card { background: white; margin: 0 16px 12px; padding: 16px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06); }
+        .section-title { font-size: 16px;
+            line-height: 1.4; font-weight: 600; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; text-align: center; }
+        .stat-item { padding: 12px; background: #F5F7FA; border-radius: 8px; }
+        x0; color: #2E5BFF; margin-bottom: 4px; }
+        .stat-label { font-size: 12px;
+            line-height: 1.5; color: #999999; }
+        .recipient-list { display: flex; flex-direction: column; gap: 8px; }
+        .recipient-item { display: flex; align-items: center; gap: 12px; padding: 12px; background: #F5F7FA; border-radius: 8px; }
+        .recipient-avatar { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #2E5BFF, #1E4BEF); color: white; display: flex; align-items: center; justify-content: center; font-size: 14px;
+            line-height: 1.6; font-weight: 600; }
+        .recipient-info { flex: 1; }
+        .recipient-name { font-size: 14px;
+            line-height: 1.6; font-weight: 500; margin-bottom: 4px; }
+        .recipient-time { font-size: 12px;
+            line-height: 1.5; color: #999999; }
+        .recipient-status { padding: 4px 8px; border-radius: 4px; font-size: 12px;
+            line-height: 1.5; }
+        .recipient-status.read { background: #f6ffed; color: #52c41a; }
+        .recipient-status.unread { background: #fff7e6; color: #fa8c16; }
+    
+        /* Font Awesome图标样式优化 */
+        .fa-solid, .fa-regular {
+            font-weight: 400;
+            color: #595959;
+            opacity: 0.85;
+        }
+
+        /* 导航栏和标题中的图标保持原色 */
+        .navbar .fa-solid,
+        .section-title .fa-solid,
+        .task-title .fa-solid {
+            color: inherit;
+            opacity: 1;
+        }
+
+        /* 徽章图标使用白色，与金色背景形成对比 */
+        .badge-icon .fa-solid {
+            color: white;
+            opacity: 1;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 成就图标特殊样式 */
+        .achievement-section .badge-icon .fa-solid {
+            font-size: 32px;
+        }
+    
+        /* 选中状态图标颜色优化 */
+        .tab-item.active .tab-icon .fa-solid,
+        .tab-item.active .fa-solid {
+            color: #2E5BFF;
+            opacity: 1;
+        }
+
+        /* 其他选中状态 */
+        .menu-item.active .menu-icon .fa-solid,
+        .nav-item.active .fa-solid,
+        .list-item.selected .fa-solid,
+        .card.active .fa-solid,
+        .btn.active .fa-solid,
+        .filter-btn.active .fa-solid {
+            color: #2E5BFF;
+            opacity: 1;
+        }
+    </style>    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="navbar">
+        <button class="back-btn" onclick="Router.back()">←</button>
+        <div class="navbar-title">消息详情</div>
+    </div>
+
+    <div class="message-header">
+        <div class="message-title">《三体》阅读计划提醒</div>
+        <div class="message-meta">
+            <div class="meta-item"><span><i class="fa-solid fa-calendar"></i></span><span>2024-01-15 14:30</span></div>
+            <div class="meta-item"><span><i class="fa-solid fa-users"></i></span><span>初一(3)班</span></div>
+        </div>
+    </div>
+
+    <div class="message-content">
+        <div class="content-text">
+            各位同学，大家好<br><br>
+            《三体》阅读计划已经进行到第三章，请还未完成的同学抓紧时间完成阅读任务。本周末将进行第一次测评，请大家认真准备<br><br>
+            阅读要求<br>
+            1. 完成第1-3章的阅读<br>
+            2. 完成配套测评题目<br>
+            3. 在AI对话中分享阅读心得<br><br>
+            期待大家的精彩表现
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="section-title"><i class="fa-solid fa-chart-column"></i> 阅读统计</div>
+        <div class="stats-grid">
+            <div class="stat-item"><div class="stat-value">48</div><div class="stat-label">已读</div></div>
+            <div class="stat-item"><div class="stat-value">4</div><div class="stat-label">未读</div></div>
+            <div class="stat-item"><div class="stat-value">92%</div><div class="stat-label">阅读率</div></div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="section-title"><i class="fa-solid fa-users"></i> 接收人列表</div>
+        <div class="recipient-list">
+            <div class="recipient-item">
+                <div class="recipient-avatar">小红</div>
+                <div class="recipient-info">
+                    <div class="recipient-name">张小红</div>
+                    <div class="recipient-time">已读 · 2024-01-15 14:35</div>
+                </div>
+                <div class="recipient-status read">已读</div>
+            </div>
+            <div class="recipient-item">
+                <div class="recipient-avatar">小明</div>
+                <div class="recipient-info">
+                    <div class="recipient-name">李小明</div>
+                    <div class="recipient-time">已读 · 2024-01-15 15:20</div>
+                </div>
+                <div class="recipient-status read">已读</div>
+            </div>
+            <div class="recipient-item">
+                <div class="recipient-avatar">小华</div>
+                <div class="recipient-info">
+                    <div class="recipient-name">王小华</div>
+                    <div class="recipient-time">已读 · 2024-01-15 16:10</div>
+                </div>
+                <div class="recipient-status read">已读</div>
+            </div>
+            <div class="recipient-item">
+                <div class="recipient-avatar">小刚</div>
+                <div class="recipient-info">
+                    <div class="recipient-name">刘小刚</div>
+                    <div class="recipient-time">未读</div>
+                </div>
+                <div class="recipient-status unread">未读</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="./router.js"></script>
+</body>
+</html>

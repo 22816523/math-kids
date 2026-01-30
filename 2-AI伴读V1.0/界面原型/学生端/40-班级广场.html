@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>班级广场 - 校校读吧-学生端</title>
+    <link rel="stylesheet" href="design-system.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background: #f5f5f5; width: 375px; margin: 0 auto; min-height: 100vh; padding-bottom: 20px; opacity: 0; }
+
+        .navbar { background: linear-gradient(135deg, var(--color-primary), var(--color-secondary)); color: white; height: 44px; display: flex; align-items: center; padding: 0 16px; position: sticky; top: 0; z-index: 100; }
+        .back-btn { font-size: 20px; cursor: pointer; margin-right: 12px; }
+        .navbar-title { font-size: 18px; line-height: 1.4; font-weight: 600; flex: 1; }
+
+        /* 任务信息头部 */
+        .task-header {
+            background: white;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+        .task-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .book-cover {
+            width: 50px;
+            height: 66px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+        .task-detail { flex: 1; }
+        .task-name { font-size: 16px; font-weight: 600; color: #333; margin-bottom: 4px; }
+        .task-desc { font-size: 13px; color: #666; margin-bottom: 6px; }
+        .task-progress {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: #999;
+        }
+        .progress-bar {
+            flex: 1;
+            height: 6px;
+            background: #f0f0f0;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
+            border-radius: 3px;
+        }
+
+        /* 打卡列表 */
+        .checkin-list { padding: 0 16px; }
+        .checkin-item {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+        .checkin-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+        .user-info { flex: 1; }
+        .user-name { font-size: 14px; font-weight: 600; color: #333; }
+        .checkin-time { font-size: 12px; color: #999; margin-top: 2px; }
+
+        /* 任务标签 */
+        .checkin-tasks {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+        .task-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .task-tag.reading {
+            background: #e6f7ff;
+            color: #1890ff;
+        }
+        .task-tag.worksheet {
+            background: #fff7e6;
+            color: #fa8c16;
+        }
+
+        /* 打卡内容 */
+        .checkin-content { margin-bottom: 12px; }
+        .checkin-text {
+            font-size: 14px;
+            color: #333;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+        .checkin-images {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 6px;
+        }
+        .checkin-image {
+            aspect-ratio: 1;
+            background: #f5f5f5;
+            border-radius: 6px;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        .checkin-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        /* 模拟图片占位 */
+        .image-placeholder {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #e0e0e0, #f5f5f5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #bbb;
+            font-size: 20px;
+        }
+
+        /* 互动区域 */
+        .checkin-actions {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            padding-top: 12px;
+            border-top: 1px solid #f5f5f5;
+        }
+        .action-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            color: #999;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .action-item:hover { color: var(--color-primary); }
+        .action-item:hover i { color: var(--color-primary); }
+        .action-item.liked { color: var(--color-primary); }
+        .action-item.liked i { color: var(--color-primary); }
+        .action-item i { font-size: 14px; }
+
+        /* 空状态 */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+        .empty-state i { font-size: 48px; margin-bottom: 16px; opacity: 0.3; }
+        .empty-state p { font-size: 14px; }
+
+        /* Font Awesome图标样式 */
+        .fa-solid, .fa-regular {
+            font-weight: 400;
+            color: #595959;
+            opacity: 0.85;
+        }
+        .navbar .fa-solid,
+        .book-cover .fa-solid {
+            color: inherit;
+            opacity: 1;
+        }
+
+        /* 筛选区域 */
+        .filter-section {
+            background: white;
+            padding: 12px 16px;
+            margin: 0 0 12px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-radius: 0 0 8px 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            cursor: pointer;
+        }
+        .filter-section:hover {
+            background: #fafafa;
+        }
+        .filter-text {
+            font-size: 15px;
+            color: #333;
+            font-weight: 600;
+        }
+        .filter-icon {
+            width: 28px;
+            height: 28px;
+            background: #f5f5f5;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            font-size: 14px;
+        }
+
+        /* 下拉选择器弹窗 */
+        .dropdown-overlay {
+            position: fixed;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 375px;
+            height: 100vh;
+            background: rgba(0,0,0,0.5);
+            z-index: 200;
+            display: none;
+        }
+        .dropdown-overlay.show {
+            display: block;
+        }
+        .dropdown-panel {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-radius: 16px 16px 0 0;
+            max-height: 60vh;
+            overflow: hidden;
+            animation: slideUp 0.3s ease;
+        }
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+        .dropdown-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .dropdown-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+        .dropdown-close {
+            width: 28px;
+            height: 28px;
+            border: none;
+            background: #f5f5f5;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 14px;
+            color: #666;
+        }
+        .dropdown-list {
+            max-height: calc(60vh - 60px);
+            overflow-y: auto;
+        }
+        .dropdown-option {
+            padding: 14px 16px;
+            font-size: 15px;
+            color: #333;
+            border-bottom: 1px solid #f5f5f5;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: background 0.2s;
+        }
+        .dropdown-option:hover {
+            background: #fafafa;
+        }
+        .dropdown-option.selected {
+            color: var(--color-primary);
+            background: #e6f7ff;
+        }
+        .dropdown-option.selected::after {
+            content: '✓';
+            color: var(--color-primary);
+            font-weight: 600;
+        }
+        .dropdown-section-title {
+            padding: 12px 16px 8px;
+            font-size: 13px;
+            color: #999;
+            background: #fafafa;
+        }
+        .dropdown-footer {
+            padding: 12px 16px;
+            border-top: 1px solid #f0f0f0;
+        }
+        .dropdown-confirm {
+            width: 100%;
+            height: 44px;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+            color: white;
+            border: none;
+            border-radius: 22px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .dropdown-confirm:hover {
+            opacity: 0.9;
+        }
+
+        /* 表单下拉选择 */
+        .filter-form {
+            padding: 16px;
+        }
+        .filter-form-item {
+            margin-bottom: 16px;
+        }
+        .filter-form-item:last-child {
+            margin-bottom: 0;
+        }
+        .filter-form-label {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+        .filter-select {
+            width: 100%;
+            height: 44px;
+            padding: 0 12px;
+            border: 1px solid #e8e8e8;
+            border-radius: 8px;
+            font-size: 15px;
+            color: #333;
+            background: white;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23999' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            cursor: pointer;
+        }
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--color-primary);
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="navbar">
+        <div class="back-btn" onclick="Router.back()"><i class="fa-solid fa-chevron-left"></i></div>
+        <div class="navbar-title">班级广场</div>
+    </div>
+
+    <div class="filter-section" onclick="openFilterModal()">
+        <div class="filter-text" id="filterText">2026年寒假阅读计划 · 《三体》</div>
+        <div class="filter-icon"><i class="fa-solid fa-filter"></i></div>
+    </div>
+
+    <div class="checkin-list" id="checkinList">
+        <!-- 打卡记录将通过JavaScript动态生成 -->
+    </div>
+
+    <!-- 筛选弹窗 -->
+    <div class="dropdown-overlay" id="filterModal" onclick="closeFilterModal()">
+        <div class="dropdown-panel" onclick="event.stopPropagation()">
+            <div class="dropdown-header">
+                <div class="dropdown-title">筛选条件</div>
+                <button class="dropdown-close" onclick="closeFilterModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="filter-form">
+                <div class="filter-form-item">
+                    <div class="filter-form-label">阅读计划</div>
+                    <select class="filter-select" id="planSelect">
+                        <option value="2026年寒假阅读计划" selected>2026年寒假阅读计划</option>
+                        <option value="2025年秋季阅读计划">2025年秋季阅读计划</option>
+                        <option value="2025年暑假阅读计划">2025年暑假阅读计划</option>
+                    </select>
+                </div>
+                <div class="filter-form-item">
+                    <div class="filter-form-label">书籍</div>
+                    <select class="filter-select" id="bookSelect">
+                        <option value="《三体》" selected>《三体》</option>
+                        <option value="《小王子》">《小王子》</option>
+                        <option value="《西游记》">《西游记》</option>
+                        <option value="《哈利波特》">《哈利波特》</option>
+                    </select>
+                </div>
+            </div>
+            <div class="dropdown-footer">
+                <button class="dropdown-confirm" onclick="confirmFilter()">确定</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="./router.js"></script>
+    <script>
+        // 模拟打卡数据
+        const checkinData = [
+            {
+                id: 1,
+                name: '张小明',
+                avatar: '小明',
+                time: '2026-01-29 14:35',
+                tasks: ['阅读《三体》第15-30页', '完成导读单二'],
+                text: '今天读完了第二章，叶文洁的故事太震撼了！红岸基地的描写让我仿佛身临其境，期待后面的剧情发展',
+                images: 2,
+                likes: 12,
+                comments: 3,
+                liked: false
+            },
+            {
+                id: 2,
+                name: '李小红',
+                avatar: '小红',
+                time: '2026-01-29 14:20',
+                tasks: ['阅读《三体》第15-30页', '完成导读单二'],
+                text: '三体世界的设定太有想象力了，乱纪元和恒纪元的概念很有意思',
+                images: 1,
+                likes: 8,
+                comments: 2,
+                liked: true
+            },
+            {
+                id: 3,
+                name: '王小华',
+                avatar: '小华',
+                time: '2026-01-29 13:45',
+                tasks: ['阅读《三体》第15-30页', '完成导读单二'],
+                text: '导读单的问题让我思考了很久，叶文洁的选择到底是对是错呢？',
+                images: 3,
+                likes: 15,
+                comments: 5,
+                liked: false
+            },
+            {
+                id: 4,
+                name: '赵小强',
+                avatar: '小强',
+                time: '2026-01-29 12:30',
+                tasks: ['阅读《三体》第15-30页'],
+                text: '科幻小说原来这么好看！以前都不怎么看这类书',
+                images: 1,
+                likes: 6,
+                comments: 1,
+                liked: false
+            },
+            {
+                id: 5,
+                name: '孙小丽',
+                avatar: '小丽',
+                time: '2026-01-29 11:15',
+                tasks: ['阅读《三体》第15-30页', '完成导读单二'],
+                text: '今天的阅读任务完成啦，感觉自己对宇宙有了新的认识',
+                images: 2,
+                likes: 10,
+                comments: 2,
+                liked: false
+            },
+            {
+                id: 6,
+                name: '周小军',
+                avatar: '小军',
+                time: '2026-01-29 10:20',
+                tasks: ['阅读《三体》第15-30页'],
+                text: '智子的设定太厉害了，科技封锁这个概念很有深度',
+                images: 0,
+                likes: 7,
+                comments: 1,
+                liked: false
+            },
+            {
+                id: 7,
+                name: '吴小芳',
+                avatar: '小芳',
+                time: '2026-01-29 09:30',
+                tasks: ['阅读《三体》第15-30页', '完成导读单二'],
+                text: '读书打卡第15天，坚持就是胜利！',
+                images: 1,
+                likes: 20,
+                comments: 4,
+                liked: true
+            },
+            {
+                id: 8,
+                name: '郑小伟',
+                avatar: '小伟',
+                time: '2026-01-28 22:30',
+                tasks: ['阅读《三体》第1-15页', '完成导读单一'],
+                text: '晚上读书效率真高，一口气读了20页',
+                images: 2,
+                likes: 5,
+                comments: 0,
+                liked: false
+            }
+        ];
+
+        // 渲染打卡列表
+        function renderCheckinList() {
+            const container = document.getElementById('checkinList');
+
+            if (checkinData.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fa-solid fa-clipboard-list"></i>
+                        <p>暂无同学打卡记录</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const html = checkinData.map(item => {
+                // 生成任务标签HTML
+                let tasksHtml = '';
+                if (item.tasks && item.tasks.length > 0) {
+                    const taskItems = item.tasks.map((task, index) => {
+                        const tagClass = task.includes('阅读') ? 'reading' : 'worksheet';
+                        return `<span class="task-tag ${tagClass}">${task}</span>`;
+                    }).join('');
+                    tasksHtml = `<div class="checkin-tasks">${taskItems}</div>`;
+                }
+
+                // 生成图片HTML
+                let imagesHtml = '';
+                if (item.images > 0) {
+                    const imageItems = [];
+                    for (let i = 0; i < item.images && i < 3; i++) {
+                        imageItems.push(`
+                            <div class="checkin-image">
+                                <div class="image-placeholder"><i class="fa-solid fa-image"></i></div>
+                            </div>
+                        `);
+                    }
+                    imagesHtml = `<div class="checkin-images">${imageItems.join('')}</div>`;
+                }
+
+                return `
+                    <div class="checkin-item" onclick="goToDetail(${item.id})" style="cursor: pointer;">
+                        <div class="checkin-header">
+                            <div class="user-avatar">${item.avatar}</div>
+                            <div class="user-info">
+                                <div class="user-name">${item.name}</div>
+                                <div class="checkin-time">${item.time}</div>
+                            </div>
+                        </div>
+                        <div class="checkin-content">
+                            ${tasksHtml}
+                            <div class="checkin-text">${item.text}</div>
+                            ${imagesHtml}
+                        </div>
+                        <div class="checkin-actions">
+                            <div class="action-item ${item.liked ? 'liked' : ''}" onclick="toggleLike(event, ${item.id})">
+                                <i class="fa-solid fa-thumbs-up"></i>
+                                <span>${item.likes}</span>
+                            </div>
+                            <div class="action-item" onclick="showComments(event, ${item.id})">
+                                <i class="fa-regular fa-comment"></i>
+                                <span>${item.comments}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            container.innerHTML = html;
+        }
+
+        // 点赞切换
+        function toggleLike(event, id) {
+            event.stopPropagation();
+            const item = checkinData.find(i => i.id === id);
+            if (item) {
+                item.liked = !item.liked;
+                item.likes += item.liked ? 1 : -1;
+                renderCheckinList();
+            }
+        }
+
+        // 显示评论
+        function showComments(event, id) {
+            event.stopPropagation();
+            Router.toStudentPage('classCheckinDetail', { id: id });
+        }
+
+        // 跳转到打卡详情
+        function goToDetail(id) {
+            Router.toStudentPage('classCheckinDetail', { id: id });
+        }
+
+        // 初始化
+        renderCheckinList();
+
+        // 打开筛选弹窗
+        function openFilterModal() {
+            document.getElementById('filterModal').classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // 关闭筛选弹窗
+        function closeFilterModal() {
+            document.getElementById('filterModal').classList.remove('show');
+            document.body.style.overflow = '';
+        }
+
+        // 确认筛选
+        function confirmFilter() {
+            const plan = document.getElementById('planSelect').value;
+            const book = document.getElementById('bookSelect').value;
+            document.getElementById('filterText').textContent = plan + ' · ' + book;
+            closeFilterModal();
+        }
+    </script>
+</body>
+</html>

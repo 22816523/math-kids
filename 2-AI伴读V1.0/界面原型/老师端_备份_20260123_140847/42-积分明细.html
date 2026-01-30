@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>积分明细 - 校校读吧小管家（教师端）</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: "Source Han Sans CN", "Noto Sans CJK SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background: #F5F7FA; width: 375px; margin: 0 auto; padding-bottom: 60px; }
+
+        .navbar { background: linear-gradient(135deg, #2E5BFF 0%, #1E4BEF 100%); color: white; height: 44px; display: flex; align-items: center; padding: 0 16px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(24, 144, 255, 0.15); }
+        .back-btn { background: none; border: none; color: white; font-size: 18px; line-height: 1.4; cursor: pointer; padding: 0; margin-right: 12px; }
+        .navbar-title { font-size: 18px; line-height: 1.4; font-weight: 600; }
+
+        .summary-card { background: linear-gradient(135deg, #FFB800, #FF8C00); color: white; margin: 16px; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(255, 184, 0, 0.3); }
+        .summary-title { font-size: 14px; line-height: 1.6; opacity: 0.9; margin-bottom: 8px; }
+        .summary-value { font-size: 32px; line-height: 1.2; font-weight: 700; margin-bottom: 16px; }
+        .summary-stats { display: flex; justify-content: space-around; padding-top: 16px; border-top: 1px solid rgba(255, 255, 255, 0.3); }
+        .summary-stat { text-align: center; }
+        .summary-stat-label { font-size: 12px; line-height: 1.5; opacity: 0.9; margin-bottom: 4px; }
+        .summary-stat-value { font-size: 18px; line-height: 1.2; font-weight: 600; }
+
+        .tabs { background: white; display: flex; padding: 0 16px; box-shadow: 0 2px 4px rgba(0,0,0,0.04); }
+        .tab { flex: 1; padding: 12px 0; text-align: center; font-size: 14px; line-height: 1.6; color: #8c8c8c; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.3s; }
+        .tab.active { color: #FFB800; font-weight: 600; border-bottom-color: #FFB800; }
+        .tab:hover { color: #FFB800; }
+
+        .record-list { padding: 16px; }
+        .record-item { background: white; border-radius: 8px; padding: 16px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); transition: all 0.3s; }
+        .record-item:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .record-header { display: flex; align-items: center; margin-bottom: 8px; }
+        .record-icon { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; margin-right: 12px; }
+        .record-icon.income { background: #f6ffed; color: #52c41a; }
+        .record-icon.expense { background: #fff1f0; color: #ff4d4f; }
+        .record-info { flex: 1; }
+        .record-title { font-size: 15px; line-height: 1.6; font-weight: 600; color: #333333; margin-bottom: 4px; }
+        .record-desc { font-size: 13px; line-height: 1.5; color: #8c8c8c; }
+        .record-amount { font-size: 18px; line-height: 1.2; font-weight: 700; }
+        .record-amount.income { color: #52c41a; }
+        .record-amount.expense { color: #ff4d4f; }
+        .record-time { font-size: 12px; line-height: 1.5; color: #999999; margin-top: 8px; text-align: right; }
+
+        .empty-state { text-align: center; padding: 60px 16px; color: #999999; }
+        .empty-icon { font-size: 64px; margin-bottom: 16px; opacity: 0.5; }
+        .empty-text { font-size: 14px; line-height: 1.6; }
+
+        .tabbar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 375px; height: 50px; background: white; border-top: 1px solid #f0f0f0; display: flex; box-shadow: 0 -2px 8px rgba(0,0,0,0.06); }
+        .tab-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; cursor: pointer; transition: all 0.3s; }
+        .tab-item:hover { background: #F5F7FA; }
+        .tab-icon { font-size: 20px; line-height: 1.2; }
+        .tab-label { font-size: 10px; line-height: 1.4; color: #999999; }
+        .tab-item.active .tab-label { color: #2E5BFF; }
+        .tab-item.active .tab-icon { color: #2E5BFF; }
+
+        /* Font Awesome图标样式优化 */
+        .fa-solid, .fa-regular {
+            font-weight: 400;
+            color: #595959;
+            opacity: 0.85;
+        }
+
+        /* 导航栏和标题中的图标保持原色 */
+        .navbar .fa-solid,
+        .section-title .fa-solid,
+        .task-title .fa-solid {
+            color: inherit;
+            opacity: 1;
+        }
+
+        /* 选中状态图标颜色优化 */
+        .tab-item.active .tab-icon .fa-solid,
+        .tab-item.active .fa-solid {
+            color: #2E5BFF;
+            opacity: 1;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="navbar">
+        <button class="back-btn" onclick="Router.back()">←</button>
+        <div class="navbar-title">积分明细</div>
+    </div>
+
+    <div class="summary-card">
+        <div class="summary-title">当前积分</div>
+        <div class="summary-value"><i class="fa-solid fa-coins"></i> 220</div>
+        <div class="summary-stats">
+            <div class="summary-stat">
+                <div class="summary-stat-label">累计获得</div>
+                <div class="summary-stat-value">+320</div>
+            </div>
+            <div class="summary-stat">
+                <div class="summary-stat-label">累计消费</div>
+                <div class="summary-stat-value">-100</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tabs">
+        <div class="tab active" onclick="switchTab(this, 'all')">全部</div>
+        <div class="tab" onclick="switchTab(this, 'income')">收入</div>
+        <div class="tab" onclick="switchTab(this, 'expense')">支出</div>
+    </div>
+
+    <div class="record-list" id="recordList">
+        <div class="record-item" data-type="income">
+            <div class="record-header">
+                <div class="record-icon income">
+                    <i class="fa-solid fa-trophy"></i>
+                </div>
+                <div class="record-info">
+                    <div class="record-title">学生完成率达标</div>
+                    <div class="record-desc">初一(3)班阅读完成率达90%</div>
+                </div>
+                <div class="record-amount income">+100</div>
+            </div>
+            <div class="record-time">2025-01-21 18:00</div>
+        </div>
+
+        <div class="record-item" data-type="income">
+            <div class="record-header">
+                <div class="record-icon income">
+                    <i class="fa-solid fa-book-open"></i>
+                </div>
+                <div class="record-info">
+                    <div class="record-title">首次报名阅读计划</div>
+                    <div class="record-desc">报名参加《三体》阅读计划</div>
+                </div>
+                <div class="record-amount income">+50</div>
+            </div>
+            <div class="record-time">2025-01-20 10:00</div>
+        </div>
+
+        <div class="record-item" data-type="income">
+            <div class="record-header">
+                <div class="record-icon income">
+                    <i class="fa-solid fa-chart-line"></i>
+                </div>
+                <div class="record-info">
+                    <div class="record-title">班级阅读排名奖励</div>
+                    <div class="record-desc">初一(3)班排名年级第一</div>
+                </div>
+                <div class="record-amount income">+200</div>
+            </div>
+            <div class="record-time">2025-01-17 20:00</div>
+        </div>
+
+        <div class="record-item" data-type="expense">
+            <div class="record-header">
+                <div class="record-icon expense">
+                    <i class="fa-solid fa-gift"></i>
+                </div>
+                <div class="record-info">
+                    <div class="record-title">兑换专属头像框</div>
+                    <div class="record-desc">兑换金色头像框</div>
+                </div>
+                <div class="record-amount expense">-100</div>
+            </div>
+            <div class="record-time">2025-01-15 11:00</div>
+        </div>
+
+        <div class="record-item" data-type="income">
+            <div class="record-header">
+                <div class="record-icon income">
+                    <i class="fa-solid fa-user-check"></i>
+                </div>
+                <div class="record-info">
+                    <div class="record-title">完善个人信息</div>
+                    <div class="record-desc">完成个人资料填写</div>
+                </div>
+                <div class="record-amount income">+20</div>
+            </div>
+            <div class="record-time">2024-12-20 14:00</div>
+        </div>
+    </div>
+
+    <div class="tabbar">
+        <div class="tab-item" onclick="Router.toTeacherPage('planList')">
+            <div class="tab-icon"><i class="fa-solid fa-book-open"></i></div>
+            <div class="tab-label">计划</div>
+        </div>
+        <div class="tab-item" onclick="Router.toTeacherPage('monitor')">
+            <div class="tab-icon"><i class="fa-solid fa-chart-column"></i></div>
+            <div class="tab-label">进度</div>
+        </div>
+        <div class="tab-item" onclick="Router.toTeacherPage('examManage')">
+            <div class="tab-icon"><i class="fa-solid fa-pen-to-square"></i></div>
+            <div class="tab-label">测评</div>
+        </div>
+        <div class="tab-item active" onclick="window.location.href='26-教师个人中心.html'">
+            <div class="tab-icon"><i class="fa-solid fa-user"></i></div>
+            <div class="tab-label">我的</div>
+        </div>
+    </div>
+
+    <script src="./router.js"></script>
+    <script>
+        let currentFilter = 'all';
+
+        // 切换标签页
+        function switchTab(element, filter) {
+            // 更新标签页样式
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            element.classList.add('active');
+
+            // 更新当前筛选
+            currentFilter = filter;
+
+            // 筛选记录
+            filterRecords();
+        }
+
+        // 筛选记录
+        function filterRecords() {
+            const records = document.querySelectorAll('.record-item');
+
+            records.forEach(record => {
+                const recordType = record.getAttribute('data-type');
+
+                if (currentFilter === 'all') {
+                    record.style.display = 'block';
+                } else if (recordType === currentFilter) {
+                    record.style.display = 'block';
+                } else {
+                    record.style.display = 'none';
+                }
+            });
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            filterRecords();
+        });
+    </script>
+</body>
+</html>

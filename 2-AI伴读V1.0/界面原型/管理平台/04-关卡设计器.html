@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>关卡设计器 - 校校读吧管理平台</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; overflow: hidden; }
+
+        .header { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(0, 0, 0, 0.1); padding: 16px 24px; }
+        .header-top { display: flex; align-items: center; gap: 16px; margin-bottom: 12px; }
+        .back-btn { background: none; border: none; color: #595959; font-size: 20px; cursor: pointer; padding: 4px; transition: all 0.3s; }
+        .back-btn:hover { color: #667eea; transform: scale(1.1); }
+        .header-title { font-size: 20px; font-weight: 600; color: #262626; }
+        .breadcrumb { font-size: 14px; color: #8c8c8c; }
+        .breadcrumb-link { color: #667eea; text-decoration: none; cursor: pointer; }
+        .breadcrumb-link:hover { text-decoration: underline; }
+
+        .book-info-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-radius: 12px; padding: 16px 24px; margin: 16px 24px; display: flex; align-items: center; gap: 20px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); }
+        .book-cover { width: 60px; height: 80px; border-radius: 6px; background: linear-gradient(135deg, #667eea, #764ba2); flex-shrink: 0; }
+        .book-details { flex: 1; }
+        .book-title { font-size: 18px; font-weight: 600; color: #262626; margin-bottom: 6px; }
+        .book-meta { font-size: 14px; color: #595959; display: flex; gap: 20px; }
+        .book-stats { display: flex; gap: 24px; }
+        .stat-item { text-align: center; }
+        .stat-value { font-size: 24px; font-weight: 700; color: #667eea; }
+        .stat-label { font-size: 12px; color: #8c8c8c; margin-top: 4px; }
+
+        .container { display: grid; grid-template-columns: 1fr 280px; gap: 20px; padding: 0 24px 24px; height: calc(100vh - 240px); }
+
+        /* 关卡地图区域 */
+        .map-panel { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-radius: 12px; padding: 24px; overflow-y: auto; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); }
+        .map-container { display: flex; flex-direction: column; align-items: center; gap: 20px; padding: 20px 0; }
+
+        /* 起点 */
+        .start-point { width: 80px; height: 80px; background: linear-gradient(135deg, #52c41a, #389e0d); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 32px; box-shadow: 0 4px 12px rgba(82, 196, 26, 0.3); animation: pulse 2s infinite; }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* 连接线 */
+        .connector { width: 4px; height: 40px; background: linear-gradient(180deg, #d9d9d9 0%, #bfbfbf 100%); border-radius: 2px; position: relative; }
+        .connector::before { content: ''; position: absolute; bottom: -6px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 8px solid #bfbfbf; }
+
+        /* 关卡节点 */
+        .level-node { width: 200px; background: white; border-radius: 16px; padding: 20px; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1); cursor: pointer; transition: all 0.3s; position: relative; }
+        .level-node:hover { transform: translateY(-4px) scale(1.02); box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3); }
+        .level-node.normal { border: 3px solid #1890FF; }
+        .level-node.boss { border: 3px solid #FFD700; background: linear-gradient(135deg, #FFF9E6 0%, #FFE7BA 100%); }
+        .level-node.unconfigured { border: 3px dashed #d9d9d9; opacity: 0.6; }
+
+        .level-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+        .level-icon { width: 48px; height: 48px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 20px; font-weight: 700; flex-shrink: 0; }
+        .level-icon.boss { background: linear-gradient(135deg, #FFD700, #FFA500); }
+        .level-info { flex: 1; min-width: 0; }
+        .level-name { font-size: 15px; font-weight: 600; color: #262626; margin-bottom: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .level-type { font-size: 12px; color: #8c8c8c; }
+
+        .level-tasks { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #595959; margin-bottom: 12px; }
+        .task-icon { color: #667eea; }
+
+        .level-actions { display: flex; gap: 8px; }
+        .level-btn { flex: 1; border: 1px solid #d9d9d9; background: white; border-radius: 6px; padding: 6px; font-size: 12px; color: #595959; cursor: pointer; transition: all 0.2s; }
+        .level-btn:hover { border-color: #667eea; color: #667eea; }
+        .level-btn.danger:hover { border-color: #ff4d4f; color: #ff4d4f; }
+
+        .level-badge { position: absolute; top: -8px; right: -8px; background: #ff4d4f; color: white; border-radius: 12px; padding: 2px 8px; font-size: 11px; font-weight: 600; }
+
+        /* 添加关卡按钮 */
+        .add-level-btn { width: 200px; height: 80px; border: 3px dashed #667eea; background: rgba(102, 126, 234, 0.05); border-radius: 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; color: #667eea; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.3s; }
+        .add-level-btn:hover { background: rgba(102, 126, 234, 0.1); transform: scale(1.05); }
+        .add-icon { font-size: 32px; }
+
+        /* 终点 */
+        .end-point { width: 80px; height: 80px; background: linear-gradient(135deg, #722ED1, #531DAB); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 32px; box-shadow: 0 4px 12px rgba(114, 46, 209, 0.3); }
+
+        /* 右侧工具栏 */
+        .toolbar { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-radius: 12px; padding: 20px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); display: flex; flex-direction: column; gap: 16px; }
+        .toolbar-title { font-size: 16px; font-weight: 600; color: #262626; margin-bottom: 8px; }
+        .toolbar-btn { width: 100%; border: none; border-radius: 8px; padding: 12px; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .toolbar-btn.primary { background: linear-gradient(135deg, #667eea, #764ba2); color: white; }
+        .toolbar-btn.primary:hover { opacity: 0.9; transform: translateY(-2px); }
+        .toolbar-btn.secondary { background: white; color: #595959; border: 1px solid #d9d9d9; }
+        .toolbar-btn.secondary:hover { border-color: #667eea; color: #667eea; }
+
+        .template-list { display: flex; flex-direction: column; gap: 8px; }
+        .template-item { border: 2px solid #f0f0f0; background: white; border-radius: 8px; padding: 12px; cursor: pointer; transition: all 0.3s; }
+        .template-item:hover { border-color: #667eea; background: #f0f3ff; }
+        .template-icon { font-size: 24px; margin-bottom: 6px; }
+        .template-name { font-size: 13px; font-weight: 600; color: #262626; margin-bottom: 4px; }
+        .template-desc { font-size: 11px; color: #8c8c8c; }
+
+        .toolbar-divider { height: 1px; background: #f0f0f0; margin: 8px 0; }
+
+        /* 底部操作栏 */
+        .footer-actions { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-top: 1px solid rgba(0, 0, 0, 0.1); padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; }
+        .footer-info { font-size: 14px; color: #595959; }
+        .footer-buttons { display: flex; gap: 12px; }
+        .btn { border: none; border-radius: 6px; padding: 10px 24px; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.3s; }
+        .btn-cancel { background: white; color: #595959; border: 1px solid #d9d9d9; }
+        .btn-cancel:hover { border-color: #667eea; color: #667eea; }
+        .btn-primary { background: linear-gradient(135deg, #667eea, #764ba2); color: white; }
+        .btn-primary:hover { opacity: 0.9; transform: translateY(-2px); }
+
+        /* 空状态 */
+        .empty-state { text-align: center; padding: 60px 20px; color: #8c8c8c; }
+        .empty-icon { font-size: 64px; margin-bottom: 16px; opacity: 0.3; }
+        .empty-text { font-size: 16px; margin-bottom: 8px; }
+        .empty-hint { font-size: 14px; }
+
+        /* Font Awesome图标样式优化 */
+        .fa-solid, .fa-regular { font-weight: 400; }
+
+        /* 滚动条样式 */
+        .map-panel::-webkit-scrollbar { width: 8px; }
+        .map-panel::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.05); border-radius: 4px; }
+        .map-panel::-webkit-scrollbar-thumb { background: rgba(102, 126, 234, 0.3); border-radius: 4px; }
+        .map-panel::-webkit-scrollbar-thumb:hover { background: rgba(102, 126, 234, 0.5); }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="header">
+        <div class="header-top">
+            <button class="back-btn" onclick="goBack()">
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <div class="header-title">关卡设计器</div>
+        </div>
+        <div class="breadcrumb">
+            <a class="breadcrumb-link" onclick="goToList()">季度计划</a>
+            <span> / </span>
+            <a class="breadcrumb-link" onclick="goToBooks()">书籍管理</a>
+            <span> / </span>
+            <span id="bookName">《三体》</span>
+            <span> / </span>
+            <span>关卡设计</span>
+        </div>
+    </div>
+
+    <div class="book-info-card">
+        <div class="book-cover"></div>
+        <div class="book-details">
+            <div class="book-title" id="bookTitle">三体</div>
+            <div class="book-meta">
+                <span><i class="fa-solid fa-user"></i> 刘慈欣</span>
+                <span><i class="fa-solid fa-book"></i> 302页</span>
+                <span><i class="fa-solid fa-tag"></i> 科幻</span>
+            </div>
+        </div>
+        <div class="book-stats">
+            <div class="stat-item">
+                <div class="stat-value" id="levelCount">0</div>
+                <div class="stat-label">关卡数</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="taskCount">0</div>
+                <div class="stat-label">任务数</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- 关卡地图 -->
+        <div class="map-panel">
+            <div class="map-container" id="mapContainer">
+                <!-- 起点 -->
+                <div class="start-point">🚀</div>
+                <div class="connector"></div>
+
+                <!-- 关卡节点将通过JavaScript动态生成 -->
+
+                <!-- 添加关卡按钮 -->
+                <div class="add-level-btn" onclick="addLevel()">
+                    <div class="add-icon">+</div>
+                    <div>添加关卡</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 右侧工具栏 -->
+        <div class="toolbar">
+            <div class="toolbar-title">快速操作</div>
+            <button class="toolbar-btn primary" onclick="addLevel()">
+                <i class="fa-solid fa-plus"></i> 添加关卡
+            </button>
+            <button class="toolbar-btn secondary" onclick="previewMap()">
+                <i class="fa-solid fa-eye"></i> 预览学生视图
+            </button>
+
+            <div class="toolbar-divider"></div>
+
+            <div class="toolbar-title">关卡模板</div>
+            <div class="template-list">
+                <div class="template-item" onclick="addLevelFromTemplate('reading')">
+                    <div class="template-icon">📖</div>
+                    <div class="template-name">阅读关卡</div>
+                    <div class="template-desc">包含阅读任务和理解测评</div>
+                </div>
+                <div class="template-item" onclick="addLevelFromTemplate('video')">
+                    <div class="template-icon">🎬</div>
+                    <div class="template-name">视频关卡</div>
+                    <div class="template-desc">观看导读视频+讨论</div>
+                </div>
+                <div class="template-item" onclick="addLevelFromTemplate('boss')">
+                    <div class="template-icon">👑</div>
+                    <div class="template-name">Boss关卡</div>
+                    <div class="template-desc">综合测评+成就奖励</div>
+                </div>
+            </div>
+
+            <div class="toolbar-divider"></div>
+
+            <button class="toolbar-btn secondary" onclick="saveAll()">
+                <i class="fa-solid fa-save"></i> 保存所有更改
+            </button>
+        </div>
+    </div>
+
+    <div class="footer-actions">
+        <div class="footer-info">
+            提示：点击关卡可编辑详细信息，拖拽可调整顺序
+        </div>
+        <div class="footer-buttons">
+            <button class="btn btn-cancel" onclick="goBack()">返回书籍管理</button>
+            <button class="btn btn-primary" onclick="saveAndNext()">保存并继续</button>
+        </div>
+    </div>
+
+    <script>
+        // 模拟数据
+        let currentBook = {
+            id: 1,
+            title: '三体',
+            author: '刘慈欣',
+            pages: 302,
+            category: '科幻'
+        };
+
+        let levels = [
+            {
+                id: 1,
+                order: 1,
+                name: '初识三体世界',
+                type: 'normal',
+                tasksCount: 3,
+                configured: true
+            },
+            {
+                id: 2,
+                order: 2,
+                name: '三体危机',
+                type: 'normal',
+                tasksCount: 4,
+                configured: true
+            },
+            {
+                id: 3,
+                order: 3,
+                name: '终极对决',
+                type: 'boss',
+                tasksCount: 5,
+                configured: true
+            }
+        ];
+
+        // 页面加载时初始化
+        window.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const bookId = urlParams.get('bookId');
+
+            if (bookId) {
+                loadBookData(bookId);
+            }
+
+            renderMap();
+            updateStats();
+        });
+
+        // 加载书籍数据
+        function loadBookData(bookId) {
+            // 实际应从后端加载
+            // 这里使用模拟数据
+        }
+
+        // 渲染关卡地图
+        function renderMap() {
+            const mapContainer = document.getElementById('mapContainer');
+            const startPoint = mapContainer.querySelector('.start-point');
+            const addButton = mapContainer.querySelector('.add-level-btn');
+
+            // 清空现有关卡节点
+            const existingNodes = mapContainer.querySelectorAll('.level-node, .connector:not(:first-child)');
+            existingNodes.forEach(node => node.remove());
+
+            if (levels.length === 0) {
+                // 显示空状态
+                const emptyState = document.createElement('div');
+                emptyState.className = 'empty-state';
+                emptyState.innerHTML = `
+                    <div class="empty-icon">🎮</div>
+                    <div class="empty-text">还没有创建关卡</div>
+                    <div class="empty-hint">点击下方按钮开始设计第一个关卡</div>
+                `;
+                mapContainer.insertBefore(emptyState, addButton);
+                return;
+            }
+
+            // 渲染关卡节点
+            levels.forEach((level, index) => {
+                // 添加连接线（除了第一个关卡前已有的连接线）
+                if (index > 0 || levels.length > 0) {
+                    const connector = document.createElement('div');
+                    connector.className = 'connector';
+                    mapContainer.insertBefore(connector, addButton);
+                }
+
+                // 添加关卡节点
+                const node = createLevelNode(level);
+                mapContainer.insertBefore(node, addButton);
+            });
+
+            // 添加最后的连接线
+            const finalConnector = document.createElement('div');
+            finalConnector.className = 'connector';
+            mapContainer.insertBefore(finalConnector, addButton);
+        }
+
+        // 创建关卡节点
+        function createLevelNode(level) {
+            const node = document.createElement('div');
+            node.className = `level-node ${level.type} ${level.configured ? '' : 'unconfigured'}`;
+            node.dataset.id = level.id;
+
+            const typeText = level.type === 'boss' ? 'Boss关卡' : '普通关卡';
+            const typeIcon = level.type === 'boss' ? '👑' : level.order;
+
+            node.innerHTML = `
+                <div class="level-header">
+                    <div class="level-icon ${level.type}">${typeIcon}</div>
+                    <div class="level-info">
+                        <div class="level-name">${level.name}</div>
+                        <div class="level-type">${typeText}</div>
+                    </div>
+                </div>
+                <div class="level-tasks">
+                    <i class="fa-solid fa-list-check task-icon"></i>
+                    <span>${level.tasksCount} 个任务</span>
+                </div>
+                <div class="level-actions">
+                    <button class="level-btn" onclick="editLevel(${level.id})">
+                        <i class="fa-solid fa-edit"></i> 编辑
+                    </button>
+                    <button class="level-btn danger" onclick="deleteLevel(${level.id})">
+                        <i class="fa-solid fa-trash"></i> 删除
+                    </button>
+                </div>
+                ${!level.configured ? '<div class="level-badge">未配置</div>' : ''}
+            `;
+
+            // 点击节点跳转到编辑页
+            node.addEventListener('click', (e) => {
+                if (!e.target.closest('.level-btn')) {
+                    editLevel(level.id);
+                }
+            });
+
+            return node;
+        }
+
+        // 更新统计信息
+        function updateStats() {
+            document.getElementById('levelCount').textContent = levels.length;
+            const totalTasks = levels.reduce((sum, level) => sum + level.tasksCount, 0);
+            document.getElementById('taskCount').textContent = totalTasks;
+        }
+
+        // 添加关卡
+        function addLevel() {
+            const newLevel = {
+                id: Date.now(),
+                order: levels.length + 1,
+                name: `关卡 ${levels.length + 1}`,
+                type: 'normal',
+                tasksCount: 0,
+                configured: false
+            };
+
+            levels.push(newLevel);
+            renderMap();
+            updateStats();
+
+            // 自动跳转到编辑页
+            setTimeout(() => {
+                editLevel(newLevel.id);
+            }, 300);
+        }
+
+        // 从模板添加关卡
+        function addLevelFromTemplate(template) {
+            const templates = {
+                reading: {
+                    name: '阅读理解',
+                    type: 'normal',
+                    tasksCount: 2
+                },
+                video: {
+                    name: '视频导读',
+                    type: 'normal',
+                    tasksCount: 2
+                },
+                boss: {
+                    name: 'Boss挑战',
+                    type: 'boss',
+                    tasksCount: 3
+                }
+            };
+
+            const templateData = templates[template];
+            const newLevel = {
+                id: Date.now(),
+                order: levels.length + 1,
+                name: templateData.name,
+                type: templateData.type,
+                tasksCount: templateData.tasksCount,
+                configured: false
+            };
+
+            levels.push(newLevel);
+            renderMap();
+            updateStats();
+
+            showToast(`已添加${templateData.name}关卡`);
+        }
+
+        // 编辑关卡
+        function editLevel(levelId) {
+            window.location.href = `05-关卡编辑.html?levelId=${levelId}&bookId=${currentBook.id}`;
+        }
+
+        // 删除关卡
+        function deleteLevel(levelId) {
+            const level = levels.find(l => l.id === levelId);
+            if (!level) return;
+
+            if (confirm(`确定要删除关卡"${level.name}"吗？关卡内的所有任务也将被删除`)) {
+                levels = levels.filter(l => l.id !== levelId);
+
+                // 重新排序
+                levels.forEach((l, index) => {
+                    l.order = index + 1;
+                });
+
+                renderMap();
+                updateStats();
+                showToast('关卡已删除');
+            }
+        }
+
+        // 预览地图
+        function previewMap() {
+            alert('预览功能开发中\n\n将展示学生看到的关卡地图效果');
+        }
+
+        // 保存所有更改
+        function saveAll() {
+            // 实际应调用API保存
+            showToast('保存成功');
+        }
+
+        // 保存并继续
+        function saveAndNext() {
+            if (levels.length === 0) {
+                alert('请至少添加一个关卡');
+                return;
+            }
+
+            const unconfigured = levels.filter(l => !l.configured);
+            if (unconfigured.length > 0) {
+                if (confirm(`还有 ${unconfigured.length} 个关卡未配置任务，确定要继续吗？`)) {
+                    saveAll();
+                    goBack();
+                }
+            } else {
+                saveAll();
+                goBack();
+            }
+        }
+
+        // 返回
+        function goBack() {
+            window.location.href = '03-书籍管理.html';
+        }
+
+        function goToList() {
+            window.location.href = '01-季度计划列表.html';
+        }
+
+        function goToBooks() {
+            window.location.href = '03-书籍管理.html';
+        }
+
+        // 显示提示
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.textContent = message;
+            toast.style.cssText = 'position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.8); color: white; padding: 12px 24px; border-radius: 8px; font-size: 14px; z-index: 2000;';
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.remove();
+            }, 2000);
+        }
+    </script>
+</body>
+</html>

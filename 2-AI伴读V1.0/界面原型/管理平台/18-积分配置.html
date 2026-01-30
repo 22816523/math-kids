@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>积分规则 - 校校读吧小管家管理平台</title>
+    <link rel="stylesheet" href="common/admin-common.css">    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="admin-layout">
+        <div class="admin-sidebar">
+            <div class="sidebar-header"></div>
+            <div class="sidebar-menu"></div>
+        </div>
+
+        <div class="admin-main">
+            <div class="admin-header"></div>
+
+            <div class="admin-content">
+                <div class="page-header">
+                    <h1 class="page-title">积分规则</h1>
+                    <p class="page-description">配置学生积分获取和消耗规则</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">积分获取规则</h3>
+                        <button class="btn btn-primary btn-sm" onclick="showModal('addEarnRuleModal')">添加规则</button>
+                    </div>
+                    <div class="card-body" style="padding: 0;">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 200px">行为类型</th>
+                                    <th>规则说明</th>
+                                    <th style="width: 120px">获得积分</th>
+                                    <th style="width: 120px">每日上限</th>
+                                    <th style="width: 100px">状态</th>
+                                    <th style="width: 150px">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <div style="display: flex; align-items: center; gap: 8px;">
+                                            <span style="font-size: 20px;"><i class="fa-solid fa-book-open"></i></span>
+                                            <span style="font-weight: 600;">完成阅读打卡</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div style="font-size: 13px; color: #595959;">每天完成一次阅读打卡可获得积分</div>
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <span style="font-size: 18px; font-weight: 700; color: #1890FF;">+10</span>
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <span style="font-size: 14px; color: #8c8c8c;">10分</span>
+                                    </td>
+                                    <td>
+                                        <div class="option-switch" onclick="toggleSwitch(this)"></div>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-secondary btn-sm" onclick="editRule(1)">编辑</button>
+                                        <button class="btn btn-secondary btn-sm" style="color: #ff4d4f" onclick="deleteRule(1)">删除</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div style="display: flex; align-items: center; gap: 8px;">
+                                            <span style="font-size: 20px;"><i class="fa-solid fa-circle-check"></i></span>
+                                            <span style="font-weight: 600;">完成测评</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div style="font-size: 13px; color: #595959;">完成一次阅读测评可获得积分</div>
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <span style="font-size: 18px; font-weight: 700; color: #1890FF;">+20</span>
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <span style="font-size: 14px; color: #8c8c8c;">无限制</span>
+                                    </td>
+                                    <td>
+                                        <div class="option-switch" onclick="toggleSwitch(this)"></div>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-secondary btn-sm" onclick="editRule(2)">编辑</button>
+                                        <button class="btn btn-secondary btn-sm" style="color: #ff4d4f" onclick="deleteRule(2)">删除</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div style="display: flex; align-items: center; gap: 8px;">
+                                            <span style="font-size: 20px;"><i class="fa-solid fa-trophy"></i></span>
+                                            <span style="font-weight: 600;">测评满分</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div style="font-size: 13px; color: #595959;">测评获得满分可额外获得奖励积分</div>
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <span style="font-size: 18px; font-weight: 700; color: #52c41a;">+50</span>
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <span style="font-size: 14px; color: #8c8c8c;">无限制</span>
+                                    </td>
+                                    <td>
+                                        <div class="option-switch" onclick="toggleSwitch(this)"></div>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-secondary btn-sm" onclick="editRule(3)">编辑</button>
+                                        <button class="btn btn-secondary btn-sm" style="color: #ff4d4f" onclick="deleteRule(3)">删除</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div style="display: flex; align-items: center; gap: 8px;">
+                                            <span style="font-size: 20px;"><i class="fa-solid fa-message"></i></span>
+                                            <span style="font-weight: 600;">发表评论</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div style="font-size: 13px; color: #595959;">对书籍发表评论可获得积分</div>
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <span style="font-size: 18px; font-weight: 700; color: #1890FF;">+5</span>
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <span style="font-size: 14px; color: #8c8c8c;">15分</span>
+                                    </td>
+                                    <td>
+                                        <div class="option-switch" onclick="toggleSwitch(this)"></div>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-secondary btn-sm" onclick="editRule(4)">编辑</button>
+                                        <button class="btn btn-secondary btn-sm" style="color: #ff4d4f" onclick="deleteRule(4)">删除</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div style="display: flex; align-items: center; gap: 8px;">
+                                            <span style="font-size: 20px;"><i class="fa-solid fa-fire"></i></span>
+                                            <span style="font-weight: 600;">连续打卡</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div style="font-size: 13px; color: #595959;">连续打卡7天可获得额外奖励</div>
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <span style="font-size: 18px; font-weight: 700; color: #fa8c16;">+100</span>
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <span style="font-size: 14px; color: #8c8c8c;">无限制</span>
+                                    </td>
+                                    <td>
+                                        <div class="option-switch" onclick="toggleSwitch(this)"></div>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-secondary btn-sm" onclick="editRule(5)">编辑</button>
+                                        <button class="btn btn-secondary btn-sm" style="color: #ff4d4f" onclick="deleteRule(5)">删除</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">积分消耗规则</h3>
+                        <button class="btn btn-primary btn-sm" onclick="showModal('addSpendRuleModal')">添加规则</button>
+                    </div>
+                    <div class="card-body" style="padding: 0;">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 200px">消耗类型</th>
+                                    <th>规则说明</th>
+                                    <th style="width: 120px">消耗积分</th>
+                                    <th style="width: 100px">状态</th>
+                                    <th style="width: 150px">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <div style="display: flex; align-items: center; gap: 8px;">
+                                            <span style="font-size: 20px;"><i class="fa-solid fa-gift"></i></span>
+                                            <span style="font-weight: 600;">兑换礼品</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div style="font-size: 13px; color: #595959;">在积分商城兑换实物礼品</div>
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <span style="font-size: 18px; font-weight: 700; color: #ff4d4f;">-100</span>
+                                    </td>
+                                    <td>
+                                        <div class="option-switch" onclick="toggleSwitch(this)"></div>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-secondary btn-sm" onclick="editRule(6)">编辑</button>
+                                        <button class="btn btn-secondary btn-sm" style="color: #ff4d4f" onclick="deleteRule(6)">删除</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div style="display: flex; align-items: center; gap: 8px;">
+                                            <span style="font-size: 20px;"><i class="fa-solid fa-trophy"></i></span>
+                                            <span style="font-weight: 600;">兑换勋章</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div style="font-size: 13px; color: #595959;">使用积分兑换特殊勋章</div>
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <span style="font-size: 18px; font-weight: 700; color: #ff4d4f;">-200</span>
+                                    </td>
+                                    <td>
+                                        <div class="option-switch" onclick="toggleSwitch(this)"></div>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-secondary btn-sm" onclick="editRule(7)">编辑</button>
+                                        <button class="btn btn-secondary btn-sm" style="color: #ff4d4f" onclick="deleteRule(7)">删除</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div style="display: flex; align-items: center; gap: 8px;">
+                                            <span style="font-size: 20px;"><i class="fa-solid fa-book"></i></span>
+                                            <span style="font-weight: 600;">解锁书籍</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div style="font-size: 13px; color: #595959;">使用积分解锁高级书籍</div>
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <span style="font-size: 18px; font-weight: 700; color: #ff4d4f;">-50</span>
+                                    </td>
+                                    <td>
+                                        <div class="option-switch off" onclick="toggleSwitch(this)"></div>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-secondary btn-sm" onclick="editRule(8)">编辑</button>
+                                        <button class="btn btn-secondary btn-sm" style="color: #ff4d4f" onclick="deleteRule(8)">删除</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">积分设置</h3>
+                    </div>
+                    <div class="card-body">
+                        <form>
+                            <div class="form-group">
+                                <label class="form-label">新用户初始积分</label>
+                                <input type="number" class="form-input" value="100" style="max-width: 300px;">
+                                <p class="form-help">新注册用户默认获得的积分数量</p>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">积分有效期</label>
+                                <select class="form-select" style="max-width: 300px;">
+                                    <option>永久有效</option>
+                                    <option>1年</option>
+                                    <option>6个月</option>
+                                    <option>3个月</option>
+                                </select>
+                                <p class="form-help">积分的有效期限制</p>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">积分清零规则</label>
+                                <select class="form-select" style="max-width: 300px;">
+                                    <option>不清零</option>
+                                    <option>每学期清零</option>
+                                    <option>每学年清零</option>
+                                </select>
+                                <p class="form-help">积分是否定期清零</p>
+                            </div>
+                            <div style="display: flex; gap: 12px;">
+                                <button type="submit" class="btn btn-primary">保存设置</button>
+                                <button type="button" class="btn btn-secondary">重置</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="addEarnRuleModal" style="display: none;">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">添加获取规则</h3>
+                <span class="modal-close" onclick="hideModal('addEarnRuleModal')">×</span>
+            </div>
+            <div class="modal-body">
+                <form id="addEarnRuleForm">
+                    <div class="form-group">
+                        <label class="form-label">行为类型 <span class="required">*</span></label>
+                        <input type="text" class="form-input" placeholder="请输入行为类型" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">规则说明 <span class="required">*</span></label>
+                        <textarea class="form-textarea" placeholder="请输入规则说明" rows="3" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">获得积分 <span class="required">*</span></label>
+                        <input type="number" class="form-input" placeholder="请输入积分数量" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">每日上限</label>
+                        <input type="number" class="form-input" placeholder="0表示无限制">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="hideModal('addEarnRuleModal')">取消</button>
+                <button class="btn btn-primary" onclick="submitAddEarnRule()">确定</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="addSpendRuleModal" style="display: none;">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">添加消耗规则</h3>
+                <span class="modal-close" onclick="hideModal('addSpendRuleModal')">×</span>
+            </div>
+            <div class="modal-body">
+                <form id="addSpendRuleForm">
+                    <div class="form-group">
+                        <label class="form-label">消耗类型 <span class="required">*</span></label>
+                        <input type="text" class="form-input" placeholder="请输入消耗类型" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">规则说明 <span class="required">*</span></label>
+                        <textarea class="form-textarea" placeholder="请输入规则说明" rows="3" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">消耗积分 <span class="required">*</span></label>
+                        <input type="number" class="form-input" placeholder="请输入积分数量" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="hideModal('addSpendRuleModal')">取消</button>
+                <button class="btn btn-primary" onclick="submitAddSpendRule()">确定</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="common/admin-common.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            pageManager.renderHeader(['运营管理', '积分规则']);
+        });
+
+        function toggleSwitch(element) {
+            element.classList.toggle('off');
+        }
+
+        function editRule(id) {
+            showToast('编辑规则功能开发中', 'info');
+        }
+
+        function deleteRule(id) {
+            showConfirm('确定要删除这条规则吗？', () => {
+                showToast('删除成功');
+            });
+        }
+
+        function submitAddEarnRule() {
+            const form = document.getElementById('addEarnRuleForm');
+            if (form.checkValidity()) {
+                hideModal('addEarnRuleModal');
+                showToast('添加获取规则成功');
+                form.reset();
+            } else {
+                form.reportValidity();
+            }
+        }
+
+        function submitAddSpendRule() {
+            const form = document.getElementById('addSpendRuleForm');
+            if (form.checkValidity()) {
+                hideModal('addSpendRuleModal');
+                showToast('添加消耗规则成功');
+                form.reset();
+            } else {
+                form.reportValidity();
+            }
+        }
+    </script>
+</body>
+</html>

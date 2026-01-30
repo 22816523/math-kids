@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>测评管理 - 校校读吧小管家（教师端）</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: "Source Han Sans CN", "Noto Sans CJK SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background: #F5F7FA; width: 375px; margin: 0 auto; padding-bottom: 20px; opacity: 0; }
+
+        .navbar { background: linear-gradient(135deg, #2E5BFF, #1E4BEF); color: white; height: 44px; display: flex; align-items: center; padding: 0 16px; position: sticky; top: 0; z-index: 100; }
+        .navbar-back { background: none; border: none; color: white; font-size: 18px; cursor: pointer; padding: 8px; margin-left: -8px; margin-right: 8px; }
+        .navbar-title { font-size: 18px; line-height: 1.4; font-weight: 600; flex: 1; }
+
+        /* 内容区域 */
+        .content-area { padding: 16px; }
+
+        /* 计划卡片 */
+        .plan-card { background: white; border-radius: 16px; margin-bottom: 16px; overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+
+        /* 计划头部 */
+        .plan-header { padding: 16px; border-bottom: 1px solid #f5f5f5; background: #f0f5ff; }
+        .plan-title-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+        .plan-name { font-size: 16px; font-weight: 600; color: #333333; }
+        .plan-status { padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 500; }
+        .status-ongoing { background: linear-gradient(135deg, #e6f7ff, #bae7ff); color: #0958d9; }
+        .status-ended { background: #f5f5f5; color: #8c8c8c; }
+        .plan-date { font-size: 12px; color: #999999; display: flex; align-items: center; gap: 4px; }
+        .plan-date i { font-size: 11px; }
+
+        /* 计划统计 - 一行两列，标题和数字同行 */
+        .plan-stats { display: flex; padding: 12px 16px; background: #fafafa; gap: 12px; }
+        .plan-stat-item { flex: 1; display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; background: white; border-radius: 10px; }
+        .plan-stat-label { font-size: 13px; color: #666666; display: flex; align-items: center; gap: 6px; }
+        .plan-stat-label i { font-size: 12px; }
+        .plan-stat-label .icon-submit { color: #52c41a; }
+        .plan-stat-label .icon-score { color: #2E5BFF; }
+        .plan-stat-value { font-size: 18px; font-weight: 700; }
+        .plan-stat-value.high { color: #52c41a; }
+        .plan-stat-value.medium { color: #faad14; }
+        .plan-stat-value.low { color: #ff4d4f; }
+        .plan-stat-value.score { color: #2E5BFF; }
+
+        /* 书籍列表 */
+        .books-section { padding: 0 16px 16px; }
+        .books-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; cursor: pointer; }
+        .books-title { font-size: 13px; color: #666666; font-weight: 500; display: flex; align-items: center; gap: 6px; }
+        .books-title i { color: #2E5BFF; font-size: 12px; }
+        .books-toggle { font-size: 12px; color: #999999; display: flex; align-items: center; gap: 4px; }
+        .books-toggle i { font-size: 10px; transition: transform 0.3s; }
+        .books-toggle.collapsed i { transform: rotate(180deg); }
+
+        .books-list { transition: all 0.3s; }
+        .books-list.collapsed { display: none; }
+
+        .book-item { display: flex; align-items: center; padding: 12px; margin-bottom: 8px; background: #f8f9fc; border-radius: 10px; cursor: pointer; transition: all 0.3s; }
+        .book-item:last-child { margin-bottom: 0; }
+        .book-item:active { background: #f0f2f5; transform: scale(0.98); }
+
+        .book-cover { width: 44px; height: 58px; border-radius: 6px; background: linear-gradient(135deg, #667eea, #764ba2); margin-right: 12px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+        .book-cover-text { color: white; font-size: 10px; font-weight: 600; text-align: center; line-height: 1.2; padding: 4px; }
+
+        .book-info { flex: 1; min-width: 0; }
+        .book-name { font-size: 14px; font-weight: 600; color: #333333; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+        .book-exam-badge { font-size: 10px; color: #2E5BFF; background: rgba(46, 91, 255, 0.1); padding: 2px 6px; border-radius: 8px; }
+
+        .book-meta { display: flex; gap: 12px; }
+        .book-meta-item { font-size: 11px; color: #666666; display: flex; align-items: center; gap: 3px; }
+        .book-meta-item i { font-size: 10px; color: #999999; }
+        .book-meta-item .rate-high { color: #52c41a; font-weight: 600; }
+        .book-meta-item .rate-medium { color: #faad14; font-weight: 600; }
+        .book-meta-item .rate-low { color: #ff4d4f; font-weight: 600; }
+        .book-meta-item .score { color: #2E5BFF; font-weight: 600; }
+
+        /* 班级筛选器 */
+        .plan-classes { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+        .class-tag { font-size: 11px; color: #666666; background: #f5f5f5; padding: 4px 10px; border-radius: 12px; cursor: pointer; transition: all 0.2s; border: 1px solid transparent; }
+        .class-tag:active { transform: scale(0.96); }
+        .class-tag.active { color: #2E5BFF; background: rgba(46, 91, 255, 0.1); border-color: rgba(46, 91, 255, 0.3); font-weight: 500; }
+
+        .book-arrow { color: #d9d9d9; font-size: 14px; margin-left: 8px; }
+
+        /* 查看详情按钮 */
+        .view-detail-btn { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 12px; margin: 0 16px 16px; background: linear-gradient(135deg, rgba(46, 91, 255, 0.08), rgba(46, 91, 255, 0.04)); border-radius: 10px; cursor: pointer; transition: all 0.3s; }
+        .view-detail-btn:active { background: rgba(46, 91, 255, 0.15); }
+        .view-detail-btn span { font-size: 13px; color: #2E5BFF; font-weight: 500; }
+        .view-detail-btn i { font-size: 12px; color: #2E5BFF; }
+
+        /* 底部导航 */
+        .tabbar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 375px; height: 50px; background: white; border-top: 1px solid #f0f0f0; display: flex; box-shadow: 0 -2px 8px rgba(0,0,0,0.06); }
+        .tab-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; cursor: pointer; transition: all 0.3s; }
+        .tab-item:hover { background: #F5F7FA; }
+        .tab-icon { font-size: 20px; line-height: 1.2; }
+        .tab-label { font-size: 12px; line-height: 1.5; color: #999999; }
+        .tab-item.active .tab-label { color: #2E5BFF; }
+        .tab-item.active .tab-icon { color: #2E5BFF; }
+
+        .fa-solid, .fa-regular { font-weight: 400; color: #595959; opacity: 0.85; }
+        .navbar .fa-solid, .section-title .fa-solid { color: inherit; opacity: 1; }
+        .tab-item.active .tab-icon .fa-solid, .tab-item.active .fa-solid { color: #2E5BFF; opacity: 1; }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="navbar">
+        <button class="navbar-back" onclick="window.location.href='26-教师个人中心.html'">←</button>
+        <div class="navbar-title">测评管理</div>
+    </div>
+
+    <!-- 内容区域 -->
+    <div class="content-area">
+        <div id="planList">
+            <!-- 计划列表将通过JavaScript动态生成 -->
+        </div>
+    </div>
+
+    <script src="./router.js"></script>
+    <script>
+        // 展开状态管理
+        const expandedPlans = {};
+        // 班级筛选状态管理（每个计划独立）
+        const selectedClass = {};
+
+        // 模拟阅读计划数据（含各班级独立统计）
+        const mockPlans = [
+            {
+                id: 1,
+                planName: '2026年春季阅读计划',
+                startDate: '2026-03-01',
+                endDate: '2026-05-31',
+                status: 'ongoing',
+                statusText: '进行中',
+                classes: ['三年级1班', '三年级2班'],
+                // 全部班级汇总数据
+                books: [
+                    { id: 1, name: '三体', examCount: 20, submitted: 46, total: 52, submitRate: 88, avgScore: 85 },
+                    { id: 2, name: '活着', examCount: 20, submitted: 38, total: 52, submitRate: 73, avgScore: 82 }
+                ],
+                // 各班级独立数据
+                classData: {
+                    '三年级1班': {
+                        books: [
+                            { id: 1, name: '三体', examCount: 20, submitted: 24, total: 26, submitRate: 92, avgScore: 87 },
+                            { id: 2, name: '活着', examCount: 20, submitted: 20, total: 26, submitRate: 77, avgScore: 84 }
+                        ]
+                    },
+                    '三年级2班': {
+                        books: [
+                            { id: 1, name: '三体', examCount: 20, submitted: 22, total: 26, submitRate: 85, avgScore: 83 },
+                            { id: 2, name: '活着', examCount: 20, submitted: 18, total: 26, submitRate: 69, avgScore: 80 }
+                        ]
+                    }
+                }
+            },
+            {
+                id: 2,
+                planName: '2025年秋季阅读计划',
+                startDate: '2025-09-01',
+                endDate: '2025-11-30',
+                status: 'ended',
+                statusText: '已结束',
+                classes: ['三年级1班'],
+                books: [
+                    { id: 6, name: '西游记', examCount: 20, submitted: 52, total: 52, submitRate: 100, avgScore: 88 },
+                    { id: 7, name: '水浒传', examCount: 20, submitted: 51, total: 52, submitRate: 98, avgScore: 86 }
+                ],
+                classData: {
+                    '三年级1班': {
+                        books: [
+                            { id: 6, name: '西游记', examCount: 20, submitted: 52, total: 52, submitRate: 100, avgScore: 88 },
+                            { id: 7, name: '水浒传', examCount: 20, submitted: 51, total: 52, submitRate: 98, avgScore: 86 }
+                        ]
+                    }
+                }
+            }
+        ];
+
+        // 页面加载时渲染
+        window.addEventListener('DOMContentLoaded', () => {
+            mockPlans.forEach(plan => {
+                expandedPlans[plan.id] = true;
+                selectedClass[plan.id] = '全部'; // 默认选中全部
+            });
+            renderPlanList();
+        });
+
+        // 切换班级筛选
+        function selectClass(planId, className, event) {
+            event.stopPropagation();
+            selectedClass[planId] = className;
+            renderPlanList();
+        }
+
+        // 更新顶部统计
+        function updateOverviewStats() {
+            const totalBooks = mockPlans.reduce((sum, plan) => sum + plan.books.length, 0);
+            const allBooks = mockPlans.flatMap(plan => plan.books);
+            const avgSubmitRate = Math.round(allBooks.reduce((sum, book) => sum + book.submitRate, 0) / allBooks.length);
+
+            document.getElementById('totalPlans').textContent = mockPlans.length;
+            document.getElementById('totalBooks').textContent = totalBooks;
+            document.getElementById('avgSubmitRate').textContent = avgSubmitRate + '%';
+            document.getElementById('planCount').textContent = mockPlans.length + '个计划';
+        }
+
+        // 切换书籍列表展开/收起
+        function toggleBooks(planId, event) {
+            event.stopPropagation();
+            expandedPlans[planId] = !expandedPlans[planId];
+            const booksList = document.getElementById(`books-list-${planId}`);
+            const toggleBtn = document.getElementById(`toggle-btn-${planId}`);
+
+            if (expandedPlans[planId]) {
+                booksList.classList.remove('collapsed');
+                toggleBtn.classList.remove('collapsed');
+                toggleBtn.innerHTML = '收起 <i class="fa-solid fa-chevron-up"></i>';
+            } else {
+                booksList.classList.add('collapsed');
+                toggleBtn.classList.add('collapsed');
+                toggleBtn.innerHTML = '展开 <i class="fa-solid fa-chevron-down"></i>';
+            }
+        }
+
+        // 获取提交率颜色样式
+        function getSubmitRateClass(rate) {
+            if (rate >= 80) return 'high';
+            if (rate >= 60) return 'medium';
+            return 'low';
+        }
+
+        // 获取提交率样式（用于书籍列表）
+        function getRateClass(rate) {
+            if (rate >= 80) return 'rate-high';
+            if (rate >= 60) return 'rate-medium';
+            return 'rate-low';
+        }
+
+        // 获取分数样式
+        function getScoreClass(score) {
+            if (score >= 85) return 'high';
+            if (score >= 75) return 'medium';
+            return 'low';
+        }
+
+        // 渲染计划列表
+        function renderPlanList() {
+            const planList = document.getElementById('planList');
+
+            const html = mockPlans.map(plan => {
+                const statusClass = plan.status === 'ongoing' ? 'status-ongoing' : 'status-ended';
+                const currentClass = selectedClass[plan.id] || '全部';
+
+                // 根据选中的班级获取对应数据
+                let books;
+                if (currentClass === '全部') {
+                    books = plan.books;
+                } else {
+                    books = plan.classData[currentClass]?.books || plan.books;
+                }
+
+                // 计算计划统计
+                const totalSubmitted = books.reduce((sum, book) => sum + book.submitted, 0);
+                const totalStudents = books[0].total * books.length;
+                const submitRate = Math.round((totalSubmitted / totalStudents) * 100);
+                const avgScore = Math.round(books.reduce((sum, book) => sum + book.avgScore, 0) / books.length);
+
+                // 班级筛选标签（全部 + 各班级）
+                const classTagsHtml = [
+                    `<span class="class-tag ${currentClass === '全部' ? 'active' : ''}" onclick="selectClass(${plan.id}, '全部', event)">全部</span>`,
+                    ...plan.classes.map(cls =>
+                        `<span class="class-tag ${currentClass === cls ? 'active' : ''}" onclick="selectClass(${plan.id}, '${cls}', event)">${cls}</span>`
+                    )
+                ].join('');
+
+                return `
+                    <div class="plan-card">
+                        <div class="plan-header">
+                            <div class="plan-title-row">
+                                <div class="plan-name">${plan.planName}</div>
+                                <div class="plan-status ${statusClass}">${plan.statusText}</div>
+                            </div>
+                            <div class="plan-date">
+                                <i class="fa-regular fa-calendar"></i>
+                                ${plan.startDate} 至 ${plan.endDate}
+                            </div>
+                            <div class="plan-classes">${classTagsHtml}</div>
+                        </div>
+
+                        <div class="plan-stats">
+                            <div class="plan-stat-item" style="flex-direction: column; align-items: flex-start; gap: 4px;">
+                                <div class="plan-stat-value ${getSubmitRateClass(submitRate)}">${totalSubmitted}/${totalStudents} (${submitRate}%)</div>
+                                <div class="plan-stat-label"><i class="fa-solid fa-user-check icon-submit"></i>已提交</div>
+                            </div>
+                            <div class="plan-stat-item" style="flex-direction: column; align-items: flex-start; gap: 4px;">
+                                <div class="plan-stat-value score">${avgScore}分</div>
+                                <div class="plan-stat-label"><i class="fa-solid fa-star icon-score"></i>平均分</div>
+                            </div>
+                        </div>
+
+                        <div class="books-section">
+                            <div class="books-header" onclick="toggleBooks(${plan.id}, event)">
+                                <div class="books-title">
+                                    <i class="fa-solid fa-book"></i>
+                                    书籍测评详情（${books.length}本）
+                                </div>
+                                <div class="books-toggle ${expandedPlans[plan.id] ? '' : 'collapsed'}" id="toggle-btn-${plan.id}">
+                                    ${expandedPlans[plan.id] ? '收起 <i class="fa-solid fa-chevron-up"></i>' : '展开 <i class="fa-solid fa-chevron-down"></i>'}
+                                </div>
+                            </div>
+
+                            <div class="books-list ${expandedPlans[plan.id] ? '' : 'collapsed'}" id="books-list-${plan.id}">
+                                ${books.map(book => `
+                                    <div class="book-item" onclick="viewBookStats(${plan.id}, ${book.id})">
+                                        <div class="book-cover">
+                                            <div class="book-cover-text">${book.name.substring(0, 2)}</div>
+                                        </div>
+                                        <div class="book-info">
+                                            <div class="book-name">
+                                                ${book.name}
+                                                <span class="book-exam-badge">${book.examCount}题</span>
+                                            </div>
+                                            <div class="book-meta">
+                                                <div class="book-meta-item">
+                                                    <i class="fa-solid fa-user-check"></i>
+                                                    <span class="${getRateClass(book.submitRate)}">${book.submitted}/${book.total} (${book.submitRate}%)</span>
+                                                </div>
+                                                <div class="book-meta-item">
+                                                    <i class="fa-solid fa-star"></i>
+                                                    <span class="score">${book.avgScore}分</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="book-arrow">→</div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <div class="view-detail-btn" onclick="viewPlanStats(${plan.id})">
+                            <span>查看计划测评统计</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            planList.innerHTML = html;
+        }
+
+        // 查看计划测评统计
+        function viewPlanStats(planId) {
+            window.location.href = `18-计划测评统计.html?planId=${planId}`;
+        }
+
+        // 查看书籍测评统计
+        function viewBookStats(planId, bookId) {
+            window.location.href = `19-书籍测评统计.html?planId=${planId}&bookId=${bookId}`;
+        }
+    </script>
+</body>
+</html>

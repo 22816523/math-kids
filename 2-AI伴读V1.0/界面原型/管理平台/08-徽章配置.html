@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>等级勋章 - 校校读吧小管家管理平台</title>
+    <link rel="stylesheet" href="common/admin-common.css">    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="admin-layout">
+        <div class="admin-sidebar">
+            <div class="sidebar-header"></div>
+            <div class="sidebar-menu"></div>
+        </div>
+
+        <div class="admin-main">
+            <div class="admin-header"></div>
+
+            <div class="admin-content">
+                <div class="page-header">
+                    <h1 class="page-title">等级勋章</h1>
+                    <p class="page-description">配置学生等级体系和勋章奖励</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">等级体系</h3>
+                        <button class="btn btn-primary btn-sm" onclick="showModal('addLevelModal')">添加等级</button>
+                    </div>
+                    <div class="card-body">
+                        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px;">
+                            <div class="card" style="background: linear-gradient(135deg, #ffd700, #ffed4e); border: none; padding: 24px;">
+                                <div style="text-align: center; margin-bottom: 16px;">
+                                    <div style="font-size: 48px; margin-bottom: 8px;"><i class="fa-solid fa-medal"></i></div>
+                                    <div style="font-size: 20px; font-weight: 700; color: #262626; margin-bottom: 4px;">青铜读者</div>
+                                    <div style="font-size: 12px; color: #595959;">Lv.1</div>
+                                </div>
+                                <div style="background: rgba(255,255,255,0.8); border-radius: 8px; padding: 16px; margin-bottom: 12px;">
+                                    <div style="font-size: 13px; color: #595959; margin-bottom: 8px;">升级条件</div>
+                                    <div style="font-size: 14px; color: #262626; font-weight: 600;">阅读0本书</div>
+                                    <div style="font-size: 14px; color: #262626; font-weight: 600;">获得0积分</div>
+                                </div>
+                                <div style="display: flex; gap: 8px;">
+                                    <button class="btn btn-secondary btn-sm" style="flex: 1;" onclick="editLevel(1)">编辑</button>
+                                    <button class="btn btn-secondary btn-sm" style="color: #ff4d4f" onclick="deleteLevel(1)">删除</button>
+                                </div>
+                            </div>
+
+                            <div class="card" style="background: linear-gradient(135deg, #c0c0c0, #e8e8e8); border: none; padding: 24px;">
+                                <div style="text-align: center; margin-bottom: 16px;">
+                                    <div style="font-size: 48px; margin-bottom: 8px;"><i class="fa-solid fa-medal"></i></div>
+                                    <div style="font-size: 20px; font-weight: 700; color: #262626; margin-bottom: 4px;">白银读者</div>
+                                    <div style="font-size: 12px; color: #595959;">Lv.2</div>
+                                </div>
+                                <div style="background: rgba(255,255,255,0.8); border-radius: 8px; padding: 16px; margin-bottom: 12px;">
+                                    <div style="font-size: 13px; color: #595959; margin-bottom: 8px;">升级条件</div>
+                                    <div style="font-size: 14px; color: #262626; font-weight: 600;">阅读10本书</div>
+                                    <div style="font-size: 14px; color: #262626; font-weight: 600;">获得500积分</div>
+                                </div>
+                                <div style="display: flex; gap: 8px;">
+                                    <button class="btn btn-secondary btn-sm" style="flex: 1;" onclick="editLevel(2)">编辑</button>
+                                    <button class="btn btn-secondary btn-sm" style="color: #ff4d4f" onclick="deleteLevel(2)">删除</button>
+                                </div>
+                            </div>
+
+                            <div class="card" style="background: linear-gradient(135deg, #ffd700, #ffed4e); border: none; padding: 24px;">
+                                <div style="text-align: center; margin-bottom: 16px;">
+                                    <div style="font-size: 48px; margin-bottom: 8px;"><i class="fa-solid fa-medal"></i></div>
+                                    <div style="font-size: 20px; font-weight: 700; color: #262626; margin-bottom: 4px;">黄金读者</div>
+                                    <div style="font-size: 12px; color: #595959;">Lv.3</div>
+                                </div>
+                                <div style="background: rgba(255,255,255,0.8); border-radius: 8px; padding: 16px; margin-bottom: 12px;">
+                                    <div style="font-size: 13px; color: #595959; margin-bottom: 8px;">升级条件</div>
+                                    <div style="font-size: 14px; color: #262626; font-weight: 600;">阅读30本书</div>
+                                    <div style="font-size: 14px; color: #262626; font-weight: 600;">获得1500积分</div>
+                                </div>
+                                <div style="display: flex; gap: 8px;">
+                                    <button class="btn btn-secondary btn-sm" style="flex: 1;" onclick="editLevel(3)">编辑</button>
+                                    <button class="btn btn-secondary btn-sm" style="color: #ff4d4f" onclick="deleteLevel(3)">删除</button>
+                                </div>
+                            </div>
+
+                            <div class="card" style="background: linear-gradient(135deg, #1890FF, #096DD9); border: none; padding: 24px;">
+                                <div style="text-align: center; margin-bottom: 16px;">
+                                    <div style="font-size: 48px; margin-bottom: 8px;"><i class="fa-solid fa-gem"></i></div>
+                                    <div style="font-size: 20px; font-weight: 700; color: white; margin-bottom: 4px;">钻石读者</div>
+                                    <div style="font-size: 12px; color: rgba(255,255,255,0.8);">Lv.4</div>
+                                </div>
+                                <div style="background: rgba(255,255,255,0.9); border-radius: 8px; padding: 16px; margin-bottom: 12px;">
+                                    <div style="font-size: 13px; color: #595959; margin-bottom: 8px;">升级条件</div>
+                                    <div style="font-size: 14px; color: #262626; font-weight: 600;">阅读50本书</div>
+                                    <div style="font-size: 14px; color: #262626; font-weight: 600;">获得3000积分</div>
+                                </div>
+                                <div style="display: flex; gap: 8px;">
+                                    <button class="btn btn-secondary btn-sm" style="flex: 1; background: white; color: #1890FF;" onclick="editLevel(4)">编辑</button>
+                                    <button class="btn btn-secondary btn-sm" style="background: white; color: #ff4d4f" onclick="deleteLevel(4)">删除</button>
+                                </div>
+                            </div>
+
+                            <div class="card" style="background: linear-gradient(135deg, #722ed1, #9254de); border: none; padding: 24px;">
+                                <div style="text-align: center; margin-bottom: 16px;">
+                                    <div style="font-size: 48px; margin-bottom: 8px;"><i class="fa-solid fa-crown"></i></div>
+                                    <div style="font-size: 20px; font-weight: 700; color: white; margin-bottom: 4px;">王者读者</div>
+                                    <div style="font-size: 12px; color: rgba(255,255,255,0.8);">Lv.5</div>
+                                </div>
+                                <div style="background: rgba(255,255,255,0.9); border-radius: 8px; padding: 16px; margin-bottom: 12px;">
+                                    <div style="font-size: 13px; color: #595959; margin-bottom: 8px;">升级条件</div>
+                                    <div style="font-size: 14px; color: #262626; font-weight: 600;">阅读100本书</div>
+                                    <div style="font-size: 14px; color: #262626; font-weight: 600;">获得5000积分</div>
+                                </div>
+                                <div style="display: flex; gap: 8px;">
+                                    <button class="btn btn-secondary btn-sm" style="flex: 1; background: white; color: #722ed1;" onclick="editLevel(5)">编辑</button>
+                                    <button class="btn btn-secondary btn-sm" style="background: white; color: #ff4d4f" onclick="deleteLevel(5)">删除</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">成就勋章</h3>
+                        <button class="btn btn-primary btn-sm" onclick="showModal('addBadgeModal')">添加勋章</button>
+                    </div>
+                    <div class="card-body">
+                        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px;">
+                            <div class="card" style="padding: 20px; text-align: center; cursor: pointer; transition: all 0.3s;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform=''">
+                                <div style="font-size: 64px; margin-bottom: 12px;"><i class="fa-solid fa-book"></i></div>
+                                <div style="font-size: 16px; font-weight: 600; color: #262626; margin-bottom: 4px;">阅读达人</div>
+                                <div style="font-size: 12px; color: #8c8c8c; margin-bottom: 12px;">累计阅读50本书</div>
+                                <span class="tag tag-blue">已启用</span>
+                                <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #f0f0f0;">
+                                    <div style="font-size: 12px; color: #8c8c8c;">已获得：234人</div>
+                                </div>
+                            </div>
+
+                            <div class="card" style="padding: 20px; text-align: center; cursor: pointer; transition: all 0.3s;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform=''">
+                                <div style="font-size: 64px; margin-bottom: 12px;"><i class="fa-solid fa-fire"></i></div>
+                                <div style="font-size: 16px; font-weight: 600; color: #262626; margin-bottom: 4px;">打卡之星</div>
+                                <div style="font-size: 12px; color: #8c8c8c; margin-bottom: 12px;">连续打卡30天</div>
+                                <span class="tag tag-blue">已启用</span>
+                                <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #f0f0f0;">
+                                    <div style="font-size: 12px; color: #8c8c8c;">已获得：189人</div>
+                                </div>
+                            </div>
+
+                            <div class="card" style="padding: 20px; text-align: center; cursor: pointer; transition: all 0.3s;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform=''">
+                                <div style="font-size: 64px; margin-bottom: 12px;"><i class="fa-solid fa-trophy"></i></div>
+                                <div style="font-size: 16px; font-weight: 600; color: #262626; margin-bottom: 4px;">满分王者</div>
+                                <div style="font-size: 12px; color: #8c8c8c; margin-bottom: 12px;">获得10次满分</div>
+                                <span class="tag tag-blue">已启用</span>
+                                <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #f0f0f0;">
+                                    <div style="font-size: 12px; color: #8c8c8c;">已获得：156人</div>
+                                </div>
+                            </div>
+
+                            <div class="card" style="padding: 20px; text-align: center; cursor: pointer; transition: all 0.3s;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform=''">
+                                <div style="font-size: 64px; margin-bottom: 12px;"><i class="fa-solid fa-message"></i></div>
+                                <div style="font-size: 16px; font-weight: 600; color: #262626; margin-bottom: 4px;">评论达人</div>
+                                <div style="font-size: 12px; color: #8c8c8c; margin-bottom: 12px;">发表100条评论</div>
+                                <span class="tag tag-blue">已启用</span>
+                                <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #f0f0f0;">
+                                    <div style="font-size: 12px; color: #8c8c8c;">已获得：98人</div>
+                                </div>
+                            </div>
+
+                            <div class="card" style="padding: 20px; text-align: center; cursor: pointer; transition: all 0.3s;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform=''">
+                                <div style="font-size: 64px; margin-bottom: 12px;"><i class="fa-solid fa-star"></i></div>
+                                <div style="font-size: 16px; font-weight: 600; color: #262626; margin-bottom: 4px;">积分富豪</div>
+                                <div style="font-size: 12px; color: #8c8c8c; margin-bottom: 12px;">累计获得5000积分</div>
+                                <span class="tag tag-blue">已启用</span>
+                                <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #f0f0f0;">
+                                    <div style="font-size: 12px; color: #8c8c8c;">已获得：67人</div>
+                                </div>
+                            </div>
+
+                            <div class="card" style="padding: 20px; text-align: center; cursor: pointer; transition: all 0.3s;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform=''">
+                                <div style="font-size: 64px; margin-bottom: 12px;"><i class="fa-solid fa-bullseye"></i></div>
+                                <div style="font-size: 16px; font-weight: 600; color: #262626; margin-bottom: 4px;">目标达成</div>
+                                <div style="font-size: 12px; color: #8c8c8c; margin-bottom: 12px;">完成10个阅读计划</div>
+                                <span class="tag tag-gray">未启用</span>
+                                <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #f0f0f0;">
+                                    <div style="font-size: 12px; color: #8c8c8c;">已获得：0人</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="addLevelModal" style="display: none;">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">添加等级</h3>
+                <span class="modal-close" onclick="hideModal('addLevelModal')">×</span>
+            </div>
+            <div class="modal-body">
+                <form id="addLevelForm">
+                    <div class="form-group">
+                        <label class="form-label">等级名称 <span class="required">*</span></label>
+                        <input type="text" class="form-input" placeholder="请输入等级名称" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">等级图标 <span class="required">*</span></label>
+                        <input type="text" class="form-input" placeholder="请输入emoji图标" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">等级编号 <span class="required">*</span></label>
+                        <input type="number" class="form-input" placeholder="请输入等级编号" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">所需阅读书籍数 <span class="required">*</span></label>
+                        <input type="number" class="form-input" placeholder="请输入书籍数量" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">所需积分 <span class="required">*</span></label>
+                        <input type="number" class="form-input" placeholder="请输入积分数量" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="hideModal('addLevelModal')">取消</button>
+                <button class="btn btn-primary" onclick="submitAddLevel()">确定</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="addBadgeModal" style="display: none;">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">添加勋章</h3>
+                <span class="modal-close" onclick="hideModal('addBadgeModal')">×</span>
+            </div>
+            <div class="modal-body">
+                <form id="addBadgeForm">
+                    <div class="form-group">
+                        <label class="form-label">勋章名称 <span class="required">*</span></label>
+                        <input type="text" class="form-input" placeholder="请输入勋章名称" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">勋章图标 <span class="required">*</span></label>
+                        <input type="text" class="form-input" placeholder="请输入emoji图标" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">获得条件 <span class="required">*</span></label>
+                        <textarea class="form-textarea" placeholder="请输入获得条件" rows="3" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">勋章描述</label>
+                        <textarea class="form-textarea" placeholder="请输入勋章描述" rows="2"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="hideModal('addBadgeModal')">取消</button>
+                <button class="btn btn-primary" onclick="submitAddBadge()">确定</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="common/admin-common.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            pageManager.renderHeader(['运营管理', '等级勋章']);
+        });
+
+        function editLevel(id) {
+            showToast('编辑等级功能开发中', 'info');
+        }
+
+        function deleteLevel(id) {
+            showConfirm('确定要删除这个等级吗？', () => {
+                showToast('删除成功');
+            });
+        }
+
+        function submitAddLevel() {
+            const form = document.getElementById('addLevelForm');
+            if (form.checkValidity()) {
+                hideModal('addLevelModal');
+                showToast('添加等级成功');
+                form.reset();
+            } else {
+                form.reportValidity();
+            }
+        }
+
+        function submitAddBadge() {
+            const form = document.getElementById('addBadgeForm');
+            if (form.checkValidity()) {
+                hideModal('addBadgeModal');
+                showToast('添加勋章成功');
+                form.reset();
+            } else {
+                form.reportValidity();
+            }
+        }
+    </script>
+</body>
+</html>

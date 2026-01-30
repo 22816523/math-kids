@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>任务配置 - 校校读吧管理平台</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; overflow-x: hidden; }
+
+        .header { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(0, 0, 0, 0.1); padding: 16px 24px; }
+        .header-top { display: flex; align-items: center; gap: 16px; margin-bottom: 12px; }
+        .back-btn { background: none; border: none; color: #595959; font-size: 20px; cursor: pointer; padding: 4px; transition: all 0.3s; }
+        .back-btn:hover { color: #667eea; transform: scale(1.1); }
+        .header-title { font-size: 20px; font-weight: 600; color: #262626; }
+        .breadcrumb { font-size: 14px; color: #8c8c8c; }
+        .breadcrumb-link { color: #667eea; text-decoration: none; cursor: pointer; }
+        .breadcrumb-link:hover { text-decoration: underline; }
+
+        .container { max-width: 1000px; margin: 0 auto; padding: 24px; }
+
+        .form-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-radius: 12px; padding: 24px; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); }
+        .section-title { font-size: 18px; font-weight: 600; color: #262626; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 2px solid #f0f0f0; display: flex; align-items: center; gap: 8px; }
+
+        .form-group { margin-bottom: 20px; }
+        .form-label { display: block; font-size: 14px; font-weight: 500; color: #262626; margin-bottom: 8px; }
+        .form-label .required { color: #ff4d4f; margin-left: 4px; }
+        .form-input { width: 100%; border: 1px solid #d9d9d9; border-radius: 6px; padding: 10px 12px; font-size: 14px; transition: all 0.3s; }
+        .form-input:focus { outline: none; border-color: #667eea; box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1); }
+        .form-textarea { width: 100%; border: 1px solid #d9d9d9; border-radius: 6px; padding: 10px 12px; font-size: 14px; min-height: 100px; resize: vertical; font-family: inherit; }
+        .form-textarea:focus { outline: none; border-color: #667eea; box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1); }
+
+        .task-type-selector { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+        .task-type-btn { border: 2px solid #d9d9d9; background: white; border-radius: 8px; padding: 16px; cursor: pointer; transition: all 0.3s; text-align: center; }
+        .task-type-btn:hover { border-color: #667eea; }
+        .task-type-btn.active { border-color: #667eea; background: #f0f3ff; }
+        .task-type-icon { font-size: 32px; margin-bottom: 8px; }
+        .task-type-name { font-size: 14px; font-weight: 600; color: #262626; }
+
+        .page-range { display: grid; grid-template-columns: 1fr auto 1fr; gap: 12px; align-items: center; }
+        .page-separator { color: #8c8c8c; font-size: 14px; text-align: center; }
+
+        .video-upload { border: 2px dashed #d9d9d9; border-radius: 8px; padding: 40px; text-align: center; cursor: pointer; transition: all 0.3s; }
+        .video-upload:hover { border-color: #667eea; background: #fafafa; }
+        .video-upload.has-video { border-color: #52c41a; background: #f6ffed; }
+        .upload-icon { font-size: 48px; color: #d9d9d9; margin-bottom: 12px; }
+        .upload-text { font-size: 14px; color: #595959; margin-bottom: 4px; }
+        .upload-hint { font-size: 12px; color: #8c8c8c; }
+        .video-preview { display: none; }
+        .video-preview.show { display: block; }
+        .video-name { font-size: 14px; color: #262626; margin-bottom: 8px; }
+        .video-actions { display: flex; gap: 8px; justify-content: center; }
+
+        .quiz-builder { background: #fafafa; border-radius: 8px; padding: 16px; }
+        .quiz-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+        .quiz-title { font-size: 16px; font-weight: 600; color: #262626; }
+        .add-question-btn { background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; border-radius: 6px; padding: 8px 16px; font-size: 14px; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+        .add-question-btn:hover { opacity: 0.9; }
+
+        .question-list { display: flex; flex-direction: column; gap: 12px; }
+        .question-item { background: white; border-radius: 8px; padding: 16px; }
+        .question-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+        .question-number { font-size: 14px; font-weight: 600; color: #667eea; }
+        .question-text { font-size: 14px; color: #262626; margin-bottom: 12px; }
+        .options-list { display: flex; flex-direction: column; gap: 8px; padding-left: 20px; }
+        .option-item { font-size: 13px; color: #595959; }
+        .option-item.correct { color: #52c41a; font-weight: 600; }
+
+        .empty-quiz { text-align: center; padding: 40px 20px; color: #8c8c8c; }
+        .empty-icon { font-size: 48px; margin-bottom: 12px; opacity: 0.3; }
+
+        .form-actions { display: flex; gap: 12px; justify-content: flex-end; padding-top: 24px; border-top: 1px solid #f0f0f0; }
+        .btn { border: none; border-radius: 6px; padding: 10px 24px; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.3s; }
+        .btn-cancel { background: white; color: #595959; border: 1px solid #d9d9d9; }
+        .btn-cancel:hover { border-color: #667eea; color: #667eea; }
+        .btn-primary { background: linear-gradient(135deg, #667eea, #764ba2); color: white; }
+        .btn-primary:hover { opacity: 0.9; transform: translateY(-2px); }
+
+        .help-text { font-size: 12px; color: #8c8c8c; margin-top: 4px; }
+
+        .task-config-section { display: none; }
+        .task-config-section.active { display: block; }
+
+        /* Font Awesome图标样式优化 */
+        .fa-solid, .fa-regular { font-weight: 400; }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="header">
+        <div class="header-top">
+            <button class="back-btn" onclick="goBack()">
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <div class="header-title" id="pageTitle">添加任务</div>
+        </div>
+        <div class="breadcrumb">
+            <a class="breadcrumb-link" onclick="goToList()">季度计划</a>
+            <span> / </span>
+            <a class="breadcrumb-link" onclick="goToBooks()">书籍管理</a>
+            <span> / </span>
+            <a class="breadcrumb-link" onclick="goToLevelDesigner()">关卡设计器</a>
+            <span> / </span>
+            <a class="breadcrumb-link" onclick="goToLevelEdit()">关卡编辑</a>
+            <span> / </span>
+            <span>任务配置</span>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- 基本信息 -->
+        <div class="form-card">
+            <div class="section-title">
+                <i class="fa-solid fa-info-circle"></i> 基本信息
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">
+                    任务名称<span class="required">*</span>
+                </label>
+                <input type="text" class="form-input" id="taskName" placeholder="例如：阅读第1-20页" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">
+                    任务类型<span class="required">*</span>
+                </label>
+                <div class="task-type-selector">
+                    <div class="task-type-btn active" data-type="reading" onclick="selectTaskType('reading')">
+                        <div class="task-type-icon">📖</div>
+                        <div class="task-type-name">阅读任务</div>
+                    </div>
+                    <div class="task-type-btn" data-type="video" onclick="selectTaskType('video')">
+                        <div class="task-type-icon">🎬</div>
+                        <div class="task-type-name">视频任务</div>
+                    </div>
+                    <div class="task-type-btn" data-type="quiz" onclick="selectTaskType('quiz')">
+                        <div class="task-type-icon">📝</div>
+                        <div class="task-type-name">测评任务</div>
+                    </div>
+                    <div class="task-type-btn" data-type="note" onclick="selectTaskType('note')">
+                        <div class="task-type-icon">✍️</div>
+                        <div class="task-type-name">笔记任务</div>
+                    </div>
+                    <div class="task-type-btn" data-type="discussion" onclick="selectTaskType('discussion')">
+                        <div class="task-type-icon">💬</div>
+                        <div class="task-type-name">讨论任务</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 阅读任务配置 -->
+        <div class="form-card task-config-section active" id="readingConfig">
+            <div class="section-title">
+                <i class="fa-solid fa-book-open"></i> 阅读任务配置
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">
+                    阅读页码范围<span class="required">*</span>
+                </label>
+                <div class="page-range">
+                    <input type="number" class="form-input" id="startPage" placeholder="起始页" min="1">
+                    <span class="page-separator">至</span>
+                    <input type="number" class="form-input" id="endPage" placeholder="结束页" min="1">
+                </div>
+                <div class="help-text">设置学生需要阅读的页码范围</div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">预计阅读时长（分钟）</label>
+                <input type="number" class="form-input" id="readingTime" placeholder="30" min="1">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">阅读要求</label>
+                <textarea class="form-textarea" id="readingRequirement" placeholder="描述学生在阅读时需要注意的重点内容"></textarea>
+            </div>
+        </div>
+
+        <!-- 视频任务配置 -->
+        <div class="form-card task-config-section" id="videoConfig">
+            <div class="section-title">
+                <i class="fa-solid fa-video"></i> 视频任务配置
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">
+                    视频文件<span class="required">*</span>
+                </label>
+                <div class="video-upload" id="videoUpload" onclick="document.getElementById('videoInput').click()">
+                    <div class="upload-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div>
+                    <div class="upload-text">点击上传视频文件</div>
+                    <div class="upload-hint">支持 MP4、AVI 格式，建议大小不超过 500MB</div>
+                    <input type="file" id="videoInput" accept="video/*" style="display: none;" onchange="handleVideoUpload(event)">
+                </div>
+                <div class="video-preview" id="videoPreview">
+                    <div class="video-name" id="videoName"></div>
+                    <div class="video-actions">
+                        <button class="btn btn-cancel" onclick="removeVideo()">
+                            <i class="fa-solid fa-trash"></i> 删除
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">视频描述</label>
+                <textarea class="form-textarea" id="videoDesc" placeholder="简要描述视频内容和学习要点"></textarea>
+            </div>
+        </div>
+
+        <!-- 测评任务配置 -->
+        <div class="form-card task-config-section" id="quizConfig">
+            <div class="section-title">
+                <i class="fa-solid fa-clipboard-question"></i> 测评任务配置
+            </div>
+
+            <div class="quiz-builder">
+                <div class="quiz-header">
+                    <div class="quiz-title">题目列表（共 <span id="questionCount">0</span> 题）</div>
+                    <button class="add-question-btn" onclick="addQuestion()">
+                        <i class="fa-solid fa-plus"></i> 添加题目
+                    </button>
+                </div>
+
+                <div class="question-list" id="questionList">
+                    <div class="empty-quiz">
+                        <div class="empty-icon">📝</div>
+                        <div>还没有添加题目</div>
+                        <div style="font-size: 12px; margin-top: 8px;">点击上方按钮添加第一道题目</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group" style="margin-top: 16px;">
+                <label class="form-label">及格分数</label>
+                <input type="number" class="form-input" id="passingScore" placeholder="60" min="0" max="100">
+                <div class="help-text">学生需要达到此分数才能通过测评</div>
+            </div>
+        </div>
+
+        <!-- 笔记任务配置 -->
+        <div class="form-card task-config-section" id="noteConfig">
+            <div class="section-title">
+                <i class="fa-solid fa-pen-to-square"></i> 笔记任务配置
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">笔记主题</label>
+                <input type="text" class="form-input" id="noteTheme" placeholder="例如：人物性格分析">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">最少字数要求</label>
+                <input type="number" class="form-input" id="minWords" placeholder="200" min="0">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">笔记要求</label>
+                <textarea class="form-textarea" id="noteRequirement" placeholder="描述学生在写笔记时需要关注的要点"></textarea>
+            </div>
+        </div>
+
+        <!-- 讨论任务配置 -->
+        <div class="form-card task-config-section" id="discussionConfig">
+            <div class="section-title">
+                <i class="fa-solid fa-comments"></i> 讨论任务配置
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">
+                    讨论话题<span class="required">*</span>
+                </label>
+                <input type="text" class="form-input" id="discussionTopic" placeholder="例如：你认为主人公的选择是否正确">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">话题描述</label>
+                <textarea class="form-textarea" id="discussionDesc" placeholder="详细描述讨论话题的背景和要求"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">最少回复数</label>
+                <input type="number" class="form-input" id="minReplies" placeholder="3" min="1">
+                <div class="help-text">学生需要至少发表或回复的次数</div>
+            </div>
+        </div>
+
+        <!-- 操作按钮 -->
+        <div class="form-card">
+            <div class="form-actions">
+                <button class="btn btn-cancel" onclick="goBack()">取消</button>
+                <button class="btn btn-primary" onclick="saveTask()">保存任务</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentTask = {
+            id: null,
+            levelId: null,
+            bookId: null,
+            name: '',
+            type: 'reading',
+            config: {}
+        };
+
+        let selectedTaskType = 'reading';
+        let questions = [];
+        let uploadedVideo = null;
+
+        // 页面加载时初始化
+        window.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const levelId = urlParams.get('levelId');
+            const bookId = urlParams.get('bookId');
+            const taskId = urlParams.get('taskId');
+            const action = urlParams.get('action');
+
+            currentTask.levelId = levelId;
+            currentTask.bookId = bookId;
+
+            if (action === 'edit' && taskId) {
+                currentTask.id = taskId;
+                document.getElementById('pageTitle').textContent = '编辑任务';
+                loadTaskData(taskId);
+            }
+        });
+
+        // 加载任务数据
+        function loadTaskData(taskId) {
+            // 实际应从后端加载
+            // 这里使用模拟数据
+            const mockData = {
+                id: taskId,
+                name: '阅读第1-20页',
+                type: 'reading',
+                config: {
+                    startPage: 1,
+                    endPage: 20,
+                    readingTime: 30,
+                    requirement: '注意人物关系和故事背景'
+                }
+            };
+
+            document.getElementById('taskName').value = mockData.name;
+            selectTaskType(mockData.type);
+
+            if (mockData.type === 'reading') {
+                document.getElementById('startPage').value = mockData.config.startPage;
+                document.getElementById('endPage').value = mockData.config.endPage;
+                document.getElementById('readingTime').value = mockData.config.readingTime;
+                document.getElementById('readingRequirement').value = mockData.config.requirement;
+            }
+        }
+
+        // 选择任务类型
+        function selectTaskType(type) {
+            selectedTaskType = type;
+            currentTask.type = type;
+
+            // 更新按钮状态
+            document.querySelectorAll('.task-type-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`[data-type="${type}"]`).classList.add('active');
+
+            // 显示对应的配置区域
+            document.querySelectorAll('.task-config-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(`${type}Config`).classList.add('active');
+        }
+
+        // 处理视频上传
+        function handleVideoUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                uploadedVideo = file;
+                document.getElementById('videoName').textContent = file.name;
+                document.getElementById('videoUpload').classList.add('has-video');
+                document.getElementById('videoPreview').classList.add('show');
+                showToast('视频已选择');
+            }
+        }
+
+        // 删除视频
+        function removeVideo() {
+            uploadedVideo = null;
+            document.getElementById('videoInput').value = '';
+            document.getElementById('videoUpload').classList.remove('has-video');
+            document.getElementById('videoPreview').classList.remove('show');
+            showToast('视频已删除');
+        }
+
+        // 添加题目
+        function addQuestion() {
+            const question = {
+                id: Date.now(),
+                text: '这是一道示例题目',
+                options: ['选项A', '选项B', '选项C', '选项D'],
+                correctAnswer: 0
+            };
+            questions.push(question);
+            renderQuestions();
+        }
+
+        // 渲染题目列表
+        function renderQuestions() {
+            const questionList = document.getElementById('questionList');
+            document.getElementById('questionCount').textContent = questions.length;
+
+            if (questions.length === 0) {
+                questionList.innerHTML = `
+                    <div class="empty-quiz">
+                        <div class="empty-icon">📝</div>
+                        <div>还没有添加题目</div>
+                        <div style="font-size: 12px; margin-top: 8px;">点击上方按钮添加第一道题目</div>
+                    </div>
+                `;
+                return;
+            }
+
+            questionList.innerHTML = questions.map((q, index) => `
+                <div class="question-item">
+                    <div class="question-header">
+                        <div class="question-number">第 ${index + 1} 题</div>
+                        <button class="btn btn-cancel" onclick="deleteQuestion(${q.id})" style="padding: 4px 12px; font-size: 12px;">
+                            <i class="fa-solid fa-trash"></i> 删除
+                        </button>
+                    </div>
+                    <div class="question-text">${q.text}</div>
+                    <div class="options-list">
+                        ${q.options.map((opt, i) => `
+                            <div class="option-item ${i === q.correctAnswer ? 'correct' : ''}">
+                                ${String.fromCharCode(65 + i)}. ${opt} ${i === q.correctAnswer ? '✓' : ''}
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 删除题目
+        function deleteQuestion(questionId) {
+            questions = questions.filter(q => q.id !== questionId);
+            renderQuestions();
+        }
+
+        // 保存任务
+        function saveTask() {
+            const taskName = document.getElementById('taskName').value.trim();
+
+            if (!taskName) {
+                alert('请输入任务名称');
+                return;
+            }
+
+            currentTask.name = taskName;
+
+            // 根据任务类型收集配置
+            switch (selectedTaskType) {
+                case 'reading':
+                    const startPage = document.getElementById('startPage').value;
+                    const endPage = document.getElementById('endPage').value;
+                    if (!startPage || !endPage) {
+                        alert('请输入阅读页码范围');
+                        return;
+                    }
+                    currentTask.config = {
+                        startPage: parseInt(startPage),
+                        endPage: parseInt(endPage),
+                        readingTime: parseInt(document.getElementById('readingTime').value) || 0,
+                        requirement: document.getElementById('readingRequirement').value.trim()
+                    };
+                    break;
+
+                case 'video':
+                    if (!uploadedVideo) {
+                        alert('请上传视频文件');
+                        return;
+                    }
+                    currentTask.config = {
+                        video: uploadedVideo.name,
+                        description: document.getElementById('videoDesc').value.trim()
+                    };
+                    break;
+
+                case 'quiz':
+                    if (questions.length === 0) {
+                        alert('请至少添加一道题目');
+                        return;
+                    }
+                    currentTask.config = {
+                        questions: questions,
+                        passingScore: parseInt(document.getElementById('passingScore').value) || 60
+                    };
+                    break;
+
+                case 'note':
+                    currentTask.config = {
+                        theme: document.getElementById('noteTheme').value.trim(),
+                        minWords: parseInt(document.getElementById('minWords').value) || 0,
+                        requirement: document.getElementById('noteRequirement').value.trim()
+                    };
+                    break;
+
+                case 'discussion':
+                    const topic = document.getElementById('discussionTopic').value.trim();
+                    if (!topic) {
+                        alert('请输入讨论话题');
+                        return;
+                    }
+                    currentTask.config = {
+                        topic: topic,
+                        description: document.getElementById('discussionDesc').value.trim(),
+                        minReplies: parseInt(document.getElementById('minReplies').value) || 1
+                    };
+                    break;
+            }
+
+            // 实际应调用API保存
+            console.log('保存任务数据：', currentTask);
+            showToast('任务保存成功');
+
+            setTimeout(() => {
+                goBack();
+            }, 1000);
+        }
+
+        // 返回关卡编辑
+        function goBack() {
+            window.location.href = `05-关卡编辑.html?levelId=${currentTask.levelId}&bookId=${currentTask.bookId}`;
+        }
+
+        function goToList() {
+            window.location.href = '01-季度计划列表.html';
+        }
+
+        function goToBooks() {
+            window.location.href = '03-书籍管理.html';
+        }
+
+        function goToLevelDesigner() {
+            window.location.href = `04-关卡设计器.html?bookId=${currentTask.bookId}`;
+        }
+
+        function goToLevelEdit() {
+            window.location.href = `05-关卡编辑.html?levelId=${currentTask.levelId}&bookId=${currentTask.bookId}`;
+        }
+
+        // 显示提示
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.textContent = message;
+            toast.style.cssText = 'position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.8); color: white; padding: 12px 24px; border-radius: 8px; font-size: 14px; z-index: 2000;';
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.remove();
+            }, 2000);
+        }
+    </script>
+</body>
+</html>

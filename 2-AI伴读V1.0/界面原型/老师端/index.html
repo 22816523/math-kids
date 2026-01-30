@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>教师端界面导航 - 校校读吧-老师端</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .header { text-align: center; color: white; margin-bottom: 40px; }
+        .title { font-size: 36px; font-weight: 700; margin-bottom: 12px; }
+        .subtitle { font-size: 18px; opacity: 0.9; }
+        .search-box { max-width: 600px; margin: 24px auto 0; position: relative; }
+        .search-input { width: 100%; padding: 14px 48px 14px 20px; border: none; border-radius: 24px; font-size: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .search-input:focus { outline: none; box-shadow: 0 4px 20px rgba(0,0,0,0.25); }
+        .search-icon { position: absolute; right: 20px; top: 50%; transform: translateY(-50%); font-size: 20px; color: #8c8c8c; }
+        .section { background: white; border-radius: 12px; padding: 24px; margin-bottom: 24px; box-shadow: 0 8px 24px rgba(0,0,0,0.15); }
+        .section-title { font-size: 24px; font-weight: 600; margin-bottom: 20px; color: #262626; display: flex; align-items: center; gap: 12px; }
+        .section-icon { width: 40px; height: 40px; background: linear-gradient(135deg, #1890FF, #096DD9); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+        .page-table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; }
+        .page-table thead { background: #fafafa; }
+        .page-table th { padding: 12px 16px; text-align: left; font-size: 14px; font-weight: 600; color: #262626; border-bottom: 2px solid #f0f0f0; }
+        .page-table td { padding: 12px 16px; border-bottom: 1px solid #f0f0f0; font-size: 14px; color: #595959; }
+        .page-table tbody tr:hover { background: #f5f5f5; }
+        .page-table tbody tr.hidden { display: none; }
+        .page-link { color: #1890FF; text-decoration: none; font-weight: 600; transition: color 0.3s; }
+        .page-link:hover { color: #096DD9; text-decoration: underline; }
+        .page-desc { color: #8c8c8c; line-height: 1.6; }
+        .page-btn { display: inline-block; padding: 4px 12px; background: #1890FF; color: white; border-radius: 4px; text-decoration: none; font-size: 12px; transition: background 0.3s; }
+        .page-btn:hover { background: #096DD9; }
+        .info-box { background: #e6f7ff; border-left: 4px solid #1890FF; padding: 16px; border-radius: 4px; margin-bottom: 24px; }
+        .info-title { font-size: 16px; font-weight: 600; color: #262626; margin-bottom: 8px; }
+        .info-text { font-size: 14px; color: #595959; line-height: 1.6; }
+        .stats { display: flex; gap: 24px; margin-top: 16px; }
+        .stat-item { flex: 1; text-align: center; padding: 16px; background: rgba(255,255,255,0.2); border-radius: 8px; }
+        .stat-value { font-size: 32px; font-weight: 700; color: white; margin-bottom: 4px; }
+        .stat-label { font-size: 14px; color: white; opacity: 0.9; }
+        .no-results { text-align: center; padding: 40px; color: #8c8c8c; font-size: 16px; display: none; }
+        .no-results.show { display: block; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="title">👨‍🏫 校校读吧 - 老师端</div>
+            <div class="subtitle">AI赋能的K12整本书阅读教学助手</div>
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-value">35</div>
+                    <div class="stat-label">原型页面</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">100%</div>
+                    <div class="stat-label">可交互</div>
+                </div>
+            </div>
+            <div class="search-box">
+                <input type="text" class="search-input" id="searchInput" placeholder="搜索页面名称或描述...">
+                <span class="search-icon">🔍</span>
+            </div>
+        </div>
+
+        <div class="info-box">
+            <div class="info-title">💡 使用说明</div>
+            <div class="info-text">
+                • 所有页面均为HTML交互原型，可在浏览器中直接打开查看<br>
+                • 页面宽度固定为375px，模拟小程序界面<br>
+                • 点击按钮会弹出提示，展示交互逻辑<br>
+                • 使用了真实的颜色、字体、间距等视觉规范<br>
+                • 建议使用Chrome浏览器，并开启移动设备模拟模式（F12 → 设备工具栏）
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">
+                <div class="section-icon">👨‍🏫</div>
+                <span>教师端界面（35个页面）</span>
+            </div>
+            <table class="page-table" id="pageGrid">
+                <thead>
+                    <tr>
+                        <th style="width: 60px">#</th>
+                        <th style="width: 200px">页面名称</th>
+                        <th>页面描述</th>
+                        <th style="width: 100px; text-align: center">操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td><a href="01-登录.html" class="page-link">登录</a></td>
+                        <td class="page-desc">教师登录页面，支持微信扫码登录和手机验证码登录</td>
+                        <td style="text-align: center"><a href="01-登录.html" class="page-btn">访问</a></td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td><a href="02-积分明细.html" class="page-link">积分明细</a></td>
+                        <td class="page-desc">查看积分获取和消费的详细记录</td>
+                        <td style="text-align: center"><a href="02-积分明细.html" class="page-btn">访问</a></td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td><a href="03-历史活动.html" class="page-link">历史活动</a></td>
+                        <td class="page-desc">查看历史活动记录和参与情况</td>
+                        <td style="text-align: center"><a href="03-历史活动.html" class="page-btn">访问</a></td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td><a href="04-班级列表.html" class="page-link">班级列表</a></td>
+                        <td class="page-desc">展示教师管理的所有班级，支持筛选和搜索</td>
+                        <td style="text-align: center"><a href="04-班级列表.html" class="page-btn">访问</a></td>
+                    </tr>
+                    <tr>
+                        <td>5</td>
+                        <td><a href="05-创建班级.html" class="page-link">创建班级</a></td>
+                        <td class="page-desc">创建新班级，填写班级名称、学科、学年学期等基本信息</td>
+                        <td style="text-align: center"><a href="05-创建班级.html" class="page-btn">访问</a></td>
+                    </tr>
+                    <tr>
+                        <td>6</td>
+                        <td><a href="06-阅读计划列表.html" class="page-link">阅读计划列表</a></td>
+                        <td class="page-desc">展示教师发布的所有阅读计划，包括平台计划和自建计划，支持按状态和类型筛选</td>
+                        <td style="text-align: center"><a href="06-阅读计划列表.html" class="page-btn">访问</a></td>
+                    </tr>
+                    <tr>
+                        <td>7</td>
+                        <td><a href="07-学生管理.html" class="page-link">学生管理</a></td>
+                        <td class="page-desc">管理班级学生信息，支持查看学生阅读详情、批量操作等功能</td>
+                        <td style="text-align: center"><a href="07-学生管理.html" class="page-btn">访问</a></td>
+                    </tr>
+                    <tr>
+                        <td>8</td>
+                        <td><a href="08-学生详情.html" class="page-link">学生详情</a></td>
+                        <td class="page-desc">查看单个学生的详细进度、任务完成情况、打卡记录、测评成绩等数据</td>
+                        <td style="text-align: center"><a href="08-学生详情.html" class="page-btn">访问</a></td>
+                    </tr>
+                    <tr>
+                        <td>9</td>
+                        <td><a href="09-测评详情.html" class="page-link">测评详情</a></td>
+                        <td class="page-desc">查看学生的测评答卷详情、得分情况和答题分析</td>
+                        <td style="text-align: center"><a href="09-测评详情.html" class="page-btn">访问</a></td>
+                    </tr>
+                    <tr>
+                        <td>10</td>
+                        <td><a href="10-报名阅读计划.html" class="page-link">报名阅读计划</a></td>
+                        <td class="page-desc">选择班级报名阅读计划，配置通知和进度查看权限</td>
+                        <td style="text-align: center"><a href="10-报名阅读计划.html" class="page-btn">访问</a></td>
+                    </tr>
+                    <tr>
+                        <td>11</td>
+                        <td><a href="11-反馈记录.html" class="page-link">反馈记录</a></td>
+                        <td class="page-desc">查看已提交的反馈记录和处理状态</td>
+                        <td style="text-align: center"><a href="11-反馈记录.html" class="page-btn">访问</a></td>
+                    </tr>
+                    <tr>
+                        <td>12</td>
+                        <td><a href="12-计划详情预览.html" class="page-link">计划详情预览</a></td>
+                        <td class="page-desc">预览阅读计划的详细信息、书籍列表、阅读路线图等内容</td>
+                        <td style="text-align: center"><a href="12-计划详情预览.html" class="page-btn">访问</a></td>
+                    </tr>
+                    <tr>
+                        <td>13</td>
+                        <td><a href="13-书籍关卡详情.html" class="page-link">书籍关卡详情</a></td>
+                        <td class="page-desc">查看书籍的关卡设置和详细信息</td>
+                        <td style="text-align: center"><a href="13-书籍关卡详情.html" class="page-btn">访问</a></td>
+                    </tr>
+                    <tr>
+                        <td>14</td>
+                        <td><a href="14-进度监控.html" class="page-link">进度监控看板</a></td>
+                        <td class="page-desc">实时监控学生阅读进度，展示打卡率、进度分布、打卡趋势等数据</td>
+                        <td style="text-align: center"><a href="14-进度监控.html" class="page-btn">访问</a></td>
+                    </tr>
+                    <tr>
+                        <td>15</td>
+                        <td><a href="15-测评管理.html" class="page-link">测评管理</a></td>
+                        <td class="page-desc">管理所有测评任务，查看参与率、平均分等数据</td>
+                        <td style="text-align: center"><a href="15-测评管理.html" class="page-btn">访问</a></td>
+                    </tr>
+                    <tr>
+                        <td>16</td>
+                        <td><a href="16-测评题列表.html" class="page-link">测评题列表</a></td>
+                        <td class="page-desc">查看书籍的全部测评题目，包括选择题、判断题、填空题、问答题</td>
+                        <td style="text-align: center"><a href="16-测评题列表.html" class="page-btn">访问</a></td>
+                    </tr>
+                    <tr>
+                        <td>17</td>
+                        <td><a href="17-用户反馈.html" class="page-link">用户反馈</a></td>
+                        <td class="page-desc">提交用户反馈和建议</td>
+                        <td style="text-align: center"><a href="17-用户反馈.html" class="page-btn">访问</a></td>
+                    </tr>
+                    <tr>
+                        <td>18</td>
+                        <td><a href="18-计划测评统计.html" class="page-link">计划测评统计</a></td>
+                        <td class="page-desc">展示计划级别的整体统计数据，包括总提交率、平均分、学生排名等</td>
+                        <td style="text-align: center"><a href="18-计划测评统计.html" class="page-btn">访问</a></td>
+                    </tr>
+                    <tr>
+                        <td>19</td>
+                        <td><a href="19-书籍测评统计.html" class="page-link">书籍测评统计</a></td>
+                        <td class="page-desc">展示书籍级别的详细统计，包括提交率、分数分布、题目正确率等</td>
+                        <td style="text-align: center"><a href="19-书籍测评统计.html" class="page-btn">访问</a></td>
+                    </tr>
+                    <tr>
+                        <td>20</td>
+                        <td><a href="20-数据报告.html" class="page-link">数据报告</a></td>
+                        <td class="page-desc">展示班级整体数据分析，包括打卡趋势、成绩分布、班级排行等</td>
+                        <td style="text-align: center"><a href="20-数据报告.html" class="page-btn">访问</a></td>
+                    </tr>
+                    <tr>
+                        <td>21</td>
+                        <td><a href="22-消息推送.html" class="page-link">消息推送</a></td>
+                        <td class="page-desc">管理收到和发出的消息，支持查看已发送、草稿箱、定时发送</td>
+                        <td style="text-align: center"><a href="22-消息推送.html" class="page-btn">访问</a></td>
+                    </tr>
+                    <tr>
+                        <td>22</td>
+                        <td><a href="25-收到的消息详情.html" class="page-link">收到的消息详情</a></td>
+                        <td class="page-desc">查看收到的消息详细内容</td>
+                        <td style="text-align: center"><a href="25-收到的消息详情.html" class="page-btn">访问</a></td>
+                    </tr>
+                    <tr>
+                        <td>23</td>
+                        <td><a href="26-教师个人中心.html" class="page-link">教师个人中心</a></td>
+                        <td class="page-desc">查看教师个人信息、教学统计、账号设置等</td>
+                        <td style="text-align: center"><a href="26-教师个人中心.html" class="page-btn">访问</a></td>
+                    </tr>
+                    <tr>
+                        <td>24</td>
+                        <td><a href="27-个人信息编辑.html" class="page-link">个人信息编辑</a></td>
+                        <td class="page-desc">编辑教师个人资料，包括头像、姓名、学科、教龄等信息</td>
+                        <td style="text-align: center"><a href="27-个人信息编辑.html" class="page-btn">访问</a></td>
+                    </tr>
+                    <tr>
+                        <td>25</td>
+                        <td><a href="28-更换头像.html" class="page-link">更换头像</a></td>
+                        <td class="page-desc">上传或选择新的头像图片</td>
+                        <td style="text-align: center"><a href="28-更换头像.html" class="page-btn">访问</a></td>
+                    </tr>
+                    <tr>
+                        <td>26</td>
+                        <td><a href="29-编辑姓名.html" class="page-link">编辑姓名</a></td>
+                        <td class="page-desc">修改教师姓名</td>
+                        <td style="text-align: center"><a href="29-编辑姓名.html" class="page-btn">访问</a></td>
+                    </tr>
+                    <tr>
+                        <td>27</td>
+                        <td><a href="30-选择性别.html" class="page-link">选择性别</a></td>
+                        <td class="page-desc">选择或修改性别信息</td>
+                        <td style="text-align: center"><a href="30-选择性别.html" class="page-btn">访问</a></td>
+                    </tr>
+                    <tr>
+                        <td>28</td>
+                        <td><a href="31-编辑个人简介.html" class="page-link">编辑个人简介</a></td>
+                        <td class="page-desc">编辑教师个人简介和教学理念</td>
+                        <td style="text-align: center"><a href="31-编辑个人简介.html" class="page-btn">访问</a></td>
+                    </tr>
+                    <tr>
+                        <td>29</td>
+                        <td><a href="32-选择学段.html" class="page-link">选择学段</a></td>
+                        <td class="page-desc">选择任教学段（小学/初中/高中）</td>
+                        <td style="text-align: center"><a href="32-选择学段.html" class="page-btn">访问</a></td>
+                    </tr>
+                    <tr>
+                        <td>30</td>
+                        <td><a href="33-选择学校.html" class="page-link">选择学校</a></td>
+                        <td class="page-desc">选择或修改所在学校</td>
+                        <td style="text-align: center"><a href="33-选择学校.html" class="page-btn">访问</a></td>
+                    </tr>
+                    <tr>
+                        <td>31</td>
+                        <td><a href="34-选择学科.html" class="page-link">选择学科</a></td>
+                        <td class="page-desc">选择任教学科</td>
+                        <td style="text-align: center"><a href="34-选择学科.html" class="page-btn">访问</a></td>
+                    </tr>
+                    <tr>
+                        <td>32</td>
+                        <td><a href="35-选择教龄.html" class="page-link">选择教龄</a></td>
+                        <td class="page-desc">选择或更新教龄信息</td>
+                        <td style="text-align: center"><a href="35-选择教龄.html" class="page-btn">访问</a></td>
+                    </tr>
+                    <tr>
+                        <td>33</td>
+                        <td><a href="36-账号安全.html" class="page-link">账号安全</a></td>
+                        <td class="page-desc">管理账号安全设置，包括绑定手机邮箱、设备管理等</td>
+                        <td style="text-align: center"><a href="36-账号安全.html" class="page-btn">访问</a></td>
+                    </tr>
+                    <tr>
+                        <td>34</td>
+                        <td><a href="38-修改手机号.html" class="page-link">修改手机号</a></td>
+                        <td class="page-desc">更换绑定的手机号码</td>
+                        <td style="text-align: center"><a href="38-修改手机号.html" class="page-btn">访问</a></td>
+                    </tr>
+                    <tr>
+                        <td>35</td>
+                        <td><a href="39-打卡详情.html" class="page-link">打卡详情</a></td>
+                        <td class="page-desc">查看学生打卡的详细信息和记录</td>
+                        <td style="text-align: center"><a href="39-打卡详情.html" class="page-btn">访问</a></td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="no-results" id="noResults">未找到匹配的页面</div>
+        </div>
+
+        <div style="text-align: center; color: white; margin-top: 40px; opacity: 0.8;">
+            <p style="font-size: 14px;">© 2025 校校读吧 - 老师端界面原型</p>
+            <p style="font-size: 12px; margin-top: 8px;">生成日期：2026-01-29 · 共35个页面</p>
+        </div>
+    </div>
+
+    <script>
+        // 搜索功能
+        const searchInput = document.getElementById('searchInput');
+        const pageGrid = document.getElementById('pageGrid');
+        const noResults = document.getElementById('noResults');
+
+        searchInput.addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase().trim();
+
+            const rows = pageGrid.querySelectorAll('tbody tr');
+            let visibleCount = 0;
+            rows.forEach(row => {
+                const name = row.querySelector('.page-link').textContent.toLowerCase();
+                const desc = row.querySelector('.page-desc').textContent.toLowerCase();
+                if (name.includes(searchTerm) || desc.includes(searchTerm)) {
+                    row.classList.remove('hidden');
+                    visibleCount++;
+                } else {
+                    row.classList.add('hidden');
+                }
+            });
+            noResults.classList.toggle('show', visibleCount === 0 && searchTerm !== '');
+        });
+    </script>
+</body>
+</html>

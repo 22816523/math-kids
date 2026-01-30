@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学生管理 - 校校读吧小管家管理平台</title>
+    <link rel="stylesheet" href="common/admin-common.css">    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="admin-layout">
+        <!-- 侧边栏 -->
+        <div class="admin-sidebar">
+            <div class="sidebar-header"></div>
+            <div class="sidebar-menu"></div>
+        </div>
+
+        <!-- 主内容区域 -->
+        <div class="admin-main">
+            <!-- 顶部导航栏 -->
+            <div class="admin-header"></div>
+
+            <!-- 内容区域 -->
+            <div class="admin-content">
+                <div class="page-header">
+                    <h1 class="page-title">学生管理</h1>
+                    <p class="page-description">管理系统中的所有学生账号和学习数据</p>
+                </div>
+
+                <!-- 操作栏 -->
+                <div class="action-bar">
+                    <div class="action-left">
+                        <button class="btn btn-primary" onclick="showModal('addStudentModal')">
+                            <span><i class="fa-solid fa-plus"></i></span>
+                            <span>添加学生</span>
+                        </button>
+                        <button class="btn btn-secondary">
+                            <span><i class="fa-solid fa-download"></i></span>
+                            <span>批量导入</span>
+                        </button>
+                        <button class="btn btn-secondary">
+                            <span><i class="fa-solid fa-upload"></i></span>
+                            <span>导出数据</span>
+                        </button>
+                    </div>
+                    <div class="action-right">
+                        <div class="search-bar">
+                            <input type="text" class="form-input search-input" placeholder="搜索学生姓名、学号、手机号..." id="searchInput">
+                            <button class="btn btn-primary">搜索</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 筛选栏 -->
+                <div class="card">
+                    <div class="card-body">
+                        <div style="display: flex; gap: 16px; align-items: center;">
+                            <div style="font-size: 14px; color: #595959;">筛选条件：</div>
+                            <select class="form-select" style="width: 150px;">
+                                <option>全部学校</option>
+                                <option>示范中学</option>
+                                <option>实验小学</option>
+                                <option>第一中学</option>
+                            </select>
+                            <select class="form-select" style="width: 150px;">
+                                <option>全部年级</option>
+                                <option>初一</option>
+                                <option>初二</option>
+                                <option>初三</option>
+                            </select>
+                            <select class="form-select" style="width: 150px;">
+                                <option>全部班级</option>
+                                <option>初一(1)班</option>
+                                <option>初一(2)班</option>
+                                <option>初一(3)班</option>
+                            </select>
+                            <select class="form-select" style="width: 150px;">
+                                <option>全部状态</option>
+                                <option>正常</option>
+                                <option>停用</option>
+                            </select>
+                            <button class="btn btn-text" onclick="resetFilters()">重置</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 学生列表 -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">学生列表（共 32,456 人）</h3>
+                        <div class="card-extra">
+                            <span style="font-size: 13px; color: #8c8c8c;">显示 1-20 条</span>
+                        </div>
+                    </div>
+                    <div class="card-body" style="padding: 0;">
+                        <div class="table-container">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th><input type="checkbox" onclick="toggleSelectAll(this)"></th>
+                                        <th>学号</th>
+                                        <th>姓名</th>
+                                        <th>学校</th>
+                                        <th>班级</th>
+                                        <th>阅读天数</th>
+                                        <th>打卡率</th>
+                                        <th>积分</th>
+                                        <th>状态</th>
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><input type="checkbox"></td>
+                                        <td>S20230001</td>
+                                        <td>
+                                            <div style="display: flex; align-items: center; gap: 8px;">
+                                                <div style="width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, #1890FF, #096DD9); color: white; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600;">张</div>
+                                                <span>张小明</span>
+                                            </div>
+                                        </td>
+                                        <td>示范中学</td>
+                                        <td><span class="tag tag-blue">初一(3)班</span></td>
+                                        <td>156天</td>
+                                        <td>
+                                            <div style="display: flex; align-items: center; gap: 8px;">
+                                                <div style="flex: 1; height: 6px; background: #f0f0f0; border-radius: 3px; overflow: hidden;">
+                                                    <div style="width: 95%; height: 100%; background: linear-gradient(90deg, #52c41a, #73d13d);"></div>
+                                                </div>
+                                                <span style="font-size: 12px; color: #52c41a; font-weight: 600;">95%</span>
+                                            </div>
+                                        </td>
+                                        <td><span style="color: #fa8c16; font-weight: 600;">2,345</span></td>
+                                        <td><span class="tag tag-green">正常</span></td>
+                                        <td>
+                                            <button class="btn btn-text btn-sm" onclick="viewStudent(1)">查看</button>
+                                            <button class="btn btn-text btn-sm" onclick="editStudent(1)">编辑</button>
+                                            <button class="btn btn-text btn-sm" style="color: #ff4d4f;" onclick="deleteStudent(1)">删除</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><input type="checkbox"></td>
+                                        <td>S20230002</td>
+                                        <td>
+                                            <div style="display: flex; align-items: center; gap: 8px;">
+                                                <div style="width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, #52c41a, #73d13d); color: white; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600;">李</div>
+                                                <span>李小红</span>
+                                            </div>
+                                        </td>
+                                        <td>示范中学</td>
+                                        <td><span class="tag tag-blue">初一(3)班</span></td>
+                                        <td>142天</td>
+                                        <td>
+                                            <div style="display: flex; align-items: center; gap: 8px;">
+                                                <div style="flex: 1; height: 6px; background: #f0f0f0; border-radius: 3px; overflow: hidden;">
+                                                    <div style="width: 88%; height: 100%; background: linear-gradient(90deg, #52c41a, #73d13d);"></div>
+                                                </div>
+                                                <span style="font-size: 12px; color: #52c41a; font-weight: 600;">88%</span>
+                                            </div>
+                                        </td>
+                                        <td><span style="color: #fa8c16; font-weight: 600;">2,156</span></td>
+                                        <td><span class="tag tag-green">正常</span></td>
+                                        <td>
+                                            <button class="btn btn-text btn-sm" onclick="viewStudent(2)">查看</button>
+                                            <button class="btn btn-text btn-sm" onclick="editStudent(2)">编辑</button>
+                                            <button class="btn btn-text btn-sm" style="color: #ff4d4f;" onclick="deleteStudent(2)">删除</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><input type="checkbox"></td>
+                                        <td>S20230003</td>
+                                        <td>
+                                            <div style="display: flex; align-items: center; gap: 8px;">
+                                                <div style="width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, #fa8c16, #ffa940); color: white; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600;">王</div>
+                                                <span>王小刚</span>
+                                            </div>
+                                        </td>
+                                        <td>实验小学</td>
+                                        <td><span class="tag tag-green">五年级(2)班</span></td>
+                                        <td>98天</td>
+                                        <td>
+                                            <div style="display: flex; align-items: center; gap: 8px;">
+                                                <div style="flex: 1; height: 6px; background: #f0f0f0; border-radius: 3px; overflow: hidden;">
+                                                    <div style="width: 72%; height: 100%; background: linear-gradient(90deg, #fa8c16, #ffa940);"></div>
+                                                </div>
+                                                <span style="font-size: 12px; color: #fa8c16; font-weight: 600;">72%</span>
+                                            </div>
+                                        </td>
+                                        <td><span style="color: #fa8c16; font-weight: 600;">1,567</span></td>
+                                        <td><span class="tag tag-green">正常</span></td>
+                                        <td>
+                                            <button class="btn btn-text btn-sm" onclick="viewStudent(3)">查看</button>
+                                            <button class="btn btn-text btn-sm" onclick="editStudent(3)">编辑</button>
+                                            <button class="btn btn-text btn-sm" style="color: #ff4d4f;" onclick="deleteStudent(3)">删除</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><input type="checkbox"></td>
+                                        <td>S20230004</td>
+                                        <td>
+                                            <div style="display: flex; align-items: center; gap: 8px;">
+                                                <div style="width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, #722ed1, #9254de); color: white; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600;">赵</div>
+                                                <span>赵小丽</span>
+                                            </div>
+                                        </td>
+                                        <td>第一中学</td>
+                                        <td><span class="tag tag-purple">初二(1)班</span></td>
+                                        <td>178天</td>
+                                        <td>
+                                            <div style="display: flex; align-items: center; gap: 8px;">
+                                                <div style="flex: 1; height: 6px; background: #f0f0f0; border-radius: 3px; overflow: hidden;">
+                                                    <div style="width: 98%; height: 100%; background: linear-gradient(90deg, #52c41a, #73d13d);"></div>
+                                                </div>
+                                                <span style="font-size: 12px; color: #52c41a; font-weight: 600;">98%</span>
+                                            </div>
+                                        </td>
+                                        <td><span style="color: #fa8c16; font-weight: 600;">3,012</span></td>
+                                        <td><span class="tag tag-green">正常</span></td>
+                                        <td>
+                                            <button class="btn btn-text btn-sm" onclick="viewStudent(4)">查看</button>
+                                            <button class="btn btn-text btn-sm" onclick="editStudent(4)">编辑</button>
+                                            <button class="btn btn-text btn-sm" style="color: #ff4d4f;" onclick="deleteStudent(4)">删除</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><input type="checkbox"></td>
+                                        <td>S20230005</td>
+                                        <td>
+                                            <div style="display: flex; align-items: center; gap: 8px;">
+                                                <div style="width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, #1890FF, #096DD9); color: white; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600;">刘</div>
+                                                <span>刘小强</span>
+                                            </div>
+                                        </td>
+                                        <td>示范中学</td>
+                                        <td><span class="tag tag-blue">初一(2)班</span></td>
+                                        <td>45天</td>
+                                        <td>
+                                            <div style="display: flex; align-items: center; gap: 8px;">
+                                                <div style="flex: 1; height: 6px; background: #f0f0f0; border-radius: 3px; overflow: hidden;">
+                                                    <div style="width: 56%; height: 100%; background: linear-gradient(90deg, #ff4d4f, #ff7875);"></div>
+                                                </div>
+                                                <span style="font-size: 12px; color: #ff4d4f; font-weight: 600;">56%</span>
+                                            </div>
+                                        </td>
+                                        <td><span style="color: #fa8c16; font-weight: 600;">892</span></td>
+                                        <td><span class="tag tag-gray">停用</span></td>
+                                        <td>
+                                            <button class="btn btn-text btn-sm" onclick="viewStudent(5)">查看</button>
+                                            <button class="btn btn-text btn-sm" onclick="editStudent(5)">编辑</button>
+                                            <button class="btn btn-text btn-sm" style="color: #ff4d4f;" onclick="deleteStudent(5)">删除</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 分页 -->
+                <div class="pagination">
+                    <div class="pagination-item disabled">上一页</div>
+                    <div class="pagination-item active">1</div>
+                    <div class="pagination-item">2</div>
+                    <div class="pagination-item">3</div>
+                    <div class="pagination-item">4</div>
+                    <div class="pagination-item">5</div>
+                    <div class="pagination-item">...</div>
+                    <div class="pagination-item">1623</div>
+                    <div class="pagination-item">下一页</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 添加学生模态框 -->
+    <div class="modal-overlay" id="addStudentModal" style="display: none;">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">添加学生</h3>
+                <span class="modal-close" onclick="hideModal('addStudentModal')">×</span>
+            </div>
+            <div class="modal-body">
+                <form id="addStudentForm">
+                    <div class="form-group">
+                        <label class="form-label">姓名 <span class="required">*</span></label>
+                        <input type="text" class="form-input" placeholder="请输入学生姓名" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">学号 <span class="required">*</span></label>
+                        <input type="text" class="form-input" placeholder="请输入学号" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">所属学校 <span class="required">*</span></label>
+                        <select class="form-select" required>
+                            <option value="">请选择学校</option>
+                            <option>示范中学</option>
+                            <option>实验小学</option>
+                            <option>第一中学</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">年级 <span class="required">*</span></label>
+                        <select class="form-select" required>
+                            <option value="">请选择年级</option>
+                            <option>初一</option>
+                            <option>初二</option>
+                            <option>初三</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">班级 <span class="required">*</span></label>
+                        <select class="form-select" required>
+                            <option value="">请选择班级</option>
+                            <option>初一(1)班</option>
+                            <option>初一(2)班</option>
+                            <option>初一(3)班</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">手机号</label>
+                        <input type="tel" class="form-input" placeholder="请输入手机号">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">家长手机号</label>
+                        <input type="tel" class="form-input" placeholder="请输入家长手机号">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="hideModal('addStudentModal')">取消</button>
+                <button class="btn btn-primary" onclick="submitAddStudent()">确定</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="common/admin-common.js"></script>
+    <script>
+        // 页面初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            pageManager.renderHeader(['用户管理', '学生管理']);
+        });
+
+        // 全选/取消全选
+        function toggleSelectAll(checkbox) {
+            const checkboxes = document.querySelectorAll('tbody input[type="checkbox"]');
+            checkboxes.forEach(cb => cb.checked = checkbox.checked);
+        }
+
+        // 重置筛选条件
+        function resetFilters() {
+            const selects = document.querySelectorAll('.form-select');
+            selects.forEach(select => select.selectedIndex = 0);
+            showToast('筛选条件已重置');
+        }
+
+        // 查看学生详情
+        function viewStudent(id) {
+            showToast('查看学生详情功能开发中', 'info');
+        }
+
+        // 编辑学生
+        function editStudent(id) {
+            showToast('编辑学生功能开发中', 'info');
+        }
+
+        // 删除学生
+        function deleteStudent(id) {
+            showConfirm('确定要删除这位学生吗？', () => {
+                showToast('删除成功');
+            });
+        }
+
+        // 提交添加学生
+        function submitAddStudent() {
+            const form = document.getElementById('addStudentForm');
+            if (form.checkValidity()) {
+                hideModal('addStudentModal');
+                showToast('添加学生成功');
+                form.reset();
+            } else {
+                form.reportValidity();
+            }
+        }
+    </script>
+</body>
+</html>

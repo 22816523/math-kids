@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>统计报表 - 客户管理系统V1.1</title>
+    <link rel="stylesheet" href="common.css">
+</head>
+<body>
+    <div class="container">
+        <div class="breadcrumb">
+            <a href="index.html">首页</a>
+            <span>></span>
+            <a href="#">报表分析</a>
+            <span>></span>
+            <span>统计报表</span>
+        </div>
+
+        <div class="page-header">
+            <h1 class="page-title">📊 统计报表</h1>
+            <p class="page-subtitle">Statistical Reports</p>
+        </div>
+
+        <div class="alert alert-info">
+            <strong>功能说明：</strong> 生成主客户分布、联系人增长等多维度统计报表，可视化展示客户与联系人的数据全景
+        </div>
+
+        <div class="card">
+            <div class="card-header">报表筛选</div>
+            <div class="card-body">
+                <div class="search-box">
+                    <div class="search-row">
+                        <span class="search-label">报表类型：</span>
+                        <select class="search-input">
+                            <option>客户分布统计</option>
+                            <option>联系人增长趋势</option>
+                            <option>业务员业绩统计</option>
+                            <option>系统使用情况</option>
+                        </select>
+                        <span class="search-label">时间范围：</span>
+                        <select class="search-input">
+                            <option>本月</option>
+                            <option>本季度</option>
+                            <option>本年</option>
+                            <option>自定义</option>
+                        </select>
+                    </div>
+                    <div class="search-row">
+                        <span class="search-label">统计维度：</span>
+                        <select class="search-input">
+                            <option>按地区</option>
+                            <option>按学段</option>
+                            <option>按部门</option>
+                            <option>按业务员</option>
+                        </select>
+                        <button class="btn btn-primary">生成报表</button>
+                        <button class="btn btn-success">导出Excel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">数据概览</div>
+            <div class="card-body">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-label">客户总数</div>
+                        <div class="stat-value">1,256</div>
+                    </div>
+                    <div class="stat-card green">
+                        <div class="stat-label">联系人总数</div>
+                        <div class="stat-value">3,892</div>
+                    </div>
+                    <div class="stat-card orange">
+                        <div class="stat-label">本月新增客户</div>
+                        <div class="stat-value">156</div>
+                    </div>
+                    <div class="stat-card red">
+                        <div class="stat-label">本月新增联系人</div>
+                        <div class="stat-value">423</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">客户地区分布</div>
+            <div class="card-body">
+                <div class="chart-container">
+                    <div style="text-align: center; padding: 100px 0; color: #999;">
+                        <div style="font-size: 48px; margin-bottom: 20px;">📈</div>
+                        <div>此处显示客户地区分布饼图</div>
+                        <div style="font-size: 12px; margin-top: 10px;">（实际应用中接入图表库如ECharts、Chart.js等）</div>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>地区</th>
+                                <th>客户数量</th>
+                                <th>占比</th>
+                                <th>联系人数量</th>
+                                <th>环比增长</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>北京市</td>
+                                <td>356</td>
+                                <td>28.3%</td>
+                                <td>1,089</td>
+                                <td><span class="badge badge-success">+12.5%</span></td>
+                            </tr>
+                            <tr>
+                                <td>上海市</td>
+                                <td>298</td>
+                                <td>23.7%</td>
+                                <td>892</td>
+                                <td><span class="badge badge-success">+8.3%</span></td>
+                            </tr>
+                            <tr>
+                                <td>广东省</td>
+                                <td>245</td>
+                                <td>19.5%</td>
+                                <td>756</td>
+                                <td><span class="badge badge-success">+15.2%</span></td>
+                            </tr>
+                            <tr>
+                                <td>浙江省</td>
+                                <td>189</td>
+                                <td>15.0%</td>
+                                <td>567</td>
+                                <td><span class="badge badge-success">+6.8%</span></td>
+                            </tr>
+                            <tr>
+                                <td>其他地区</td>
+                                <td>168</td>
+                                <td>13.5%</td>
+                                <td>588</td>
+                                <td><span class="badge badge-warning">-2.1%</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">联系人增长趋势</div>
+            <div class="card-body">
+                <div class="chart-container">
+                    <div style="text-align: center; padding: 100px 0; color: #999;">
+                        <div style="font-size: 48px; margin-bottom: 20px;">📉</div>
+                        <div>此处显示联系人增长趋势折线图</div>
+                        <div style="font-size: 12px; margin-top: 10px;">（实际应用中接入图表库如ECharts、Chart.js等）</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">学段分布统计</div>
+            <div class="card-body">
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>学段</th>
+                                <th>客户数量</th>
+                                <th>占比</th>
+                                <th>联系人数量</th>
+                                <th>平均联系人数</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>高中</td>
+                                <td>456</td>
+                                <td>36.3%</td>
+                                <td>1,456</td>
+                                <td>3.2</td>
+                            </tr>
+                            <tr>
+                                <td>初中</td>
+                                <td>389</td>
+                                <td>31.0%</td>
+                                <td>1,189</td>
+                                <td>3.1</td>
+                            </tr>
+                            <tr>
+                                <td>小学</td>
+                                <td>298</td>
+                                <td>23.7%</td>
+                                <td>856</td>
+                                <td>2.9</td>
+                            </tr>
+                            <tr>
+                                <td>九年一贯制</td>
+                                <td>78</td>
+                                <td>6.2%</td>
+                                <td>267</td>
+                                <td>3.4</td>
+                            </tr>
+                            <tr>
+                                <td>其他</td>
+                                <td>35</td>
+                                <td>2.8%</td>
+                                <td>124</td>
+                                <td>3.5</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
