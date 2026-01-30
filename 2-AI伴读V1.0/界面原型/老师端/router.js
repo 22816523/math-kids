@@ -83,7 +83,7 @@ const ROUTES = {
 const STUDENT_TABS = ['home', 'checkin', 'aiChat', 'shop', 'profile'];
 
 // Tab页面配置（教师端）
-const TEACHER_TABS = ['planList', 'monitor', 'examManage', 'profile'];
+const TEACHER_TABS = ['planList', 'monitor', 'profile'];
 
 /**
  * 模拟小程序的路由API
