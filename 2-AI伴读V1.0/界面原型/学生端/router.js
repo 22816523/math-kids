@@ -40,7 +40,8 @@ const ROUTES = {
         certificates: '21-我的奖状.html',
         feedback: '31-用户反馈.html',
         feedbackRecord: '32-反馈记录.html',
-        classCheckin: '40-班级广场.html'
+        classCheckin: '40-班级广场.html',
+        classCheckinDetail: '30-打卡详情.html'
     },
     // 教师端路由
     teacher: {
