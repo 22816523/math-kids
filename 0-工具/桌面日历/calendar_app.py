@@ -783,6 +783,19 @@ QLabel#detailChongSha {{
     font-size: 15px;
 }}
 
+/* 黄历收起按钮样式 */
+QPushButton#detailCloseBtn {{
+    background-color: transparent;
+    color: {t['detail_sub_color']};
+    border: none;
+    font-size: 13px;
+    padding: 5px;
+}}
+
+QPushButton#detailCloseBtn:hover {{
+    color: {t['title_color']};
+}}
+
 /* 关闭按钮样式 */
 QPushButton#closeButton {{
     background-color: {t['close_bg']};
@@ -801,6 +814,21 @@ QPushButton#closeButton {{
 }}
 
 QPushButton#closeButton:hover {{
+    background-color: #e63946;
+    color: #ffffff;
+}}
+
+/* 黄历关闭按钮样式 */
+QPushButton#detailCloseButton {{
+    background-color: {t['close_bg']};
+    color: {t['close_color']};
+    border: {t['btn_border']};
+    border-radius: 6px;
+    font-size: 18px;
+    font-weight: bold;
+}}
+
+QPushButton#detailCloseButton:hover {{
     background-color: #e63946;
     color: #ffffff;
 }}
@@ -1093,6 +1121,9 @@ class CalendarWindow(QWidget):
         self.time_timer.timeout.connect(self.update_time)
         self.time_timer.start(1000)
 
+        # 记录当前日期，用于检测日期变化
+        self.last_checked_date = datetime.now().date()
+
     def update_theme_dots(self):
         """更新主题圆点样式"""
         for i, dot in enumerate(self.theme_dots):
@@ -1228,9 +1259,17 @@ class CalendarWindow(QWidget):
         """)
 
     def update_time(self):
-        """更新时间显示"""
+        """更新时间显示，并检测日期变化"""
         current_time = datetime.now().strftime('%H:%M')
         self.time_label.setText(current_time)
+
+        # 检测日期是否变化（跨天自动刷新日历）
+        today = datetime.now().date()
+        if hasattr(self, 'last_checked_date') and today != self.last_checked_date:
+            self.last_checked_date = today
+            self.current_date = datetime.now()
+            self.update_title()
+            self.update_calendar()
 
     def delayed_hide_toolbar(self):
         """延迟隐藏工具栏（检查鼠标是否仍在窗口外）"""
@@ -1301,8 +1340,11 @@ class CalendarWindow(QWidget):
         self.container_layout.addLayout(weekday_layout)
 
     def create_lunar_bar(self):
-        """创建底部农历显示栏"""
-        lunar_layout = QHBoxLayout()
+        """创建底部农历显示栏（点击可关闭黄历面板）"""
+        # 用QFrame包装，支持点击
+        self.lunar_bar = QFrame()
+        self.lunar_bar.setCursor(Qt.PointingHandCursor)
+        lunar_layout = QHBoxLayout(self.lunar_bar)
         lunar_layout.setContentsMargins(0, 10, 0, 0)
 
         # 三角形指示符
@@ -1317,7 +1359,7 @@ class CalendarWindow(QWidget):
         lunar_layout.addWidget(self.lunar_label)
         lunar_layout.addStretch()
 
-        self.container_layout.addLayout(lunar_layout)
+        self.container_layout.addWidget(self.lunar_bar)
 
     def update_lunar_display(self, day_date):
         """更新农历显示"""
@@ -1413,10 +1455,11 @@ class CalendarWindow(QWidget):
 
     def update_title(self):
         """更新标题显示"""
-        year = self.current_date.year
-        month = self.current_date.month
-        # 计算第几周
-        week_num = self.current_date.isocalendar()[1]
+        today = datetime.now()
+        year = today.year
+        month = today.month
+        # 计算本月第几周
+        week_num = (today.day - 1) // 7 + 1
         self.title_label.setText(f'{year}年{month}月 第{week_num}周')
 
     def switch_view(self, mode):
@@ -1567,93 +1610,85 @@ class CalendarWindow(QWidget):
         btn.setCursor(Qt.PointingHandCursor)
 
         # 绑定点击事件
-        btn.clicked.connect(lambda checked, d=day_date: self.show_date_detail(d))
+        btn.clicked.connect(lambda checked, d=day_date: self.on_date_clicked(d))
 
         # 存储按钮引用
         self.date_buttons[day_date] = btn
 
         self.date_grid_layout.addWidget(btn, row, col)
 
+    def on_date_clicked(self, day_date):
+        """日期按钮点击处理"""
+        # 显示日期详情
+        self.show_date_detail(day_date)
+
     def show_date_detail(self, day_date):
         """显示日期详情"""
-        # 如果点击的是同一个日期，直接返回
-        if self.selected_date == day_date:
-            return
+        # 更新选中状态
+        old_selected = self.selected_date
+        self.selected_date = day_date
 
-        # 暂时阻止按钮信号，避免重复触发
-        for btn in self.date_buttons.values():
-            btn.blockSignals(True)
+        # 更新旧选中按钮的样式
+        if old_selected and old_selected in self.date_buttons:
+            old_btn = self.date_buttons[old_selected]
+            if not isinstance(old_btn, TodayButton):
+                is_rest = (old_selected.year, old_selected.month, old_selected.day) in REST_DAYS_2026
+                if is_rest:
+                    old_btn.setObjectName('restDayButton')
+                else:
+                    old_btn.setObjectName('dateButton')
+                old_btn.setStyleSheet("")
 
+        # 更新新选中按钮的样式
+        if day_date in self.date_buttons:
+            new_btn = self.date_buttons[day_date]
+            if not isinstance(new_btn, TodayButton):
+                new_btn.setObjectName('selectedButton')
+                new_btn.setStyleSheet("")
+
+        # 更新农历显示
+        self.update_lunar_display(day_date)
+
+        # 获取农历信息
         try:
-            # 更新选中状态
-            old_selected = self.selected_date
-            self.selected_date = day_date
-
-            # 更新旧选中按钮的样式（只更新必要的属性）
-            if old_selected and old_selected in self.date_buttons:
-                old_btn = self.date_buttons[old_selected]
-                if not isinstance(old_btn, TodayButton):
-                    is_rest = (old_selected.year, old_selected.month, old_selected.day) in REST_DAYS_2026
-                    if is_rest:
-                        old_btn.setObjectName('restDayButton')
-                    else:
-                        old_btn.setObjectName('dateButton')
-                    # 清除内联样式，让样式表生效
-                    old_btn.setStyleSheet("")
-
-            # 更新新选中按钮的样式
-            if day_date in self.date_buttons:
-                new_btn = self.date_buttons[day_date]
-                if not isinstance(new_btn, TodayButton):
-                    new_btn.setObjectName('selectedButton')
-                    # 清除内联样式，让样式表生效
-                    new_btn.setStyleSheet("")
-
-            # 更新农历显示
-            self.update_lunar_display(day_date)
-
-            # 获取农历信息
-            try:
-                lunar_str = LunarCalendar.get_lunar_date_str(
-                    day_date.year, day_date.month, day_date.day)
-            except Exception:
-                lunar_str = ""
-
-            # 获取黄历信息
-            almanac_info = Almanac.get_day_info(
+            lunar_str = LunarCalendar.get_lunar_date_str(
                 day_date.year, day_date.month, day_date.day)
+        except Exception:
+            lunar_str = ""
 
-            # 星期几
-            weekday_names = ['一', '二', '三', '四', '五', '六', '日']
-            weekday_str = f'星期{weekday_names[day_date.weekday()]}'
+        # 获取黄历信息
+        almanac_info = Almanac.get_day_info(
+            day_date.year, day_date.month, day_date.day)
 
-            # 更新详情面板
-            self.detail_lunar.setText(
-                f'{day_date.year}年{day_date.month}月{day_date.day}日 农历{lunar_str} {weekday_str}')
-            self.detail_title.setText('【黄道吉日·金匮】')
-            self.detail_yi.setText(f'宜：{" ".join(almanac_info["yi"])}')
-            self.detail_ji.setText(f'忌：{" ".join(almanac_info["ji"])}')
-            self.detail_chongsha.setText(
-                f'{almanac_info["chong"]} {almanac_info["sha"]} | {almanac_info["xi_shen"]} | {almanac_info["cai_shen"]}')
+        # 星期几
+        weekday_names = ['一', '二', '三', '四', '五', '六', '日']
+        weekday_str = f'星期{weekday_names[day_date.weekday()]}'
 
-            # 显示详情面板
-            if not self.detail_panel.isVisible():
-                self.detail_panel.setVisible(True)
-                new_height = self.base_height + 150
-                self.setFixedHeight(new_height)
-        except Exception as e:
-            print(f"Error in show_date_detail: {e}")
-        finally:
-            # 恢复按钮信号
-            for btn in self.date_buttons.values():
-                btn.blockSignals(False)
+        # 更新详情面板
+        self.detail_lunar.setText(
+            f'{day_date.year}年{day_date.month}月{day_date.day}日 农历{lunar_str} {weekday_str}')
+        self.detail_title.setText('【黄道吉日·金匮】')
+        self.detail_yi.setText(f'宜：{" ".join(almanac_info["yi"])}')
+        self.detail_ji.setText(f'忌：{" ".join(almanac_info["ji"])}')
+        self.detail_chongsha.setText(
+            f'{almanac_info["chong"]} {almanac_info["sha"]} | {almanac_info["xi_shen"]} | {almanac_info["cai_shen"]}')
+
+        # 显示详情面板
+        if not self.detail_panel.isVisible():
+            self.detail_panel.setVisible(True)
+            new_height = self.base_height + 180
+            self.setFixedHeight(new_height)
 
     # ==================== 窗口拖动功能 ====================
     def mousePressEvent(self, event):
-        """鼠标按下事件，记录拖动起始位置"""
+        """鼠标按下事件 - 只在空白区域启用拖动"""
         if event.button() == Qt.LeftButton:
-            self.drag_position = event.globalPos() - self.frameGeometry().topLeft()
-            event.accept()
+            # 检查点击位置是否在按钮上
+            child = self.childAt(event.pos())
+            if child is None or not isinstance(child, QPushButton):
+                self.drag_position = event.globalPos() - self.frameGeometry().topLeft()
+            else:
+                self.drag_position = None
 
     def mouseMoveEvent(self, event):
         """鼠标移动事件，实现窗口拖动"""

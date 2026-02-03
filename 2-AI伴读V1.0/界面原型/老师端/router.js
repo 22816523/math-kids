@@ -36,7 +36,7 @@ const ROUTES = {
         favorites: '27-我的收藏.html',
         examList: '28-测评列表.html'
     },
-    // 教师端路由
+    // 老师端路由
     teacher: {
         login: '01-登录.html',
         pointsDetail: '02-积分明细.html',
@@ -59,11 +59,11 @@ const ROUTES = {
         bookExamStats: '19-书籍测评统计.html',
         report: '20-数据报告.html',
         dataExport: '21-数据导出.html',
-        message: '22-消息推送.html',
+        message: '22-消息中心.html',
         createMessage: '23-新建消息.html',
         messageDetail: '24-消息详情.html',
         receivedMessageDetail: '25-收到的消息详情.html',
-        profile: '26-教师个人中心.html',
+        profile: '26-老师个人中心.html',
         profileEdit: '27-个人信息编辑.html',
         changeAvatar: '28-更换头像.html',
         editName: '29-编辑姓名.html',
@@ -82,7 +82,7 @@ const ROUTES = {
 // Tab页面配置（学生端）
 const STUDENT_TABS = ['home', 'checkin', 'aiChat', 'shop', 'profile'];
 
-// Tab页面配置（教师端）
+// Tab页面配置（老师端）
 const TEACHER_TABS = ['planList', 'monitor', 'profile'];
 
 /**
@@ -227,7 +227,7 @@ const Router = {
     },
 
     /**
-     * 跳转到教师端页面
+     * 跳转到老师端页面
      * @param {String} page - 页面key
      * @param {Object} params - 参数对象
      * @param {String} method - 跳转方式 (navigateTo/redirectTo/switchTab)

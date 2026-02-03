@@ -1,9 +1,9 @@
 /**
- * 校校读吧小管家 - 教师端弹窗组件
- * 包含所有教师端需要的弹窗
+ * 校校读吧小管家 - 老师端弹窗组件
+ * 包含所有老师端需要的弹窗
  */
 
-// 弹窗样式（教师端配色）
+// 弹窗样式（老师端配色）
 const MODAL_STYLES = `
 <style>
 .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; display: none; align-items: center; justify-content: center; }

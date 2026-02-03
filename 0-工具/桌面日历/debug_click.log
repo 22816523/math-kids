@@ -1,0 +1,8 @@
+hide_detail_panel called, isVisible=True
+  -> panel hidden, new isVisible=False
+hide_detail_panel called, isVisible=True
+  -> panel hidden, new isVisible=False
+eventFilter: obj=detailYi, event=2
+  -> 关闭面板!
+hide_detail_panel called, isVisible=True
+  -> panel hidden, new isVisible=False
