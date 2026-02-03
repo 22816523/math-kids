@@ -1,0 +1,2886 @@
+{
+  "version": "2.6",
+  "children": [
+    {
+      "type": "frame",
+      "id": "bi8Au",
+      "x": 0,
+      "y": 0,
+      "name": "Frame",
+      "clip": true,
+      "width": 800,
+      "height": 600,
+      "fill": "#FFFFFF",
+      "layout": "none"
+    },
+    {
+      "type": "frame",
+      "id": "5XEX9",
+      "x": 0,
+      "y": 0,
+      "name": "01-登录",
+      "clip": true,
+      "width": 375,
+      "height": 812,
+      "fill": "$ih-bg",
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "4PXBc",
+          "name": "Header",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 16,
+          "padding": [
+            80,
+            24,
+            40,
+            24
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "Uq8Ji",
+              "name": "LogoFrame",
+              "width": 80,
+              "height": 80,
+              "fill": "$ih-accent",
+              "cornerRadius": 20,
+              "layout": "vertical",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "2nOR7",
+                  "name": "logoIcon",
+                  "content": "📚",
+                  "fontFamily": "Inter",
+                  "fontSize": 36,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "WpzNw",
+              "name": "appName",
+              "fill": "$ih-text",
+              "content": "校校读吧",
+              "fontFamily": "IBM Plex Sans",
+              "fontSize": 28,
+              "fontWeight": "600",
+              "letterSpacing": -0.5
+            },
+            {
+              "type": "text",
+              "id": "o33yI",
+              "name": "appSubtitle",
+              "fill": "$ih-text-secondary",
+              "content": "老师端",
+              "fontFamily": "IBM Plex Sans",
+              "fontSize": 14,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "vVXZM",
+          "name": "Content",
+          "width": "fill_container",
+          "height": "fill_container",
+          "layout": "vertical",
+          "gap": 20,
+          "padding": 24,
+          "children": [
+            {
+              "type": "frame",
+              "id": "TK1zx",
+              "name": "TabBar",
+              "width": "fill_container",
+              "fill": "$ih-surface",
+              "cornerRadius": 12,
+              "padding": 4,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "ja0ZV",
+                  "name": "Tab1",
+                  "width": "fill_container",
+                  "height": 40,
+                  "fill": "$ih-accent",
+                  "cornerRadius": 10,
+                  "layout": "vertical",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "65Kuo",
+                      "name": "tab1Text",
+                      "fill": "#FFFFFF",
+                      "content": "微信登录",
+                      "fontFamily": "IBM Plex Sans",
+                      "fontSize": 14,
+                      "fontWeight": "500"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "5uk4k",
+                  "name": "Tab2",
+                  "width": "fill_container",
+                  "height": 40,
+                  "cornerRadius": 10,
+                  "layout": "vertical",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "5Fh6M",
+                      "name": "tab2Text",
+                      "fill": "$ih-text-muted",
+                      "content": "手机号登录",
+                      "fontFamily": "IBM Plex Sans",
+                      "fontSize": 14,
+                      "fontWeight": "500"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "Bn4xt",
+              "name": "WechatSection",
+              "width": "fill_container",
+              "fill": "$ih-surface",
+              "cornerRadius": 16,
+              "layout": "vertical",
+              "gap": 20,
+              "padding": [
+                32,
+                24
+              ],
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "GHWF0",
+                  "name": "WechatIcon",
+                  "width": 64,
+                  "height": 64,
+                  "fill": "#07C160",
+                  "cornerRadius": 32,
+                  "layout": "vertical",
+                  "children": [
+                    {
+                      "type": "icon_font",
+                      "id": "TcnLg",
+                      "name": "wechatIconText",
+                      "width": 0,
+                      "height": 0,
+                      "iconFontFamily": "Material Symbols Rounded",
+                      "fill": "#FFFFFF"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "PdumV",
+                  "name": "wechatTitle",
+                  "fill": "$ih-text",
+                  "content": "微信快捷登录",
+                  "fontFamily": "IBM Plex Sans",
+                  "fontSize": 18,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "BQp5Y",
+                  "name": "wechatDesc",
+                  "fill": "$ih-text-muted",
+                  "content": "授权后即可快速登录，无需输入账号密码",
+                  "textAlign": "center",
+                  "fontFamily": "IBM Plex Sans",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "frame",
+                  "id": "FXI79",
+                  "name": "WechatBtn",
+                  "width": "fill_container",
+                  "height": 50,
+                  "fill": "#07C160",
+                  "cornerRadius": 12,
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "Ccyrp",
+                      "name": "wechatBtnText",
+                      "fill": "#FFFFFF",
+                      "content": "微信一键登录",
+                      "fontFamily": "IBM Plex Sans",
+                      "fontSize": 16,
+                      "fontWeight": "600"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "6Xx03",
+              "name": "Spacer",
+              "width": "fill_container",
+              "height": "fill_container"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "6OfES",
+          "name": "Footer",
+          "width": "fill_container",
+          "layout": "vertical",
+          "padding": [
+            16,
+            24,
+            40,
+            24
+          ],
+          "children": [
+            {
+              "type": "text",
+              "id": "CED3s",
+              "name": "footerText",
+              "fill": "$ih-text-muted",
+              "content": "登录即表示同意 用户协议 和 隐私政策",
+              "textAlign": "center",
+              "fontFamily": "IBM Plex Sans",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "Yaf57",
+      "x": 420,
+      "y": 0,
+      "name": "04-班级列表",
+      "clip": true,
+      "width": 375,
+      "height": 812,
+      "fill": "$ih-bg",
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "EK1if",
+          "name": "Navbar",
+          "width": "fill_container",
+          "height": 56,
+          "fill": "$ih-surface",
+          "gap": 12,
+          "padding": [
+            0,
+            16
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "vSWoZ",
+              "name": "BackBtn",
+              "width": 36,
+              "height": 36,
+              "fill": "$ih-surface-warm",
+              "cornerRadius": 10,
+              "layout": "vertical",
+              "children": [
+                {
+                  "type": "icon_font",
+                  "id": "RttRG",
+                  "name": "backIcon",
+                  "width": 0,
+                  "height": 0,
+                  "iconFontFamily": "Material Symbols Rounded",
+                  "fill": "$ih-text"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "wsWL0",
+              "name": "navTitle",
+              "fill": "$ih-text",
+              "content": "班级管理",
+              "fontFamily": "IBM Plex Sans",
+              "fontSize": 18,
+              "fontWeight": "600"
+            },
+            {
+              "type": "frame",
+              "id": "NuhJt",
+              "name": "AddBtn",
+              "height": 36,
+              "fill": "$ih-accent",
+              "cornerRadius": 10,
+              "gap": 6,
+              "padding": [
+                0,
+                16
+              ],
+              "children": [
+                {
+                  "type": "icon_font",
+                  "id": "cIaYm",
+                  "name": "addIcon",
+                  "width": 0,
+                  "height": 0,
+                  "iconFontFamily": "Material Symbols Rounded",
+                  "fill": "#FFFFFF"
+                },
+                {
+                  "type": "text",
+                  "id": "Y7L8R",
+                  "name": "addText",
+                  "fill": "#FFFFFF",
+                  "content": "新建",
+                  "fontFamily": "IBM Plex Sans",
+                  "fontSize": 14,
+                  "fontWeight": "500"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "steex",
+          "name": "StatsBar",
+          "width": "fill_container",
+          "fill": "$ih-surface",
+          "padding": [
+            16,
+            24
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "4wL04",
+              "name": "Stat1",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 4,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "1Okwi",
+                  "name": "stat1Value",
+                  "fill": "$ih-accent",
+                  "content": "3",
+                  "fontFamily": "IBM Plex Sans",
+                  "fontSize": 28,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "yz1D0",
+                  "name": "stat1Label",
+                  "fill": "$ih-text-muted",
+                  "content": "班级总数",
+                  "fontFamily": "IBM Plex Sans",
+                  "fontSize": 12,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "3jDYU",
+              "name": "Stat2",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 4,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "RFR0C",
+                  "name": "stat2Value",
+                  "fill": "$ih-accent",
+                  "content": "153",
+                  "fontFamily": "IBM Plex Sans",
+                  "fontSize": 28,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "bqwe1",
+                  "name": "stat2Label",
+                  "fill": "$ih-text-muted",
+                  "content": "学生总数",
+                  "fontFamily": "IBM Plex Sans",
+                  "fontSize": 12,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "KLzkE",
+              "name": "Stat3",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 4,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "aO2h2",
+                  "name": "stat3Value",
+                  "fill": "$ih-accent",
+                  "content": "51",
+                  "fontFamily": "IBM Plex Sans",
+                  "fontSize": 28,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "TCO17",
+                  "name": "stat3Label",
+                  "fill": "$ih-text-muted",
+                  "content": "平均人数",
+                  "fontFamily": "IBM Plex Sans",
+                  "fontSize": 12,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "1QH79",
+          "name": "ClassList",
+          "width": "fill_container",
+          "height": "fill_container",
+          "layout": "vertical",
+          "gap": 12,
+          "padding": 16,
+          "children": [
+            {
+              "type": "frame",
+              "id": "NtPW7",
+              "name": "ClassCard1",
+              "width": "fill_container",
+              "fill": "$ih-surface",
+              "cornerRadius": 16,
+              "layout": "vertical",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "0J2V8",
+                  "name": "CardHeader1",
+                  "width": "fill_container",
+                  "cornerRadius": [
+                    16,
+                    16,
+                    0,
+                    0
+                  ],
+                  "layout": "vertical",
+                  "gap": 8,
+                  "padding": 20,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "4zBPy",
+                      "name": "className1",
+                      "fill": "#FFFFFF",
+                      "content": "初一(3)班",
+                      "fontFamily": "IBM Plex Sans",
+                      "fontSize": 20,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "hZOWc",
+                      "name": "classSemester1",
+                      "fill": "rgba(255,255,255,0.8)",
+                      "content": "2024-2025学年 上学期",
+                      "fontFamily": "IBM Plex Sans",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "Bl6Vx",
+                      "name": "classDesc1",
+                      "fill": "rgba(255,255,255,0.9)",
+                      "content": "重点培养班级，注重阅读能力和文学素养提升",
+                      "fontFamily": "IBM Plex Sans",
+                      "fontSize": 13,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "GBfsP",
+                  "name": "CardFooter1",
+                  "width": "fill_container",
+                  "gap": 16,
+                  "padding": [
+                    14,
+                    20
+                  ],
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "W2PlZ",
+                      "name": "StudentCount1",
+                      "gap": 6,
+                      "children": [
+                        {
+                          "type": "icon_font",
+                          "id": "2b8zI",
+                          "name": "studentIcon1",
+                          "width": 0,
+                          "height": 0,
+                          "iconFontFamily": "Material Symbols Rounded",
+                          "fill": "$ih-text-secondary"
+                        },
+                        {
+                          "type": "text",
+                          "id": "5c8v8",
+                          "name": "studentText1",
+                          "fill": "$ih-text-secondary",
+                          "content": "52人",
+                          "fontFamily": "IBM Plex Sans",
+                          "fontSize": 14,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "ydY42",
+                      "name": "InviteBtn1",
+                      "gap": 4,
+                      "children": [
+                        {
+                          "type": "icon_font",
+                          "id": "ZA06D",
+                          "name": "inviteIcon1",
+                          "width": 0,
+                          "height": 0,
+                          "iconFontFamily": "Material Symbols Rounded",
+                          "fill": "$ih-accent"
+                        },
+                        {
+                          "type": "text",
+                          "id": "nd2EQ",
+                          "name": "inviteText1",
+                          "fill": "$ih-accent",
+                          "content": "邀请",
+                          "fontFamily": "IBM Plex Sans",
+                          "fontSize": 13,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "7OPtD",
+              "name": "ClassCard2",
+              "width": "fill_container",
+              "fill": "$ih-surface",
+              "cornerRadius": 16,
+              "layout": "vertical",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "5DyNB",
+                  "name": "CardHeader2",
+                  "width": "fill_container",
+                  "cornerRadius": [
+                    16,
+                    16,
+                    0,
+                    0
+                  ],
+                  "layout": "vertical",
+                  "gap": 8,
+                  "padding": 20,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "oJxeT",
+                      "name": "className2",
+                      "fill": "#FFFFFF",
+                      "content": "初一(4)班",
+                      "fontFamily": "IBM Plex Sans",
+                      "fontSize": 20,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "iwNqM",
+                      "name": "classSemester2",
+                      "fill": "rgba(255,255,255,0.8)",
+                      "content": "2024-2025学年 上学期",
+                      "fontFamily": "IBM Plex Sans",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "8qtaT",
+                  "name": "CardFooter2",
+                  "width": "fill_container",
+                  "gap": 16,
+                  "padding": [
+                    14,
+                    20
+                  ],
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "iIlvA",
+                      "name": "StudentCount2",
+                      "gap": 6,
+                      "children": [
+                        {
+                          "type": "icon_font",
+                          "id": "Xf6Gl",
+                          "name": "studentIcon2",
+                          "width": 0,
+                          "height": 0,
+                          "iconFontFamily": "Material Symbols Rounded",
+                          "fill": "$ih-text-secondary"
+                        },
+                        {
+                          "type": "text",
+                          "id": "0PCdS",
+                          "name": "studentText2",
+                          "fill": "$ih-text-secondary",
+                          "content": "50人",
+                          "fontFamily": "IBM Plex Sans",
+                          "fontSize": 14,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "BjO7o",
+                      "name": "InviteBtn2",
+                      "gap": 4,
+                      "children": [
+                        {
+                          "type": "icon_font",
+                          "id": "ktdAP",
+                          "name": "inviteIcon2",
+                          "width": 0,
+                          "height": 0,
+                          "iconFontFamily": "Material Symbols Rounded",
+                          "fill": "$ih-accent"
+                        },
+                        {
+                          "type": "text",
+                          "id": "RNj89",
+                          "name": "inviteText2",
+                          "fill": "$ih-accent",
+                          "content": "邀请",
+                          "fontFamily": "IBM Plex Sans",
+                          "fontSize": 13,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "Q1nBK",
+              "name": "ClassCard3",
+              "width": "fill_container",
+              "fill": "$ih-surface",
+              "cornerRadius": 16,
+              "layout": "vertical",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "2XMFd",
+                  "name": "CardHeader3",
+                  "width": "fill_container",
+                  "cornerRadius": [
+                    16,
+                    16,
+                    0,
+                    0
+                  ],
+                  "layout": "vertical",
+                  "gap": 8,
+                  "padding": 20,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "rlpfq",
+                      "name": "className3",
+                      "fill": "#FFFFFF",
+                      "content": "初一(5)班",
+                      "fontFamily": "IBM Plex Sans",
+                      "fontSize": 20,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "6Yq7S",
+                      "name": "classSemester3",
+                      "fill": "rgba(255,255,255,0.8)",
+                      "content": "2024-2025学年 上学期",
+                      "fontFamily": "IBM Plex Sans",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "bAKGh",
+                  "name": "CardFooter3",
+                  "width": "fill_container",
+                  "gap": 16,
+                  "padding": [
+                    14,
+                    20
+                  ],
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "PLl4G",
+                      "name": "StudentCount3",
+                      "gap": 6,
+                      "children": [
+                        {
+                          "type": "icon_font",
+                          "id": "XAGW1",
+                          "name": "studentIcon3",
+                          "width": 0,
+                          "height": 0,
+                          "iconFontFamily": "Material Symbols Rounded",
+                          "fill": "$ih-text-secondary"
+                        },
+                        {
+                          "type": "text",
+                          "id": "6YdQZ",
+                          "name": "studentText3",
+                          "fill": "$ih-text-secondary",
+                          "content": "51人",
+                          "fontFamily": "IBM Plex Sans",
+                          "fontSize": 14,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "3xqtE",
+                      "name": "InviteBtn3",
+                      "gap": 4,
+                      "children": [
+                        {
+                          "type": "icon_font",
+                          "id": "j43qo",
+                          "name": "inviteIcon3",
+                          "width": 0,
+                          "height": 0,
+                          "iconFontFamily": "Material Symbols Rounded",
+                          "fill": "$ih-accent"
+                        },
+                        {
+                          "type": "text",
+                          "id": "iXOTS",
+                          "name": "inviteText3",
+                          "fill": "$ih-accent",
+                          "content": "邀请",
+                          "fontFamily": "IBM Plex Sans",
+                          "fontSize": 13,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "zzdzG",
+      "x": 840,
+      "y": 0,
+      "name": "06-阅读计划列表",
+      "clip": true,
+      "width": 375,
+      "height": 812,
+      "fill": "$ih-bg",
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "09fiU",
+          "name": "Navbar",
+          "width": "fill_container",
+          "height": 56,
+          "fill": "$ih-surface",
+          "padding": [
+            0,
+            16
+          ],
+          "children": [
+            {
+              "type": "text",
+              "id": "R1l1P",
+              "name": "navTitle3",
+              "fill": "$ih-text",
+              "content": "阅读计划",
+              "textAlign": "center",
+              "fontFamily": "IBM Plex Sans",
+              "fontSize": 18,
+              "fontWeight": "600"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "rgKte",
+          "name": "SearchBar",
+          "width": "fill_container",
+          "fill": "$ih-surface",
+          "padding": [
+            12,
+            16
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "wBi32",
+              "name": "SearchInput",
+              "width": "fill_container",
+              "height": 44,
+              "fill": "$ih-surface-warm",
+              "cornerRadius": 12,
+              "gap": 10,
+              "padding": [
+                0,
+                16
+              ],
+              "children": [
+                {
+                  "type": "icon_font",
+                  "id": "Tsbzc",
+                  "name": "searchIcon",
+                  "width": 0,
+                  "height": 0,
+                  "iconFontFamily": "Material Symbols Rounded",
+                  "fill": "$ih-text-muted"
+                },
+                {
+                  "type": "text",
+                  "id": "JR5Pb",
+                  "name": "searchPlaceholder",
+                  "fill": "$ih-text-muted",
+                  "content": "搜索阅读计划...",
+                  "fontFamily": "IBM Plex Sans",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "wDEJh",
+          "name": "PlanList",
+          "width": "fill_container",
+          "height": "fill_container",
+          "layout": "vertical",
+          "gap": 16,
+          "padding": 16,
+          "children": [
+            {
+              "type": "frame",
+              "id": "mIALo",
+              "name": "SectionHeader1",
+              "width": "fill_container",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "IvchP",
+                  "name": "sectionTitle1",
+                  "fill": "$ih-text",
+                  "content": "进行中",
+                  "fontFamily": "IBM Plex Sans",
+                  "fontSize": 14,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "eXB5B",
+                  "name": "sectionCount1",
+                  "fill": "$ih-text-muted",
+                  "content": "2个计划",
+                  "fontFamily": "IBM Plex Sans",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "iiHlB",
+              "name": "PlanCard1",
+              "width": "fill_container",
+              "fill": "$ih-surface",
+              "cornerRadius": 16,
+              "layout": "vertical",
+              "gap": 14,
+              "padding": 20,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "sBSJA",
+                  "name": "PlanHeader1",
+                  "width": "fill_container",
+                  "gap": 12,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "mmzlp",
+                      "name": "PlanCover1",
+                      "width": 56,
+                      "height": 72,
+                      "cornerRadius": 8,
+                      "layout": "vertical",
+                      "children": [
+                        {
+                          "type": "icon_font",
+                          "id": "XVvwr",
+                          "name": "planCoverIcon1",
+                          "width": 0,
+                          "height": 0,
+                          "iconFontFamily": "Material Symbols Rounded",
+                          "fill": "#FFFFFF"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "i6V9g",
+                      "name": "PlanInfo1",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 6,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "d3Fcl",
+                          "name": "planTitle1",
+                          "fill": "$ih-text",
+                          "content": "《西游记》精读计划",
+                          "fontFamily": "IBM Plex Sans",
+                          "fontSize": 16,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "snrwe",
+                          "name": "planMeta1",
+                          "fill": "$ih-text-muted",
+                          "content": "4周 · 12次阅读 · 3次测评",
+                          "fontFamily": "IBM Plex Sans",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "m5X8S",
+                  "name": "PlanProgress1",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "FI1MK",
+                      "name": "ProgressHeader1",
+                      "width": "fill_container",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "xItZq",
+                          "name": "progressLabel1",
+                          "fill": "$ih-text-secondary",
+                          "content": "班级进度",
+                          "fontFamily": "IBM Plex Sans",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "4ifWc",
+                          "name": "progressValue1",
+                          "fill": "$ih-accent",
+                          "content": "68%",
+                          "fontFamily": "IBM Plex Sans",
+                          "fontSize": 12,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "MVW05",
+                      "name": "ProgressBar1",
+                      "width": "fill_container",
+                      "height": 8,
+                      "fill": "$ih-surface-warm",
+                      "cornerRadius": 4,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "oXNRS",
+                          "name": "ProgressFill1",
+                          "width": 200,
+                          "height": 8,
+                          "fill": "$ih-accent",
+                          "cornerRadius": 4
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "ONqep",
+                  "name": "PlanFooter1",
+                  "width": "fill_container",
+                  "gap": 12,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "xkqab",
+                      "name": "ClassTag1",
+                      "fill": "$ih-accent-soft",
+                      "cornerRadius": 6,
+                      "padding": [
+                        4,
+                        10
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "YwHwl",
+                          "name": "classTagText1",
+                          "fill": "$ih-accent",
+                          "content": "初一(3)班",
+                          "fontFamily": "IBM Plex Sans",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "TBIyN",
+                      "name": "ClassTag2",
+                      "fill": "$ih-accent-soft",
+                      "cornerRadius": 6,
+                      "padding": [
+                        4,
+                        10
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "0Ozog",
+                          "name": "classTagText2",
+                          "fill": "$ih-accent",
+                          "content": "初一(4)班",
+                          "fontFamily": "IBM Plex Sans",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "vIRVS",
+              "name": "PlanCard2",
+              "width": "fill_container",
+              "fill": "$ih-surface",
+              "cornerRadius": 16,
+              "layout": "vertical",
+              "gap": 14,
+              "padding": 20,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "WdJM7",
+                  "name": "PlanHeader2",
+                  "width": "fill_container",
+                  "gap": 12,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "TZWGr",
+                      "name": "PlanCover2",
+                      "width": 56,
+                      "height": 72,
+                      "cornerRadius": 8,
+                      "layout": "vertical",
+                      "children": [
+                        {
+                          "type": "icon_font",
+                          "id": "aph9Q",
+                          "name": "planCoverIcon2",
+                          "width": 0,
+                          "height": 0,
+                          "iconFontFamily": "Material Symbols Rounded",
+                          "fill": "#FFFFFF"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "j4XaS",
+                      "name": "PlanInfo2",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 6,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "Q8zQt",
+                          "name": "planTitle2",
+                          "fill": "$ih-text",
+                          "content": "《三国演义》导读",
+                          "fontFamily": "IBM Plex Sans",
+                          "fontSize": 16,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "vkpPp",
+                          "name": "planMeta2",
+                          "fill": "$ih-text-muted",
+                          "content": "6周 · 18次阅读 · 4次测评",
+                          "fontFamily": "IBM Plex Sans",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "kSW4w",
+                  "name": "PlanProgress2",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "szHUv",
+                      "name": "ProgressHeader2",
+                      "width": "fill_container",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "fWlCa",
+                          "name": "progressLabel2",
+                          "fill": "$ih-text-secondary",
+                          "content": "班级进度",
+                          "fontFamily": "IBM Plex Sans",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "H03E2",
+                          "name": "progressValue2",
+                          "fill": "$ih-positive",
+                          "content": "35%",
+                          "fontFamily": "IBM Plex Sans",
+                          "fontSize": 12,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "9tElI",
+                      "name": "ProgressBar2",
+                      "width": "fill_container",
+                      "height": 8,
+                      "fill": "$ih-surface-warm",
+                      "cornerRadius": 4,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "XmzOn",
+                          "name": "ProgressFill2",
+                          "width": 100,
+                          "height": 8,
+                          "fill": "$ih-positive",
+                          "cornerRadius": 4
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "41KZx",
+                  "name": "PlanFooter2",
+                  "width": "fill_container",
+                  "gap": 12,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "tU9dt",
+                      "name": "ClassTag3",
+                      "fill": "#5A9E6F1F",
+                      "cornerRadius": 6,
+                      "padding": [
+                        4,
+                        10
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "XLaIY",
+                          "name": "classTagText3",
+                          "fill": "$ih-positive",
+                          "content": "初一(5)班",
+                          "fontFamily": "IBM Plex Sans",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "oWx1f",
+          "name": "TabBar",
+          "width": "fill_container",
+          "fill": "$ih-surface",
+          "padding": [
+            12,
+            24,
+            24,
+            24
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "ZWlI0",
+              "name": "TabPill",
+              "fill": "$ih-surface-warm",
+              "cornerRadius": 36,
+              "padding": 4,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "Tyrd1",
+                  "name": "Tab1",
+                  "width": 80,
+                  "height": 44,
+                  "fill": "$ih-accent",
+                  "cornerRadius": 26,
+                  "layout": "vertical",
+                  "gap": 4,
+                  "children": [
+                    {
+                      "type": "icon_font",
+                      "id": "ll2jx",
+                      "name": "tab1Icon",
+                      "width": 0,
+                      "height": 0,
+                      "iconFontFamily": "Material Symbols Rounded",
+                      "fill": "#FFFFFF"
+                    },
+                    {
+                      "type": "text",
+                      "id": "Mxw1W",
+                      "name": "tab1Label",
+                      "fill": "#FFFFFF",
+                      "content": "计划",
+                      "fontFamily": "IBM Plex Sans",
+                      "fontSize": 10,
+                      "fontWeight": "500"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "hjtkb",
+                  "name": "Tab2",
+                  "width": 80,
+                  "height": 44,
+                  "cornerRadius": 26,
+                  "layout": "vertical",
+                  "gap": 4,
+                  "children": [
+                    {
+                      "type": "icon_font",
+                      "id": "9hjZ9",
+                      "name": "tab2Icon",
+                      "width": 0,
+                      "height": 0,
+                      "iconFontFamily": "Material Symbols Rounded",
+                      "fill": "$ih-text-muted"
+                    },
+                    {
+                      "type": "text",
+                      "id": "KYevo",
+                      "name": "tab2Label",
+                      "fill": "$ih-text-muted",
+                      "content": "进度",
+                      "fontFamily": "IBM Plex Sans",
+                      "fontSize": 10,
+                      "fontWeight": "500"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "uk8p1",
+                  "name": "Tab3",
+                  "width": 80,
+                  "height": 44,
+                  "cornerRadius": 26,
+                  "layout": "vertical",
+                  "gap": 4,
+                  "children": [
+                    {
+                      "type": "icon_font",
+                      "id": "9rfq1",
+                      "name": "tab3Icon",
+                      "width": 0,
+                      "height": 0,
+                      "iconFontFamily": "Material Symbols Rounded",
+                      "fill": "$ih-text-muted"
+                    },
+                    {
+                      "type": "text",
+                      "id": "G3ays",
+                      "name": "tab3Label",
+                      "fill": "$ih-text-muted",
+                      "content": "我的",
+                      "fontFamily": "IBM Plex Sans",
+                      "fontSize": 10,
+                      "fontWeight": "500"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "1sW5z",
+      "x": 1260,
+      "y": 0,
+      "name": "08-学生详情",
+      "clip": true,
+      "width": 375,
+      "height": 812,
+      "fill": "$ih-bg",
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "FEP45",
+          "name": "Navbar",
+          "width": "fill_container",
+          "height": 56,
+          "fill": "$ih-surface",
+          "gap": 12,
+          "padding": [
+            0,
+            16
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "awK9d",
+              "name": "BackBtn",
+              "width": 36,
+              "height": 36,
+              "fill": "$ih-surface-warm",
+              "cornerRadius": 10,
+              "layout": "vertical",
+              "children": [
+                {
+                  "type": "icon_font",
+                  "id": "DMOaT",
+                  "name": "backIcon4",
+                  "width": 0,
+                  "height": 0,
+                  "iconFontFamily": "Material Symbols Rounded",
+                  "fill": "$ih-text"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "QJp2f",
+              "name": "navTitle4",
+              "fill": "$ih-text",
+              "content": "学生详情",
+              "fontFamily": "IBM Plex Sans",
+              "fontSize": 18,
+              "fontWeight": "600"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "oSmUS",
+          "name": "Content",
+          "width": "fill_container",
+          "height": "fill_container",
+          "layout": "vertical",
+          "gap": 16,
+          "padding": 16,
+          "children": [
+            {
+              "type": "frame",
+              "id": "NsDsn",
+              "name": "StudentCard",
+              "width": "fill_container",
+              "fill": "$ih-surface",
+              "cornerRadius": 16,
+              "layout": "vertical",
+              "gap": 16,
+              "padding": 20,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "hBCGE",
+                  "name": "StudentHeader",
+                  "width": "fill_container",
+                  "gap": 16,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "h4KJQ",
+                      "name": "Avatar",
+                      "width": 64,
+                      "height": 64,
+                      "fill": "$ih-accent",
+                      "cornerRadius": 32,
+                      "layout": "vertical",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "ABqtx",
+                          "name": "avatarText",
+                          "fill": "#FFFFFF",
+                          "content": "张",
+                          "fontFamily": "IBM Plex Sans",
+                          "fontSize": 24,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "jMt7T",
+                      "name": "StudentInfo",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 6,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "K6PhT",
+                          "name": "studentName",
+                          "fill": "$ih-text",
+                          "content": "张小明",
+                          "fontFamily": "IBM Plex Sans",
+                          "fontSize": 20,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "UGfse",
+                          "name": "studentClass",
+                          "fill": "$ih-text-muted",
+                          "content": "初一(3)班 · 学号 2024030115",
+                          "fontFamily": "IBM Plex Sans",
+                          "fontSize": 13,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "WlgP9",
+                  "name": "StudentStats",
+                  "width": "fill_container",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "xD34A",
+                      "name": "Stat1",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 4,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "rI57B",
+                          "name": "stat1Value",
+                          "fill": "$ih-accent",
+                          "content": "9/17",
+                          "fontFamily": "IBM Plex Sans",
+                          "fontSize": 20,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "pL6IC",
+                          "name": "stat1Label",
+                          "fill": "$ih-text-muted",
+                          "content": "任务完成",
+                          "fontFamily": "IBM Plex Sans",
+                          "fontSize": 11,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "s34ef",
+                      "name": "Stat2",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 4,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "PEesk",
+                          "name": "stat2Value",
+                          "fill": "$ih-positive",
+                          "content": "85",
+                          "fontFamily": "IBM Plex Sans",
+                          "fontSize": 20,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "as8v8",
+                          "name": "stat2Label",
+                          "fill": "$ih-text-muted",
+                          "content": "测评均分",
+                          "fontFamily": "IBM Plex Sans",
+                          "fontSize": 11,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "26srR",
+                      "name": "Stat3",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 4,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "jUU5C",
+                          "name": "stat3Value",
+                          "fill": "$ih-text-secondary",
+                          "content": "12h",
+                          "fontFamily": "IBM Plex Sans",
+                          "fontSize": 20,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "Xky8R",
+                          "name": "stat3Label",
+                          "fill": "$ih-text-muted",
+                          "content": "阅读时长",
+                          "fontFamily": "IBM Plex Sans",
+                          "fontSize": 11,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "CKffa",
+              "name": "TaskSection",
+              "width": "fill_container",
+              "fill": "$ih-surface",
+              "cornerRadius": 16,
+              "layout": "vertical",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "ybe6L",
+                  "name": "TaskHeader",
+                  "width": "fill_container",
+                  "padding": [
+                    16,
+                    20
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "20RgW",
+                      "name": "taskTitle",
+                      "fill": "$ih-text",
+                      "content": "任务完成情况",
+                      "fontFamily": "IBM Plex Sans",
+                      "fontSize": 14,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "HjKPb",
+                      "name": "taskCount",
+                      "fill": "$ih-text-muted",
+                      "content": "9/17 完成",
+                      "fontFamily": "IBM Plex Sans",
+                      "fontSize": 13,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "Y77ME",
+                  "name": "Divider1",
+                  "width": "fill_container",
+                  "height": 1,
+                  "fill": "$ih-border"
+                },
+                {
+                  "type": "frame",
+                  "id": "KtHQW",
+                  "name": "TaskItem1",
+                  "width": "fill_container",
+                  "gap": 14,
+                  "padding": [
+                    14,
+                    20
+                  ],
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "gGwQn",
+                      "name": "TaskCheck1",
+                      "width": 24,
+                      "height": 24,
+                      "fill": "$ih-positive",
+                      "cornerRadius": 8,
+                      "layout": "vertical",
+                      "children": [
+                        {
+                          "type": "icon_font",
+                          "id": "7zTwN",
+                          "name": "taskCheckIcon1",
+                          "width": 0,
+                          "height": 0,
+                          "iconFontFamily": "Material Symbols Rounded",
+                          "fill": "#FFFFFF"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "626eD",
+                      "name": "TaskContent1",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 2,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "8OKvk",
+                          "name": "taskName1",
+                          "fill": "$ih-text",
+                          "content": "第1次阅读打卡",
+                          "fontFamily": "IBM Plex Sans",
+                          "fontSize": 14,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "text",
+                          "id": "uu7xa",
+                          "name": "taskDesc1",
+                          "fill": "$ih-text-muted",
+                          "content": "已完成 · 2025-01-15",
+                          "fontFamily": "IBM Plex Sans",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "OPw38",
+                  "name": "DividerContainer1",
+                  "width": "fill_container",
+                  "padding": [
+                    0,
+                    20,
+                    0,
+                    58
+                  ],
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "aIOZI",
+                      "name": "DividerLine1",
+                      "width": "fill_container",
+                      "height": 1,
+                      "fill": "$ih-border"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "i8ApV",
+                  "name": "TaskItem2",
+                  "width": "fill_container",
+                  "gap": 14,
+                  "padding": [
+                    14,
+                    20
+                  ],
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "I0tCH",
+                      "name": "TaskCheck2",
+                      "width": 24,
+                      "height": 24,
+                      "fill": "$ih-positive",
+                      "cornerRadius": 8,
+                      "layout": "vertical",
+                      "children": [
+                        {
+                          "type": "icon_font",
+                          "id": "Vqomk",
+                          "name": "taskCheckIcon2",
+                          "width": 0,
+                          "height": 0,
+                          "iconFontFamily": "Material Symbols Rounded",
+                          "fill": "#FFFFFF"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "H6IvX",
+                      "name": "TaskContent2",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 2,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "CGZRi",
+                          "name": "taskName2",
+                          "fill": "$ih-text",
+                          "content": "第2次阅读打卡",
+                          "fontFamily": "IBM Plex Sans",
+                          "fontSize": 14,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "text",
+                          "id": "Cg4MU",
+                          "name": "taskDesc2",
+                          "fill": "$ih-text-muted",
+                          "content": "已完成 · 2025-01-18",
+                          "fontFamily": "IBM Plex Sans",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "OP4yF",
+                  "name": "DividerContainer2",
+                  "width": "fill_container",
+                  "padding": [
+                    0,
+                    20,
+                    0,
+                    58
+                  ],
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "ANZsn",
+                      "name": "DividerLine2",
+                      "width": "fill_container",
+                      "height": 1,
+                      "fill": "$ih-border"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "wYjSr",
+                  "name": "TaskItem3",
+                  "width": "fill_container",
+                  "gap": 14,
+                  "padding": [
+                    14,
+                    20
+                  ],
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "n2t8G",
+                      "name": "TaskCheck3",
+                      "width": 24,
+                      "height": 24,
+                      "fill": "$ih-accent",
+                      "cornerRadius": 8,
+                      "layout": "vertical",
+                      "children": [
+                        {
+                          "type": "icon_font",
+                          "id": "y7QFG",
+                          "name": "taskCheckIcon3",
+                          "width": 0,
+                          "height": 0,
+                          "iconFontFamily": "Material Symbols Rounded",
+                          "fill": "#FFFFFF"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "trnOV",
+                      "name": "TaskContent3",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 2,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "ojVuW",
+                          "name": "taskName3",
+                          "fill": "$ih-text",
+                          "content": "第3次阅读打卡",
+                          "fontFamily": "IBM Plex Sans",
+                          "fontSize": 14,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "text",
+                          "id": "9mp1w",
+                          "name": "taskDesc3",
+                          "fill": "$ih-accent",
+                          "content": "进行中 · 截止 2025-01-25",
+                          "fontFamily": "IBM Plex Sans",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "koB1a",
+                  "name": "DividerContainer3",
+                  "width": "fill_container",
+                  "padding": [
+                    0,
+                    20,
+                    0,
+                    58
+                  ],
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "91Igq",
+                      "name": "DividerLine3",
+                      "width": "fill_container",
+                      "height": 1,
+                      "fill": "$ih-border"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "aYXmE",
+                  "name": "TaskItem4",
+                  "width": "fill_container",
+                  "gap": 14,
+                  "padding": [
+                    14,
+                    20
+                  ],
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "9Iplo",
+                      "name": "TaskCheck4",
+                      "width": 24,
+                      "height": 24,
+                      "cornerRadius": 8,
+                      "layout": "vertical"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "Q7PNH",
+                      "name": "TaskContent4",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 2,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "FKlmQ",
+                          "name": "taskName4",
+                          "fill": "$ih-text-secondary",
+                          "content": "第4次阅读打卡",
+                          "fontFamily": "IBM Plex Sans",
+                          "fontSize": 14,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "text",
+                          "id": "BKvfU",
+                          "name": "taskDesc4",
+                          "fill": "$ih-text-muted",
+                          "content": "未开始",
+                          "fontFamily": "IBM Plex Sans",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "sazYl",
+                  "name": "DividerContainer4",
+                  "width": "fill_container",
+                  "padding": [
+                    0,
+                    20,
+                    0,
+                    58
+                  ],
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "rQ8vT",
+                      "name": "DividerLine4",
+                      "width": "fill_container",
+                      "height": 1,
+                      "fill": "$ih-border"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "bij6O",
+                  "name": "TaskItem5",
+                  "width": "fill_container",
+                  "gap": 14,
+                  "padding": [
+                    14,
+                    20
+                  ],
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "PwgUQ",
+                      "name": "TaskCheck5",
+                      "width": 24,
+                      "height": 24,
+                      "cornerRadius": 8,
+                      "layout": "vertical"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "xoqzE",
+                      "name": "TaskContent5",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 2,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "QZIbb",
+                          "name": "taskName5",
+                          "fill": "$ih-text-secondary",
+                          "content": "第5次阅读打卡",
+                          "fontFamily": "IBM Plex Sans",
+                          "fontSize": 14,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "text",
+                          "id": "k1Esu",
+                          "name": "taskDesc5",
+                          "fill": "$ih-text-muted",
+                          "content": "未开始",
+                          "fontFamily": "IBM Plex Sans",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "5ubQN",
+      "x": 1680,
+      "y": 0,
+      "name": "26-老师个人中心",
+      "clip": true,
+      "width": 375,
+      "height": 812,
+      "fill": "$ih-bg",
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "yWaUz",
+          "name": "Header",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 20,
+          "padding": [
+            48,
+            24,
+            24,
+            24
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "8KubJ",
+              "name": "UserRow",
+              "width": "fill_container",
+              "gap": 16,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "KUw0H",
+                  "name": "Avatar",
+                  "width": 64,
+                  "height": 64,
+                  "fill": "#FFFFFF",
+                  "cornerRadius": 32,
+                  "layout": "vertical",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "GJwRU",
+                      "name": "avatarText5",
+                      "fill": "$ih-accent",
+                      "content": "王",
+                      "fontFamily": "IBM Plex Sans",
+                      "fontSize": 24,
+                      "fontWeight": "600"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "MZbAN",
+                  "name": "UserInfo",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 4,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "Qfyhn",
+                      "name": "userName5",
+                      "fill": "#FFFFFF",
+                      "content": "王老师",
+                      "fontFamily": "IBM Plex Sans",
+                      "fontSize": 20,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "ZTrn7",
+                      "name": "userTitle5",
+                      "fill": "rgba(255,255,255,0.85)",
+                      "content": "阳光中学 · 七年级",
+                      "fontFamily": "IBM Plex Sans",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "p1SCE",
+                  "name": "BellBtn",
+                  "width": 40,
+                  "height": 40,
+                  "fill": "rgba(255,255,255,0.2)",
+                  "cornerRadius": 12,
+                  "layout": "vertical",
+                  "children": [
+                    {
+                      "type": "icon_font",
+                      "id": "fyFqr",
+                      "name": "bellIcon",
+                      "width": 0,
+                      "height": 0,
+                      "iconFontFamily": "Material Symbols Rounded",
+                      "fill": "#FFFFFF"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "YdfBQ",
+              "name": "StatsGrid",
+              "width": "fill_container",
+              "fill": "rgba(255,255,255,0.15)",
+              "cornerRadius": 12,
+              "padding": 16,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "I1G6F",
+                  "name": "Stat1",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 4,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "6aZcU",
+                      "name": "stat51Value",
+                      "fill": "#FFFFFF",
+                      "content": "6",
+                      "fontFamily": "IBM Plex Sans",
+                      "fontSize": 24,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "I7WQk",
+                      "name": "stat51Label",
+                      "fill": "rgba(255,255,255,0.85)",
+                      "content": "班级数量",
+                      "fontFamily": "IBM Plex Sans",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "Xgeir",
+                  "name": "Stat2",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 4,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "wY8FZ",
+                      "name": "stat52Value",
+                      "fill": "#FFFFFF",
+                      "content": "248",
+                      "fontFamily": "IBM Plex Sans",
+                      "fontSize": 24,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "2vCXf",
+                      "name": "stat52Label",
+                      "fill": "rgba(255,255,255,0.85)",
+                      "content": "学生总数",
+                      "fontFamily": "IBM Plex Sans",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "wNUB6",
+                  "name": "Stat3",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 4,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "ovxp2",
+                      "name": "stat53Value",
+                      "fill": "#FFFFFF",
+                      "content": "220",
+                      "fontFamily": "IBM Plex Sans",
+                      "fontSize": 24,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "qXQ7m",
+                      "name": "stat53Label",
+                      "fill": "rgba(255,255,255,0.85)",
+                      "content": "我的积分",
+                      "fontFamily": "IBM Plex Sans",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "AYWM9",
+          "name": "MenuSection",
+          "width": "fill_container",
+          "layout": "vertical",
+          "padding": 16,
+          "children": [
+            {
+              "type": "frame",
+              "id": "xRVSM",
+              "name": "MenuCard",
+              "width": "fill_container",
+              "fill": "$ih-surface",
+              "cornerRadius": 16,
+              "layout": "vertical",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "rOalK",
+                  "name": "MenuItem1",
+                  "width": "fill_container",
+                  "gap": 14,
+                  "padding": 16,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "r0mgw",
+                      "name": "MenuIcon1",
+                      "width": 40,
+                      "height": 40,
+                      "fill": "$ih-accent-soft",
+                      "cornerRadius": 10,
+                      "layout": "vertical",
+                      "children": [
+                        {
+                          "type": "icon_font",
+                          "id": "nCw79",
+                          "name": "menuIconText1",
+                          "width": 0,
+                          "height": 0,
+                          "iconFontFamily": "Material Symbols Rounded",
+                          "fill": "$ih-accent"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "9kmq5",
+                      "name": "menuText1",
+                      "fill": "$ih-text",
+                      "content": "班级管理",
+                      "fontFamily": "IBM Plex Sans",
+                      "fontSize": 15,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "icon_font",
+                      "id": "Hex3P",
+                      "name": "menuArrow1",
+                      "width": 0,
+                      "height": 0,
+                      "iconFontFamily": "Material Symbols Rounded",
+                      "fill": "$ih-text-muted"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "C31rr",
+                  "name": "Divider1",
+                  "width": "fill_container",
+                  "padding": [
+                    0,
+                    16,
+                    0,
+                    70
+                  ],
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "lGeYD",
+                      "name": "DividerLine1",
+                      "width": "fill_container",
+                      "height": 1,
+                      "fill": "$ih-border"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "8HyId",
+                  "name": "MenuItem2",
+                  "width": "fill_container",
+                  "gap": 14,
+                  "padding": 16,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "NCgYA",
+                      "name": "MenuIcon2",
+                      "width": 40,
+                      "height": 40,
+                      "fill": "#5A9E6F1F",
+                      "cornerRadius": 10,
+                      "layout": "vertical",
+                      "children": [
+                        {
+                          "type": "icon_font",
+                          "id": "rLiuk",
+                          "name": "menuIconText2",
+                          "width": 0,
+                          "height": 0,
+                          "iconFontFamily": "Material Symbols Rounded",
+                          "fill": "$ih-positive"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "xQc9G",
+                      "name": "menuText2",
+                      "fill": "$ih-text",
+                      "content": "测评管理",
+                      "fontFamily": "IBM Plex Sans",
+                      "fontSize": 15,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "icon_font",
+                      "id": "ipO9g",
+                      "name": "menuArrow2",
+                      "width": 0,
+                      "height": 0,
+                      "iconFontFamily": "Material Symbols Rounded",
+                      "fill": "$ih-text-muted"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "qET2q",
+                  "name": "Divider2",
+                  "width": "fill_container",
+                  "padding": [
+                    0,
+                    16,
+                    0,
+                    70
+                  ],
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "x3Lj8",
+                      "name": "DividerLine2",
+                      "width": "fill_container",
+                      "height": 1,
+                      "fill": "$ih-border"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "Ipawa",
+                  "name": "MenuItem3",
+                  "width": "fill_container",
+                  "gap": 14,
+                  "padding": 16,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "5NYzF",
+                      "name": "MenuIcon3",
+                      "width": 40,
+                      "height": 40,
+                      "fill": "#6B7B8A1F",
+                      "cornerRadius": 10,
+                      "layout": "vertical",
+                      "children": [
+                        {
+                          "type": "icon_font",
+                          "id": "7feyM",
+                          "name": "menuIconText3",
+                          "width": 0,
+                          "height": 0,
+                          "iconFontFamily": "Material Symbols Rounded",
+                          "fill": "#6B7B8A"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "UnyQ5",
+                      "name": "menuText3",
+                      "fill": "$ih-text",
+                      "content": "数据报告",
+                      "fontFamily": "IBM Plex Sans",
+                      "fontSize": 15,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "icon_font",
+                      "id": "RpP3T",
+                      "name": "menuArrow3",
+                      "width": 0,
+                      "height": 0,
+                      "iconFontFamily": "Material Symbols Rounded",
+                      "fill": "$ih-text-muted"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "tV3yP",
+                  "name": "Divider3",
+                  "width": "fill_container",
+                  "padding": [
+                    0,
+                    16,
+                    0,
+                    70
+                  ],
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "NA6Uw",
+                      "name": "DividerLine3",
+                      "width": "fill_container",
+                      "height": 1,
+                      "fill": "$ih-border"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "m7LsT",
+                  "name": "MenuItem4",
+                  "width": "fill_container",
+                  "gap": 14,
+                  "padding": 16,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "2qfXZ",
+                      "name": "MenuIcon4",
+                      "width": 40,
+                      "height": 40,
+                      "fill": "#C4574C1F",
+                      "cornerRadius": 10,
+                      "layout": "vertical",
+                      "children": [
+                        {
+                          "type": "icon_font",
+                          "id": "qUNju",
+                          "name": "menuIconText4",
+                          "width": 0,
+                          "height": 0,
+                          "iconFontFamily": "Material Symbols Rounded",
+                          "fill": "$ih-negative"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "175kd",
+                      "name": "menuText4",
+                      "fill": "$ih-text",
+                      "content": "账号安全",
+                      "fontFamily": "IBM Plex Sans",
+                      "fontSize": 15,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "icon_font",
+                      "id": "eUaYM",
+                      "name": "menuArrow4",
+                      "width": 0,
+                      "height": 0,
+                      "iconFontFamily": "Material Symbols Rounded",
+                      "fill": "$ih-text-muted"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "I1kOG",
+                  "name": "Divider4",
+                  "width": "fill_container",
+                  "padding": [
+                    0,
+                    16,
+                    0,
+                    70
+                  ],
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "XqTvg",
+                      "name": "DividerLine4",
+                      "width": "fill_container",
+                      "height": 1,
+                      "fill": "$ih-border"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "vMlDI",
+                  "name": "MenuItem5",
+                  "width": "fill_container",
+                  "gap": 14,
+                  "padding": 16,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "kiQ7a",
+                      "name": "MenuIcon5",
+                      "width": 40,
+                      "height": 40,
+                      "fill": "$ih-surface-warm",
+                      "cornerRadius": 10,
+                      "layout": "vertical",
+                      "children": [
+                        {
+                          "type": "icon_font",
+                          "id": "U8VhV",
+                          "name": "menuIconText5",
+                          "width": 0,
+                          "height": 0,
+                          "iconFontFamily": "Material Symbols Rounded",
+                          "fill": "$ih-text-secondary"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "q3pZ9",
+                      "name": "menuText5",
+                      "fill": "$ih-text",
+                      "content": "联系我们",
+                      "fontFamily": "IBM Plex Sans",
+                      "fontSize": 15,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "icon_font",
+                      "id": "kDMwW",
+                      "name": "menuArrow5",
+                      "width": 0,
+                      "height": 0,
+                      "iconFontFamily": "Material Symbols Rounded",
+                      "fill": "$ih-text-muted"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "P0vBa",
+          "name": "LogoutSection",
+          "width": "fill_container",
+          "layout": "vertical",
+          "padding": [
+            0,
+            16
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "g7vhG",
+              "name": "LogoutCard",
+              "width": "fill_container",
+              "fill": "$ih-surface",
+              "cornerRadius": 16,
+              "padding": 16,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "I4CeU",
+                  "name": "logoutText",
+                  "fill": "$ih-negative",
+                  "content": "退出登录",
+                  "fontFamily": "IBM Plex Sans",
+                  "fontSize": 15,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "j7oLf",
+          "name": "Spacer",
+          "width": "fill_container",
+          "height": "fill_container"
+        },
+        {
+          "type": "frame",
+          "id": "jvc1x",
+          "name": "TabBar",
+          "width": "fill_container",
+          "fill": "$ih-surface",
+          "padding": [
+            12,
+            24,
+            24,
+            24
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "NHakw",
+              "name": "TabPill",
+              "fill": "$ih-surface-warm",
+              "cornerRadius": 36,
+              "padding": 4,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "Akaex",
+                  "name": "Tab1",
+                  "width": 80,
+                  "height": 44,
+                  "cornerRadius": 26,
+                  "layout": "vertical",
+                  "gap": 4,
+                  "children": [
+                    {
+                      "type": "icon_font",
+                      "id": "ybuy8",
+                      "name": "tab51Icon",
+                      "width": 0,
+                      "height": 0,
+                      "iconFontFamily": "Material Symbols Rounded",
+                      "fill": "$ih-text-muted"
+                    },
+                    {
+                      "type": "text",
+                      "id": "SjJzW",
+                      "name": "tab51Label",
+                      "fill": "$ih-text-muted",
+                      "content": "计划",
+                      "fontFamily": "IBM Plex Sans",
+                      "fontSize": 10,
+                      "fontWeight": "500"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "oMNL8",
+                  "name": "Tab2",
+                  "width": 80,
+                  "height": 44,
+                  "cornerRadius": 26,
+                  "layout": "vertical",
+                  "gap": 4,
+                  "children": [
+                    {
+                      "type": "icon_font",
+                      "id": "hCmTy",
+                      "name": "tab52Icon",
+                      "width": 0,
+                      "height": 0,
+                      "iconFontFamily": "Material Symbols Rounded",
+                      "fill": "$ih-text-muted"
+                    },
+                    {
+                      "type": "text",
+                      "id": "GuM5x",
+                      "name": "tab52Label",
+                      "fill": "$ih-text-muted",
+                      "content": "进度",
+                      "fontFamily": "IBM Plex Sans",
+                      "fontSize": 10,
+                      "fontWeight": "500"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "vY6ya",
+                  "name": "Tab3",
+                  "width": 80,
+                  "height": 44,
+                  "fill": "$ih-accent",
+                  "cornerRadius": 26,
+                  "layout": "vertical",
+                  "gap": 4,
+                  "children": [
+                    {
+                      "type": "icon_font",
+                      "id": "wHDuY",
+                      "name": "tab53Icon",
+                      "width": 0,
+                      "height": 0,
+                      "iconFontFamily": "Material Symbols Rounded",
+                      "fill": "#FFFFFF"
+                    },
+                    {
+                      "type": "text",
+                      "id": "v1vEc",
+                      "name": "tab53Label",
+                      "fill": "#FFFFFF",
+                      "content": "我的",
+                      "fontFamily": "IBM Plex Sans",
+                      "fontSize": 10,
+                      "fontWeight": "500"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "variables": {
+    "ih-accent": {
+      "type": "color",
+      "value": "#C67A52"
+    },
+    "ih-accent-soft": {
+      "type": "color",
+      "value": "#C67A521F"
+    },
+    "ih-bg": {
+      "type": "color",
+      "value": "#FAF8F4"
+    },
+    "ih-border": {
+      "type": "color",
+      "value": "#E5E2DC"
+    },
+    "ih-border-strong": {
+      "type": "color",
+      "value": "#D0CCC4"
+    },
+    "ih-negative": {
+      "type": "color",
+      "value": "#C4574C"
+    },
+    "ih-positive": {
+      "type": "color",
+      "value": "#5A9E6F"
+    },
+    "ih-surface": {
+      "type": "color",
+      "value": "#FFFFFF"
+    },
+    "ih-surface-warm": {
+      "type": "color",
+      "value": "#F5F2EC"
+    },
+    "ih-text": {
+      "type": "color",
+      "value": "#2C2C2C"
+    },
+    "ih-text-muted": {
+      "type": "color",
+      "value": "#9A9A9A"
+    },
+    "ih-text-secondary": {
+      "type": "color",
+      "value": "#6B6B6B"
+    }
+  }
+}
