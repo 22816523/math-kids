@@ -127,39 +127,15 @@
             color: #333333;
             margin-bottom: 12px;
         }
-        .ability-item {
+        .radar-chart-container {
             display: flex;
+            justify-content: center;
             align-items: center;
-            justify-content: space-between;
-            padding: 10px 12px;
-            background: #fafafa;
-            border-radius: 6px;
-            margin-bottom: 8px;
+            padding: 16px 0;
         }
-        .ability-item:last-child {
-            margin-bottom: 0;
-        }
-        .ability-name {
-            font-size: 14px;
-            color: #333333;
-        }
-        .ability-level {
-            font-size: 12px;
-            padding: 3px 10px;
-            border-radius: 12px;
-            font-weight: 500;
-        }
-        .ability-level.excellent {
-            background: #f6ffed;
-            color: #52c41a;
-        }
-        .ability-level.good {
-            background: #e6f7ff;
-            color: #1890ff;
-        }
-        .ability-level.need-improve {
-            background: #fff7e6;
-            color: #faad14;
+        .radar-chart {
+            width: 240px;
+            height: 240px;
         }
         .suggestions {
             margin-top: 16px;
@@ -328,8 +304,8 @@
     <!-- AI评价卡片 -->
     <div class="ai-evaluation-card">
         <div class="section-title">
-            <span><i class="fa-solid fa-robot"></i></span>
-            <span>AI智能评价</span>
+            <span><i class="fa-solid fa-star"></i></span>
+            <span>综合评价</span>
         </div>
 
         <div class="evaluation-text">
@@ -338,30 +314,13 @@
 
         <div class="ability-analysis">
             <div class="ability-title">阅读能力分析</div>
-            <div class="ability-item">
-                <div class="ability-name">信息提取能力</div>
-                <div class="ability-level excellent">优秀</div>
-            </div>
-            <div class="ability-item">
-                <div class="ability-name">推理判断能力</div>
-                <div class="ability-level excellent">优秀</div>
-            </div>
-            <div class="ability-item">
-                <div class="ability-name">主题理解能力</div>
-                <div class="ability-level good">良好</div>
-            </div>
-            <div class="ability-item">
-                <div class="ability-name">人物分析能力</div>
-                <div class="ability-level excellent">优秀</div>
-            </div>
-            <div class="ability-item">
-                <div class="ability-name">批判性思维</div>
-                <div class="ability-level good">良好</div>
+            <div class="radar-chart-container">
+                <canvas id="radarChart" class="radar-chart" width="240" height="240"></canvas>
             </div>
         </div>
 
         <div class="suggestions">
-            <div class="ability-title">改进建议</div>
+            <div class="ability-title">阅读建议</div>
             <div class="suggestion-item">
                 <div class="suggestion-number">1</div>
                 <div>加强深度思考：建议在阅读时多思考"为什么"，不仅要知道情节发展，更要理解背后的原因和意义</div>
@@ -879,5 +838,120 @@
 
     <!-- 引入路由管理脚本 -->
     <script src="./router.js"></script>
+    <script>
+        // 绘制雷达图
+        function drawRadarChart() {
+            const canvas = document.getElementById('radarChart');
+            const ctx = canvas.getContext('2d');
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const radius = 90;
+
+            // 能力数据 (0-100分)
+            const abilities = [
+                { name: '信息提取能力', value: 95 },
+                { name: '推理判断能力', value: 92 },
+                { name: '主题理解能力', value: 78 },
+                { name: '人物分析能力', value: 90 },
+                { name: '批判性思维', value: 75 }
+            ];
+
+            const numPoints = abilities.length;
+            const angleStep = (Math.PI * 2) / numPoints;
+
+            // 绘制背景网格
+            ctx.strokeStyle = '#e0e0e0';
+            ctx.lineWidth = 1;
+
+            for (let level = 1; level <= 5; level++) {
+                ctx.beginPath();
+                const levelRadius = (radius / 5) * level;
+                for (let i = 0; i <= numPoints; i++) {
+                    const angle = i * angleStep - Math.PI / 2;
+                    const x = centerX + levelRadius * Math.cos(angle);
+                    const y = centerY + levelRadius * Math.sin(angle);
+                    if (i === 0) {
+                        ctx.moveTo(x, y);
+                    } else {
+                        ctx.lineTo(x, y);
+                    }
+                }
+                ctx.closePath();
+                ctx.stroke();
+            }
+
+            // 绘制轴线
+            for (let i = 0; i < numPoints; i++) {
+                const angle = i * angleStep - Math.PI / 2;
+                ctx.beginPath();
+                ctx.moveTo(centerX, centerY);
+                ctx.lineTo(centerX + radius * Math.cos(angle), centerY + radius * Math.sin(angle));
+                ctx.stroke();
+            }
+
+            // 绘制数据区域
+            ctx.beginPath();
+            ctx.fillStyle = 'rgba(46, 91, 255, 0.2)';
+            ctx.strokeStyle = '#2E5BFF';
+            ctx.lineWidth = 2;
+
+            for (let i = 0; i <= numPoints; i++) {
+                const index = i % numPoints;
+                const angle = index * angleStep - Math.PI / 2;
+                const value = abilities[index].value / 100;
+                const x = centerX + radius * value * Math.cos(angle);
+                const y = centerY + radius * value * Math.sin(angle);
+                if (i === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            }
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            // 绘制数据点
+            ctx.fillStyle = '#2E5BFF';
+            for (let i = 0; i < numPoints; i++) {
+                const angle = i * angleStep - Math.PI / 2;
+                const value = abilities[i].value / 100;
+                const x = centerX + radius * value * Math.cos(angle);
+                const y = centerY + radius * value * Math.sin(angle);
+                ctx.beginPath();
+                ctx.arc(x, y, 4, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            // 绘制标签
+            ctx.fillStyle = '#333333';
+            ctx.font = '11px "Source Han Sans CN", sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+
+            for (let i = 0; i < numPoints; i++) {
+                const angle = i * angleStep - Math.PI / 2;
+                const labelRadius = radius + 24;
+                let x = centerX + labelRadius * Math.cos(angle);
+                let y = centerY + labelRadius * Math.sin(angle);
+
+                // 调整标签位置避免重叠
+                if (angle > -Math.PI / 4 && angle < Math.PI / 4) {
+                    ctx.textAlign = 'left';
+                    x -= 10;
+                } else if (angle > Math.PI * 3 / 4 || angle < -Math.PI * 3 / 4) {
+                    ctx.textAlign = 'right';
+                    x += 10;
+                } else {
+                    ctx.textAlign = 'center';
+                }
+
+                ctx.fillText(abilities[i].name, x, y);
+            }
+        }
+
+        // 页面加载完成后绘制雷达图
+        document.addEventListener('DOMContentLoaded', drawRadarChart);
+    </script>
 </body>
 </html>

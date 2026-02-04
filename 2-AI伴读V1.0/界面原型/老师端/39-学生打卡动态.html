@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>学生打卡动态 - 校校读吧小管家（老师端）</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: #f5f5f5;
+            width: 375px;
+            margin: 0 auto;
+            min-height: 100vh;
+            padding-bottom: 20px;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, #2E5BFF, #1E4BEF);
+            color: white;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .back-btn {
+            font-size: 20px;
+            cursor: pointer;
+            margin-right: 12px;
+        }
+        .back-btn i {
+            color: white !important;
+        }
+        .navbar-title {
+            font-size: 18px;
+            line-height: 1.4;
+            font-weight: 600;
+            flex: 1;
+        }
+
+        /* 筛选区域 */
+        .filter-section {
+            background: white;
+            padding: 12px 16px;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            cursor: pointer;
+        }
+        .filter-section:hover {
+            background: #fafafa;
+        }
+        .filter-text {
+            font-size: 15px;
+            color: #333;
+            font-weight: 600;
+        }
+        .filter-icon {
+            width: 28px;
+            height: 28px;
+            background: #f5f5f5;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            font-size: 14px;
+        }
+
+        /* 日期选择区域 */
+        .date-section {
+            background: white;
+            padding: 10px 16px;
+            margin: 0 0 12px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            border-top: 1px solid #f0f0f0;
+        }
+        .date-nav-btn {
+            width: 32px;
+            height: 32px;
+            background: #f5f5f5;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #666;
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+        .date-nav-btn:hover {
+            background: #e8e8e8;
+        }
+        .date-nav-btn:active {
+            transform: scale(0.95);
+        }
+        .date-display {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 16px;
+            background: #e6f7ff;
+            border-radius: 16px;
+            cursor: pointer;
+            color: #1890ff;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .date-display i {
+            color: #1890ff !important;
+        }
+        .date-range-display {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: #e6f7ff;
+            border-radius: 20px;
+            cursor: pointer;
+            color: #1890ff;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .date-range-display:hover {
+            background: #d6efff;
+        }
+        .date-range-display i {
+            color: #1890ff !important;
+        }
+
+        /* 日期快捷选项 */
+        .date-quick-options {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .date-quick-btn {
+            padding: 6px 14px;
+            border-radius: 16px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid #e8e8e8;
+            background: #f5f5f5;
+            color: #666;
+        }
+        .date-quick-btn:hover {
+            background: #e6f7ff;
+            border-color: #91d5ff;
+            color: #1890ff;
+        }
+        .date-quick-btn.active {
+            background: #e6f7ff;
+            border-color: #1890ff;
+            color: #1890ff;
+            font-weight: 500;
+        }
+        .date-custom-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 16px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid #e8e8e8;
+            background: #f5f5f5;
+            color: #666;
+        }
+        .date-custom-btn:hover {
+            background: #e6f7ff;
+            border-color: #91d5ff;
+            color: #1890ff;
+        }
+        .date-custom-btn.active {
+            background: #e6f7ff;
+            border-color: #1890ff;
+            color: #1890ff;
+            font-weight: 500;
+        }
+        .date-custom-btn i {
+            font-size: 12px;
+        }
+
+        /* 日期范围弹窗 */
+        .date-range-options {
+            padding: 16px;
+        }
+        .date-range-option {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 16px;
+            margin-bottom: 8px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .date-range-option:hover {
+            background: #e6f7ff;
+        }
+        .date-range-option.active {
+            background: #e6f7ff;
+            border: 1px solid #1890ff;
+        }
+        .date-range-option:last-child {
+            margin-bottom: 0;
+        }
+        .date-range-option-label {
+            font-size: 15px;
+            color: #333;
+            font-weight: 500;
+        }
+        .date-range-option-desc {
+            font-size: 13px;
+            color: #999;
+        }
+        .date-range-option i {
+            color: #1890ff !important;
+            opacity: 0;
+        }
+        .date-range-option.active i {
+            opacity: 1;
+        }
+        .custom-date-inputs {
+            display: none;
+            padding: 16px;
+            border-top: 1px solid #f0f0f0;
+        }
+        .custom-date-inputs.show {
+            display: block;
+        }
+        .date-input-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        .date-input-row:last-child {
+            margin-bottom: 0;
+        }
+        .date-input-label {
+            font-size: 14px;
+            color: #666;
+            width: 60px;
+            flex-shrink: 0;
+        }
+        .date-input {
+            flex: 1;
+            height: 40px;
+            padding: 0 12px;
+            border: 1px solid #e8e8e8;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #333;
+        }
+        .date-input:focus {
+            outline: none;
+            border-color: #1890ff;
+        }
+
+        /* 打卡列表 */
+        .checkin-list { padding: 0 16px; }
+        .checkin-item {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+        .checkin-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+        .user-info { flex: 1; }
+        .user-name { font-size: 14px; font-weight: 600; color: #333; }
+        .checkin-time { font-size: 12px; color: #999; margin-top: 2px; }
+
+        /* 任务标签 */
+        .checkin-tasks {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+        .task-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .task-tag.reading {
+            background: #e6f7ff;
+            color: #1890ff;
+        }
+        .task-tag.worksheet {
+            background: #fff7e6;
+            color: #fa8c16;
+        }
+
+        /* 打卡内容 */
+        .checkin-content { margin-bottom: 12px; }
+        .checkin-text {
+            font-size: 14px;
+            color: #333;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+        .checkin-images {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 6px;
+        }
+        .checkin-image {
+            aspect-ratio: 1;
+            background: #f5f5f5;
+            border-radius: 6px;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        .checkin-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        /* 模拟图片占位 */
+        .image-placeholder {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #e0e0e0, #f5f5f5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #bbb;
+            font-size: 20px;
+        }
+
+        /* 互动区域 */
+        .checkin-actions {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            padding-top: 12px;
+            border-top: 1px solid #f5f5f5;
+        }
+        .action-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            color: #999;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .action-item:hover { color: #2E5BFF; }
+        .action-item:hover i { color: #2E5BFF; }
+        .action-item.liked { color: #2E5BFF; }
+        .action-item.liked i { color: #2E5BFF; }
+        .action-item i { font-size: 14px; }
+
+        /* 空状态 */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+        .empty-state i { font-size: 48px; margin-bottom: 16px; opacity: 0.3; }
+        .empty-state p { font-size: 14px; }
+
+        /* Font Awesome图标样式 */
+        .fa-solid, .fa-regular {
+            font-weight: 400;
+            color: #595959;
+            opacity: 0.85;
+        }
+        .navbar .fa-solid {
+            color: inherit;
+            opacity: 1;
+        }
+
+        /* 下拉选择器弹窗 */
+        .dropdown-overlay {
+            position: fixed;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 375px;
+            height: 100vh;
+            background: rgba(0,0,0,0.5);
+            z-index: 200;
+            display: none;
+        }
+        .dropdown-overlay.show {
+            display: block;
+        }
+        .dropdown-panel {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-radius: 16px 16px 0 0;
+            max-height: 60vh;
+            overflow: hidden;
+            animation: slideUp 0.3s ease;
+        }
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+        .dropdown-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .dropdown-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+        .dropdown-close {
+            width: 28px;
+            height: 28px;
+            border: none;
+            background: #f5f5f5;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* 表单下拉选择 */
+        .filter-form {
+            padding: 16px;
+        }
+        .filter-form-item {
+            margin-bottom: 16px;
+        }
+        .filter-form-item:last-child {
+            margin-bottom: 0;
+        }
+        .filter-form-label {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+        .filter-select {
+            width: 100%;
+            height: 44px;
+            padding: 0 12px;
+            border: 1px solid #e8e8e8;
+            border-radius: 8px;
+            font-size: 15px;
+            color: #333;
+            background: white;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23999' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            cursor: pointer;
+        }
+        .filter-select:focus {
+            outline: none;
+            border-color: #2E5BFF;
+        }
+        .dropdown-footer {
+            padding: 12px 16px;
+            border-top: 1px solid #f0f0f0;
+        }
+        .dropdown-confirm {
+            width: 100%;
+            height: 44px;
+            background: linear-gradient(135deg, #2E5BFF, #1E4BEF);
+            color: white;
+            border: none;
+            border-radius: 22px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .dropdown-confirm:hover {
+            opacity: 0.9;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="navbar">
+        <div class="back-btn" onclick="Router.back()"><i class="fa-solid fa-chevron-left"></i></div>
+        <div class="navbar-title">学生打卡动态</div>
+    </div>
+
+    <div class="filter-section" onclick="openFilterModal()">
+        <div class="filter-text" id="filterText">2026春季阅读计划 · 全部班级 · 《三体》</div>
+        <div class="filter-icon"><i class="fa-solid fa-filter"></i></div>
+    </div>
+
+    <!-- 日期选择行 -->
+    <div class="date-section">
+        <div class="date-quick-options">
+            <div class="date-quick-btn active" onclick="selectQuickDate('today')">今天</div>
+            <div class="date-quick-btn" onclick="selectQuickDate('week')">最近7天</div>
+            <div class="date-custom-btn" onclick="openDateRangeModal()">
+                <span id="customDateText">自定义</span>
+                <i class="fa-solid fa-calendar-days"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="checkin-list" id="checkinList">
+        <!-- 打卡记录将通过JavaScript动态生成 -->
+    </div>
+
+    <!-- 日期范围弹窗（仅自定义时使用） -->
+    <div class="dropdown-overlay" id="dateRangeModal" onclick="closeDateRangeModal()">
+        <div class="dropdown-panel" onclick="event.stopPropagation()">
+            <div class="dropdown-header">
+                <div class="dropdown-title">自定义日期范围</div>
+                <button class="dropdown-close" onclick="closeDateRangeModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="custom-date-inputs show">
+                <div class="date-input-row">
+                    <div class="date-input-label">开始日期</div>
+                    <input type="date" class="date-input" id="startDateInput" value="2026-01-15">
+                </div>
+                <div class="date-input-row">
+                    <div class="date-input-label">结束日期</div>
+                    <input type="date" class="date-input" id="endDateInput" value="2026-01-15">
+                </div>
+            </div>
+            <div class="dropdown-footer">
+                <button class="dropdown-confirm" onclick="confirmCustomDateRange()">确定</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 筛选弹窗 -->
+    <div class="dropdown-overlay" id="filterModal" onclick="closeFilterModal()">
+        <div class="dropdown-panel" onclick="event.stopPropagation()">
+            <div class="dropdown-header">
+                <div class="dropdown-title">筛选条件</div>
+                <button class="dropdown-close" onclick="closeFilterModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="filter-form">
+                <div class="filter-form-item">
+                    <div class="filter-form-label">阅读计划</div>
+                    <select class="filter-select" id="planSelect">
+                        <option value="2026春季阅读计划" selected>2026春季阅读计划</option>
+                        <option value="2025秋季阅读计划">2025秋季阅读计划</option>
+                        <option value="2025春季阅读计划">2025春季阅读计划</option>
+                    </select>
+                </div>
+                <div class="filter-form-item">
+                    <div class="filter-form-label">班级</div>
+                    <select class="filter-select" id="classSelect">
+                        <option value="全部班级" selected>全部班级</option>
+                        <option value="初一(3)班">初一(3)班</option>
+                        <option value="初一(4)班">初一(4)班</option>
+                        <option value="初二(1)班">初二(1)班</option>
+                    </select>
+                </div>
+                <div class="filter-form-item">
+                    <div class="filter-form-label">书籍</div>
+                    <select class="filter-select" id="bookSelect">
+                        <option value="《三体》" selected>《三体》</option>
+                        <option value="《活着》">《活着》</option>
+                        <option value="《平凡的世界》">《平凡的世界》</option>
+                    </select>
+                </div>
+            </div>
+            <div class="dropdown-footer">
+                <button class="dropdown-confirm" onclick="confirmFilter()">确定</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="./router.js"></script>
+    <script>
+        // 模拟打卡数据
+        const checkinData = [
+            {
+                id: 1,
+                name: '张三',
+                avatar: '张三',
+                className: '初一(3)班',
+                time: '2026-01-15 14:35',
+                tasks: ['阅读《三体》第15-30页', '完成导读单二'],
+                text: '今天读完了第二章，叶文洁的故事太震撼了！红岸基地的描写让我仿佛身临其境，期待后面的剧情发展',
+                images: 2,
+                likes: 12,
+                comments: 3,
+                liked: false
+            },
+            {
+                id: 2,
+                name: '李四',
+                avatar: '李四',
+                className: '初一(3)班',
+                time: '2026-01-15 14:20',
+                tasks: ['阅读《三体》第15-30页', '完成导读单二'],
+                text: '三体世界的设定太有想象力了，乱纪元和恒纪元的概念很有意思',
+                images: 1,
+                likes: 8,
+                comments: 2,
+                liked: true
+            },
+            {
+                id: 3,
+                name: '王五',
+                avatar: '王五',
+                className: '初一(4)班',
+                time: '2026-01-15 13:45',
+                tasks: ['阅读《三体》第15-30页', '完成导读单二'],
+                text: '导读单的问题让我思考了很久，叶文洁的选择到底是对是错呢？',
+                images: 3,
+                likes: 15,
+                comments: 5,
+                liked: false
+            },
+            {
+                id: 4,
+                name: '赵六',
+                avatar: '赵六',
+                className: '初一(4)班',
+                time: '2026-01-15 12:30',
+                tasks: ['阅读《三体》第15-30页'],
+                text: '科幻小说原来这么好看！以前都不怎么看这类书',
+                images: 1,
+                likes: 6,
+                comments: 1,
+                liked: false
+            },
+            {
+                id: 5,
+                name: '孙七',
+                avatar: '孙七',
+                className: '初一(3)班',
+                time: '2026-01-15 11:15',
+                tasks: ['阅读《三体》第15-30页', '完成导读单二'],
+                text: '今天的阅读任务完成啦，感觉自己对宇宙有了新的认识',
+                images: 2,
+                likes: 10,
+                comments: 2,
+                liked: false
+            },
+            {
+                id: 6,
+                name: '吴九',
+                avatar: '吴九',
+                className: '初二(1)班',
+                time: '2026-01-15 10:20',
+                tasks: ['阅读《三体》第15-30页'],
+                text: '智子的设定太厉害了，科技封锁这个概念很有深度',
+                images: 0,
+                likes: 7,
+                comments: 1,
+                liked: false
+            },
+            {
+                id: 7,
+                name: '郑十',
+                avatar: '郑十',
+                className: '初二(1)班',
+                time: '2026-01-15 09:30',
+                tasks: ['阅读《三体》第15-30页', '完成导读单二'],
+                text: '读书打卡第15天，坚持就是胜利！',
+                images: 1,
+                likes: 20,
+                comments: 4,
+                liked: true
+            },
+            {
+                id: 8,
+                name: '钱十一',
+                avatar: '钱十一',
+                className: '初一(4)班',
+                time: '2026-01-14 22:30',
+                tasks: ['阅读《三体》第1-15页', '完成导读单一'],
+                text: '晚上读书效率真高，一口气读了20页',
+                images: 2,
+                likes: 5,
+                comments: 0,
+                liked: false
+            }
+        ];
+
+        // 渲染打卡列表
+        function renderCheckinList() {
+            const container = document.getElementById('checkinList');
+
+            if (checkinData.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fa-solid fa-clipboard-list"></i>
+                        <p>暂无学生打卡记录</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const html = checkinData.map(item => {
+                // 生成任务标签HTML
+                let tasksHtml = '';
+                if (item.tasks && item.tasks.length > 0) {
+                    const taskItems = item.tasks.map((task, index) => {
+                        const tagClass = task.includes('阅读') ? 'reading' : 'worksheet';
+                        return `<span class="task-tag ${tagClass}">${task}</span>`;
+                    }).join('');
+                    tasksHtml = `<div class="checkin-tasks">${taskItems}</div>`;
+                }
+
+                // 生成图片HTML
+                let imagesHtml = '';
+                if (item.images > 0) {
+                    const imageItems = [];
+                    for (let i = 0; i < item.images && i < 3; i++) {
+                        imageItems.push(`
+                            <div class="checkin-image">
+                                <div class="image-placeholder"><i class="fa-solid fa-image"></i></div>
+                            </div>
+                        `);
+                    }
+                    imagesHtml = `<div class="checkin-images">${imageItems.join('')}</div>`;
+                }
+
+                return `
+                    <div class="checkin-item" onclick="goToCheckinDetail(${item.id})" style="cursor: pointer;">
+                        <div class="checkin-header">
+                            <div class="user-avatar">${item.avatar}</div>
+                            <div class="user-info">
+                                <div class="user-name">${item.name} <span style="font-size: 12px; color: #999; font-weight: 400; margin-left: 6px;">${item.className}</span></div>
+                                <div class="checkin-time">${item.time}</div>
+                            </div>
+                        </div>
+                        <div class="checkin-content">
+                            ${tasksHtml}
+                            <div class="checkin-text">${item.text}</div>
+                            ${imagesHtml}
+                        </div>
+                        <div class="checkin-actions">
+                            <div class="action-item ${item.liked ? 'liked' : ''}" onclick="toggleLike(event, ${item.id})">
+                                <i class="fa-solid fa-thumbs-up"></i>
+                                <span>${item.likes}</span>
+                            </div>
+                            <div class="action-item" onclick="showComments(event, ${item.id})">
+                                <i class="fa-regular fa-comment"></i>
+                                <span>${item.comments}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            container.innerHTML = html;
+        }
+
+        // 点赞切换
+        function toggleLike(event, id) {
+            event.stopPropagation();
+            const item = checkinData.find(i => i.id === id);
+            if (item) {
+                item.liked = !item.liked;
+                item.likes += item.liked ? 1 : -1;
+                renderCheckinList();
+            }
+        }
+
+        // 显示评论
+        function showComments(event, id) {
+            event.stopPropagation();
+            // 老师端可以跳转到学生详情页查看
+            Router.toTeacherPage('studentDetail', { studentId: id });
+        }
+
+        // 跳转到打卡详情
+        function goToCheckinDetail(id) {
+            // 跳转到老师端的打卡详情页
+            window.location.href = '39-打卡详情.html?taskId=' + id;
+        }
+
+        // 初始化
+        renderCheckinList();
+
+        // 当前选中的日期
+        let currentDate = new Date('2026-01-15');
+
+        // 格式化日期为 YYYY-MM-DD
+        function formatDate(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        // 更新日期显示
+        function updateDateDisplay() {
+            document.getElementById('dateText').textContent = formatDate(currentDate);
+        }
+
+        // 切换日期（前一天/后一天）
+        function changeDate(delta) {
+            currentDate.setDate(currentDate.getDate() + delta);
+            updateDateDisplay();
+            // TODO: 根据日期刷新打卡数据
+        }
+
+        // 打开日期选择器
+        function openDatePicker() {
+            const dateInput = document.createElement('input');
+            dateInput.type = 'date';
+            dateInput.value = formatDate(currentDate);
+            dateInput.style.position = 'absolute';
+            dateInput.style.opacity = '0';
+            dateInput.style.pointerEvents = 'none';
+            document.body.appendChild(dateInput);
+
+            dateInput.addEventListener('change', function() {
+                currentDate = new Date(this.value);
+                updateDateDisplay();
+                document.body.removeChild(dateInput);
+                // TODO: 根据日期刷新打卡数据
+            });
+
+            dateInput.addEventListener('blur', function() {
+                setTimeout(() => {
+                    if (document.body.contains(dateInput)) {
+                        document.body.removeChild(dateInput);
+                    }
+                }, 100);
+            });
+
+            dateInput.showPicker();
+        }
+
+        // 打开筛选弹窗
+        function openFilterModal() {
+            document.getElementById('filterModal').classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // 关闭筛选弹窗
+        function closeFilterModal() {
+            document.getElementById('filterModal').classList.remove('show');
+            document.body.style.overflow = '';
+        }
+
+        // 确认筛选
+        function confirmFilter() {
+            const plan = document.getElementById('planSelect').value;
+            const classVal = document.getElementById('classSelect').value;
+            const book = document.getElementById('bookSelect').value;
+            document.getElementById('filterText').textContent = plan + ' · ' + classVal + ' · ' + book;
+            closeFilterModal();
+        }
+
+        // 日期范围相关变量
+        let currentDateRange = 'today';
+        let startDate = new Date('2026-01-15');
+        let endDate = new Date('2026-01-15');
+
+        // 选择快捷日期（今天/最近7天）
+        function selectQuickDate(type) {
+            currentDateRange = type;
+            const today = new Date('2026-01-15');
+
+            // 更新按钮选中状态
+            document.querySelectorAll('.date-quick-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelector('.date-custom-btn').classList.remove('active');
+
+            if (type === 'today') {
+                document.querySelectorAll('.date-quick-btn')[0].classList.add('active');
+                startDate = new Date(today);
+                endDate = new Date(today);
+                document.getElementById('customDateText').textContent = '自定义';
+            } else if (type === 'week') {
+                document.querySelectorAll('.date-quick-btn')[1].classList.add('active');
+                startDate = new Date(today);
+                startDate.setDate(today.getDate() - 6);
+                endDate = new Date(today);
+                document.getElementById('customDateText').textContent = '自定义';
+            }
+
+            // TODO: 根据日期范围刷新打卡数据
+        }
+
+        // 打开日期范围弹窗（自定义）
+        function openDateRangeModal() {
+            document.getElementById('dateRangeModal').classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // 关闭日期范围弹窗
+        function closeDateRangeModal() {
+            document.getElementById('dateRangeModal').classList.remove('show');
+            document.body.style.overflow = '';
+        }
+
+        // 确认自定义日期范围
+        function confirmCustomDateRange() {
+            currentDateRange = 'custom';
+            startDate = new Date(document.getElementById('startDateInput').value);
+            endDate = new Date(document.getElementById('endDateInput').value);
+
+            // 更新按钮选中状态
+            document.querySelectorAll('.date-quick-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelector('.date-custom-btn').classList.add('active');
+
+            // 更新自定义按钮文本显示日期范围
+            if (formatDate(startDate) === formatDate(endDate)) {
+                document.getElementById('customDateText').textContent = formatDate(startDate);
+            } else {
+                document.getElementById('customDateText').textContent = formatDate(startDate) + ' 至 ' + formatDate(endDate);
+            }
+
+            closeDateRangeModal();
+            // TODO: 根据日期范围刷新打卡数据
+        }
+    </script>
+</body>
+</html>

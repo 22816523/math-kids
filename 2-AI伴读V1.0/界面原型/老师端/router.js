@@ -34,7 +34,8 @@ const ROUTES = {
         planDetail: '25-计划详情.html',
         badgeDetail: '26-勋章详情.html',
         favorites: '27-我的收藏.html',
-        examList: '28-测评列表.html'
+        examList: '28-测评列表.html',
+        classSquare: '40-班级广场.html'
     },
     // 老师端路由
     teacher: {
@@ -75,7 +76,8 @@ const ROUTES = {
         selectTeachingYears: '35-选择教龄.html',
         security: '36-账号安全.html',
         bindEmail: '37-绑定邮箱.html',
-        changePhone: '38-修改手机号.html'
+        changePhone: '38-修改手机号.html',
+        studentCheckinDynamic: '39-学生打卡动态.html'
     }
 };
 
