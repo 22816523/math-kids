@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>测评结果 - 校校读吧-学生端</title>
+    <link rel="stylesheet" href="design-system.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: linear-gradient(180deg, #e8f5e9 0%, #fff8e1 100%);
+            width: 375px;
+            margin: 0 auto;
+            min-height: 100vh;
+            padding-bottom: 100px;
+            opacity: 0;
+        }
+
+        /* 顶部导航栏 */
+        .navbar {
+            background: linear-gradient(135deg, #4CAF50, #8BC34A);
+            color: white;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+            border-radius: 0 0 20px 20px;
+        }
+
+        .back-btn {
+            font-size: 22px;
+            cursor: pointer;
+            margin-right: 12px;
+            width: 36px;
+            height: 36px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .navbar-title {
+            font-size: 18px;
+            font-weight: 700;
+            line-height: 1.4;
+            flex: 1;
+        }
+
+        /* 成绩卡片 */
+        .result-card {
+            background: white;
+            margin: 16px;
+            border-radius: 24px;
+            padding: 24px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            text-align: center;
+        }
+
+        .result-header {
+            margin-bottom: 20px;
+        }
+
+        .result-emoji {
+            font-size: 48px;
+            margin-bottom: 8px;
+        }
+
+        .result-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .result-subtitle {
+            font-size: 14px;
+            color: #8c8c8c;
+        }
+
+        /* 分数圆环 */
+        .score-section {
+            margin-bottom: 20px;
+        }
+
+        .score-circle {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #4CAF50, #8BC34A);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            color: white;
+            box-shadow: 0 4px 16px rgba(76, 175, 80, 0.3);
+        }
+
+        .score-number {
+            font-size: 36px;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .score-label {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        /* 统计数据 - 更紧凑 */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .stat-item {
+            background: #f9f9f9;
+            border-radius: 12px;
+            padding: 10px 6px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 16px;
+            font-weight: 700;
+            color: #4CAF50;
+            margin-bottom: 2px;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: #8c8c8c;
+        }
+
+        /* 阅读完成奖状 */
+        .certificate-card {
+            background: linear-gradient(135deg, #fff9e6 0%, #fff3cd 100%);
+            margin: 0 16px 16px;
+            border-radius: 20px;
+            padding: 24px;
+            text-align: center;
+            box-shadow: 0 4px 16px rgba(255, 193, 7, 0.2);
+            border: 2px solid #ffd54f;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .certificate-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,215,0,0.1) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .certificate-badge {
+            font-size: 48px;
+            margin-bottom: 8px;
+        }
+
+        .certificate-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .certificate-date {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 16px;
+        }
+
+        .certificate-btn {
+            background: linear-gradient(135deg, #ffd54f, #ffb300);
+            border: none;
+            border-radius: 20px;
+            padding: 10px 24px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #5d4037;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 2px 8px rgba(255, 179, 0, 0.3);
+        }
+
+        /* 题目列表 */
+        .questions-section {
+            background: white;
+            margin: 0 16px 16px;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-title i {
+            color: #4CAF50;
+        }
+
+        .questions-summary {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 16px;
+            padding: 12px;
+            background: #f9f9f9;
+            border-radius: 12px;
+        }
+
+        .summary-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            color: #666;
+        }
+
+        .summary-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .summary-dot.correct {
+            background: #4CAF50;
+        }
+
+        .summary-dot.wrong {
+            background: #FF5252;
+        }
+
+        .questions-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+        }
+
+        .question-item {
+            aspect-ratio: 1;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            border: 3px solid transparent;
+            position: relative;
+        }
+
+        .question-item.correct {
+            background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+            color: #4CAF50;
+            border-color: #4CAF50;
+        }
+
+        .question-item.wrong {
+            background: linear-gradient(135deg, #ffebee, #ffcdd2);
+            color: #FF5252;
+            border-color: #FF5252;
+        }
+
+        .question-item .status-icon {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: white;
+        }
+
+        .question-item.correct .status-icon {
+            background: #4CAF50;
+        }
+
+        .question-item.wrong .status-icon {
+            background: #FF5252;
+        }
+
+        /* 底部操作栏 */
+        .bottom-bar {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 375px;
+            background: white;
+            padding: 16px;
+            display: flex;
+            gap: 12px;
+            box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.1);
+            border-radius: 20px 20px 0 0;
+        }
+
+        .btn {
+            flex: 1;
+            height: 48px;
+            border: none;
+            border-radius: 24px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .btn-secondary {
+            background: #f5f5f5;
+            color: #666;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #4CAF50, #8BC34A);
+            color: white;
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+        }
+
+        /* Font Awesome图标样式优化 */
+        .fa-solid, .fa-regular {
+            font-weight: 400;
+            color: #595959;
+            opacity: 0.85;
+        }
+
+        .navbar .fa-solid {
+            color: inherit;
+            opacity: 1;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="navbar">
+        <div class="back-btn" onclick="Router.toStudentPage('home')"><i class="fa-solid fa-chevron-left"></i></div>
+        <div class="navbar-title">测评结果</div>
+    </div>
+
+    <!-- 成绩卡片 -->
+    <div class="result-card">
+        <div class="result-header">
+            <div class="result-emoji">🎉</div>
+            <div class="result-title">太棒了！</div>
+            <div class="result-subtitle">《三体》测评完成</div>
+        </div>
+
+        <div class="score-section">
+            <div class="score-circle">
+                <div class="score-number">85</div>
+                <div class="score-label">分</div>
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-value">17/20</div>
+                <div class="stat-label">正确</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">12分</div>
+                <div class="stat-label">用时</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">+20</div>
+                <div class="stat-label">积分</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">第3</div>
+                <div class="stat-label">班级</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 阅读完成奖状 -->
+    <div class="certificate-card">
+        <div class="certificate-badge"><i class="fa-solid fa-award" style="color: #ffc107; font-size: 48px;"></i></div>
+        <div class="certificate-title">《三体》阅读奖状</div>
+        <div class="certificate-date">2024年1月15日</div>
+        <button class="certificate-btn" onclick="Router.toStudentPage('certificates')">
+            <i class="fa-solid fa-eye"></i> 查看奖状
+        </button>
+    </div>
+
+    <!-- 题目列表 -->
+    <div class="questions-section">
+        <div class="section-title">
+            <i class="fa-solid fa-list-check"></i>
+            答题详情
+        </div>
+        <div class="questions-summary">
+            <div class="summary-item">
+                <span class="summary-dot correct"></span>
+                <span>正确 17 题</span>
+            </div>
+            <div class="summary-item">
+                <span class="summary-dot wrong"></span>
+                <span>错误 3 题</span>
+            </div>
+        </div>
+        <div class="questions-grid">
+            <div class="question-item correct" onclick="viewQuestion(1)">
+                1
+                <span class="status-icon"><i class="fa-solid fa-check"></i></span>
+            </div>
+            <div class="question-item correct" onclick="viewQuestion(2)">
+                2
+                <span class="status-icon"><i class="fa-solid fa-check"></i></span>
+            </div>
+            <div class="question-item correct" onclick="viewQuestion(3)">
+                3
+                <span class="status-icon"><i class="fa-solid fa-check"></i></span>
+            </div>
+            <div class="question-item wrong" onclick="viewQuestion(4)">
+                4
+                <span class="status-icon"><i class="fa-solid fa-xmark"></i></span>
+            </div>
+            <div class="question-item correct" onclick="viewQuestion(5)">
+                5
+                <span class="status-icon"><i class="fa-solid fa-check"></i></span>
+            </div>
+            <div class="question-item correct" onclick="viewQuestion(6)">
+                6
+                <span class="status-icon"><i class="fa-solid fa-check"></i></span>
+            </div>
+            <div class="question-item correct" onclick="viewQuestion(7)">
+                7
+                <span class="status-icon"><i class="fa-solid fa-check"></i></span>
+            </div>
+            <div class="question-item correct" onclick="viewQuestion(8)">
+                8
+                <span class="status-icon"><i class="fa-solid fa-check"></i></span>
+            </div>
+            <div class="question-item wrong" onclick="viewQuestion(9)">
+                9
+                <span class="status-icon"><i class="fa-solid fa-xmark"></i></span>
+            </div>
+            <div class="question-item correct" onclick="viewQuestion(10)">
+                10
+                <span class="status-icon"><i class="fa-solid fa-check"></i></span>
+            </div>
+            <div class="question-item correct" onclick="viewQuestion(11)">
+                11
+                <span class="status-icon"><i class="fa-solid fa-check"></i></span>
+            </div>
+            <div class="question-item correct" onclick="viewQuestion(12)">
+                12
+                <span class="status-icon"><i class="fa-solid fa-check"></i></span>
+            </div>
+            <div class="question-item correct" onclick="viewQuestion(13)">
+                13
+                <span class="status-icon"><i class="fa-solid fa-check"></i></span>
+            </div>
+            <div class="question-item correct" onclick="viewQuestion(14)">
+                14
+                <span class="status-icon"><i class="fa-solid fa-check"></i></span>
+            </div>
+            <div class="question-item wrong" onclick="viewQuestion(15)">
+                15
+                <span class="status-icon"><i class="fa-solid fa-xmark"></i></span>
+            </div>
+            <div class="question-item correct" onclick="viewQuestion(16)">
+                16
+                <span class="status-icon"><i class="fa-solid fa-check"></i></span>
+            </div>
+            <div class="question-item correct" onclick="viewQuestion(17)">
+                17
+                <span class="status-icon"><i class="fa-solid fa-check"></i></span>
+            </div>
+            <div class="question-item correct" onclick="viewQuestion(18)">
+                18
+                <span class="status-icon"><i class="fa-solid fa-check"></i></span>
+            </div>
+            <div class="question-item correct" onclick="viewQuestion(19)">
+                19
+                <span class="status-icon"><i class="fa-solid fa-check"></i></span>
+            </div>
+            <div class="question-item correct" onclick="viewQuestion(20)">
+                20
+                <span class="status-icon"><i class="fa-solid fa-check"></i></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="bottom-bar">
+        <button class="btn btn-secondary" onclick="Router.toStudentPage('home')">
+            <i class="fa-solid fa-house"></i>
+            返回首页
+        </button>
+        <button class="btn btn-primary" onclick="Router.toStudentPage('examDetail')">
+            <i class="fa-solid fa-eye"></i>
+            查看答案
+        </button>
+    </div>
+
+    <script src="./router.js"></script>
+    <script>
+        function viewQuestion(num) {
+            alert('查看第 ' + num + ' 题详情');
+        }
+    </script>
+</body>
+</html>

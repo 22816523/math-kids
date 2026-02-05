@@ -417,6 +417,24 @@
             color: var(--color-text-secondary);
         }
 
+        /* 未读红点 */
+        .unread-dot {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            width: 10px;
+            height: 10px;
+            background: #ff4d4f;
+            border-radius: 50%;
+            border: 2px solid white;
+            box-shadow: 0 2px 4px rgba(255, 77, 79, 0.4);
+            display: none;
+        }
+
+        .unread-dot.show {
+            display: block;
+        }
+
         /* 底部Tab栏 */
         .tabbar {
             position: fixed;
@@ -465,6 +483,34 @@
             transform: scale(1.1);
         }
 
+        /* 右上角消息图标 */
+        .header-message {
+            position: absolute;
+            top: 50%;
+            right: 16px;
+            transform: translateY(-50%);
+            cursor: pointer;
+            font-size: 20px;
+            color: white;
+            z-index: 10;
+        }
+
+        .header-message .badge {
+            position: absolute;
+            top: -6px;
+            right: -8px;
+            background: #ff4d4f;
+            color: white;
+            font-size: 10px;
+            min-width: 16px;
+            height: 16px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 4px;
+        }
+
         /* Font Awesome图标样式优化 */
         .fa-solid, .fa-regular {
             font-weight: 400;
@@ -488,7 +534,8 @@
         }
 
         /* 日历日期状态图标继承父元素颜色 */
-        .day-status .fa-solid {
+        .day-status .fa-solid,
+        .day-status .fa-regular {
             color: inherit;
             opacity: 1;
         }
@@ -513,8 +560,13 @@
     </style>    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <div class="header">
+    <div class="header" style="position: relative;">
         <div class="header-title">校校读吧-学生端</div>
+        <!-- 右上角消息图标 -->
+        <div class="header-message" onclick="Router.toStudentPage('notification')">
+            <i class="fa-solid fa-bell"></i>
+            <span class="badge">3</span>
+        </div>
     </div>
 
     <!-- 任务日历 -->
@@ -538,22 +590,22 @@
             <div class="calendar-day">
                 <div class="day-label">周一</div>
                 <div class="day-date">1/20</div>
-                <div class="day-status completed"><i class="fa-solid fa-check"></i></div>
+                <div class="day-status completed"><i class="fa-solid fa-star"></i></div>
             </div>
             <div class="calendar-day">
                 <div class="day-label">周二</div>
                 <div class="day-date">1/21</div>
-                <div class="day-status overdue"><i class="fa-solid fa-exclamation"></i></div>
+                <div class="day-status overdue"><i class="fa-regular fa-star"></i></div>
             </div>
             <div class="calendar-day active">
                 <div class="day-label">周三</div>
                 <div class="day-date">1/22</div>
-                <div class="day-status incomplete"><i class="fa-solid fa-book-open"></i></div>
+                <div class="day-status incomplete"><i class="fa-solid fa-book"></i></div>
             </div>
             <div class="calendar-day">
                 <div class="day-label">周四</div>
                 <div class="day-date">1/23</div>
-                <div class="day-status incomplete"><i class="fa-solid fa-book-open"></i></div>
+                <div class="day-status incomplete"><i class="fa-solid fa-book"></i></div>
             </div>
             <div class="calendar-day">
                 <div class="day-label">周五</div>
@@ -563,7 +615,7 @@
             <div class="calendar-day">
                 <div class="day-label">周六</div>
                 <div class="day-date">1/25</div>
-                <div class="day-status incomplete"><i class="fa-solid fa-book-open"></i></div>
+                <div class="day-status incomplete"><i class="fa-solid fa-book"></i></div>
             </div>
             <div class="calendar-day">
                 <div class="day-label">周日</div>
@@ -606,16 +658,25 @@
             <div class="task-stats"><i class="fa-solid fa-users" style="color: white;"></i> 8/25 已完成</div>
             <button class="task-btn" style="color: #f5576c;" onclick="Router.toStudentPage('exam', {examId: 125})">去答题 →</button>
         </div>
+        <div class="task-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+            <div class="task-description">观看《三体》导读视频</div>
+            <div class="task-stats"><i class="fa-solid fa-clock" style="color: white;"></i> 时长 12分钟 · <i class="fa-solid fa-users" style="color: white;"></i> 18/25 已观看</div>
+            <button class="task-btn" style="color: #667eea;" onclick="location.href='07-AI导语.html?taskId=123&bookName=三体'">去观看 →</button>
+        </div>
     </div>
 
-    <div class="quick-entry" style="grid-template-columns: repeat(3, 1fr);">
+    <div class="quick-entry" style="grid-template-columns: repeat(4, 1fr);">
+        <div class="entry-item" onclick="onNewsClick(); Router.toStudentPage('news')">
+            <div class="entry-icon" style="background: linear-gradient(135deg, #11998e, #38ef7d); position: relative;"><i class="fa-solid fa-newspaper" style="color: white;"></i><span class="unread-dot" id="newsDot"></span></div>
+            <div class="entry-label">资讯</div>
+        </div>
+        <div class="entry-item" onclick="onSquareClick(); Router.toStudentPage('classCheckin')">
+            <div class="entry-icon" style="background: linear-gradient(135deg, #36d1dc, #5b86e5); position: relative;"><i class="fa-solid fa-compass" style="color: white;"></i><span class="unread-dot" id="squareDot"></span></div>
+            <div class="entry-label">广场</div>
+        </div>
         <div class="entry-item" onclick="Router.toStudentPage('rank')">
             <div class="entry-icon" style="background: linear-gradient(135deg, #ff6b6b, #ee5a24);"><i class="fa-solid fa-ranking-star" style="color: white;"></i></div>
             <div class="entry-label">排行榜</div>
-        </div>
-        <div class="entry-item" onclick="Router.toStudentPage('classCheckin')">
-            <div class="entry-icon" style="background: linear-gradient(135deg, #36d1dc, #5b86e5);"><i class="fa-solid fa-compass" style="color: white;"></i></div>
-            <div class="entry-label">广场</div>
         </div>
         <div class="entry-item" onclick="Router.toStudentPage('certificates')">
             <div class="entry-icon" style="background: linear-gradient(135deg, #ffd700, #ffaa00);"><i class="fa-solid fa-award" style="color: white;"></i></div>
@@ -751,15 +812,15 @@
                 // 获取该日期的任务状态
                 const status = getTaskStatus(currentYear, currentMonth, day);
 
-                // 根据任务状态设置样式和图标
+                // 根据任务状态设置样式和图标（使用星星图标）
                 if (!status.hasTask) {
-                    // 无任务
+                    // 无任务 - 横线图标
                     statusElement.className = 'day-status no-task';
                     statusElement.innerHTML = '<i class="fa-solid fa-minus"></i>';
                 } else if (status.completed) {
-                    // 有任务且已完成
+                    // 有任务且已完成 - 实心星星
                     statusElement.className = 'day-status completed';
-                    statusElement.innerHTML = '<i class="fa-solid fa-check"></i>';
+                    statusElement.innerHTML = '<i class="fa-solid fa-star"></i>';
                 } else {
                     // 有任务但未完成
                     const isPast = currentYear < today.getFullYear() ||
@@ -767,13 +828,13 @@
                                    (currentYear === today.getFullYear() && currentMonth === today.getMonth() && day < todayDate);
 
                     if (isPast) {
-                        // 过期未完成 - 红色背景 + 感叹号
+                        // 过期未完成 - 红色背景 + 空心星星
                         statusElement.className = 'day-status overdue';
-                        statusElement.innerHTML = '<i class="fa-solid fa-exclamation"></i>';
+                        statusElement.innerHTML = '<i class="fa-regular fa-star"></i>';
                     } else {
-                        // 未来任务（包括当日）- 黄色背景 + 书籍图标
+                        // 未来任务（包括当日）- 黄色背景 + 书本图标
                         statusElement.className = 'day-status incomplete';
-                        statusElement.innerHTML = '<i class="fa-solid fa-book-open"></i>';
+                        statusElement.innerHTML = '<i class="fa-solid fa-book"></i>';
                     }
                 }
 
@@ -785,6 +846,58 @@
 
         // 初始化
         updateMonthDisplay();
+
+        // ========== 未读红点逻辑 ==========
+        // 模拟数据：当前最新的资讯数量和打卡数量
+        const currentNewsCount = 5;  // 当前资讯总数
+        const currentCheckinCount = 18;  // 当前打卡总数
+
+        // 从localStorage获取上次查看时的数量
+        function getLastViewedCount(key) {
+            return parseInt(localStorage.getItem(key) || '0');
+        }
+
+        // 保存当前查看的数量
+        function setLastViewedCount(key, count) {
+            localStorage.setItem(key, count.toString());
+        }
+
+        // 检查并显示未读红点
+        function checkUnreadDots() {
+            const lastNewsCount = getLastViewedCount('lastNewsCount');
+            const lastCheckinCount = getLastViewedCount('lastCheckinCount');
+
+            // 资讯红点
+            const newsDot = document.getElementById('newsDot');
+            if (currentNewsCount > lastNewsCount) {
+                newsDot.classList.add('show');
+            } else {
+                newsDot.classList.remove('show');
+            }
+
+            // 广场红点
+            const squareDot = document.getElementById('squareDot');
+            if (currentCheckinCount > lastCheckinCount) {
+                squareDot.classList.add('show');
+            } else {
+                squareDot.classList.remove('show');
+            }
+        }
+
+        // 点击资讯时清除红点并记录
+        function onNewsClick() {
+            setLastViewedCount('lastNewsCount', currentNewsCount);
+            document.getElementById('newsDot').classList.remove('show');
+        }
+
+        // 点击广场时清除红点并记录
+        function onSquareClick() {
+            setLastViewedCount('lastCheckinCount', currentCheckinCount);
+            document.getElementById('squareDot').classList.remove('show');
+        }
+
+        // 页面加载时检查未读状态
+        checkUnreadDots();
     </script>
 </body>
 </html>

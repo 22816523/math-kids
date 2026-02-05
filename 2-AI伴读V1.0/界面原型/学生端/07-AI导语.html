@@ -74,21 +74,52 @@
         .video-progress-fill { height: 100%; background: linear-gradient(135deg, #667eea, #764ba2); width: 0%; }
 
         /* 听书播放器 */
-        .audio-player { background: white; border-radius: 12px; padding: 16px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06); width: 100%; display: none; }
-        .audio-player.show { display: block; }
+        .audio-player { background: white; border-radius: 12px; padding: 16px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06); width: 100%; }
         .audio-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
         .audio-title { font-size: 14px; font-weight: 600; color: #262626; display: flex; align-items: center; gap: 8px; }
         .audio-close { width: 28px; height: 28px; border-radius: 50%; background: #f5f5f5; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #999; }
-        .audio-progress { margin-bottom: 12px; }
+        .audio-progress { margin-bottom: 12px; display: none; }
+        .audio-progress.show { display: block; }
         .progress-bar { height: 4px; background: #f0f0f0; border-radius: 2px; overflow: hidden; }
         .progress-fill { height: 100%; background: linear-gradient(135deg, #667eea, #764ba2); width: 35%; transition: width 0.3s; }
         .progress-time { display: flex; justify-content: space-between; font-size: 12px; color: #999; margin-top: 4px; }
-        .audio-controls { display: flex; align-items: center; justify-content: center; gap: 24px; }
+        .audio-controls { display: none; align-items: center; justify-content: center; gap: 24px; }
+        .audio-controls.show { display: flex; }
         .audio-btn { width: 36px; height: 36px; border-radius: 50%; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; background: #f5f5f5; color: #595959; transition: all 0.3s; }
         .audio-btn:hover { background: #e6e6e6; }
         .audio-btn.play { width: 48px; height: 48px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; font-size: 18px; }
         .audio-btn.play:hover { opacity: 0.9; }
         .speed-btn { font-size: 12px; font-weight: 600; width: auto; padding: 0 12px; }
+
+        /* 听书文件项（内嵌在speech-bubble中） */
+        .audio-file-item { display: flex; align-items: center; justify-content: space-between; padding: 10px; background: #f9f9f9; border-radius: 8px; margin-top: 12px; }
+        .audio-file-info { display: flex; align-items: center; gap: 10px; flex: 1; }
+        .audio-file-icon { width: 32px; height: 32px; border-radius: 6px; background: linear-gradient(135deg, #667eea, #764ba2); display: flex; align-items: center; justify-content: center; color: white; font-size: 14px; }
+        .audio-file-name { font-size: 13px; color: #262626; }
+        .audio-file-duration { font-size: 12px; color: #999; margin-left: 8px; }
+
+        /* 圆环进度播放按钮 */
+        .audio-play-wrapper { position: relative; width: 40px; height: 40px; cursor: pointer; }
+        .audio-progress-ring { position: absolute; top: 0; left: 0; width: 40px; height: 40px; transform: rotate(-90deg); }
+        .audio-progress-ring circle { fill: none; stroke-width: 4; }
+        .audio-progress-ring .ring-bg { stroke: #e0e0e0; }
+        .audio-progress-ring .ring-progress { stroke: url(#progressGradient); stroke-linecap: round; stroke-dasharray: 100.53; stroke-dashoffset: 100.53; transition: stroke-dashoffset 0.3s; }
+        .audio-play-icon { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #667eea; font-size: 14px; transition: all 0.3s; }
+        .audio-play-wrapper:hover .audio-play-icon { color: #764ba2; }
+
+        /* 播放控制区 */
+        .audio-progress { margin-top: 10px; display: none; }
+        .audio-progress.show { display: block; }
+        .progress-bar { height: 4px; background: #e0e0e0; border-radius: 2px; overflow: hidden; }
+        .progress-fill { height: 100%; background: linear-gradient(135deg, #667eea, #764ba2); width: 0%; transition: width 0.3s; }
+        .progress-time { display: flex; justify-content: space-between; font-size: 11px; color: #999; margin-top: 4px; }
+        .audio-controls { display: none; align-items: center; justify-content: center; gap: 16px; margin-top: 10px; }
+        .audio-controls.show { display: flex; }
+        .audio-btn { width: 32px; height: 32px; border-radius: 50%; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 12px; background: #f0f0f0; color: #595959; transition: all 0.3s; }
+        .audio-btn:hover { background: #e6e6e6; }
+        .audio-btn.play { width: 40px; height: 40px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; font-size: 16px; }
+        .audio-btn.play:hover { opacity: 0.9; }
+        .speed-btn { font-size: 11px; font-weight: 600; width: auto; padding: 0 10px; }
 
         /* 播放状态指示器 */
         .playing-indicator { display: flex; align-items: center; gap: 2px; height: 16px; }
@@ -142,6 +173,27 @@
                 <p>同学你好！今天我们要一起阅读《三体》，这本书非常精彩哦！</p>
                 <p>在这一章中，我们将跟随主人公进入一个神秘的世界，了解三体文明的起源。阅读时要注意作者对科学概念的描写方式。</p>
                 <p>今日任务：<span style="color: #ff6b00; font-weight: 600;">阅读15-30页，完成导读单二</span>，完成后记得打卡哦！</p>
+                <!-- 听书播放器 -->
+                <div class="audio-file-item" data-audio="1">
+                    <div class="audio-file-info" onclick="location.href='18-阅读书籍.html?audio=1&bookName=三体&pages=15-30'" style="cursor: pointer;">
+                        <div class="audio-file-icon"><i class="fa-solid fa-music"></i></div>
+                        <span class="audio-file-name">三体_第15-30页.mp3</span>
+                        <span class="audio-file-duration">15:30</span>
+                    </div>
+                    <div class="audio-play-wrapper" onclick="toggleAudioFile(this)">
+                        <svg class="audio-progress-ring" viewBox="0 0 40 40">
+                            <defs>
+                                <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <stop offset="0%" style="stop-color:#667eea"/>
+                                    <stop offset="100%" style="stop-color:#764ba2"/>
+                                </linearGradient>
+                            </defs>
+                            <circle class="ring-bg" cx="20" cy="20" r="16"/>
+                            <circle class="ring-progress" id="progressRing" cx="20" cy="20" r="16"/>
+                        </svg>
+                        <i class="fa-solid fa-play audio-play-icon" id="playIcon"></i>
+                    </div>
+                </div>
                 <button class="btn btn-primary" style="width: 100%; margin-top: 12px;" onclick="Router.toStudentPage('checkin')">
                     去打卡 <i class="fa-solid fa-arrow-right"></i>
                 </button>
@@ -169,37 +221,6 @@
                 <span>08:32</span>
             </div>
         </div>
-
-        <!-- 听书播放器 -->
-        <div class="audio-player show" id="audioPlayer">
-            <div class="audio-header">
-                <div class="audio-title">
-                    <i class="fa-solid fa-headphones" style="color: #667eea;"></i> 听书：第15-30页
-                    <div class="playing-indicator" id="playingIndicator">
-                        <div class="bar"></div>
-                        <div class="bar"></div>
-                        <div class="bar"></div>
-                        <div class="bar"></div>
-                    </div>
-                </div>
-            </div>
-            <div class="audio-progress">
-                <div class="progress-bar">
-                    <div class="progress-fill" id="progressFill"></div>
-                </div>
-                <div class="progress-time">
-                    <span id="currentTime">05:23</span>
-                    <span id="totalTime">15:30</span>
-                </div>
-            </div>
-            <div class="audio-controls">
-                <button class="audio-btn" onclick="restartAudio()"><i class="fa-solid fa-rotate-left"></i></button>
-                <button class="audio-btn" onclick="seekBackward()"><i class="fa-solid fa-backward"></i></button>
-                <button class="audio-btn play" id="playBtn" onclick="togglePlay()"><i class="fa-solid fa-pause"></i></button>
-                <button class="audio-btn" onclick="seekForward()"><i class="fa-solid fa-forward"></i></button>
-                <button class="audio-btn speed-btn" onclick="changeSpeed()">1.0x</button>
-            </div>
-        </div>
     </div>
 
     <!-- 引入路由管理脚本 -->
@@ -215,47 +236,41 @@
             }
         }
 
-        // 听书播放器功能
-        let isPlaying = true;
-        let playbackSpeed = 1.0;
-        const speeds = [0.5, 0.75, 1.0, 1.25, 1.5, 2.0];
+        // 听书播放按钮
+        let audioProgress = 0;
+        let audioInterval = null;
+        let isPlaying = false;
+        const totalDuration = 930; // 15:30 = 930秒
+        const circumference = 2 * Math.PI * 16; // 圆环周长
 
-        function toggleAudioPlayer() {
-            const player = document.getElementById('audioPlayer');
-            player.classList.toggle('show');
-        }
+        function toggleAudioFile(wrapper) {
+            const icon = document.getElementById('playIcon');
+            const progressRing = document.getElementById('progressRing');
 
-        function togglePlay() {
-            isPlaying = !isPlaying;
-            const btn = document.getElementById('playBtn');
-            const icon = btn.querySelector('i');
-            const indicator = document.getElementById('playingIndicator');
-            icon.className = isPlaying ? 'fa-solid fa-pause' : 'fa-solid fa-play';
-            indicator.classList.toggle('paused', !isPlaying);
-        }
+            if (isPlaying) {
+                // 暂停
+                isPlaying = false;
+                icon.className = 'fa-solid fa-play audio-play-icon';
+                clearInterval(audioInterval);
+            } else {
+                // 播放
+                isPlaying = true;
+                icon.className = 'fa-solid fa-pause audio-play-icon';
 
-        function seekBackward() {
-            // 后退15秒
-            console.log('后退15秒');
-        }
-
-        function seekForward() {
-            // 前进15秒
-            console.log('前进15秒');
-        }
-
-        function restartAudio() {
-            // 从头开始
-            document.getElementById('progressFill').style.width = '0%';
-            document.getElementById('currentTime').textContent = '00:00';
-            console.log('从头开始');
-        }
-
-        function changeSpeed() {
-            const currentIndex = speeds.indexOf(playbackSpeed);
-            const nextIndex = (currentIndex + 1) % speeds.length;
-            playbackSpeed = speeds[nextIndex];
-            document.querySelector('.speed-btn').textContent = playbackSpeed + 'x';
+                // 模拟播放进度
+                audioInterval = setInterval(() => {
+                    audioProgress += 1;
+                    if (audioProgress >= totalDuration) {
+                        audioProgress = 0;
+                        isPlaying = false;
+                        icon.className = 'fa-solid fa-play audio-play-icon';
+                        clearInterval(audioInterval);
+                    }
+                    // 更新圆环进度
+                    const offset = circumference - (audioProgress / totalDuration) * circumference;
+                    progressRing.style.strokeDashoffset = offset;
+                }, 1000);
+            }
         }
 
         // 导读视频播放功能

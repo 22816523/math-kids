@@ -13,11 +13,91 @@
         .back-btn { font-size: 20px; cursor: pointer; margin-right: 12px; }
         .navbar-title { font-size: 18px; line-height: 1.4; font-weight: 600; flex: 1; }
 
-        .success-banner { background: linear-gradient(135deg, var(--color-primary), var(--color-secondary)); color: white; padding: 24px 16px; text-align: center; }
-        .success-icon { width: 64px; height: 64px; background: rgba(255, 255, 255, 0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; font-size: 32px; }
-        .success-title { font-size: 20px; font-weight: 600; margin-bottom: 8px; }
-        .reward-row { display: flex; justify-content: center; gap: 16px; margin-top: 12px; }
-        .reward-item { display: flex; align-items: center; gap: 6px; background: rgba(255, 255, 255, 0.2); padding: 6px 16px; border-radius: 16px; font-size: 14px; font-weight: 600; }
+        /* 成功横幅 - 小学生风格 */
+        .success-banner {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: #5d4037;
+            padding: 32px 16px 24px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            margin: 12px 16px 0;
+            border-radius: 16px;
+        }
+        .success-banner::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 60%);
+            pointer-events: none;
+        }
+        /* 装饰星星 */
+        .star-decor {
+            position: absolute;
+            color: rgba(255,255,255,0.6);
+            font-size: 16px;
+        }
+        .star-decor.s1 { top: 20px; left: 20px; font-size: 14px; }
+        .star-decor.s2 { top: 40px; right: 30px; font-size: 20px; }
+        .star-decor.s3 { bottom: 60px; left: 40px; font-size: 12px; }
+        .star-decor.s4 { bottom: 40px; right: 20px; font-size: 18px; }
+        .star-decor.s5 { top: 60px; left: 60px; font-size: 10px; }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 40px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+            position: relative;
+            z-index: 1;
+        }
+        .success-title {
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 8px;
+            position: relative;
+            z-index: 1;
+        }
+        .success-subtitle {
+            font-size: 14px;
+            color: #795548;
+            margin-bottom: 16px;
+            position: relative;
+            z-index: 1;
+        }
+        .reward-row {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            position: relative;
+            z-index: 1;
+        }
+        .reward-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255,255,255,0.95);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 700;
+            color: #333;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .reward-item .reward-icon {
+            font-size: 18px;
+        }
+        .reward-item.coins .reward-icon { color: #FFD700; }
+        .reward-item.streak .reward-icon { color: #FF6B6B; }
 
         .content-container { padding: 16px; }
 
@@ -91,11 +171,12 @@
             color: #999;
         }
 
-        .tips-card { background: linear-gradient(135deg, #667eea, #764ba2); color: white; border-radius: 12px; padding: 16px; margin-bottom: 16px; }
-        .tips-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
-        .tips-icon { font-size: 24px; }
-        .tips-title { font-size: 16px; font-weight: 600; }
-        .tips-content { font-size: 14px; line-height: 1.8; opacity: 0.95; }
+        .tips-card { background: #fff8e6; border-radius: 16px; padding: 16px; margin-bottom: 16px; border: 1px solid #ffe4b3; }
+        .tips-header { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+        .tips-avatar { width: 36px; height: 36px; background: linear-gradient(135deg, #FFD700, #FFA500); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; color: white; }
+        .tips-title { font-size: 14px; font-weight: 600; color: #b8860b; }
+        .tips-bubble { background: white; border-radius: 12px; border-top-left-radius: 4px; padding: 12px 14px; font-size: 14px; line-height: 1.8; color: #333; box-shadow: 0 1px 3px rgba(0,0,0,0.06); position: relative; }
+        .tips-bubble::before { content: ''; position: absolute; top: 0; left: -6px; border-width: 6px; border-style: solid; border-color: white transparent transparent transparent; }
 
         .action-bar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 375px; background: white; padding: 12px 16px; box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.06); }
         .btn { width: 100%; height: 44px; border-radius: 22px; font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center; gap: 6px; background: linear-gradient(135deg, var(--color-primary), var(--color-secondary)); color: white; border: none; }
@@ -184,21 +265,35 @@
     </div>
 
     <div class="success-banner">
-        <div class="success-icon"><i class="fa-solid fa-check"></i></div>
-        <div class="success-title">打卡成功</div>
+        <!-- 装饰星星 -->
+        <i class="fa-solid fa-star star-decor s1"></i>
+        <i class="fa-solid fa-star star-decor s2"></i>
+        <i class="fa-solid fa-star star-decor s3"></i>
+        <i class="fa-solid fa-star star-decor s4"></i>
+        <i class="fa-solid fa-sparkles star-decor s5"></i>
+
+        <div class="success-icon"><i class="fa-solid fa-trophy" style="color: #FFD700;"></i></div>
+        <div class="success-title">太棒了，打卡成功！</div>
+        <div class="success-subtitle">今日阅读任务已完成</div>
         <div class="reward-row">
-            <div class="reward-item"><i class="fa-solid fa-coins" style="color: white;"></i> +5积分</div>
-            <div class="reward-item"><i class="fa-solid fa-fire" style="color: white;"></i> 连续15天</div>
+            <div class="reward-item coins">
+                <i class="fa-solid fa-coins reward-icon"></i>
+                <span>+5 积分</span>
+            </div>
+            <div class="reward-item streak">
+                <i class="fa-solid fa-fire reward-icon"></i>
+                <span>连续15天</span>
+            </div>
         </div>
     </div>
 
     <div class="content-container">
         <div class="tips-card">
             <div class="tips-header">
-                <div class="tips-icon"><i class="fa-solid fa-robot"></i></div>
+                <div class="tips-avatar"><i class="fa-solid fa-leaf"></i></div>
                 <div class="tips-title">小读点评</div>
             </div>
-            <div class="tips-content">
+            <div class="tips-bubble">
                 你的回答很有深度！对人物心理的分析很到位。建议在描述科学概念时可以更加具体，结合书中的例子会更好哦
             </div>
         </div>

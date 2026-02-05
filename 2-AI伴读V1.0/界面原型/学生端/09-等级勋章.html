@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的等级 - 校校读吧-学生端</title>
+    <link rel="stylesheet" href="design-system.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: linear-gradient(180deg, #e8f5e9 0%, #fff8e1 100%);
+            width: 375px;
+            margin: 0 auto;
+            min-height: 100vh;
+            padding-bottom: 20px;
+            opacity: 0;
+        }
+
+        /* 顶部导航栏 */
+        .navbar {
+            background: linear-gradient(135deg, #4CAF50, #8BC34A);
+            color: white;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .back-btn {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            margin-right: 8px;
+        }
+
+        .navbar-title {
+            flex: 1;
+            font-size: 17px;
+            font-weight: 600;
+            text-align: center;
+            margin-right: 40px;
+        }
+
+        /* 当前等级卡片 */
+        .current-level-card {
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            margin: 16px;
+            border-radius: 20px;
+            padding: 24px;
+            text-align: center;
+            box-shadow: 0 8px 24px rgba(255, 165, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .current-level-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 60%);
+            pointer-events: none;
+        }
+
+        .level-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 12px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+        }
+
+        .level-name {
+            font-size: 24px;
+            font-weight: 700;
+            color: #5d4037;
+            margin-bottom: 4px;
+        }
+
+        .level-title {
+            font-size: 16px;
+            color: #795548;
+            margin-bottom: 16px;
+        }
+
+        /* 进度条 */
+        .progress-section {
+            background: rgba(255,255,255,0.3);
+            border-radius: 12px;
+            padding: 12px;
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            color: #5d4037;
+            margin-bottom: 8px;
+        }
+
+        .progress-bar {
+            height: 12px;
+            background: rgba(255,255,255,0.5);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4CAF50, #8BC34A);
+            border-radius: 6px;
+            transition: width 0.5s ease;
+        }
+
+        .progress-tip {
+            font-size: 12px;
+            color: #795548;
+            margin-top: 8px;
+            text-align: center;
+        }
+
+        .progress-tip strong {
+            color: #4CAF50;
+            font-weight: 700;
+        }
+
+        /* 等级列表 */
+        .levels-section {
+            padding: 0 16px;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-title i {
+            color: #FFD700;
+        }
+
+        .level-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .level-item {
+            background: white;
+            border-radius: 14px;
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        .level-item.current {
+            border: 2px solid #FFD700;
+            background: linear-gradient(135deg, #fffde7, #fff8e1);
+        }
+
+        .level-item.locked {
+            opacity: 0.5;
+        }
+
+        .level-item.unlocked {
+            border-left: 3px solid #4CAF50;
+        }
+
+        .level-badge {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .level-badge.lv1 { background: linear-gradient(135deg, #e0e0e0, #bdbdbd); }
+        .level-badge.lv2 { background: linear-gradient(135deg, #c8e6c9, #a5d6a7); }
+        .level-badge.lv3 { background: linear-gradient(135deg, #a5d6a7, #81c784); }
+        .level-badge.lv4 { background: linear-gradient(135deg, #90caf9, #64b5f6); }
+        .level-badge.lv5 { background: linear-gradient(135deg, #81d4fa, #4fc3f7); }
+        .level-badge.lv6 { background: linear-gradient(135deg, #ce93d8, #ba68c8); }
+        .level-badge.lv7 { background: linear-gradient(135deg, #f48fb1, #f06292); }
+        .level-badge.lv8 { background: linear-gradient(135deg, #ffcc80, #ffa726); }
+        .level-badge.lv9 { background: linear-gradient(135deg, #FFD700, #FFA500); }
+        .level-badge.lv10 { background: linear-gradient(135deg, #ff6b6b, #ee5a24); }
+
+        .level-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .level-item-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 2px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .level-item-name .current-tag {
+            font-size: 9px;
+            background: #FFD700;
+            color: #5d4037;
+            padding: 1px 5px;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+
+        .level-item-title {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .level-condition {
+            font-size: 11px;
+            color: #999;
+            text-align: right;
+            white-space: nowrap;
+        }
+
+        .level-condition i {
+            color: #4CAF50;
+            margin-right: 2px;
+        }
+
+        .level-status-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            flex-shrink: 0;
+        }
+
+        .level-status-icon.unlocked {
+            background: #e8f5e9;
+            color: #4CAF50;
+        }
+
+        .level-status-icon.locked {
+            background: #f5f5f5;
+            color: #bdbdbd;
+        }
+
+        /* 神秘等级样式 */
+        .level-item.mystery {
+            opacity: 0.7;
+            background: linear-gradient(135deg, #f5f5f5, #eeeeee);
+        }
+
+        .level-badge.mystery-badge {
+            background: linear-gradient(135deg, #e0e0e0, #bdbdbd);
+            position: relative;
+        }
+
+        .level-item.mystery .level-item-name {
+            color: #9e9e9e;
+        }
+
+        .level-item.mystery .level-item-title {
+            color: #bdbdbd;
+            font-style: italic;
+        }
+
+        /* 升级规则提示 */
+        .upgrade-tip {
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+            margin: 0 16px 16px;
+            padding: 12px 16px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            color: #1565c0;
+        }
+
+        .upgrade-tip i {
+            font-size: 18px;
+            color: #1976d2;
+        }
+
+        /* 未完待续 */
+        .coming-soon {
+            text-align: center;
+            padding: 20px;
+            color: #bdbdbd;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .coming-soon i {
+            font-size: 16px;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 1; }
+        }
+
+        /* Font Awesome图标样式 */
+        .fa-solid, .fa-regular {
+            font-weight: 400;
+        }
+
+        .navbar .fa-solid {
+            color: inherit;
+            opacity: 1;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="navbar">
+        <div class="back-btn" onclick="history.back()">
+            <i class="fa-solid fa-chevron-left"></i>
+        </div>
+        <div class="navbar-title">我的等级</div>
+    </div>
+
+    <!-- 当前等级卡片 -->
+    <div class="current-level-card">
+        <div class="level-icon">
+            <i class="fa-solid fa-star" style="color: #4fc3f7;"></i>
+        </div>
+        <div class="level-name">Lv.5</div>
+        <div class="level-title">钻石达人</div>
+        <div class="progress-section">
+            <div class="progress-info">
+                <span>已读 15 万字</span>
+                <span>升级还需 5 万字</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 50%;"></div>
+            </div>
+            <div class="progress-tip">再读 <strong>5万字</strong>（约1本书）即可升级到 <strong>Lv.6 星耀勇士</strong></div>
+        </div>
+    </div>
+
+    <!-- 升级规则提示 -->
+    <div class="upgrade-tip">
+        <i class="fa-solid fa-lightbulb"></i>
+        <span>升级秘诀：读完一本书并完成测评，即可累计阅读字数哦！</span>
+    </div>
+
+    <!-- 等级列表 -->
+    <div class="levels-section">
+        <div class="section-title">
+            <i class="fa-solid fa-layer-group"></i>
+            全部等级
+        </div>
+        <div class="level-list">
+            <!-- Lv.1 -->
+            <div class="level-item unlocked">
+                <div class="level-badge lv1">
+                    <i class="fa-solid fa-seedling" style="color: #757575;"></i>
+                </div>
+                <div class="level-content">
+                    <div class="level-item-name">Lv.1 青铜新手</div>
+                    <div class="level-item-title">每个人都从这里开始</div>
+                </div>
+                <div class="level-condition">
+                    <i class="fa-solid fa-font"></i>0-1万字
+                </div>
+                <div class="level-status-icon unlocked">
+                    <i class="fa-solid fa-check"></i>
+                </div>
+            </div>
+
+            <!-- Lv.2 -->
+            <div class="level-item unlocked">
+                <div class="level-badge lv2">
+                    <i class="fa-solid fa-leaf" style="color: #2e7d32;"></i>
+                </div>
+                <div class="level-content">
+                    <div class="level-item-name">Lv.2 白银能手</div>
+                    <div class="level-item-title">开始爱上阅读了</div>
+                </div>
+                <div class="level-condition">
+                    <i class="fa-solid fa-font"></i>1-3万字
+                </div>
+                <div class="level-status-icon unlocked">
+                    <i class="fa-solid fa-check"></i>
+                </div>
+            </div>
+
+            <!-- Lv.3 -->
+            <div class="level-item unlocked">
+                <div class="level-badge lv3">
+                    <i class="fa-solid fa-book-open" style="color: #388e3c;"></i>
+                </div>
+                <div class="level-content">
+                    <div class="level-item-name">Lv.3 黄金读者</div>
+                    <div class="level-item-title">阅读习惯正在养成</div>
+                </div>
+                <div class="level-condition">
+                    <i class="fa-solid fa-font"></i>3-5万字
+                </div>
+                <div class="level-status-icon unlocked">
+                    <i class="fa-solid fa-check"></i>
+                </div>
+            </div>
+
+            <!-- Lv.4 -->
+            <div class="level-item unlocked">
+                <div class="level-badge lv4">
+                    <i class="fa-solid fa-compass" style="color: #1565c0;"></i>
+                </div>
+                <div class="level-content">
+                    <div class="level-item-name">Lv.4 铂金高手</div>
+                    <div class="level-item-title">在知识海洋中探索</div>
+                </div>
+                <div class="level-condition">
+                    <i class="fa-solid fa-font"></i>5-10万字
+                </div>
+                <div class="level-status-icon unlocked">
+                    <i class="fa-solid fa-check"></i>
+                </div>
+            </div>
+
+            <!-- Lv.5 当前 -->
+            <div class="level-item current">
+                <div class="level-badge lv5">
+                    <i class="fa-solid fa-star" style="color: #0288d1;"></i>
+                </div>
+                <div class="level-content">
+                    <div class="level-item-name">
+                        Lv.5 钻石达人
+                        <span class="current-tag">当前</span>
+                    </div>
+                    <div class="level-item-title">已经很厉害啦</div>
+                </div>
+                <div class="level-condition">
+                    <i class="fa-solid fa-font"></i>10-20万字
+                </div>
+                <div class="level-status-icon unlocked">
+                    <i class="fa-solid fa-check"></i>
+                </div>
+            </div>
+
+            <!-- Lv.6 -->
+            <div class="level-item locked">
+                <div class="level-badge lv6">
+                    <i class="fa-solid fa-binoculars" style="color: #7b1fa2;"></i>
+                </div>
+                <div class="level-content">
+                    <div class="level-item-name">Lv.6 星耀勇士</div>
+                    <div class="level-item-title">勇往直前，无所畏惧</div>
+                </div>
+                <div class="level-condition">
+                    <i class="fa-solid fa-font"></i>20-40万字
+                </div>
+                <div class="level-status-icon locked">
+                    <i class="fa-solid fa-lock"></i>
+                </div>
+            </div>
+
+            <!-- Lv.7 -->
+            <div class="level-item locked">
+                <div class="level-badge lv7">
+                    <i class="fa-solid fa-mountain" style="color: #c2185b;"></i>
+                </div>
+                <div class="level-content">
+                    <div class="level-item-name">Lv.7 王者英雄</div>
+                    <div class="level-item-title">向着更高的目标前进</div>
+                </div>
+                <div class="level-condition">
+                    <i class="fa-solid fa-font"></i>40-70万字
+                </div>
+                <div class="level-status-icon locked">
+                    <i class="fa-solid fa-lock"></i>
+                </div>
+            </div>
+
+            <!-- Lv.8 -->
+            <div class="level-item locked">
+                <div class="level-badge lv8">
+                    <i class="fa-solid fa-graduation-cap" style="color: #e65100;"></i>
+                </div>
+                <div class="level-content">
+                    <div class="level-item-name">Lv.8 荣耀冠军</div>
+                    <div class="level-item-title">博览群书，实力超群</div>
+                </div>
+                <div class="level-condition">
+                    <i class="fa-solid fa-font"></i>70-100万字
+                </div>
+                <div class="level-status-icon locked">
+                    <i class="fa-solid fa-lock"></i>
+                </div>
+            </div>
+
+            <!-- Lv.9 -->
+            <div class="level-item locked">
+                <div class="level-badge lv9">
+                    <i class="fa-solid fa-crown" style="color: #ff8f00;"></i>
+                </div>
+                <div class="level-content">
+                    <div class="level-item-name">Lv.9 传奇明星</div>
+                    <div class="level-item-title">闪耀的阅读之星</div>
+                </div>
+                <div class="level-condition">
+                    <i class="fa-solid fa-font"></i>100-150万字
+                </div>
+                <div class="level-status-icon locked">
+                    <i class="fa-solid fa-lock"></i>
+                </div>
+            </div>
+
+            <!-- Lv.10 -->
+            <div class="level-item locked">
+                <div class="level-badge lv10">
+                    <i class="fa-solid fa-gem" style="color: #d32f2f;"></i>
+                </div>
+                <div class="level-content">
+                    <div class="level-item-name">Lv.10 至尊王者</div>
+                    <div class="level-item-title">真正的阅读传奇</div>
+                </div>
+                <div class="level-condition">
+                    <i class="fa-solid fa-font"></i>150万字+
+                </div>
+                <div class="level-status-icon locked">
+                    <i class="fa-solid fa-lock"></i>
+                </div>
+            </div>
+
+            <!-- 未完待续 -->
+            <div class="coming-soon">
+                <i class="fa-solid fa-ellipsis"></i>
+                <span>更多等级，敬请期待</span>
+            </div>
+        </div>
+    </div>
+
+    <script src="./router.js"></script>
+</body>
+</html>

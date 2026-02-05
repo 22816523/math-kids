@@ -11,6 +11,7 @@ const ROUTES = {
         checkin: '02-打卡.html',
         aiChat: '03-AI对话.html',
         exam: '04-测评答题.html',
+        examResult: '05-测评结果.html',
         shop: '05-积分商城.html',
         profile: '06-个人中心.html',
         bookshelf: '07-书架.html',

@@ -14,113 +14,205 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            background: #f5f5f5;
+            background: linear-gradient(180deg, #e8f5e9 0%, #fff8e1 100%);
             width: 375px;
             margin: 0 auto;
-            padding-bottom: 80px;
+            padding-bottom: 100px;
+            min-height: 100vh;
             opacity: 0;
         }
 
         /* 顶部导航栏 */
         .navbar {
-            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+            background: linear-gradient(135deg, #4CAF50, #8BC34A);
             color: white;
-            height: 44px;
+            height: 50px;
             display: flex;
             align-items: center;
             padding: 0 16px;
-            box-shadow: 0 2px 8px rgba(54, 207, 201, 0.15);
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+            border-radius: 0 0 20px 20px;
         }
 
         .back-btn {
-            font-size: 20px;
+            font-size: 22px;
             cursor: pointer;
             margin-right: 12px;
+            width: 36px;
+            height: 36px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .navbar-title {
             font-size: 18px;
-            font-weight: 600;
+            font-weight: 700;
             line-height: 1.4;
             flex: 1;
         }
 
-        .timer {
-            font-size: 14px;
-            line-height: 1.6;
-            background: rgba(255, 255, 255, 0.2);
-            padding: 4px 12px;
-            border-radius: 12px;
+        /* 进度条区域 - 趣味化 */
+        .progress-section {
+            background: white;
+            padding: 16px;
+            margin: 16px;
+            border-radius: 20px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
         }
 
-        /* 进度条 */
-        .progress-bar {
-            background: white;
-            padding: 12px 16px;
-            margin: 12px 16px;
-            border-radius: 8px;
+        .progress-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .progress-encourage {
+            font-size: 15px;
+            font-weight: 600;
+            color: #FF9800;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .progress-encourage i {
+            color: #FF9800;
+            font-size: 18px;
+        }
+
+        .progress-stats {
+            font-size: 14px;
+            color: #666;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .view-all-btn {
+            color: #4CAF50;
+            font-size: 13px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 6px 12px;
+            background: #e8f5e9;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .progress-row {
             display: flex;
             align-items: center;
             gap: 12px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            margin-bottom: 8px;
         }
 
-        .progress-text {
-            font-size: 14px;
-            line-height: 1.6;
-            color: #595959;
-        }
-
-        .progress-line {
-            flex: 1;
-            height: 4px;
-            background: #f0f0f0;
-            border-radius: 2px;
+        .progress-bar-wrapper {
+            position: relative;
+            height: 20px;
+            background: #e8e8e8;
+            border-radius: 10px;
             overflow: hidden;
+            flex: 1;
         }
 
         .progress-fill {
             height: 100%;
-            background: var(--color-primary);
-            width: 20%;
-            transition: width 0.3s;
+            background: linear-gradient(90deg, #4CAF50, #8BC34A);
+            border-radius: 10px;
+            transition: width 0.5s ease;
         }
 
-        /* 题目卡片 */
+        .progress-percent {
+            font-size: 24px;
+            font-weight: 800;
+            color: #FF9800;
+            min-width: 60px;
+            text-align: center;
+            text-shadow: 0 2px 4px rgba(255, 152, 0, 0.3);
+        }
+
+        /* 题目卡片 - 更圆润活泼 */
         .question-card {
             background: white;
-            margin: 0 16px 12px;
+            margin: 0 16px 16px;
             padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            border-radius: 20px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+            border: 3px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .question-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #FF9800, #FFC107, #FFEB3B);
+        }
+
+        .question-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
         }
 
         .question-number {
+            font-size: 14px;
+            font-weight: 700;
+            color: white;
+            background: linear-gradient(135deg, #FF9800, #FFC107);
+            padding: 6px 14px;
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .question-score {
             font-size: 13px;
-            line-height: 1.5;
-            color: #8c8c8c;
-            margin-bottom: 8px;
+            color: #4CAF50;
+            font-weight: 600;
+            background: #e8f5e9;
+            padding: 4px 10px;
+            border-radius: 12px;
         }
 
         .question-text {
-            font-size: 16px;
+            font-size: 17px;
             font-weight: 600;
-            line-height: 1.6;
-            color: #262626;
-            margin-bottom: 16px;
+            line-height: 1.7;
+            color: #333;
+            margin-bottom: 20px;
+            padding: 12px;
+            background: #fffde7;
+            border-radius: 12px;
+            border-left: 4px solid #FFC107;
         }
 
-        /* 选项 */
+        /* 选项 - 更大更易点击 */
         .option {
             background: #fafafa;
-            padding: 12px 16px;
+            padding: 16px 20px;
             margin-bottom: 12px;
-            border-radius: 8px;
+            border-radius: 16px;
             cursor: pointer;
-            border: 2px solid transparent;
+            border: 3px solid #e8e8e8;
             transition: all 0.3s;
-            font-size: 14px;
+            font-size: 16px;
             line-height: 1.6;
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
         .option:last-child {
@@ -128,21 +220,46 @@
         }
 
         .option:hover {
-            background: #e6f7ff;
+            background: #e3f2fd;
+            border-color: #90CAF9;
+            transform: translateX(4px);
+        }
+
+        .option:active {
+            transform: scale(0.98);
         }
 
         .option.selected {
-            background: #e6f7ff;
-            border-color: var(--color-primary);
+            background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+            border-color: #4CAF50;
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.2);
+        }
+
+        .option.selected .option-label {
+            background: #4CAF50;
+            color: white;
         }
 
         .option-label {
-            font-weight: 600;
-            margin-right: 8px;
-            color: #262626;
+            font-weight: 700;
+            color: white;
+            background: linear-gradient(135deg, #90CAF9, #64B5F6);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 15px;
         }
 
-        /* 底部操作栏 */
+        .option-text {
+            flex: 1;
+            color: #333;
+        }
+
+        /* 底部操作栏 - 更大按钮 */
         .bottom-bar {
             position: fixed;
             bottom: 0;
@@ -150,42 +267,53 @@
             transform: translateX(-50%);
             width: 375px;
             background: white;
-            padding: 12px 16px;
+            padding: 16px;
             display: flex;
             gap: 12px;
-            box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.06);
+            box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.1);
+            border-radius: 20px 20px 0 0;
         }
 
         .btn {
             flex: 1;
-            height: 44px;
-            border: 1px solid #d9d9d9;
-            background: white;
-            border-radius: 4px;
+            height: 52px;
+            border: none;
+            background: #f5f5f5;
+            border-radius: 26px;
             font-size: 16px;
-            line-height: 1.4;
+            font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
         }
 
         .btn:hover {
-            background: #fafafa;
-            border-color: var(--color-primary);
+            background: #e8e8e8;
+        }
+
+        .btn:active {
+            transform: scale(0.96);
         }
 
         .btn.primary {
-            background: var(--color-primary);
+            background: linear-gradient(135deg, #4CAF50, #8BC34A);
             color: white;
-            border-color: var(--color-primary);
-            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
         }
 
         .btn.primary:hover {
-            opacity: 0.9;
-            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(76, 175, 80, 0.4);
+            transform: translateY(-2px);
         }
 
-        /* 题目列表弹窗 */
+        .btn i {
+            font-size: 18px;
+        }
+
+        /* 题目列表弹窗 - 儿童化 */
         .question-list-overlay {
             position: fixed;
             top: 0;
@@ -193,7 +321,7 @@
             transform: translateX(-50%);
             width: 375px;
             height: 100vh;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.4);
             z-index: 200;
             display: none;
             align-items: flex-end;
@@ -206,8 +334,8 @@
 
         .question-list-modal {
             width: 100%;
-            background: white;
-            border-radius: 16px 16px 0 0;
+            background: linear-gradient(180deg, #fff 0%, #f0f7ff 100%);
+            border-radius: 24px 24px 0 0;
             padding: 20px;
             max-height: 70vh;
             overflow-y: auto;
@@ -227,14 +355,21 @@
         }
 
         .question-list-title {
-            font-size: 16px;
-            font-weight: 600;
-            color: #262626;
+            font-size: 18px;
+            font-weight: 700;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .question-list-title i {
+            color: #FF9800;
         }
 
         .question-list-close {
-            width: 28px;
-            height: 28px;
+            width: 32px;
+            height: 32px;
             border: none;
             background: #f5f5f5;
             border-radius: 50%;
@@ -242,17 +377,18 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 16px;
             color: #666;
         }
 
         .question-list-stats {
             display: flex;
-            gap: 16px;
+            gap: 12px;
             margin-bottom: 16px;
-            padding: 12px;
-            background: #f5f5f5;
-            border-radius: 8px;
+            padding: 14px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
         }
 
         .stat-item {
@@ -260,25 +396,26 @@
             align-items: center;
             gap: 6px;
             font-size: 13px;
-            color: #595959;
+            font-weight: 600;
+            color: #666;
         }
 
         .stat-dot {
-            width: 10px;
-            height: 10px;
+            width: 12px;
+            height: 12px;
             border-radius: 50%;
         }
 
         .stat-dot.done {
-            background: var(--color-primary);
+            background: linear-gradient(135deg, #4CAF50, #8BC34A);
         }
 
         .stat-dot.undone {
-            background: #d9d9d9;
+            background: #e0e0e0;
         }
 
         .stat-dot.current {
-            background: #1890ff;
+            background: linear-gradient(135deg, #FF9800, #FFC107);
         }
 
         .question-grid {
@@ -290,36 +427,41 @@
         .question-num {
             width: 100%;
             aspect-ratio: 1;
-            border-radius: 8px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 14px;
-            font-weight: 500;
+            font-size: 15px;
+            font-weight: 700;
             cursor: pointer;
             transition: all 0.2s;
-            border: 2px solid transparent;
+            border: 3px solid transparent;
         }
 
         .question-num.done {
-            background: rgba(0, 200, 167, 0.15);
-            color: var(--color-primary);
-            border-color: var(--color-primary);
+            background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+            color: #4CAF50;
+            border-color: #4CAF50;
         }
 
         .question-num.undone {
             background: #f5f5f5;
-            color: #8c8c8c;
+            color: #bdbdbd;
         }
 
         .question-num.current {
-            background: rgba(24, 144, 255, 0.15);
-            color: #1890ff;
-            border-color: #1890ff;
+            background: linear-gradient(135deg, #fff3e0, #ffe0b2);
+            color: #FF9800;
+            border-color: #FF9800;
         }
 
         .question-num:hover {
-            transform: scale(1.05);
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .question-num:active {
+            transform: scale(0.95);
         }
 
         /* Font Awesome图标样式优化 */
@@ -374,48 +516,75 @@
         <div class="navbar-title">《三体》测评题</div>
     </div>
 
-    <div class="progress-bar">
-        <div class="progress-text">第 20 / 20 题</div>
-        <div class="progress-line">
-            <div class="progress-fill" style="width: 100%;"></div>
+    <!-- 趣味进度区域 -->
+    <div class="progress-section">
+        <div class="progress-header">
+            <div class="progress-encourage">
+                <i class="fa-solid fa-fire"></i>
+                <span>加油！还剩1题就完成啦！</span>
+            </div>
+            <div class="view-all-btn" onclick="openQuestionList()">
+                <i class="fa-solid fa-grip"></i>
+                <span>全部</span>
+            </div>
         </div>
-        <div style="color: var(--color-primary); font-size: 14px; cursor: pointer;" onclick="openQuestionList()">
-            <i class="fa-solid fa-th"></i>
+        <div class="progress-row">
+            <div class="progress-bar-wrapper">
+                <div class="progress-fill" style="width: 95%;"></div>
+            </div>
+            <span class="progress-percent">95%</span>
         </div>
     </div>
 
     <div class="question-card">
-        <div class="question-number">【单选题】2分</div>
+        <div class="question-header">
+            <div class="question-number">
+                <i class="fa-solid fa-bookmark"></i>
+                第20题
+            </div>
+            <div class="question-score">
+                <i class="fa-solid fa-coins" style="color: #FFC107;"></i> 5分
+            </div>
+        </div>
         <div class="question-text">在《三体》中，"黑暗森林法则"的核心内容是什么？</div>
 
         <div class="option">
-            <span class="option-label">A.</span>
-            <span>宇宙中的文明应该互相帮助</span>
+            <span class="option-label">A</span>
+            <span class="option-text">宇宙中的文明应该互相帮助</span>
         </div>
         <div class="option">
-            <span class="option-label">B.</span>
-            <span>宇宙资源是无限的</span>
+            <span class="option-label">B</span>
+            <span class="option-text">宇宙资源是无限的</span>
         </div>
         <div class="option selected">
-            <span class="option-label">C.</span>
-            <span>宇宙中的文明会隐藏自己并消灭其他文明</span>
+            <span class="option-label">C</span>
+            <span class="option-text">宇宙中的文明会隐藏自己并消灭其他文明</span>
         </div>
         <div class="option">
-            <span class="option-label">D.</span>
-            <span>所有文明最终会走向联合</span>
+            <span class="option-label">D</span>
+            <span class="option-text">所有文明最终会走向联合</span>
         </div>
     </div>
 
     <div class="bottom-bar">
-        <button class="btn" onclick="prevQuestion()">上一题</button>
-        <button class="btn primary" onclick="submitExam()">提交测评</button>
+        <button class="btn" onclick="prevQuestion()">
+            <i class="fa-solid fa-chevron-left"></i>
+            上一题
+        </button>
+        <button class="btn primary" onclick="submitExam()">
+            <i class="fa-solid fa-paper-plane"></i>
+            提交测评
+        </button>
     </div>
 
     <!-- 题目列表弹窗 -->
     <div class="question-list-overlay" id="questionListModal" onclick="closeQuestionList(event)">
         <div class="question-list-modal" onclick="event.stopPropagation()">
             <div class="question-list-header">
-                <div class="question-list-title">题目列表</div>
+                <div class="question-list-title">
+                    <i class="fa-solid fa-list-check"></i>
+                    题目列表
+                </div>
                 <button class="question-list-close" onclick="closeQuestionList()">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
@@ -518,7 +687,7 @@
         // 提交测评
         function submitExam() {
             if (confirm('确定要提交测评吗？')) {
-                showModal('examCompleteModal');
+                Router.toStudentPage('examResult');
             }
         }
 

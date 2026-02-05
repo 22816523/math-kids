@@ -1349,11 +1349,11 @@ class CalendarWindow(QWidget):
 
         # 三角形指示符
         self.lunar_indicator = QLabel('▶')
-        self.lunar_indicator.setStyleSheet("color: #ffffff; font-size: 12px;")
+        self.lunar_indicator.setObjectName('lunarIndicator')
 
         # 农历日期标签
         self.lunar_label = QLabel()
-        self.lunar_label.setStyleSheet("color: #ffffff; font-size: 16px; font-weight: bold;")
+        self.lunar_label.setObjectName('lunarLabel')
 
         lunar_layout.addWidget(self.lunar_indicator)
         lunar_layout.addWidget(self.lunar_label)
