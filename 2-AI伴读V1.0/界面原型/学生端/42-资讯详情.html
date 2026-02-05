@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>资讯详情 - 校校读吧</title>
+    <link rel="stylesheet" href="design-system.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background-color: #FFFFFF; opacity: 0; }
+
+        /* 顶部导航栏 - 微信风格 */
+        .wx-navbar { background: #EDEDED; height: 44px; display: flex; align-items: center; justify-content: space-between; padding: 0 10px; position: sticky; top: 0; z-index: 100; }
+        .wx-navbar-left { display: flex; align-items: center; }
+        .wx-navbar-btn { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; color: #000000; font-size: 16px; cursor: pointer; }
+        .wx-navbar-right { display: flex; align-items: center; gap: 4px; }
+        .wx-navbar-more { background: rgba(0,0,0,0.05); border-radius: 16px; display: flex; align-items: center; overflow: hidden; }
+
+        /* 文章容器 */
+        .article-wrapper { padding-bottom: 60px; }
+
+        /* 文章头部 */
+        .article-header { padding: 20px 16px 0; }
+
+        /* 文章标题 */
+        .article-title { font-size: 22px; font-weight: 700; color: #000000; line-height: 1.4; margin-bottom: 16px; letter-spacing: 0.5px; }
+
+        /* 公众号信息行 */
+        .mp-info-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+        .mp-info-left { display: flex; align-items: center; gap: 8px; }
+        .mp-avatar { width: 24px; height: 24px; border-radius: 50%; background: linear-gradient(135deg, var(--color-primary) 0%, #2DB7B0 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 10px; font-weight: 600; }
+        .mp-name { font-size: 14px; color: var(--color-primary); }
+        .mp-follow-btn { background: none; border: none; color: var(--color-primary); font-size: 14px; padding: 0; cursor: pointer; }
+        .mp-follow-btn.followed { color: #B2B2B2; }
+
+        /* 发布时间行 */
+        .publish-info { display: flex; align-items: center; gap: 16px; font-size: 13px; color: #B2B2B2; margin-bottom: 20px; }
+
+        /* 封面图 */
+        .article-cover { width: 100%; margin-bottom: 20px; }
+        .article-cover img { width: 100%; display: block; }
+        .article-cover-placeholder { width: 100%; height: 200px; background: linear-gradient(135deg, #E8E8E8 0%, #D0D0D0 100%); display: flex; align-items: center; justify-content: center; }
+        .article-cover-placeholder i { font-size: 48px; color: #B2B2B2; }
+
+        /* 文章正文 */
+        .article-content { padding: 0 16px; font-size: 17px; color: #333333; line-height: 1.75; letter-spacing: 0.5px; }
+        .article-content p { margin-bottom: 24px; text-align: justify; }
+        .article-content img { width: 100%; margin: 16px 0; }
+        .article-content h2 { font-size: 20px; font-weight: 700; color: #000000; margin: 32px 0 16px; }
+        .article-content h3 { font-size: 18px; font-weight: 700; color: #000000; margin: 28px 0 12px; }
+        .article-content ul, .article-content ol { margin: 16px 0; padding-left: 24px; }
+        .article-content li { margin-bottom: 12px; }
+        .article-content blockquote { background: #F7F7F7; border-left: 3px solid var(--color-primary); padding: 16px; margin: 20px 0; color: #666666; font-size: 15px; line-height: 1.8; }
+        .article-content a { color: var(--color-primary); text-decoration: none; }
+        .article-content strong { font-weight: 700; color: #000000; }
+        .article-content section { margin-bottom: 24px; }
+
+        /* 文章底部 */
+        .article-footer { padding: 24px 16px; }
+
+        /* 修改于时间 */
+        .edit-time { font-size: 13px; color: #B2B2B2; margin-bottom: 24px; }
+
+        /* 点赞和在看区域 */
+        .like-section { display: flex; align-items: center; gap: 24px; margin-bottom: 24px; }
+        .like-btn, .wow-btn { display: flex; align-items: center; gap: 6px; background: #F7F7F7; border: none; padding: 8px 16px; border-radius: 20px; font-size: 14px; color: #666666; cursor: pointer; }
+        .like-btn i, .wow-btn i { font-size: 16px; }
+        .like-btn.active { background: rgba(250, 81, 81, 0.1); color: #FA5151; }
+        .like-btn.active i { color: #FA5151; }
+        .wow-btn.active { background: rgba(54, 207, 201, 0.1); color: var(--color-primary); }
+
+        /* 分割线 */
+        .divider { height: 1px; background: #EBEBEB; margin: 24px 0; }
+
+        /* 公众号卡片 */
+        .mp-card { background: #F7F7F7; border-radius: 8px; padding: 16px; display: flex; align-items: center; justify-content: space-between; }
+        .mp-card-left { display: flex; align-items: center; gap: 12px; }
+        .mp-card-avatar { width: 48px; height: 48px; border-radius: 4px; background: linear-gradient(135deg, var(--color-primary) 0%, #2DB7B0 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 18px; font-weight: 600; }
+        .mp-card-info { display: flex; flex-direction: column; gap: 4px; }
+        .mp-card-name { font-size: 16px; color: #333333; font-weight: 500; }
+        .mp-card-desc { font-size: 12px; color: #B2B2B2; }
+        .mp-card-btn { background: var(--color-primary); color: white; border: none; padding: 8px 20px; border-radius: 4px; font-size: 14px; font-weight: 500; cursor: pointer; }
+        .mp-card-btn:active { opacity: 0.8; }
+        .mp-card-btn.followed { background: #F7F7F7; color: #B2B2B2; border: 1px solid #E5E5E5; }
+
+        /* 底部操作栏 - 微信风格 */
+        .wx-bottom-bar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 375px; background: #F7F7F7; border-top: 1px solid #E5E5E5; display: flex; align-items: center; padding: 8px 12px; z-index: 100; gap: 8px; }
+        .wx-input-wrap { flex: 1; background: #FFFFFF; border-radius: 18px; padding: 8px 16px; font-size: 14px; color: #B2B2B2; border: 1px solid #E5E5E5; }
+        .wx-bottom-actions { display: flex; align-items: center; gap: 4px; }
+        .wx-action-btn { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; background: none; border: none; color: #666666; font-size: 20px; cursor: pointer; }
+        .wx-action-btn:active { opacity: 0.6; }
+
+        .fa-solid, .fa-regular { font-weight: 400; }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- 微信风格导航栏 -->
+    <div class="wx-navbar">
+        <div class="wx-navbar-left">
+            <div class="wx-navbar-btn" onclick="goBack()">
+                <i class="fa-solid fa-chevron-left"></i>
+            </div>
+        </div>
+        <div class="wx-navbar-right">
+            <div class="wx-navbar-more">
+                <div class="wx-navbar-btn" onclick="showShare()">
+                    <i class="fa-solid fa-ellipsis"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="article-wrapper">
+        <!-- 文章头部 -->
+        <div class="article-header">
+            <h1 class="article-title" id="articleTitle">2026年寒假阅读计划正式启动！快来加入吧</h1>
+
+            <!-- 公众号信息 -->
+            <div class="mp-info-row">
+                <div class="mp-info-left">
+                    <div class="mp-avatar">校</div>
+                    <span class="mp-name" id="mpName">校校读吧</span>
+                </div>
+                <button class="mp-follow-btn" id="headerFollowBtn" onclick="toggleFollow()">关注</button>
+            </div>
+
+            <!-- 发布信息 -->
+            <div class="publish-info">
+                <span id="publishTime">2026年01月20日 10:00</span>
+            </div>
+        </div>
+
+        <!-- 封面图 -->
+        <div class="article-cover" id="articleCover">
+            <div class="article-cover-placeholder">
+                <i class="fa-regular fa-image"></i>
+            </div>
+        </div>
+
+        <!-- 文章正文 -->
+        <div class="article-content" id="articleContent">
+            <section>
+                <p>亲爱的同学们：</p>
+                <p>新学期新气象！<strong>校校读吧</strong>为大家精心准备了2026年寒假阅读计划，涵盖经典文学、科普知识、成长故事等多个领域，快来加入我们的阅读之旅吧！</p>
+            </section>
+
+            <section>
+                <h2>活动时间</h2>
+                <p>2026年1月20日 - 2026年2月28日</p>
+            </section>
+
+            <section>
+                <h2>参与方式</h2>
+                <ul>
+                    <li>打开校校读吧APP，进入"书架"页面</li>
+                    <li>选择感兴趣的阅读计划加入</li>
+                    <li>每天完成阅读任务，获得积分奖励</li>
+                    <li>坚持打卡，赢取"阅读之星"称号</li>
+                </ul>
+            </section>
+
+            <blockquote>
+                完成全部阅读任务的同学，将获得精美图书一本、专属电子勋章以及500积分奖励！积分可在积分商城兑换心仪的礼品哦~
+            </blockquote>
+
+            <section>
+                <h2>推荐书单</h2>
+                <p>本次寒假阅读计划精选了以下优质图书：</p>
+                <ul>
+                    <li><strong>《三体》</strong> - 刘慈欣（科幻经典，探索宇宙奥秘）</li>
+                    <li><strong>《小王子》</strong> - 圣埃克苏佩里（温暖治愈，感悟爱与责任）</li>
+                    <li><strong>《活着》</strong> - 余华（生命的坚韧与希望）</li>
+                    <li><strong>《平凡的世界》</strong> - 路遥（奋斗的青春最美丽）</li>
+                </ul>
+            </section>
+
+            <p>阅读是一场美妙的旅行，让我们一起在书海中遨游，收获知识与快乐！期待在阅读的路上与你相遇~</p>
+
+            <p style="text-align: right; color: #888888; margin-top: 40px; font-size: 15px;">
+                校校读吧运营团队<br>
+                2026年1月20日
+            </p>
+        </div>
+
+        <!-- 文章底部 -->
+        <div class="article-footer">
+            <!-- 修改时间 -->
+            <div class="edit-time">修改于 <span id="editTime">2026年01月20日</span></div>
+
+            <!-- 点赞和在看 -->
+            <div class="like-section">
+                <button class="like-btn" id="likeBtn" onclick="toggleLike()">
+                    <i class="fa-regular fa-thumbs-up"></i>
+                    <span id="likeCount">86</span>
+                </button>
+                <button class="wow-btn" id="wowBtn" onclick="toggleWow()">
+                    <i class="fa-regular fa-star"></i>
+                    <span>在看</span>
+                    <span id="wowCount">32</span>
+                </button>
+            </div>
+
+            <div class="divider"></div>
+
+            <!-- 公众号卡片 -->
+            <div class="mp-card">
+                <div class="mp-card-left">
+                    <div class="mp-card-avatar">校</div>
+                    <div class="mp-card-info">
+                        <span class="mp-card-name">校校读吧</span>
+                        <span class="mp-card-desc">让阅读成为习惯</span>
+                    </div>
+                </div>
+                <button class="mp-card-btn" id="cardFollowBtn" onclick="toggleFollow()">关注</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部操作栏 -->
+    <div class="wx-bottom-bar">
+        <div class="wx-input-wrap" onclick="showComment()">说点什么...</div>
+        <div class="wx-bottom-actions">
+            <button class="wx-action-btn" onclick="toggleLike()">
+                <i class="fa-regular fa-thumbs-up" id="bottomLikeIcon"></i>
+            </button>
+            <button class="wx-action-btn" onclick="toggleWow()">
+                <i class="fa-regular fa-star" id="bottomWowIcon"></i>
+            </button>
+            <button class="wx-action-btn" onclick="showFavorite()">
+                <i class="fa-regular fa-bookmark"></i>
+            </button>
+            <button class="wx-action-btn" onclick="showShare()">
+                <i class="fa-solid fa-share-nodes"></i>
+            </button>
+        </div>
+    </div>
+
+    <script src="./router.js"></script>
+    <script>
+        // 资讯数据
+        const newsData = {
+            1: {
+                title: '2026年寒假阅读计划正式启动！快来加入吧',
+                source: '校校读吧',
+                time: '2026年01月20日 10:00',
+                editTime: '2026年01月20日',
+                likeCount: 86,
+                wowCount: 32
+            },
+            2: {
+                title: '如何培养孩子的阅读兴趣？这5个方法很有效',
+                source: '校校读吧',
+                time: '2026年01月19日 14:30',
+                editTime: '2026年01月19日',
+                likeCount: 128,
+                wowCount: 45
+            },
+            3: {
+                title: '本周好书推荐：《小王子》带你探索爱与责任',
+                source: '校校读吧',
+                time: '2026年01月18日 09:00',
+                editTime: '2026年01月18日',
+                likeCount: 156,
+                wowCount: 67
+            },
+            4: {
+                title: '恭喜！一年级(1)班张三同学获得"阅读之星"称号',
+                source: '校校读吧',
+                time: '2026年01月17日 16:00',
+                editTime: '2026年01月17日',
+                likeCount: 234,
+                wowCount: 89
+            },
+            5: {
+                title: '高效阅读的秘诀：每天30分钟，坚持就是胜利',
+                source: '校校读吧',
+                time: '2026年01月16日 10:30',
+                editTime: '2026年01月16日',
+                likeCount: 98,
+                wowCount: 28
+            },
+            6: {
+                title: '积分商城上新！精美文具、图书等你来兑换',
+                source: '校校读吧',
+                time: '2026年01月15日 11:00',
+                editTime: '2026年01月15日',
+                likeCount: 167,
+                wowCount: 52
+            }
+        };
+
+        let isLiked = false;
+        let isWow = false;
+        let isFollowed = false;
+        let currentLikeCount = 86;
+        let currentWowCount = 32;
+
+        // 页面加载时初始化
+        window.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const newsId = urlParams.get('id') || 1;
+            loadNewsData(newsId);
+            initFollowStatus();
+        });
+
+        // 加载资讯数据
+        function loadNewsData(newsId) {
+            const news = newsData[newsId];
+            if (news) {
+                document.getElementById('articleTitle').textContent = news.title;
+                document.getElementById('mpName').textContent = news.source;
+                document.getElementById('publishTime').textContent = news.time;
+                document.getElementById('editTime').textContent = news.editTime;
+                document.getElementById('likeCount').textContent = news.likeCount;
+                document.getElementById('wowCount').textContent = news.wowCount;
+                currentLikeCount = news.likeCount;
+                currentWowCount = news.wowCount;
+            }
+        }
+
+        // 返回
+        function goBack() {
+            window.history.back();
+        }
+
+        // 切换点赞
+        function toggleLike() {
+            isLiked = !isLiked;
+            const likeBtn = document.getElementById('likeBtn');
+            const likeCount = document.getElementById('likeCount');
+            const bottomLikeIcon = document.getElementById('bottomLikeIcon');
+
+            if (isLiked) {
+                currentLikeCount++;
+                likeBtn.classList.add('active');
+                likeBtn.querySelector('i').className = 'fa-solid fa-thumbs-up';
+                bottomLikeIcon.className = 'fa-solid fa-thumbs-up';
+                bottomLikeIcon.style.color = '#FA5151';
+            } else {
+                currentLikeCount--;
+                likeBtn.classList.remove('active');
+                likeBtn.querySelector('i').className = 'fa-regular fa-thumbs-up';
+                bottomLikeIcon.className = 'fa-regular fa-thumbs-up';
+                bottomLikeIcon.style.color = '';
+            }
+            likeCount.textContent = currentLikeCount;
+        }
+
+        // 切换在看
+        function toggleWow() {
+            isWow = !isWow;
+            const wowBtn = document.getElementById('wowBtn');
+            const wowCount = document.getElementById('wowCount');
+            const bottomWowIcon = document.getElementById('bottomWowIcon');
+
+            if (isWow) {
+                currentWowCount++;
+                wowBtn.classList.add('active');
+                wowBtn.querySelector('i').className = 'fa-solid fa-star';
+                bottomWowIcon.className = 'fa-solid fa-star';
+                bottomWowIcon.style.color = '#36CFC9';
+            } else {
+                currentWowCount--;
+                wowBtn.classList.remove('active');
+                wowBtn.querySelector('i').className = 'fa-regular fa-star';
+                bottomWowIcon.className = 'fa-regular fa-star';
+                bottomWowIcon.style.color = '';
+            }
+            wowCount.textContent = currentWowCount;
+        }
+
+        // 切换关注
+        function toggleFollow() {
+            isFollowed = !isFollowed;
+            const headerBtn = document.getElementById('headerFollowBtn');
+            const cardBtn = document.getElementById('cardFollowBtn');
+
+            if (isFollowed) {
+                headerBtn.textContent = '已关注';
+                headerBtn.classList.add('followed');
+                cardBtn.textContent = '已关注';
+                cardBtn.classList.add('followed');
+                localStorage.setItem('studentMpFollowed', 'true');
+            } else {
+                headerBtn.textContent = '关注';
+                headerBtn.classList.remove('followed');
+                cardBtn.textContent = '关注';
+                cardBtn.classList.remove('followed');
+                localStorage.setItem('studentMpFollowed', 'false');
+            }
+        }
+
+        // 初始化关注状态
+        function initFollowStatus() {
+            const followed = localStorage.getItem('studentMpFollowed') === 'true';
+            if (followed) {
+                isFollowed = true;
+                const headerBtn = document.getElementById('headerFollowBtn');
+                const cardBtn = document.getElementById('cardFollowBtn');
+                headerBtn.textContent = '已关注';
+                headerBtn.classList.add('followed');
+                cardBtn.textContent = '已关注';
+                cardBtn.classList.add('followed');
+            }
+        }
+
+        // 显示评论
+        function showComment() {
+            alert('评论功能开发中...');
+        }
+
+        // 显示收藏
+        function showFavorite() {
+            alert('已收藏');
+        }
+
+        // 显示分享
+        function showShare() {
+            alert('分享功能开发中...');
+        }
+    </script>
+</body>
+</html>

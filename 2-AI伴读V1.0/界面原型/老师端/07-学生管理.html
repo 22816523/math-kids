@@ -132,144 +132,6 @@
         .invite-btn:active {
             opacity: 0.8;
         }
-
-        /* 邀请内容模态框 */
-        .invite-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 999;
-        }
-
-        .invite-modal.show {
-            display: flex;
-        }
-
-        .invite-modal-content {
-            background: white;
-            border-radius: 12px;
-            width: 320px;
-            max-height: 80vh;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .invite-modal-header {
-            padding: 20px;
-            text-align: center;
-            border-bottom: 1px solid #f0f0f0;
-        }
-
-        .invite-modal-title {
-            font-size: 18px;
-            font-weight: 600;
-            color: #333333;
-        }
-
-        .invite-modal-body {
-            padding: 20px;
-            overflow-y: auto;
-        }
-
-        .invite-content-card {
-            background: linear-gradient(135deg, #e6f7ff, #f0f5ff);
-            border-radius: 8px;
-            padding: 16px;
-            margin-bottom: 16px;
-        }
-
-        .invite-content-title {
-            font-size: 16px;
-            font-weight: 600;
-            color: #2E5BFF;
-            margin-bottom: 12px;
-            text-align: center;
-        }
-
-        .invite-content-item {
-            margin-bottom: 12px;
-            font-size: 14px;
-            line-height: 1.6;
-            color: #333333;
-        }
-
-        .invite-content-item:last-child {
-            margin-bottom: 0;
-        }
-
-        .invite-content-label {
-            font-weight: 600;
-            color: #595959;
-        }
-
-        .invite-code {
-            display: inline-block;
-            background: white;
-            padding: 4px 12px;
-            border-radius: 4px;
-            font-family: 'Courier New', monospace;
-            font-weight: 700;
-            color: #2E5BFF;
-            font-size: 16px;
-            letter-spacing: 2px;
-        }
-
-        .invite-steps {
-            background: #fffbe6;
-            border: 1px solid #ffe58f;
-            border-radius: 8px;
-            padding: 12px;
-        }
-
-        .invite-steps-title {
-            font-size: 13px;
-            font-weight: 600;
-            color: #faad14;
-            margin-bottom: 8px;
-        }
-
-        .invite-steps-list {
-            font-size: 12px;
-            color: #595959;
-            line-height: 1.8;
-            padding-left: 16px;
-        }
-
-        .invite-modal-footer {
-            display: flex;
-            border-top: 1px solid #f0f0f0;
-        }
-
-        .invite-modal-btn {
-            flex: 1;
-            height: 50px;
-            border: none;
-            background: white;
-            font-size: 16px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .invite-modal-btn:first-child {
-            border-right: 1px solid #f0f0f0;
-            color: #595959;
-        }
-
-        .invite-modal-btn:last-child {
-            color: #2E5BFF;
-            font-weight: 500;
-        }
-
-        .invite-modal-btn:active {
-            background: #F5F7FA;
-        }
     </style>    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -279,9 +141,9 @@
     </div>
 
     <div class="class-info">
-        <div class="class-name">初一(3)班</div>
+        <div class="class-name">一年级(1)班</div>
         <div class="class-stats">
-            <span>学生总数：52人</span>
+            <span>学生总数：38人（预估45人）</span>
         </div>
     </div>
 
@@ -333,139 +195,21 @@
 
     <!-- 底部固定按钮 -->
     <div class="bottom-action">
-        <button class="invite-btn" onclick="showInvitePreview()">
+        <button class="invite-btn" onclick="inviteStudents()">
             邀请学生加入班级
         </button>
     </div>
 
-    <!-- 邀请预览模态框 -->
-    <div class="invite-modal" id="inviteModal">
-        <div class="invite-modal-content">
-            <div class="invite-modal-header">
-                <div class="invite-modal-title">班级邀请信息</div>
-            </div>
-            <div class="invite-modal-body">
-                <div class="invite-content-card">
-                    <div class="invite-content-title">初一(3)班邀请您加入</div>
-                    <div class="invite-content-item">
-                        <span class="invite-content-label">班级名称：</span>初一(3)班
-                    </div>
-                    <div class="invite-content-item">
-                        <span class="invite-content-label">任课教师：</span>王老师
-                    </div>
-                    <div class="invite-content-item">
-                        <span class="invite-content-label">邀请链接：</span>
-                        <div style="background: white; padding: 8px; border-radius: 4px; margin-top: 8px; word-break: break-all; font-size: 12px; color: #2E5BFF;">
-                            <span id="inviteLink"></span>
-                        </div>
-                    </div>
-                    <div class="invite-content-item">
-                        <span class="invite-content-label">有效期至：</span>
-                        <span id="expireTime" style="color: #ff4d4f; font-weight: 600;"></span>
-                    </div>
-                </div>
-                <div class="invite-steps">
-                    <div class="invite-steps-title">使用说明</div>
-                    <ol class="invite-steps-list">
-                        <li>点击下方"发送到微信"按钮</li>
-                        <li>选择要邀请的学生或家长</li>
-                        <li>学生点击链接后确认即可加入班级</li>
-                        <li>链接有效期为3天，过期后需重新生成</li>
-                    </ol>
-                </div>
-            </div>
-            <div class="invite-modal-footer">
-                <button class="invite-modal-btn" onclick="hideInviteModal()">取消</button>
-                <button class="invite-modal-btn" onclick="sendToWeChat()">发送到微信</button>
-            </div>
-        </div>
-    </div>
-
     <script src="./router.js"></script>
     <script>
-        // 生成随机token
-        function generateToken() {
-            return 'INV' + Date.now() + Math.random().toString(36).substring(2, 15);
-        }
+        // 邀请学生加入班级（直接调用微信分享）
+        function inviteStudents() {
+            // 调用微信小程序分享接口
+            // wx.miniProgram.postMessage 或 wx.shareAppMessage
+            // 分享内容：班级名称 + 邀请链接
+            // 实际开发中会调用微信JS-SDK的分享接口
 
-        // 生成邀请链接
-        function generateInviteLink(classId) {
-            const token = generateToken();
-            const createTime = new Date();
-            const expireTime = new Date(createTime.getTime() + 3 * 24 * 60 * 60 * 1000); // 3天后
-
-            // 保存邀请链接信息到localStorage
-            const inviteData = {
-                classId: classId,
-                token: token,
-                createTime: createTime.toISOString(),
-                expireTime: expireTime.toISOString(),
-                status: 'active'
-            };
-
-            // 保存到localStorage（实际应用中应该保存到后端）
-            localStorage.setItem('currentInviteLink', JSON.stringify(inviteData));
-
-            // 生成链接（这里使用相对路径，实际应用中应该是完整的URL）
-            const link = `${window.location.origin}${window.location.pathname.replace('07-学生管理.html', '')}学生端/join-class.html?classId=${classId}&token=${token}`;
-
-            return {
-                link: link,
-                expireTime: expireTime
-            };
-        }
-
-        // 格式化日期时间
-        function formatDateTime(date) {
-            const year = date.getFullYear();
-            const month = String(date.getMonth() + 1).padStart(2, '0');
-            const day = String(date.getDate()).padStart(2, '0');
-            const hours = String(date.getHours()).padStart(2, '0');
-            const minutes = String(date.getMinutes()).padStart(2, '0');
-            return `${year}-${month}-${day} ${hours}:${minutes}`;
-        }
-
-        // 显示邀请预览模态框
-        function showInvitePreview() {
-            // 获取当前班级ID（从URL参数获取）
-            const urlParams = new URLSearchParams(window.location.search);
-            const classId = urlParams.get('classId') || '1';
-
-            // 生成邀请链接
-            const inviteInfo = generateInviteLink(classId);
-
-            // 显示邀请链接
-            document.getElementById('inviteLink').textContent = inviteInfo.link;
-
-            // 显示有效期
-            document.getElementById('expireTime').textContent = formatDateTime(inviteInfo.expireTime);
-
-            // 显示模态框
-            document.getElementById('inviteModal').classList.add('show');
-        }
-
-        // 隐藏邀请模态框
-        function hideInviteModal() {
-            document.getElementById('inviteModal').classList.remove('show');
-        }
-
-        // 发送到微信
-        function sendToWeChat() {
-            const inviteLink = document.getElementById('inviteLink').textContent;
-
-            // 复制链接到剪贴板
-            if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(inviteLink).then(() => {
-                    hideInviteModal();
-                    alert('邀请链接已复制到剪贴板！\n\n您可以：\n1. 打开微信\n2. 选择要邀请的学生或家长\n3. 粘贴并发送链接\n\n学生点击链接后确认即可加入班级');
-                }).catch(() => {
-                    hideInviteModal();
-                    alert('请手动复制邀请链接发送给学生：\n\n' + inviteLink);
-                });
-            } else {
-                hideInviteModal();
-                alert('请手动复制邀请链接发送给学生：\n\n' + inviteLink);
-            }
+            alert('[原型演示] 点击后直接唤起微信分享界面，分享内容包含班级邀请链接，学生点击链接即可加入班级');
         }
 
         function showFilter() {

@@ -485,33 +485,33 @@
 
             <div class="form-tip" id="classNamePreview" style="color: #2E5BFF; font-weight: 500; margin-bottom: 20px;"></div>
 
-            <!-- 学年学期 -->
-            <div class="form-group" id="semesterGroup">
+            <!-- 入学年份 -->
+            <div class="form-group" id="enrollmentYearGroup">
                 <label class="form-label">
-                    学年学期
+                    入学年份
+                    <span class="required">*</span>
                 </label>
-                <div class="select-group">
-                    <select class="form-select" id="schoolYear">
-                        <option value="">选择学年</option>
-                        <option value="2023-2024">2023-2024学年</option>
-                        <option value="2024-2025" selected>2024-2025学年</option>
-                        <option value="2025-2026">2025-2026学年</option>
-                        <option value="2026-2027">2026-2027学年</option>
-                    </select>
-                    <select class="form-select" id="semester">
-                        <option value="">选择学期</option>
-                        <option value="上学期" selected>上学期</option>
-                        <option value="下学期">下学期</option>
-                    </select>
-                </div>
+                <select class="form-select" id="enrollmentYear">
+                    <option value="">选择入学年份</option>
+                    <option value="2020">2020级</option>
+                    <option value="2021">2021级</option>
+                    <option value="2022">2022级</option>
+                    <option value="2023">2023级</option>
+                    <option value="2024">2024级</option>
+                    <option value="2025">2025级</option>
+                    <option value="2026">2026级</option>
+                </select>
+                <div class="form-tip">入学年份用于标识学生届别，如2024年入学的学生为"2024级"</div>
+                <div class="error-message">请选择入学年份</div>
             </div>
 
-            <!-- 班级人数 -->
+            <!-- 预估人数 -->
             <div class="form-group">
                 <label class="form-label">
-                    班级人数
+                    预估人数
                 </label>
-                <input type="number" class="form-input" id="studentCount" placeholder="请输入班级人数（可选）" min="0" max="999">
+                <input type="number" class="form-input" id="expectedCount" placeholder="请输入班级预估人数（可选）" min="0" max="999">
+                <div class="form-tip">预估人数用于统计学生加入情况，如班级实际有45人</div>
             </div>
 
             <!-- 班级描述 -->
@@ -677,90 +677,47 @@
         const mockClasses = [
             {
                 id: 1,
-                name: '初一(3)班',
-                grade: '初一',
-                studentCount: 52,
-                activeStudents: 45,
-                planCount: 3,
+                name: '一年级(1)班',
+                grade: '一年级',
+                expectedCount: 45,
+                actualCount: 38,
+                activeStudents: 35,
+                planCount: 2,
                 avgProgress: 68,
                 teacher: '王老师',
                 createDate: '2025-09-01',
-                description: '重点培养班级，注重阅读能力和文学素养提升',
+                description: '重点培养班级，注重阅读兴趣和习惯养成',
                 subject: '语文',
-                schoolYear: '2024-2025',
-                semester: '上学期'
+                enrollmentYear: '2025'
             },
             {
                 id: 2,
-                name: '初一(4)班',
-                grade: '初一',
-                studentCount: 48,
-                activeStudents: 42,
-                planCount: 3,
+                name: '一年级(2)班',
+                grade: '一年级',
+                expectedCount: 43,
+                actualCount: 40,
+                activeStudents: 36,
+                planCount: 2,
                 avgProgress: 72,
                 teacher: '王老师',
                 createDate: '2025-09-01',
                 subject: '语文',
-                schoolYear: '2024-2025',
-                semester: '上学期'
+                enrollmentYear: '2025'
             },
             {
                 id: 3,
-                name: '初二(1)班',
-                grade: '初二',
-                studentCount: 45,
-                activeStudents: 40,
-                planCount: 2,
-                avgProgress: 55,
-                teacher: '王老师',
-                createDate: '2025-09-01',
-                description: '新组建班级，需要加强阅读习惯培养和兴趣引导',
-                subject: '语文',
-                schoolYear: '2024-2025',
-                semester: '上学期'
-            },
-            {
-                id: 4,
-                name: '初二(2)班',
-                grade: '初二',
-                studentCount: 43,
+                name: '一年级(3)班',
+                grade: '一年级',
+                expectedCount: 46,
+                actualCount: 42,
                 activeStudents: 38,
-                planCount: 2,
-                avgProgress: 60,
+                planCount: 3,
+                avgProgress: 75,
                 teacher: '王老师',
                 createDate: '2025-09-01',
-                subject: '数学',
-                schoolYear: '2024-2025',
-                semester: '上学期'
-            },
-            {
-                id: 5,
-                name: '初三(1)班',
-                grade: '初三',
-                studentCount: 35,
-                activeStudents: 32,
-                planCount: 4,
-                avgProgress: 85,
-                teacher: '王老师',
-                createDate: '2024-09-01',
-                description: '毕业班，重点提升阅读理解和写作能力',
+                description: '阅读积极性高，班级氛围好',
                 subject: '语文',
-                schoolYear: '2024-2025',
-                semester: '上学期'
-            },
-            {
-                id: 6,
-                name: '初三(2)班',
-                grade: '初三',
-                studentCount: 25,
-                activeStudents: 23,
-                planCount: 4,
-                avgProgress: 88,
-                teacher: '王老师',
-                createDate: '2024-09-01',
-                subject: '英语',
-                schoolYear: '2024-2025',
-                semester: '上学期'
+                enrollmentYear: '2025'
             }
         ];
 
@@ -776,7 +733,7 @@
             }
 
             // 解析班级名称，提取年级和班级数字
-            // 格式：初一(3)班 -> 年级：初一，班级数字：3
+            // 格式：一年级(1)班 -> 年级：一年级，班级数字：1
             const className = classData.name || '';
             const match = className.match(/^(.+?)\((\d+)\)班$/);
 
@@ -790,9 +747,8 @@
             }
 
             // 填充其他表单数据
-            document.getElementById('schoolYear').value = classData.schoolYear || '';
-            document.getElementById('semester').value = classData.semester || '';
-            document.getElementById('studentCount').value = classData.studentCount || '';
+            document.getElementById('enrollmentYear').value = classData.enrollmentYear || '2024';
+            document.getElementById('expectedCount').value = classData.expectedCount || '';
             document.getElementById('description').value = classData.description || '';
 
             // 更新字符计数
@@ -893,6 +849,16 @@
                 classGroup.classList.remove('error');
             }
 
+            // 验证入学年份
+            const enrollmentYear = document.getElementById('enrollmentYear').value;
+            const enrollmentYearGroup = document.getElementById('enrollmentYearGroup');
+            if (!enrollmentYear) {
+                enrollmentYearGroup.classList.add('error');
+                isValid = false;
+            } else {
+                enrollmentYearGroup.classList.remove('error');
+            }
+
             return isValid;
         }
 
@@ -921,9 +887,8 @@
             const formData = {
                 className: className,
                 subject: '语文', // 默认学科为语文
-                schoolYear: document.getElementById('schoolYear').value,
-                semester: document.getElementById('semester').value,
-                studentCount: document.getElementById('studentCount').value,
+                enrollmentYear: document.getElementById('enrollmentYear').value,
+                expectedCount: document.getElementById('expectedCount').value,
                 description: document.getElementById('description').value.trim()
             };
 

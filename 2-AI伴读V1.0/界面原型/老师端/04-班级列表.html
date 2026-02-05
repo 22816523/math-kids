@@ -38,33 +38,6 @@
         .action-icon-btn.with-text { width: auto; padding: 6px 12px; border-radius: 16px; gap: 4px; }
         .action-icon-btn:active { background: rgba(255, 255, 255, 0.3); }
 
-        /* 邀请模态框 */
-        .invite-modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.5); display: none; align-items: center; justify-content: center; z-index: 999; }
-        .invite-modal.show { display: flex; }
-        .invite-modal-content { background: white; border-radius: 12px; width: 320px; max-height: 80vh; overflow: hidden; display: flex; flex-direction: column; }
-        .invite-modal-header { padding: 20px; text-align: center; border-bottom: 1px solid #f0f0f0; }
-        .invite-modal-title { font-size: 18px; font-weight: 600; color: #333333; }
-        .invite-modal-body { padding: 20px; overflow-y: auto; }
-        .invite-content-card { background: linear-gradient(135deg, #e6f7ff, #f0f5ff); border-radius: 8px; padding: 16px; margin-bottom: 16px; }
-        .invite-content-title { font-size: 16px; font-weight: 600; color: #2E5BFF; margin-bottom: 12px; text-align: center; }
-        .invite-content-item { margin-bottom: 12px; font-size: 14px; line-height: 1.6; color: #333333; }
-        .invite-content-item:last-child { margin-bottom: 0; }
-        .invite-content-label { font-weight: 600; color: #595959; }
-        .invite-steps { background: #fffbe6; border: 1px solid #ffe58f; border-radius: 8px; padding: 12px; }
-        .invite-steps-title { font-size: 14px; font-weight: 600; color: #d48806; margin-bottom: 8px; }
-        .invite-steps-list { margin: 0; padding-left: 20px; font-size: 13px; color: #8c6d1f; line-height: 1.8; }
-        .invite-modal-footer { display: flex; border-top: 1px solid #f0f0f0; }
-        .invite-modal-btn { flex: 1; padding: 14px; border: none; background: white; font-size: 16px; cursor: pointer; }
-        .invite-modal-btn:first-child { color: #666666; border-right: 1px solid #f0f0f0; }
-        .invite-modal-btn:last-child { color: #2E5BFF; font-weight: 600; }
-        .invite-modal-btn:active { background: #f5f5f5; }
-
-        .empty-state { text-align: center; padding: 80px 20px; }
-        .empty-icon { font-size: 64px; margin-bottom: 16px; opacity: 0.3; }
-        .empty-text { font-size: 14px; color: #999999; margin-bottom: 24px; }
-        .empty-btn { display: inline-block; padding: 10px 24px; background: #2E5BFF; color: white; border-radius: 6px; text-decoration: none; font-size: 14px; cursor: pointer; }
-        .empty-btn:active { opacity: 0.8; }
-
         .fa-solid, .fa-regular { font-weight: 400; }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -85,11 +58,11 @@
                 <div class="stat-label">班级总数</div>
             </div>
             <div class="stat-item">
-                <div class="stat-value">153</div>
-                <div class="stat-label">学生总数</div>
+                <div class="stat-value">120</div>
+                <div class="stat-label">已加入学生</div>
             </div>
             <div class="stat-item">
-                <div class="stat-value">51</div>
+                <div class="stat-value">45</div>
                 <div class="stat-label">平均人数</div>
             </div>
         </div>
@@ -99,48 +72,6 @@
         <!-- 班级列表将通过JavaScript动态生成 -->
     </div>
 
-    <!-- 邀请模态框 -->
-    <div class="invite-modal" id="inviteModal">
-        <div class="invite-modal-content">
-            <div class="invite-modal-header">
-                <div class="invite-modal-title">班级邀请信息</div>
-            </div>
-            <div class="invite-modal-body">
-                <div class="invite-content-card">
-                    <div class="invite-content-title" id="inviteClassName"></div>
-                    <div class="invite-content-item">
-                        <span class="invite-content-label">班级名称：</span><span id="inviteClassNameText"></span>
-                    </div>
-                    <div class="invite-content-item">
-                        <span class="invite-content-label">任课教师：</span><span id="inviteTeacher"></span>
-                    </div>
-                    <div class="invite-content-item">
-                        <span class="invite-content-label">邀请链接：</span>
-                        <div style="background: white; padding: 8px; border-radius: 4px; margin-top: 8px; word-break: break-all; font-size: 12px; color: #2E5BFF;">
-                            <span id="inviteLink"></span>
-                        </div>
-                    </div>
-                    <div class="invite-content-item">
-                        <span class="invite-content-label">有效期至：</span>
-                        <span id="expireTime" style="color: #ff4d4f; font-weight: 600;"></span>
-                    </div>
-                </div>
-                <div class="invite-steps">
-                    <div class="invite-steps-title">使用说明</div>
-                    <ol class="invite-steps-list">
-                        <li>点击下方"发送到微信"按钮</li>
-                        <li>选择要邀请的学生或家长</li>
-                        <li>学生点击链接后确认即可加入班级</li>
-                        <li>链接有效期为3天，过期后需重新生成</li>
-                    </ol>
-                </div>
-            </div>
-            <div class="invite-modal-footer">
-                <button class="invite-modal-btn" onclick="hideInviteModal()">取消</button>
-                <button class="invite-modal-btn" onclick="sendToWeChat()">发送到微信</button>
-            </div>
-        </div>
-    </div>
 
     <script src="./router.js"></script>
     <script>
@@ -148,57 +79,50 @@
         const mockClasses = [
             {
                 id: 1,
-                name: '初一(3)班',
-                grade: '初一',
-                schoolYear: '2024-2025',
-                semester: '上学期',
-                studentCount: 52,
-                activeStudents: 45,
-                planCount: 3,
+                name: '一年级(1)班',
+                grade: '一年级',
+                enrollmentYear: '2025',
+                expectedCount: 45,
+                actualCount: 38,
+                activeStudents: 35,
+                planCount: 2,
                 avgProgress: 68,
                 teacher: '王老师',
                 createDate: '2025-09-01',
-                description: '重点培养班级，注重阅读能力和文学素养提升'
+                description: '重点培养班级，注重阅读兴趣和习惯养成'
             },
             {
                 id: 2,
-                name: '初一(4)班',
-                grade: '初一',
-                schoolYear: '2024-2025',
-                semester: '上学期',
-                studentCount: 50,
-                activeStudents: 42,
-                planCount: 3,
+                name: '一年级(2)班',
+                grade: '一年级',
+                enrollmentYear: '2025',
+                expectedCount: 43,
+                actualCount: 40,
+                activeStudents: 36,
+                planCount: 2,
                 avgProgress: 72,
                 teacher: '王老师',
                 createDate: '2025-09-01'
             },
             {
                 id: 3,
-                name: '初一(5)班',
-                grade: '初一',
-                schoolYear: '2024-2025',
-                semester: '上学期',
-                studentCount: 51,
-                activeStudents: 40,
-                planCount: 2,
-                avgProgress: 55,
+                name: '一年级(3)班',
+                grade: '一年级',
+                enrollmentYear: '2025',
+                expectedCount: 46,
+                actualCount: 42,
+                activeStudents: 38,
+                planCount: 3,
+                avgProgress: 75,
                 teacher: '王老师',
-                createDate: '2025-09-01'
+                createDate: '2025-09-01',
+                description: '阅读积极性高，班级氛围好'
             }
         ]
 
-        // 根据年级获取对应的渐变色（莫兰迪色系 - 低饱和度，对人眼友好）
+        // 统一的班级卡片背景色
         function getGradeColor(grade) {
-            const gradeColors = {
-                '初一': 'linear-gradient(135deg, #A8DADC, #457B9D)', // 柔和蓝色
-                '初二': 'linear-gradient(135deg, #B8D4C8, #7FA99B)', // 柔和绿色
-                '初三': 'linear-gradient(135deg, #D4B8C8, #A97F9B)', // 柔和紫色
-                '高一': 'linear-gradient(135deg, #E8C5A5, #C89B7B)', // 柔和橙色
-                '高二': 'linear-gradient(135deg, #D4C5B8, #A99B8F)', // 柔和棕色
-                '高三': 'linear-gradient(135deg, #C8B8B8, #9B8F8F)'  // 柔和灰色
-            };
-            return gradeColors[grade] || 'linear-gradient(135deg, #A8DADC, #457B9D)';
+            return 'linear-gradient(135deg, #A8DADC, #457B9D)';
         }
 
         // 渲染班级列表
@@ -223,7 +147,7 @@
                 <div class="class-card" onclick="viewClassStudents(${classItem.id})">
                     <div class="class-header" style="background: ${getGradeColor(classItem.grade)};">
                         <div class="class-actions">
-                            <button class="action-icon-btn with-text" onclick="event.stopPropagation(); showInviteModal(${classItem.id}, '${classItem.name}', '${classItem.teacher}')">
+                            <button class="action-icon-btn with-text" onclick="event.stopPropagation(); inviteToClass(${classItem.id}, '${classItem.name}')">
                                 <i class="fa-solid fa-user-plus"></i> 邀请
                             </button>
                             <button class="action-icon-btn" onclick="event.stopPropagation(); editClass(${classItem.id})" title="编辑">
@@ -238,12 +162,12 @@
                         </div>
                         <div class="class-semester">
                             <i class="fa-solid fa-calendar-days"></i>
-                            ${classItem.schoolYear}学年 ${classItem.semester}
+                            ${classItem.enrollmentYear}级
                         </div>
                         ${classItem.description ? `<div class="class-desc">${classItem.description}</div>` : ''}
                         <div class="class-info">
                             <span class="clickable" onclick="viewClassStudents(${classItem.id})">
-                                <i class="fa-solid fa-users"></i> ${classItem.studentCount}人
+                                <i class="fa-solid fa-users"></i> 已加入 ${classItem.actualCount}/${classItem.expectedCount}人
                             </span>
                         </div>
                     </div>
@@ -285,66 +209,14 @@
             }
         }
 
-        // 当前邀请的班级信息
-        let currentInviteClassId = null;
+        // 邀请学生加入班级（直接调用微信分享）
+        function inviteToClass(classId, className) {
+            // 调用微信小程序分享接口
+            // wx.miniProgram.postMessage 或 wx.shareAppMessage
+            // 分享内容：班级名称 + 邀请链接
+            // 实际开发中会调用微信JS-SDK的分享接口
 
-        // 生成随机token
-        function generateToken() {
-            return 'INV' + Date.now() + Math.random().toString(36).substring(2, 15);
-        }
-
-        // 格式化日期时间
-        function formatDateTime(date) {
-            const year = date.getFullYear();
-            const month = String(date.getMonth() + 1).padStart(2, '0');
-            const day = String(date.getDate()).padStart(2, '0');
-            const hours = String(date.getHours()).padStart(2, '0');
-            const minutes = String(date.getMinutes()).padStart(2, '0');
-            return `${year}-${month}-${day} ${hours}:${minutes}`;
-        }
-
-        // 生成邀请链接
-        function generateInviteLink(classId) {
-            const token = generateToken();
-            const createTime = new Date();
-            const expireTime = new Date(createTime.getTime() + 3 * 24 * 60 * 60 * 1000);
-            const link = `${window.location.origin}${window.location.pathname.replace('04-班级列表.html', '')}学生端/join-class.html?classId=${classId}&token=${token}`;
-            return { link: link, expireTime: expireTime };
-        }
-
-        // 显示邀请模态框
-        function showInviteModal(classId, className, teacher) {
-            currentInviteClassId = classId;
-            const inviteInfo = generateInviteLink(classId);
-
-            document.getElementById('inviteClassName').textContent = className + '邀请您加入';
-            document.getElementById('inviteClassNameText').textContent = className;
-            document.getElementById('inviteTeacher').textContent = teacher;
-            document.getElementById('inviteLink').textContent = inviteInfo.link;
-            document.getElementById('expireTime').textContent = formatDateTime(inviteInfo.expireTime);
-
-            document.getElementById('inviteModal').classList.add('show');
-        }
-
-        // 隐藏邀请模态框
-        function hideInviteModal() {
-            document.getElementById('inviteModal').classList.remove('show');
-            currentInviteClassId = null;
-        }
-
-        // 发送到微信
-        function sendToWeChat() {
-            const inviteLink = document.getElementById('inviteLink').textContent;
-            if (navigator.clipboard) {
-                navigator.clipboard.writeText(inviteLink).then(() => {
-                    alert('邀请链接已复制到剪贴板！\n\n您可以：\n1. 打开微信\n2. 选择要邀请的学生或家长\n3. 粘贴并发送链接\n\n学生点击链接后确认即可加入班级');
-                    hideInviteModal();
-                }).catch(() => {
-                    alert('请手动复制邀请链接发送给学生：\n\n' + inviteLink);
-                });
-            } else {
-                alert('请手动复制邀请链接发送给学生：\n\n' + inviteLink);
-            }
+            alert('[原型演示] 点击后直接唤起微信分享界面，分享内容包含班级邀请链接，学生点击链接即可加入班级');
         }
 
         // 页面加载时渲染班级列表

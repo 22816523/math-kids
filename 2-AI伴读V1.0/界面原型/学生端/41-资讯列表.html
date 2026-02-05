@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>资讯 - 校校读吧</title>
+    <link rel="stylesheet" href="design-system.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            padding-bottom: 20px;
+            opacity: 0;
+        }
+
+        /* 顶部导航栏 */
+        .navbar {
+            background: linear-gradient(135deg, var(--color-primary) 0%, #2DB7B0 100%);
+            color: white;
+            height: var(--navbar-height);
+            display: flex;
+            align-items: center;
+            padding: 0 var(--spacing-lg);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            padding: 0;
+            margin-right: var(--spacing-md);
+            line-height: 1;
+        }
+
+        .navbar-title {
+            font-size: var(--font-size-body);
+            font-weight: 600;
+            flex: 1;
+        }
+
+        /* 资讯列表 */
+        .news-list {
+            padding: var(--spacing-lg);
+        }
+
+        .news-card {
+            background: var(--color-bg-primary);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--spacing-md);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            cursor: pointer;
+            transition: all var(--duration-slow);
+            display: flex;
+            flex-direction: row;
+            padding: var(--spacing-md);
+        }
+
+        .news-card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+
+        .news-card:active {
+            transform: scale(0.98);
+        }
+
+        .news-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding-right: var(--spacing-md);
+        }
+
+        .news-image {
+            width: 80px;
+            height: 80px;
+            flex-shrink: 0;
+            border-radius: var(--radius-sm);
+            background: #F5F5F5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #CCCCCC;
+            font-size: 28px;
+        }
+
+        .news-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--color-text-primary);
+            line-height: 1.4;
+            margin-bottom: var(--spacing-xs);
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .news-date {
+            font-size: 12px;
+            color: var(--color-text-tertiary);
+            margin-bottom: var(--spacing-xs);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .news-date i {
+            font-size: 11px;
+        }
+
+        .news-summary {
+            font-size: var(--font-size-small);
+            color: var(--color-text-tertiary);
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        /* 空状态 */
+        .empty-state {
+            text-align: center;
+            padding: 60px var(--spacing-lg);
+            color: var(--color-text-tertiary);
+        }
+
+        .empty-icon {
+            font-size: 48px;
+            margin-bottom: var(--spacing-md);
+            opacity: 0.3;
+        }
+
+        .empty-text {
+            font-size: var(--font-size-caption);
+        }
+
+        /* Font Awesome图标样式优化 */
+        .fa-solid, .fa-regular {
+            font-weight: 400;
+            color: var(--color-text-secondary);
+            opacity: 0.85;
+        }
+
+        .navbar .fa-solid {
+            color: inherit;
+            opacity: 1;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="navbar">
+        <button class="back-btn" onclick="Router.back()">←</button>
+        <div class="navbar-title">资讯</div>
+    </div>
+
+    <!-- 资讯列表 -->
+    <div class="news-list" id="newsList">
+        <div class="news-card" onclick="Router.toStudentPage('newsDetail', {id: 1})">
+            <div class="news-content">
+                <div class="news-title">2026年寒假阅读计划正式启动！快来加入吧</div>
+                <div class="news-date"><i class="fa-regular fa-clock"></i> 2026-01-20</div>
+                <div class="news-summary">新学期新气象，校校读吧为同学们精心准备了丰富的阅读计划，涵盖经典文学、科普知识、成长故事等多个领域...</div>
+            </div>
+            <div class="news-image">
+                <i class="fa-regular fa-newspaper"></i>
+            </div>
+        </div>
+
+        <div class="news-card" onclick="Router.toStudentPage('newsDetail', {id: 2})">
+            <div class="news-content">
+                <div class="news-title">如何培养孩子的阅读兴趣？这5个方法很有效</div>
+                <div class="news-date"><i class="fa-regular fa-clock"></i> 2026-01-19</div>
+                <div class="news-summary">阅读兴趣的培养需要从小开始，家长可以通过亲子共读、创造阅读环境等方式激发孩子的阅读热情...</div>
+            </div>
+            <div class="news-image">
+                <i class="fa-regular fa-newspaper"></i>
+            </div>
+        </div>
+
+        <div class="news-card" onclick="Router.toStudentPage('newsDetail', {id: 3})">
+            <div class="news-content">
+                <div class="news-title">本周好书推荐：《小王子》带你探索爱与责任</div>
+                <div class="news-date"><i class="fa-regular fa-clock"></i> 2026-01-18</div>
+                <div class="news-summary">《小王子》是一本写给大人的童话，讲述了小王子从自己星球出发前往地球的过程中所经历的各种历险...</div>
+            </div>
+            <div class="news-image">
+                <i class="fa-regular fa-newspaper"></i>
+            </div>
+        </div>
+
+        <div class="news-card" onclick="Router.toStudentPage('newsDetail', {id: 4})">
+            <div class="news-content">
+                <div class="news-title">恭喜！一年级(1)班张三同学获得"阅读之星"称号</div>
+                <div class="news-date"><i class="fa-regular fa-clock"></i> 2026-01-17</div>
+                <div class="news-summary">张三同学在本学期阅读计划中表现优异，累计阅读时长超过100小时，完成所有阅读任务并获得满分评价...</div>
+            </div>
+            <div class="news-image">
+                <i class="fa-regular fa-newspaper"></i>
+            </div>
+        </div>
+
+        <div class="news-card" onclick="Router.toStudentPage('newsDetail', {id: 5})">
+            <div class="news-content">
+                <div class="news-title">高效阅读的秘诀：每天30分钟，坚持就是胜利</div>
+                <div class="news-date"><i class="fa-regular fa-clock"></i> 2026-01-16</div>
+                <div class="news-summary">研究表明，每天坚持30分钟的专注阅读，一年下来可以读完20-30本书，关键在于养成习惯...</div>
+            </div>
+            <div class="news-image">
+                <i class="fa-regular fa-newspaper"></i>
+            </div>
+        </div>
+
+        <div class="news-card" onclick="Router.toStudentPage('newsDetail', {id: 6})">
+            <div class="news-content">
+                <div class="news-title">积分商城上新！精美文具、图书等你来兑换</div>
+                <div class="news-date"><i class="fa-regular fa-clock"></i> 2026-01-15</div>
+                <div class="news-summary">积分商城新上架了多款精美文具和热门图书，包括彩色笔套装、精装笔记本、经典名著等，快来兑换吧...</div>
+            </div>
+            <div class="news-image">
+                <i class="fa-regular fa-newspaper"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入路由管理脚本 -->
+    <script src="./router.js"></script>
+</body>
+</html>
