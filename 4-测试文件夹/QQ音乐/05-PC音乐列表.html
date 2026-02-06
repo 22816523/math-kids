@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>音乐列表 - QQ音乐PC端</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+            padding-bottom: 70px;
+        }
+
+        /* 顶部导航 */
+        .header {
+            height: 60px;
+            background: #fff;
+            border-bottom: 1px solid #e0e0e0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+        }
+        .header-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            gap: 32px;
+        }
+        .logo {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+        .nav {
+            display: flex;
+            gap: 24px;
+        }
+        .nav-item {
+            font-size: 14px;
+            color: #666;
+            cursor: pointer;
+            padding: 8px 0;
+            border-bottom: 2px solid transparent;
+        }
+        .nav-item:hover { color: #333; }
+        .nav-item.active {
+            color: #333;
+            font-weight: 600;
+            border-bottom-color: #333;
+        }
+        .search-box {
+            flex: 1;
+            max-width: 300px;
+            display: flex;
+            align-items: center;
+            background: #f5f5f5;
+            border: 1px solid #e0e0e0;
+            border-radius: 20px;
+            padding: 0 12px;
+        }
+        .search-input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            padding: 8px;
+            font-size: 13px;
+            outline: none;
+        }
+        .search-btn {
+            font-size: 12px;
+            color: #666;
+            cursor: pointer;
+        }
+        .user-area {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            background: #e0e0e0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: #999;
+        }
+        .user-name {
+            font-size: 13px;
+            color: #333;
+        }
+
+        /* 主体布局 */
+        .main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 84px 24px 24px;
+            display: flex;
+            gap: 24px;
+        }
+
+        /* 左侧边栏 */
+        .sidebar {
+            width: 200px;
+            flex-shrink: 0;
+        }
+        .sidebar-section {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            margin-bottom: 16px;
+            padding: 12px 0;
+        }
+        .sidebar-title {
+            font-size: 12px;
+            color: #999;
+            padding: 8px 16px;
+            font-weight: 600;
+        }
+        .sidebar-item {
+            padding: 10px 16px;
+            font-size: 13px;
+            color: #333;
+            cursor: pointer;
+        }
+        .sidebar-item:hover { background: #f5f5f5; }
+        .sidebar-item.active {
+            background: #f0f0f0;
+            font-weight: 600;
+        }
+        .sidebar-item.add-playlist { color: #666; }
+
+        /* 右侧内容区 */
+        .content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        /* 歌单头部 */
+        .playlist-header {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 24px;
+            display: flex;
+            gap: 24px;
+            margin-bottom: 16px;
+        }
+        .playlist-cover {
+            width: 180px;
+            height: 180px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+        .playlist-info { flex: 1; }
+        .playlist-tag {
+            display: inline-block;
+            padding: 2px 8px;
+            background: #f5f5f5;
+            border: 1px solid #e0e0e0;
+            border-radius: 2px;
+            font-size: 11px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+        .playlist-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 12px;
+        }
+        .playlist-meta {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+        .playlist-stats {
+            display: flex;
+            gap: 24px;
+            font-size: 13px;
+            color: #999;
+            margin-bottom: 16px;
+        }
+        .playlist-actions {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .btn {
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 13px;
+            cursor: pointer;
+            border: 1px solid #e0e0e0;
+        }
+        .btn-primary {
+            background: #333;
+            color: #fff;
+            border-color: #333;
+        }
+        .btn-secondary {
+            background: #fff;
+            color: #333;
+        }
+        .btn:hover { opacity: 0.9; }
+        .playlist-desc {
+            font-size: 13px;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* 列表工具栏 */
+        .list-toolbar {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px 4px 0 0;
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .toolbar-left {
+            display: flex;
+            gap: 24px;
+        }
+        .tab {
+            font-size: 14px;
+            color: #666;
+            cursor: pointer;
+            padding-bottom: 8px;
+            border-bottom: 2px solid transparent;
+        }
+        .tab.active {
+            color: #333;
+            font-weight: 600;
+            border-bottom-color: #333;
+        }
+        .filter-input {
+            padding: 6px 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            font-size: 13px;
+            width: 200px;
+            outline: none;
+        }
+
+        /* 歌曲列表表头 */
+        .song-list-header {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            background: #fafafa;
+            border: 1px solid #e0e0e0;
+            border-top: none;
+            font-size: 12px;
+            color: #999;
+        }
+        .col-index { width: 50px; }
+        .col-title { flex: 1; }
+        .col-artist { width: 150px; }
+        .col-album { width: 180px; }
+        .col-duration { width: 80px; text-align: center; }
+        .col-actions { width: 120px; text-align: center; }
+
+        /* 歌曲列表 */
+        .song-list {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-top: none;
+            border-radius: 0 0 4px 4px;
+        }
+        .song-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+        }
+        .song-item:last-child { border-bottom: none; }
+        .song-item:hover { background: #f5f5f5; }
+        .song-item.playing { background: #f0f0f0; }
+        .song-index {
+            width: 50px;
+            font-size: 14px;
+            color: #999;
+        }
+        .song-item.playing .song-index { color: #333; font-weight: 600; }
+        .song-title-wrap {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .song-title {
+            font-size: 14px;
+            color: #333;
+        }
+        .song-item.playing .song-title { font-weight: 600; }
+        .song-vip {
+            padding: 1px 4px;
+            background: #f5f5f5;
+            border: 1px solid #e0e0e0;
+            border-radius: 2px;
+            font-size: 10px;
+            color: #999;
+        }
+        .song-artist {
+            width: 150px;
+            font-size: 13px;
+            color: #666;
+        }
+        .song-album {
+            width: 180px;
+            font-size: 13px;
+            color: #666;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .song-duration {
+            width: 80px;
+            font-size: 13px;
+            color: #999;
+            text-align: center;
+        }
+        .song-actions {
+            width: 120px;
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+        }
+        .song-action {
+            font-size: 12px;
+            color: #999;
+            cursor: pointer;
+        }
+        .song-action:hover { color: #333; }
+
+        /* 分页 */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            padding: 24px;
+        }
+        .page-btn, .page-num {
+            padding: 6px 12px;
+            font-size: 13px;
+            color: #666;
+            cursor: pointer;
+        }
+        .page-num:hover { color: #333; }
+        .page-num.active {
+            background: #333;
+            color: #fff;
+            border-radius: 4px;
+        }
+
+        /* 底部播放器 */
+        .player-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background: #fff;
+            border-top: 1px solid #e0e0e0;
+            z-index: 100;
+        }
+        .player-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+        }
+        .player-left {
+            width: 250px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .now-playing-cover {
+            width: 50px;
+            height: 50px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: #999;
+        }
+        .now-playing-info { flex: 1; }
+        .now-playing-title {
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 4px;
+        }
+        .now-playing-artist {
+            font-size: 12px;
+            color: #999;
+        }
+        .player-btn {
+            font-size: 12px;
+            color: #666;
+            cursor: pointer;
+            padding: 4px;
+        }
+        .player-btn:hover { color: #333; }
+        .player-center {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+        .player-controls {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+        .control-btn {
+            font-size: 12px;
+            color: #666;
+            cursor: pointer;
+        }
+        .control-btn:hover { color: #333; }
+        .control-btn.play-btn {
+            width: 36px;
+            height: 36px;
+            background: #333;
+            color: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+        }
+        .progress-wrap {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+            max-width: 500px;
+        }
+        .time-current, .time-total {
+            font-size: 11px;
+            color: #999;
+            width: 40px;
+        }
+        .time-total { text-align: right; }
+        .progress-bar {
+            flex: 1;
+            height: 4px;
+            background: #e0e0e0;
+            border-radius: 2px;
+            cursor: pointer;
+        }
+        .progress-current {
+            width: 35%;
+            height: 100%;
+            background: #333;
+            border-radius: 2px;
+        }
+        .player-right {
+            width: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 16px;
+        }
+        .volume-wrap {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .volume-bar {
+            width: 80px;
+            height: 4px;
+            background: #e0e0e0;
+            border-radius: 2px;
+            cursor: pointer;
+        }
+        .volume-current {
+            width: 70%;
+            height: 100%;
+            background: #333;
+            border-radius: 2px;
+        }
+
+        /* Toast */
+        .toast {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.7);
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 4px;
+            font-size: 14px;
+            z-index: 300;
+        }
+        .toast.show {
+            display: block;
+            animation: fadeInOut 2s ease;
+        }
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0; }
+            20%, 80% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <div class="header">
+        <div class="header-inner">
+            <div class="logo">[QQ音乐]</div>
+            <div class="nav">
+                <span class="nav-item active">音乐馆</span>
+                <span class="nav-item">我的音乐</span>
+                <span class="nav-item">歌单</span>
+                <span class="nav-item">排行榜</span>
+            </div>
+            <div class="search-box">
+                <input type="text" class="search-input" placeholder="搜索音乐、歌手、歌词">
+                <span class="search-btn">[搜索]</span>
+            </div>
+            <div class="user-area">
+                <span class="user-avatar">[头像]</span>
+                <span class="user-name">用户名</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 主体内容 -->
+    <div class="main">
+        <!-- 左侧边栏 -->
+        <div class="sidebar">
+            <div class="sidebar-section">
+                <div class="sidebar-title">在线音乐</div>
+                <div class="sidebar-item active">[推荐] 推荐</div>
+                <div class="sidebar-item">[榜] 排行榜</div>
+                <div class="sidebar-item">[歌单] 歌单</div>
+                <div class="sidebar-item">[电台] 电台</div>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-title">我的音乐</div>
+                <div class="sidebar-item">[♥] 我喜欢</div>
+                <div class="sidebar-item">[本地] 本地音乐</div>
+                <div class="sidebar-item">[下载] 下载管理</div>
+                <div class="sidebar-item">[最近] 最近播放</div>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-title">创建的歌单</div>
+                <div class="sidebar-item">[歌单] 工作学习专用</div>
+                <div class="sidebar-item">[歌单] 睡前轻音乐</div>
+                <div class="sidebar-item">[歌单] 运动健身</div>
+                <div class="sidebar-item add-playlist">[+] 新建歌单</div>
+            </div>
+        </div>
+
+        <!-- 右侧内容区 -->
+        <div class="content">
+            <!-- 歌单头部信息 -->
+            <div class="playlist-header">
+                <div class="playlist-cover">[歌单封面]</div>
+                <div class="playlist-info">
+                    <div class="playlist-tag">[歌单]</div>
+                    <div class="playlist-title">华语流行热歌榜</div>
+                    <div class="playlist-meta">
+                        <span class="creator">[头像] 官方歌单</span>
+                        <span class="create-time">2024-01-15 创建</span>
+                    </div>
+                    <div class="playlist-stats">
+                        <span>歌曲: 100首</span>
+                        <span>播放: 125.6万</span>
+                        <span>收藏: 8.2万</span>
+                    </div>
+                    <div class="playlist-actions">
+                        <button class="btn btn-primary">[▶] 播放全部</button>
+                        <button class="btn btn-secondary">[+] 收藏</button>
+                        <button class="btn btn-secondary">[分享] 分享</button>
+                        <button class="btn btn-secondary">[下载] 下载</button>
+                    </div>
+                    <div class="playlist-desc">精选华语流行音乐，每日更新，带你聆听最新最热的华语金曲</div>
+                </div>
+            </div>
+
+            <!-- 歌曲列表操作栏 -->
+            <div class="list-toolbar">
+                <div class="toolbar-left">
+                    <span class="tab active">歌曲列表</span>
+                    <span class="tab">评论 (2.3万)</span>
+                    <span class="tab">收藏者</span>
+                </div>
+                <div class="toolbar-right">
+                    <input type="text" class="filter-input" placeholder="搜索歌单内歌曲">
+                </div>
+            </div>
+
+            <!-- 歌曲列表表头 -->
+            <div class="song-list-header">
+                <div class="col-index">#</div>
+                <div class="col-title">歌曲</div>
+                <div class="col-artist">歌手</div>
+                <div class="col-album">专辑</div>
+                <div class="col-duration">时长</div>
+                <div class="col-actions">操作</div>
+            </div>
+
+            <!-- 歌曲列表 -->
+            <div class="song-list" id="songList">
+                <!-- 歌曲项将通过JS生成 -->
+            </div>
+
+            <!-- 分页 -->
+            <div class="pagination">
+                <span class="page-btn">[上一页]</span>
+                <span class="page-num active">1</span>
+                <span class="page-num">2</span>
+                <span class="page-num">3</span>
+                <span class="page-num">4</span>
+                <span class="page-num">5</span>
+                <span class="page-btn">[下一页]</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部播放器 -->
+    <div class="player-bar">
+        <div class="player-inner">
+            <div class="player-left">
+                <div class="now-playing-cover">[封面]</div>
+                <div class="now-playing-info">
+                    <div class="now-playing-title">晚风心里吹</div>
+                    <div class="now-playing-artist">周杰伦</div>
+                </div>
+                <span class="player-btn">[♥]</span>
+            </div>
+            <div class="player-center">
+                <div class="player-controls">
+                    <span class="control-btn">[循环]</span>
+                    <span class="control-btn">[上一首]</span>
+                    <span class="control-btn play-btn">[播放]</span>
+                    <span class="control-btn">[下一首]</span>
+                    <span class="control-btn">[随机]</span>
+                </div>
+                <div class="progress-wrap">
+                    <span class="time-current">01:25</span>
+                    <div class="progress-bar">
+                        <div class="progress-current"></div>
+                    </div>
+                    <span class="time-total">04:03</span>
+                </div>
+            </div>
+            <div class="player-right">
+                <span class="player-btn">[音质]</span>
+                <span class="player-btn">[词]</span>
+                <div class="volume-wrap">
+                    <span class="player-btn">[音量]</span>
+                    <div class="volume-bar">
+                        <div class="volume-current"></div>
+                    </div>
+                </div>
+                <span class="player-btn">[列表]</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast提示 -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // 歌曲数据
+        const songs = [
+            { id: 1, title: '晚风心里吹', artist: '周杰伦', album: '最新专辑', duration: '04:03', vip: false },
+            { id: 2, title: '稻香', artist: '周杰伦', album: '魔杰座', duration: '03:42', vip: false },
+            { id: 3, title: '孤勇者', artist: '陈奕迅', album: '孤勇者', duration: '04:16', vip: true },
+            { id: 4, title: '七里香', artist: '周杰伦', album: '七里香', duration: '04:59', vip: false },
+            { id: 5, title: '告白气球', artist: '周杰伦', album: '周杰伦的床边故事', duration: '03:35', vip: false },
+            { id: 6, title: '青花瓷', artist: '周杰伦', album: '我很忙', duration: '03:59', vip: true },
+            { id: 7, title: '夜曲', artist: '周杰伦', album: '十一月的萧邦', duration: '04:46', vip: false },
+            { id: 8, title: '起风了', artist: '买辣椒也用券', album: '起风了', duration: '05:14', vip: false },
+            { id: 9, title: '平凡之路', artist: '朴树', album: '猎户星座', duration: '04:46', vip: false },
+            { id: 10, title: '简单爱', artist: '周杰伦', album: '范特西', duration: '04:31', vip: true },
+        ];
+
+        let currentPlaying = 1;
+
+        // 渲染歌曲列表
+        function renderSongList() {
+            const container = document.getElementById('songList');
+            container.innerHTML = songs.map((song, index) => `
+                <div class="song-item ${song.id === currentPlaying ? 'playing' : ''}" onclick="playSong(${song.id})">
+                    <div class="song-index">${String(index + 1).padStart(2, '0')}</div>
+                    <div class="song-title-wrap">
+                        <span class="song-title">${song.title}</span>
+                        ${song.vip ? '<span class="song-vip">VIP</span>' : ''}
+                    </div>
+                    <div class="song-artist">${song.artist}</div>
+                    <div class="song-album">${song.album}</div>
+                    <div class="song-duration">${song.duration}</div>
+                    <div class="song-actions">
+                        <span class="song-action" onclick="event.stopPropagation(); addToFavorite(${song.id})">[♥]</span>
+                        <span class="song-action" onclick="event.stopPropagation(); addToPlaylist(${song.id})">[+]</span>
+                        <span class="song-action" onclick="event.stopPropagation(); downloadSong(${song.id})">[↓]</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 显示Toast
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2000);
+        }
+
+        // 播放歌曲
+        function playSong(id) {
+            currentPlaying = id;
+            const song = songs.find(s => s.id === id);
+            document.querySelector('.now-playing-title').textContent = song.title;
+            document.querySelector('.now-playing-artist').textContent = song.artist;
+            renderSongList();
+            showToast('正在播放: ' + song.title);
+            // 跳转到详情页
+            window.location.href = '06-PC音乐详情.html?id=' + id;
+        }
+
+        // 添加到喜欢
+        function addToFavorite(id) {
+            const song = songs.find(s => s.id === id);
+            showToast('已添加到我喜欢: ' + song.title);
+        }
+
+        // 添加到歌单
+        function addToPlaylist(id) {
+            const song = songs.find(s => s.id === id);
+            showToast('已添加到歌单: ' + song.title);
+        }
+
+        // 下载歌曲
+        function downloadSong(id) {
+            const song = songs.find(s => s.id === id);
+            showToast('开始下载: ' + song.title);
+        }
+
+        // 播放/暂停切换
+        let isPlaying = false;
+        function togglePlay() {
+            isPlaying = !isPlaying;
+            document.querySelector('.play-btn').textContent = isPlaying ? '[暂停]' : '[播放]';
+        }
+
+        // 初始化
+        renderSongList();
+
+        // 播放按钮点击
+        document.querySelector('.play-btn').addEventListener('click', togglePlay);
+    </script>
+</body>
+</html>

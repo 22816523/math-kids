@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>播放页 - QQ音乐</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: #f5f5f5;
+            width: 375px;
+            margin: 0 auto;
+            min-height: 100vh;
+        }
+
+        /* 顶部导航 */
+        .navbar {
+            height: 44px;
+            background: #fff;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            position: sticky;
+            top: 0;
+        }
+        .navbar .back-btn {
+            font-size: 14px;
+            color: #666;
+            cursor: pointer;
+        }
+        .navbar .title {
+            flex: 1;
+            text-align: center;
+        }
+        .navbar .title-main {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+        }
+        .navbar .title-sub {
+            font-size: 10px;
+            color: #999;
+        }
+        .navbar .action {
+            font-size: 14px;
+            color: #666;
+            cursor: pointer;
+        }
+
+        /* 封面区域 */
+        .cover-section {
+            padding: 40px 50px;
+            display: flex;
+            justify-content: center;
+        }
+        .cover-disc {
+            width: 260px;
+            height: 260px;
+            background: #e0e0e0;
+            border-radius: 50%;
+            border: 8px solid #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            font-size: 14px;
+        }
+
+        /* 歌曲信息 */
+        .song-info {
+            text-align: center;
+            padding: 0 24px 24px;
+        }
+        .song-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        .song-artist {
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* 操作按钮 */
+        .action-bar {
+            display: flex;
+            justify-content: space-around;
+            padding: 16px 40px;
+        }
+        .action-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+        }
+        .action-icon {
+            width: 36px;
+            height: 36px;
+            background: #f5f5f5;
+            border: 1px solid #e0e0e0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: #666;
+        }
+        .action-text {
+            font-size: 10px;
+            color: #999;
+        }
+
+        /* 歌词区域 */
+        .lyrics-section {
+            background: #fff;
+            margin: 0 16px;
+            border-radius: 4px;
+            border: 1px solid #e0e0e0;
+            padding: 20px;
+            height: 160px;
+            overflow: hidden;
+        }
+        .lyrics-line {
+            font-size: 14px;
+            color: #999;
+            line-height: 2;
+            text-align: center;
+        }
+        .lyrics-line.active {
+            color: #333;
+            font-weight: 600;
+        }
+
+        /* 进度条 */
+        .progress-section {
+            padding: 24px 24px 16px;
+        }
+        .progress-bar {
+            height: 4px;
+            background: #e0e0e0;
+            border-radius: 2px;
+            position: relative;
+        }
+        .progress-current {
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 35%;
+            background: #333;
+            border-radius: 2px;
+        }
+        .progress-dot {
+            position: absolute;
+            right: -6px;
+            top: -4px;
+            width: 12px;
+            height: 12px;
+            background: #333;
+            border-radius: 50%;
+        }
+        .progress-time {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 8px;
+            font-size: 10px;
+            color: #999;
+        }
+
+        /* 播放控制 */
+        .control-section {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            padding: 16px 32px 40px;
+        }
+        .control-btn {
+            font-size: 14px;
+            color: #666;
+            cursor: pointer;
+        }
+        .control-btn.small {
+            font-size: 12px;
+        }
+        .play-btn {
+            width: 64px;
+            height: 64px;
+            background: #333;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        /* 底部操作 */
+        .bottom-bar {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 375px;
+            height: 50px;
+            background: #fff;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+        .bottom-btn {
+            font-size: 12px;
+            color: #666;
+            cursor: pointer;
+        }
+
+        /* 喜欢按钮激活状态 */
+        .action-icon.liked {
+            background: #333;
+            color: #fff;
+            border-color: #333;
+        }
+
+        /* 播放模式切换 */
+        .control-btn.active {
+            color: #333;
+            font-weight: 600;
+        }
+
+        /* 遮罩层 */
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 375px;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 100;
+        }
+        .overlay.show { display: block; }
+
+        /* 底部抽屉 */
+        .drawer {
+            position: fixed;
+            bottom: -100%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 375px;
+            background: #fff;
+            border-radius: 12px 12px 0 0;
+            z-index: 101;
+            transition: bottom 0.3s;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+        .drawer.show { bottom: 0; }
+        .drawer-header {
+            padding: 16px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            background: #fff;
+        }
+        .drawer-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+        .drawer-close {
+            font-size: 14px;
+            color: #999;
+            cursor: pointer;
+        }
+        .drawer-content { padding: 0; }
+
+        /* 定时选项 */
+        .timer-option {
+            padding: 16px;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 14px;
+            color: #333;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .timer-option:hover { background: #f5f5f5; }
+        .timer-option.selected {
+            color: #333;
+            font-weight: 600;
+        }
+        .timer-option .check { color: #333; }
+
+        /* 播放列表项 */
+        .playlist-item {
+            padding: 12px 16px;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+        }
+        .playlist-item:hover { background: #f5f5f5; }
+        .playlist-item.playing { background: #f0f0f0; }
+        .playlist-item .index {
+            width: 24px;
+            font-size: 12px;
+            color: #999;
+            text-align: center;
+        }
+        .playlist-item.playing .index { color: #333; font-weight: 600; }
+        .playlist-item .info { flex: 1; }
+        .playlist-item .name {
+            font-size: 14px;
+            color: #333;
+        }
+        .playlist-item.playing .name { font-weight: 600; }
+        .playlist-item .artist {
+            font-size: 12px;
+            color: #999;
+        }
+
+        /* Toast提示 */
+        .toast {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.7);
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 4px;
+            font-size: 14px;
+            z-index: 200;
+        }
+        .toast.show {
+            display: block;
+            animation: fadeInOut 2s ease;
+        }
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0; }
+            20%, 80% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <div class="navbar">
+        <span class="back-btn" onclick="history.back()">[↓]</span>
+        <div class="title">
+            <div class="title-main">正在播放</div>
+            <div class="title-sub">来自: 热歌榜</div>
+        </div>
+        <span class="action">[分享]</span>
+    </div>
+
+    <!-- 封面 -->
+    <div class="cover-section">
+        <div class="cover-disc">
+            [专辑封面]
+        </div>
+    </div>
+
+    <!-- 歌曲信息 -->
+    <div class="song-info">
+        <div class="song-title">晚风心里吹</div>
+        <div class="song-artist">周杰伦</div>
+    </div>
+
+    <!-- 操作按钮 -->
+    <div class="action-bar">
+        <div class="action-item" onclick="toggleLike()">
+            <div class="action-icon">[♥]</div>
+            <span class="action-text">喜欢</span>
+        </div>
+        <div class="action-item">
+            <div class="action-icon">[↓]</div>
+            <span class="action-text">下载</span>
+        </div>
+        <div class="action-item">
+            <div class="action-icon">[评]</div>
+            <span class="action-text">评论</span>
+        </div>
+        <div class="action-item">
+            <div class="action-icon">[...]</div>
+            <span class="action-text">更多</span>
+        </div>
+    </div>
+
+    <!-- 歌词 -->
+    <div class="lyrics-section">
+        <div class="lyrics-line">晚风轻轻吹过</div>
+        <div class="lyrics-line active">带走了夏天的燥热</div>
+        <div class="lyrics-line">留下了思念的温柔</div>
+        <div class="lyrics-line">在心里慢慢发酵</div>
+        <div class="lyrics-line">想起你的笑容</div>
+    </div>
+
+    <!-- 进度条 -->
+    <div class="progress-section">
+        <div class="progress-bar">
+            <div class="progress-current">
+                <div class="progress-dot"></div>
+            </div>
+        </div>
+        <div class="progress-time">
+            <span>01:25</span>
+            <span>04:03</span>
+        </div>
+    </div>
+
+    <!-- 播放控制 -->
+    <div class="control-section">
+        <span class="control-btn small" onclick="toggleMode()">[循环]</span>
+        <span class="control-btn">[上一首]</span>
+        <div class="play-btn" onclick="togglePlay()">[暂停]</div>
+        <span class="control-btn">[下一首]</span>
+        <span class="control-btn small" onclick="openPlaylistDrawer()">[列表]</span>
+    </div>
+
+    <!-- 底部操作栏 -->
+    <div class="bottom-bar">
+        <span class="bottom-btn">[音效]</span>
+        <span class="bottom-btn" onclick="openTimerDrawer()">[定时]</span>
+        <span class="bottom-btn">[歌词]</span>
+        <span class="bottom-btn">[投屏]</span>
+    </div>
+
+    <!-- 遮罩层 -->
+    <div class="overlay" onclick="closeAllDrawers()"></div>
+
+    <!-- 定时关闭抽屉 -->
+    <div class="drawer" id="timerDrawer">
+        <div class="drawer-header">
+            <span class="drawer-title">定时关闭</span>
+            <span class="drawer-close" onclick="closeAllDrawers()">[关闭]</span>
+        </div>
+        <div class="drawer-content">
+            <div class="timer-option selected" onclick="selectTimer(this, '不开启')">
+                <span>不开启</span>
+                <span class="check">[✓]</span>
+            </div>
+            <div class="timer-option" onclick="selectTimer(this, '播完当前歌曲')">
+                <span>播完当前歌曲</span>
+                <span class="check"></span>
+            </div>
+            <div class="timer-option" onclick="selectTimer(this, '15分钟后')">
+                <span>15分钟后</span>
+                <span class="check"></span>
+            </div>
+            <div class="timer-option" onclick="selectTimer(this, '30分钟后')">
+                <span>30分钟后</span>
+                <span class="check"></span>
+            </div>
+            <div class="timer-option" onclick="selectTimer(this, '45分钟后')">
+                <span>45分钟后</span>
+                <span class="check"></span>
+            </div>
+            <div class="timer-option" onclick="selectTimer(this, '60分钟后')">
+                <span>60分钟后</span>
+                <span class="check"></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 播放列表抽屉 -->
+    <div class="drawer" id="playlistDrawer">
+        <div class="drawer-header">
+            <span class="drawer-title">播放列表 (8首)</span>
+            <span class="drawer-close" onclick="closeAllDrawers()">[关闭]</span>
+        </div>
+        <div class="drawer-content">
+            <div class="playlist-item playing" onclick="playSong(this, '晚风心里吹', '周杰伦')">
+                <span class="index">1</span>
+                <div class="info">
+                    <div class="name">晚风心里吹</div>
+                    <div class="artist">周杰伦</div>
+                </div>
+            </div>
+            <div class="playlist-item" onclick="playSong(this, '稻香', '周杰伦')">
+                <span class="index">2</span>
+                <div class="info">
+                    <div class="name">稻香</div>
+                    <div class="artist">周杰伦</div>
+                </div>
+            </div>
+            <div class="playlist-item" onclick="playSong(this, '七里香', '周杰伦')">
+                <span class="index">3</span>
+                <div class="info">
+                    <div class="name">七里香</div>
+                    <div class="artist">周杰伦</div>
+                </div>
+            </div>
+            <div class="playlist-item" onclick="playSong(this, '告白气球', '周杰伦')">
+                <span class="index">4</span>
+                <div class="info">
+                    <div class="name">告白气球</div>
+                    <div class="artist">周杰伦</div>
+                </div>
+            </div>
+            <div class="playlist-item" onclick="playSong(this, '青花瓷', '周杰伦')">
+                <span class="index">5</span>
+                <div class="info">
+                    <div class="name">青花瓷</div>
+                    <div class="artist">周杰伦</div>
+                </div>
+            </div>
+            <div class="playlist-item" onclick="playSong(this, '夜曲', '周杰伦')">
+                <span class="index">6</span>
+                <div class="info">
+                    <div class="name">夜曲</div>
+                    <div class="artist">周杰伦</div>
+                </div>
+            </div>
+            <div class="playlist-item" onclick="playSong(this, '简单爱', '周杰伦')">
+                <span class="index">7</span>
+                <div class="info">
+                    <div class="name">简单爱</div>
+                    <div class="artist">周杰伦</div>
+                </div>
+            </div>
+            <div class="playlist-item" onclick="playSong(this, '听妈妈的话', '周杰伦')">
+                <span class="index">8</span>
+                <div class="info">
+                    <div class="name">听妈妈的话</div>
+                    <div class="artist">周杰伦</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast提示 -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // 显示Toast
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2000);
+        }
+
+        // 喜欢按钮切换
+        function toggleLike() {
+            const icon = event.currentTarget.querySelector('.action-icon');
+            icon.classList.toggle('liked');
+            showToast(icon.classList.contains('liked') ? '已添加到我喜欢' : '已取消喜欢');
+        }
+
+        // 播放/暂停切换
+        let isPlaying = true;
+        function togglePlay() {
+            isPlaying = !isPlaying;
+            const btn = document.querySelector('.play-btn');
+            btn.textContent = isPlaying ? '[暂停]' : '[播放]';
+        }
+
+        // 播放模式切换
+        const modes = ['循环', '单曲', '随机'];
+        let modeIndex = 0;
+        function toggleMode() {
+            modeIndex = (modeIndex + 1) % modes.length;
+            const btn = event.currentTarget;
+            btn.textContent = '[' + modes[modeIndex] + ']';
+            showToast(modes[modeIndex] + '播放');
+        }
+
+        // 打开定时抽屉
+        function openTimerDrawer() {
+            document.querySelector('.overlay').classList.add('show');
+            document.getElementById('timerDrawer').classList.add('show');
+        }
+
+        // 打开播放列表抽屉
+        function openPlaylistDrawer() {
+            document.querySelector('.overlay').classList.add('show');
+            document.getElementById('playlistDrawer').classList.add('show');
+        }
+
+        // 关闭所有抽屉
+        function closeAllDrawers() {
+            document.querySelector('.overlay').classList.remove('show');
+            document.querySelectorAll('.drawer').forEach(d => d.classList.remove('show'));
+        }
+
+        // 选择定时
+        function selectTimer(el, time) {
+            document.querySelectorAll('.timer-option').forEach(opt => {
+                opt.classList.remove('selected');
+                opt.querySelector('.check').textContent = '';
+            });
+            el.classList.add('selected');
+            el.querySelector('.check').textContent = '[✓]';
+            showToast(time === '不开启' ? '已关闭定时' : '定时: ' + time);
+            setTimeout(closeAllDrawers, 500);
+        }
+
+        // 播放歌曲
+        function playSong(el, name, artist) {
+            document.querySelectorAll('.playlist-item').forEach(item => item.classList.remove('playing'));
+            el.classList.add('playing');
+            document.querySelector('.song-title').textContent = name;
+            document.querySelector('.song-artist').textContent = artist;
+            showToast('正在播放: ' + name);
+            setTimeout(closeAllDrawers, 500);
+        }
+    </script>
+</body>
+</html>
