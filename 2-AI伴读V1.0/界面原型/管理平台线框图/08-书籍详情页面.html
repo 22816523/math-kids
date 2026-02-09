@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>书籍详情 - 校校读吧管理平台</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+        }
+
+        .header {
+            height: 60px;
+            background: #fff;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+        }
+        .header .logo {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .main {
+            display: flex;
+            margin-top: 60px;
+            min-height: calc(100vh - 60px);
+        }
+
+        .sidebar {
+            width: 200px;
+            background: #fff;
+            border-right: 1px solid #e0e0e0;
+            padding: 16px 0;
+            position: fixed;
+            left: 0;
+            top: 60px;
+            bottom: 0;
+        }
+        .sidebar-item {
+            padding: 12px 24px;
+            font-size: 14px;
+            color: #666;
+        }
+        .sidebar-item.active {
+            color: #333;
+            font-weight: 600;
+            background: #f5f5f5;
+            border-left: 3px solid #333;
+        }
+
+        .content {
+            flex: 1;
+            margin-left: 200px;
+            padding: 24px;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+        .page-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+        }
+        .btn {
+            height: 36px;
+            padding: 0 20px;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            border: none;
+        }
+        .btn-primary {
+            background: #333;
+            color: #fff;
+        }
+        .btn-secondary {
+            background: #fff;
+            color: #666;
+            border: 1px solid #e0e0e0;
+        }
+        .btn-group {
+            display: flex;
+            gap: 12px;
+        }
+
+        /* 书籍信息卡片 */
+        .book-info-card {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 24px;
+            margin-bottom: 16px;
+        }
+        .book-info-layout {
+            display: flex;
+            gap: 24px;
+        }
+        .book-cover-section {
+            width: 200px;
+            flex-shrink: 0;
+        }
+        .book-cover-display {
+            width: 200px;
+            height: 280px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: #999;
+            margin-bottom: 12px;
+        }
+        .book-info-section {
+            flex: 1;
+        }
+        .book-info-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 16px;
+        }
+        .book-info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+        .info-item {
+            display: flex;
+        }
+        .info-label {
+            width: 100px;
+            font-size: 14px;
+            color: #999;
+        }
+        .info-value {
+            flex: 1;
+            font-size: 14px;
+            color: #333;
+        }
+
+        /* 标签页 */
+        .tabs {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px 4px 0 0;
+            display: flex;
+            border-bottom: none;
+        }
+        .tab {
+            flex: 1;
+            padding: 16px;
+            text-align: center;
+            border-right: 1px solid #e0e0e0;
+            cursor: pointer;
+            background: #f5f5f5;
+            font-size: 14px;
+            color: #666;
+        }
+        .tab:last-child {
+            border-right: none;
+        }
+        .tab.active {
+            background: #fff;
+            color: #333;
+            font-weight: 600;
+            border-bottom: 2px solid #333;
+        }
+
+        /* 资源面板 */
+        .resource-panel {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 0 0 4px 4px;
+            padding: 24px;
+        }
+        .resource-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .resource-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        /* 资源列表 */
+        .resource-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .resource-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+        }
+        .resource-icon {
+            width: 48px;
+            height: 48px;
+            background: #f5f5f5;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: #999;
+            margin-right: 12px;
+        }
+        .resource-info {
+            flex: 1;
+        }
+        .resource-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
+        .resource-meta {
+            font-size: 12px;
+            color: #999;
+        }
+        .resource-actions {
+            display: flex;
+            gap: 12px;
+        }
+        .action-link {
+            font-size: 14px;
+            color: #666;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .action-link:hover {
+            text-decoration: underline;
+        }
+
+        /* 空状态 */
+        .empty-state {
+            padding: 60px 24px;
+            text-align: center;
+        }
+        .empty-icon {
+            font-size: 48px;
+            color: #e0e0e0;
+            margin-bottom: 12px;
+        }
+        .empty-text {
+            font-size: 14px;
+            color: #999;
+            margin-bottom: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">校校读吧管理平台</div>
+    </div>
+
+    <div class="main">
+        <div class="sidebar">
+            <div class="sidebar-item">阅读计划</div>
+            <div class="sidebar-item active">书籍资源库</div>
+            <div class="sidebar-item">测评管理</div>
+        </div>
+
+        <div class="content">
+            <div class="page-header">
+                <div class="page-title">书籍详情</div>
+                <div class="btn-group">
+                    <button class="btn btn-secondary">编辑信息</button>
+                    <button class="btn btn-primary">上架</button>
+                </div>
+            </div>
+
+            <!-- 书籍基本信息 -->
+            <div class="book-info-card">
+                <div class="book-info-layout">
+                    <div class="book-cover-section">
+                        <div class="book-cover-display">[书籍封面]</div>
+                        <button class="btn btn-secondary" style="width:100%;">更换封面</button>
+                    </div>
+                    <div class="book-info-section">
+                        <div class="book-info-title">小王子</div>
+                        <div class="book-info-grid">
+                            <div class="info-item">
+                                <div class="info-label">作者</div>
+                                <div class="info-value">圣埃克苏佩里</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">出版社</div>
+                                <div class="info-value">人民文学出版社</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">ISBN</div>
+                                <div class="info-value">978-7-02-008664-2</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">页数</div>
+                                <div class="info-value">120页</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">适用年级</div>
+                                <div class="info-value">一年级、二年级</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">书籍分类</div>
+                                <div class="info-value">文学、童话</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">上架状态</div>
+                                <div class="info-value">已上架</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">创建时间</div>
+                                <div class="info-value">2026-01-15 10:30:00</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 资源管理标签页 -->
+            <div class="tabs">
+                <div class="tab active">视频资源</div>
+                <div class="tab">音频资源</div>
+                <div class="tab">导读单资源</div>
+                <div class="tab">测评配置</div>
+            </div>
+
+            <!-- 视频资源面板 -->
+            <div class="resource-panel">
+                <div class="resource-header">
+                    <div class="resource-title">视频资源（3个）</div>
+                    <button class="btn btn-primary">[+] 上传视频</button>
+                </div>
+
+                <div class="resource-list">
+                    <div class="resource-item">
+                        <div class="resource-icon">[▶]</div>
+                        <div class="resource-info">
+                            <div class="resource-name">第1章导读视频</div>
+                            <div class="resource-meta">时长：5分30秒 | 大小：45.2MB | 上传时间：2026-01-15</div>
+                        </div>
+                        <div class="resource-actions">
+                            <a href="#" class="action-link">预览</a>
+                            <a href="#" class="action-link">编辑</a>
+                            <a href="#" class="action-link">删除</a>
+                        </div>
+                    </div>
+
+                    <div class="resource-item">
+                        <div class="resource-icon">[▶]</div>
+                        <div class="resource-info">
+                            <div class="resource-name">第2章导读视频</div>
+                            <div class="resource-meta">时长：6分15秒 | 大小：52.8MB | 上传时间：2026-01-15</div>
+                        </div>
+                        <div class="resource-actions">
+                            <a href="#" class="action-link">预览</a>
+                            <a href="#" class="action-link">编辑</a>
+                            <a href="#" class="action-link">删除</a>
+                        </div>
+                    </div>
+
+                    <div class="resource-item">
+                        <div class="resource-icon">[▶]</div>
+                        <div class="resource-info">
+                            <div class="resource-name">全书总结视频</div>
+                            <div class="resource-meta">时长：8分20秒 | 大小：68.5MB | 上传时间：2026-01-16</div>
+                        </div>
+                        <div class="resource-actions">
+                            <a href="#" class="action-link">预览</a>
+                            <a href="#" class="action-link">编辑</a>
+                            <a href="#" class="action-link">删除</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

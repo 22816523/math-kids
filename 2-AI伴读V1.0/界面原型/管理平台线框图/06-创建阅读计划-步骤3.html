@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>创建阅读计划 - 步骤3 - 校校读吧管理平台</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+        }
+
+        .header {
+            height: 60px;
+            background: #fff;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+        }
+        .header .logo {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .main {
+            display: flex;
+            margin-top: 60px;
+            min-height: calc(100vh - 60px);
+        }
+
+        .sidebar {
+            width: 200px;
+            background: #fff;
+            border-right: 1px solid #e0e0e0;
+            padding: 16px 0;
+            position: fixed;
+            left: 0;
+            top: 60px;
+            bottom: 0;
+        }
+        .sidebar-item {
+            padding: 12px 24px;
+            font-size: 14px;
+            color: #666;
+        }
+        .sidebar-item.active {
+            color: #333;
+            font-weight: 600;
+            background: #f5f5f5;
+            border-left: 3px solid #333;
+        }
+
+        .content {
+            flex: 1;
+            margin-left: 200px;
+            padding: 24px;
+        }
+
+        .page-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 24px;
+        }
+
+        /* 步骤条 */
+        .steps {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+        .steps-container {
+            display: flex;
+            align-items: center;
+        }
+        .step {
+            flex: 1;
+            display: flex;
+            align-items: center;
+        }
+        .step-number {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #f5f5f5;
+            border: 2px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 600;
+            color: #999;
+        }
+        .step.active .step-number {
+            background: #333;
+            border-color: #333;
+            color: #fff;
+        }
+        .step.completed .step-number {
+            border-color: #333;
+            color: #333;
+        }
+        .step-content {
+            margin-left: 12px;
+        }
+        .step-title {
+            font-size: 14px;
+            color: #999;
+        }
+        .step.active .step-title {
+            color: #333;
+            font-weight: 600;
+        }
+        .step-line {
+            flex: 1;
+            height: 2px;
+            background: #e0e0e0;
+            margin: 0 16px;
+        }
+
+        /* 书籍标签页 */
+        .book-tabs {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px 4px 0 0;
+            display: flex;
+            border-bottom: none;
+        }
+        .book-tab {
+            flex: 1;
+            padding: 16px;
+            text-align: center;
+            border-right: 1px solid #e0e0e0;
+            cursor: pointer;
+            background: #f5f5f5;
+        }
+        .book-tab:last-child {
+            border-right: none;
+        }
+        .book-tab.active {
+            background: #fff;
+            border-bottom: 2px solid #333;
+        }
+        .book-tab-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
+        .book-tab-meta {
+            font-size: 12px;
+            color: #999;
+        }
+
+        /* 任务配置面板 */
+        .task-panel {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 0 0 4px 4px;
+            padding: 24px;
+        }
+
+        .task-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .task-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+        .btn {
+            height: 32px;
+            padding: 0 16px;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            border: none;
+        }
+        .btn-secondary {
+            background: #fff;
+            color: #666;
+            border: 1px solid #e0e0e0;
+        }
+
+        /* 天数列表 */
+        .day-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .day-item {
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 16px;
+        }
+        .day-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .day-number {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #f5f5f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-right: 12px;
+        }
+        .day-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .task-form {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+        .form-item {
+            display: flex;
+            flex-direction: column;
+        }
+        .form-item.full-width {
+            grid-column: 1 / -1;
+        }
+        .form-label {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+        .form-select,
+        .form-input {
+            height: 36px;
+            padding: 0 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .form-input-group {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        .form-input-group .form-input {
+            flex: 1;
+        }
+        .form-hint {
+            font-size: 12px;
+            color: #999;
+            margin-top: 4px;
+        }
+
+        /* 底部操作 */
+        .form-footer {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 24px;
+        }
+        .btn-primary {
+            background: #333;
+            color: #fff;
+        }
+        .btn-text {
+            background: none;
+            color: #666;
+            border: none;
+            padding: 0;
+        }
+        .btn-group {
+            display: flex;
+            gap: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">校校读吧管理平台</div>
+    </div>
+
+    <div class="main">
+        <div class="sidebar">
+            <div class="sidebar-item active">阅读计划</div>
+            <div class="sidebar-item">书籍资源库</div>
+        </div>
+
+        <div class="content">
+            <div class="page-title">创建阅读计划 - 配置每日任务</div>
+
+            <div class="steps">
+                <div class="steps-container">
+                    <div class="step completed">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <div class="step-title">基本信息</div>
+                        </div>
+                    </div>
+                    <div class="step-line"></div>
+                    <div class="step completed">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <div class="step-title">选择书籍</div>
+                        </div>
+                    </div>
+                    <div class="step-line"></div>
+                    <div class="step active">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <div class="step-title">配置任务</div>
+                        </div>
+                    </div>
+                    <div class="step-line"></div>
+                    <div class="step">
+                        <div class="step-number">4</div>
+                        <div class="step-content">
+                            <div class="step-title">资源解锁</div>
+                        </div>
+                    </div>
+                    <div class="step-line"></div>
+                    <div class="step">
+                        <div class="step-number">5</div>
+                        <div class="step-content">
+                            <div class="step-title">AI导语</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 书籍标签页 -->
+            <div class="book-tabs">
+                <div class="book-tab active">
+                    <div class="book-tab-title">小王子</div>
+                    <div class="book-tab-meta">7天 · 120页</div>
+                </div>
+                <div class="book-tab">
+                    <div class="book-tab-title">夏洛的网</div>
+                    <div class="book-tab-meta">10天 · 180页</div>
+                </div>
+                <div class="book-tab">
+                    <div class="book-tab-title">十万个为什么</div>
+                    <div class="book-tab-meta">8天 · 200页</div>
+                </div>
+            </div>
+
+            <!-- 任务配置面板 -->
+            <div class="task-panel">
+                <div class="task-header">
+                    <div class="task-title">《小王子》每日任务配置</div>
+                    <button class="btn btn-secondary">批量配置</button>
+                </div>
+
+                <div class="day-list">
+                    <!-- 第1天 -->
+                    <div class="day-item">
+                        <div class="day-header">
+                            <div class="day-number">1</div>
+                            <div class="day-title">第1天任务</div>
+                        </div>
+                        <div class="task-form">
+                            <div class="form-item">
+                                <label class="form-label">视频资源</label>
+                                <select class="form-select">
+                                    <option>请选择视频</option>
+                                    <option>导读视频1</option>
+                                    <option>导读视频2</option>
+                                </select>
+                            </div>
+                            <div class="form-item">
+                                <label class="form-label">音频资源</label>
+                                <select class="form-select">
+                                    <option>请选择音频</option>
+                                    <option>朗读音频1</option>
+                                </select>
+                            </div>
+                            <div class="form-item">
+                                <label class="form-label">导读单资源</label>
+                                <select class="form-select">
+                                    <option>请选择导读单</option>
+                                    <option>导读单1</option>
+                                </select>
+                            </div>
+                            <div class="form-item">
+                                <label class="form-label">阅读页数 *</label>
+                                <div class="form-input-group">
+                                    <input type="number" class="form-input" placeholder="起始页" value="1">
+                                    <span>-</span>
+                                    <input type="number" class="form-input" placeholder="结束页" value="20">
+                                </div>
+                                <div class="form-hint">共20页</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 第2天 -->
+                    <div class="day-item">
+                        <div class="day-header">
+                            <div class="day-number">2</div>
+                            <div class="day-title">第2天任务</div>
+                        </div>
+                        <div class="task-form">
+                            <div class="form-item">
+                                <label class="form-label">视频资源</label>
+                                <select class="form-select">
+                                    <option>请选择视频</option>
+                                </select>
+                            </div>
+                            <div class="form-item">
+                                <label class="form-label">音频资源</label>
+                                <select class="form-select">
+                                    <option>请选择音频</option>
+                                </select>
+                            </div>
+                            <div class="form-item">
+                                <label class="form-label">导读单资源</label>
+                                <select class="form-select">
+                                    <option>请选择导读单</option>
+                                </select>
+                            </div>
+                            <div class="form-item">
+                                <label class="form-label">阅读页数 *</label>
+                                <div class="form-input-group">
+                                    <input type="number" class="form-input" placeholder="起始页" value="21">
+                                    <span>-</span>
+                                    <input type="number" class="form-input" placeholder="结束页" value="40">
+                                </div>
+                                <div class="form-hint">共20页</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 第3天 -->
+                    <div class="day-item">
+                        <div class="day-header">
+                            <div class="day-number">3</div>
+                            <div class="day-title">第3天任务</div>
+                        </div>
+                        <div class="task-form">
+                            <div class="form-item">
+                                <label class="form-label">视频资源</label>
+                                <select class="form-select">
+                                    <option>请选择视频</option>
+                                </select>
+                            </div>
+                            <div class="form-item">
+                                <label class="form-label">音频资源</label>
+                                <select class="form-select">
+                                    <option>请选择音频</option>
+                                </select>
+                            </div>
+                            <div class="form-item">
+                                <label class="form-label">导读单资源</label>
+                                <select class="form-select">
+                                    <option>请选择导读单</option>
+                                </select>
+                            </div>
+                            <div class="form-item">
+                                <label class="form-label">阅读页数 *</label>
+                                <div class="form-input-group">
+                                    <input type="number" class="form-input" placeholder="起始页" value="41">
+                                    <span>-</span>
+                                    <input type="number" class="form-input" placeholder="结束页" value="60">
+                                </div>
+                                <div class="form-hint">共20页</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-footer">
+                    <button type="button" class="btn btn-text">[←] 上一步</button>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-secondary">保存草稿</button>
+                        <button type="submit" class="btn btn-primary">下一步 [→]</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学校列表 - 校校读吧管理平台</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+        }
+
+        /* 顶部导航 */
+        .header {
+            height: 60px;
+            background: #fff;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+        }
+        .header .logo {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+        .header .user-info {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* 主体布局 */
+        .main {
+            display: flex;
+            margin-top: 60px;
+            min-height: calc(100vh - 60px);
+        }
+
+        /* 侧边栏 */
+        .sidebar {
+            width: 200px;
+            background: #fff;
+            border-right: 1px solid #e0e0e0;
+            padding: 16px 0;
+            position: fixed;
+            left: 0;
+            top: 60px;
+            bottom: 0;
+            overflow-y: auto;
+        }
+        .sidebar-group {
+            margin-bottom: 16px;
+        }
+        .sidebar-group-title {
+            padding: 8px 24px;
+            font-size: 12px;
+            color: #999;
+            font-weight: 600;
+        }
+        .sidebar-item {
+            padding: 12px 24px;
+            font-size: 14px;
+            color: #666;
+            cursor: pointer;
+        }
+        .sidebar-item:hover {
+            background: #f5f5f5;
+        }
+        .sidebar-item.active {
+            color: #333;
+            font-weight: 600;
+            background: #f5f5f5;
+            border-left: 3px solid #333;
+        }
+
+        /* 内容区 */
+        .content {
+            flex: 1;
+            margin-left: 200px;
+            padding: 24px;
+        }
+
+        /* 页面标题 */
+        .page-header {
+            margin-bottom: 24px;
+        }
+        .page-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        .page-desc {
+            font-size: 14px;
+            color: #999;
+        }
+
+        /* 筛选栏 */
+        .filter-bar {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+        .filter-row {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 12px;
+        }
+        .filter-row:last-child {
+            margin-bottom: 0;
+        }
+        .filter-item {
+            flex: 1;
+        }
+        .filter-label {
+            display: block;
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+        .filter-input,
+        .filter-select {
+            width: 100%;
+            height: 36px;
+            padding: 0 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .filter-actions {
+            display: flex;
+            gap: 12px;
+            align-items: flex-end;
+        }
+        .btn {
+            height: 36px;
+            padding: 0 20px;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            border: none;
+        }
+        .btn-primary {
+            background: #333;
+            color: #fff;
+        }
+        .btn-secondary {
+            background: #fff;
+            color: #666;
+            border: 1px solid #e0e0e0;
+        }
+
+        /* 操作栏 */
+        .action-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .action-left {
+            display: flex;
+            gap: 12px;
+        }
+        .action-right {
+            font-size: 14px;
+            color: #999;
+        }
+
+        /* 表格 */
+        .table-container {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .table th,
+        .table td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 14px;
+        }
+        .table th {
+            background: #f5f5f5;
+            font-weight: 600;
+            color: #333;
+        }
+        .table td {
+            color: #666;
+        }
+        .table tbody tr:hover {
+            background: #fafafa;
+        }
+        .table tbody tr:last-child td {
+            border-bottom: none;
+        }
+        .table-actions {
+            display: flex;
+            gap: 12px;
+        }
+        .table-link {
+            color: #333;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .table-link:hover {
+            text-decoration: underline;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 2px;
+            font-size: 12px;
+        }
+        .status-active {
+            background: #f5f5f5;
+            color: #333;
+        }
+        .status-inactive {
+            background: #f5f5f5;
+            color: #999;
+        }
+
+        /* 分页 */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            padding: 16px;
+            background: #fff;
+            border-top: 1px solid #e0e0e0;
+        }
+        .pagination-btn {
+            width: 32px;
+            height: 32px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            background: #fff;
+            color: #666;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .pagination-btn:hover {
+            border-color: #999;
+        }
+        .pagination-btn.active {
+            background: #333;
+            color: #fff;
+            border-color: #333;
+        }
+        .pagination-info {
+            font-size: 14px;
+            color: #999;
+            margin: 0 16px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <div class="header">
+        <div class="logo">校校读吧管理平台</div>
+        <div class="user-info">
+            <span>管理员</span>
+            <span>|</span>
+            <a href="#" style="color:#666; text-decoration:none;">退出</a>
+        </div>
+    </div>
+
+    <!-- 主体 -->
+    <div class="main">
+        <!-- 侧边栏 -->
+        <div class="sidebar">
+            <div class="sidebar-group">
+                <div class="sidebar-group-title">基础管理</div>
+                <div class="sidebar-item active">学校管理</div>
+                <div class="sidebar-item">老师管理</div>
+                <div class="sidebar-item">学生管理</div>
+            </div>
+            <div class="sidebar-group">
+                <div class="sidebar-group-title">内容管理</div>
+                <div class="sidebar-item">阅读计划</div>
+                <div class="sidebar-item">书籍资源库</div>
+                <div class="sidebar-item">测评管理</div>
+            </div>
+            <div class="sidebar-group">
+                <div class="sidebar-group-title">数据分析</div>
+                <div class="sidebar-item">数据统计</div>
+                <div class="sidebar-item">激励体系</div>
+            </div>
+            <div class="sidebar-group">
+                <div class="sidebar-group-title">系统设置</div>
+                <div class="sidebar-item">消息管理</div>
+                <div class="sidebar-item">用户反馈</div>
+                <div class="sidebar-item">系统配置</div>
+            </div>
+        </div>
+
+        <!-- 内容区 -->
+        <div class="content">
+            <!-- 页面标题 -->
+            <div class="page-header">
+                <div class="page-title">学校管理</div>
+                <div class="page-desc">查看和管理平台学校信息</div>
+            </div>
+
+            <!-- 筛选栏 -->
+            <div class="filter-bar">
+                <div class="filter-row">
+                    <div class="filter-item">
+                        <label class="filter-label">搜索</label>
+                        <input type="text" class="filter-input" placeholder="输入学校名称或编码">
+                    </div>
+                    <div class="filter-item">
+                        <label class="filter-label">省份</label>
+                        <select class="filter-select">
+                            <option>全部省份</option>
+                            <option>北京市</option>
+                            <option>上海市</option>
+                        </select>
+                    </div>
+                    <div class="filter-item">
+                        <label class="filter-label">城市</label>
+                        <select class="filter-select">
+                            <option>全部城市</option>
+                        </select>
+                    </div>
+                    <div class="filter-item">
+                        <label class="filter-label">参与状态</label>
+                        <select class="filter-select">
+                            <option>全部状态</option>
+                            <option>可参与</option>
+                            <option>不可参与</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="filter-row">
+                    <div class="filter-item">
+                        <label class="filter-label">学校类型</label>
+                        <select class="filter-select">
+                            <option>全部类型</option>
+                            <option>公立</option>
+                            <option>私立</option>
+                        </select>
+                    </div>
+                    <div class="filter-item"></div>
+                    <div class="filter-item"></div>
+                    <div class="filter-actions">
+                        <button class="btn btn-primary">查询</button>
+                        <button class="btn btn-secondary">重置</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 操作栏 -->
+            <div class="action-bar">
+                <div class="action-left">
+                    <button class="btn btn-primary">同步ERP数据</button>
+                    <button class="btn btn-secondary">导出数据</button>
+                </div>
+                <div class="action-right">
+                    最后同步时间：2026-02-09 08:00:00
+                </div>
+            </div>
+
+            <!-- 表格 -->
+            <div class="table-container">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>学校编码</th>
+                            <th>学校名称</th>
+                            <th>省份</th>
+                            <th>城市</th>
+                            <th>学校类型</th>
+                            <th>可参与计划</th>
+                            <th>老师数量</th>
+                            <th>学生数量</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>SCH001</td>
+                            <td>北京市第一小学</td>
+                            <td>北京市</td>
+                            <td>海淀区</td>
+                            <td>公立</td>
+                            <td><span class="status-badge status-active">是</span></td>
+                            <td>45</td>
+                            <td>1,280</td>
+                            <td>
+                                <div class="table-actions">
+                                    <a href="#" class="table-link">查看详情</a>
+                                    <a href="#" class="table-link">配置权限</a>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>SCH002</td>
+                            <td>上海市实验小学</td>
+                            <td>上海市</td>
+                            <td>浦东新区</td>
+                            <td>公立</td>
+                            <td><span class="status-badge status-active">是</span></td>
+                            <td>38</td>
+                            <td>1,050</td>
+                            <td>
+                                <div class="table-actions">
+                                    <a href="#" class="table-link">查看详情</a>
+                                    <a href="#" class="table-link">配置权限</a>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>SCH003</td>
+                            <td>深圳市南山小学</td>
+                            <td>广东省</td>
+                            <td>深圳市</td>
+                            <td>公立</td>
+                            <td><span class="status-badge status-inactive">否</span></td>
+                            <td>32</td>
+                            <td>890</td>
+                            <td>
+                                <div class="table-actions">
+                                    <a href="#" class="table-link">查看详情</a>
+                                    <a href="#" class="table-link">配置权限</a>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>SCH004</td>
+                            <td>杭州市西湖小学</td>
+                            <td>浙江省</td>
+                            <td>杭州市</td>
+                            <td>公立</td>
+                            <td><span class="status-badge status-active">是</span></td>
+                            <td>28</td>
+                            <td>750</td>
+                            <td>
+                                <div class="table-actions">
+                                    <a href="#" class="table-link">查看详情</a>
+                                    <a href="#" class="table-link">配置权限</a>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>SCH005</td>
+                            <td>成都市锦江小学</td>
+                            <td>四川省</td>
+                            <td>成都市</td>
+                            <td>私立</td>
+                            <td><span class="status-badge status-active">是</span></td>
+                            <td>25</td>
+                            <td>680</td>
+                            <td>
+                                <div class="table-actions">
+                                    <a href="#" class="table-link">查看详情</a>
+                                    <a href="#" class="table-link">配置权限</a>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- 分页 -->
+                <div class="pagination">
+                    <button class="pagination-btn">[←]</button>
+                    <button class="pagination-btn active">1</button>
+                    <button class="pagination-btn">2</button>
+                    <button class="pagination-btn">3</button>
+                    <button class="pagination-btn">4</button>
+                    <button class="pagination-btn">5</button>
+                    <button class="pagination-btn">[→]</button>
+                    <span class="pagination-info">共 98 条记录</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
