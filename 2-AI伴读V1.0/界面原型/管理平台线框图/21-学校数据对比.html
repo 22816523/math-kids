@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学校数据对比 - 校校读吧管理平台</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+        }
+
+        /* 顶部导航 */
+        .header {
+            height: 60px;
+            background: #fff;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header .logo {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+        .header .user-info {
+            margin-left: auto;
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* 主体布局 */
+        .main {
+            display: flex;
+            min-height: calc(100vh - 60px);
+        }
+
+        /* 侧边栏 */
+        .sidebar {
+            width: 240px;
+            background: #fff;
+            border-right: 1px solid #e0e0e0;
+            overflow-y: auto;
+        }
+        .menu-group {
+            margin-bottom: 8px;
+        }
+        .menu-group-title {
+            padding: 12px 24px;
+            font-size: 14px;
+            color: #333;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .menu-group-icon {
+            font-size: 12px;
+            color: #999;
+            transition: transform 0.2s;
+        }
+        .menu-group.expanded .menu-group-icon {
+            transform: rotate(90deg);
+        }
+        .menu-group-items {
+            display: none;
+        }
+        .menu-group.expanded .menu-group-items {
+            display: block;
+        }
+        .menu-item {
+            padding: 10px 24px 10px 48px;
+            font-size: 14px;
+            color: #666;
+            cursor: pointer;
+        }
+        .menu-item:hover {
+            background: #f5f5f5;
+        }
+        .menu-item.active {
+            color: #333;
+            font-weight: 600;
+            background: #f5f5f5;
+            border-left: 3px solid #333;
+        }
+
+        /* 内容区 */
+        .content {
+            flex: 1;
+            padding: 24px;
+            overflow-y: auto;
+        }
+
+        /* 面包屑 */
+        .breadcrumb {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+        .breadcrumb a {
+            color: #666;
+            text-decoration: none;
+        }
+        .breadcrumb a:hover {
+            color: #333;
+        }
+        .breadcrumb span {
+            margin: 0 8px;
+        }
+
+        /* 页面标题 */
+        .page-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        /* 筛选区域 */
+        .filter-section {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 20px 24px;
+            margin-bottom: 20px;
+        }
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        .filter-item {
+            display: flex;
+            flex-direction: column;
+        }
+        .filter-label {
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        .filter-input,
+        .filter-select {
+            height: 40px;
+            padding: 0 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .filter-input:focus,
+        .filter-select:focus {
+            outline: none;
+            border-color: #999;
+        }
+        .filter-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        /* 按钮 */
+        .btn {
+            height: 40px;
+            padding: 0 24px;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            border: none;
+        }
+        .btn-primary {
+            background: #333;
+            color: #fff;
+            border: 1px solid #333;
+        }
+        .btn-primary:hover {
+            background: #555;
+        }
+        .btn-secondary {
+            background: #fff;
+            color: #333;
+            border: 1px solid #999;
+        }
+        .btn-secondary:hover {
+            background: #f5f5f5;
+        }
+
+        /* 学校选择卡片 */
+        .school-select-card {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 20px 24px;
+            margin-bottom: 20px;
+        }
+        .school-select-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 16px;
+        }
+        .school-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .school-tag {
+            padding: 8px 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            font-size: 14px;
+            color: #666;
+            cursor: pointer;
+            background: #fff;
+            transition: all 0.2s;
+        }
+        .school-tag:hover {
+            background: #f5f5f5;
+        }
+        .school-tag.selected {
+            background: #333;
+            color: #fff;
+            border-color: #333;
+        }
+
+        /* 图表卡片 */
+        .chart-card {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .chart-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+        .chart-placeholder {
+            height: 300px;
+            background: #f5f5f5;
+            border: 1px dashed #e0e0e0;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: #999;
+        }
+
+        /* 表格 */
+        .table-container {
+            overflow-x: auto;
+        }
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+        }
+        .table th,
+        .table td {
+            padding: 12px 16px;
+            text-align: left;
+            border: 1px solid #e0e0e0;
+            font-size: 14px;
+        }
+        .table th {
+            background: #f5f5f5;
+            font-weight: 600;
+            color: #333;
+        }
+        .table td {
+            color: #666;
+        }
+        .table a {
+            color: #333;
+            text-decoration: underline;
+            cursor: pointer;
+            margin: 0 4px;
+        }
+        .table a:hover {
+            color: #666;
+        }
+
+        /* 排名标签 */
+        .rank-badge {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            line-height: 24px;
+            text-align: center;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .rank-badge.top1 {
+            background: #333;
+            color: #fff;
+        }
+        .rank-badge.top2 {
+            background: #666;
+            color: #fff;
+        }
+        .rank-badge.top3 {
+            background: #999;
+            color: #fff;
+        }
+        .rank-badge.other {
+            background: #f5f5f5;
+            color: #666;
+        }
+
+        /* 趋势标签 */
+        .trend-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 12px;
+        }
+        .trend-badge.up {
+            color: #333;
+        }
+        .trend-badge.down {
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <div class="header">
+        <div class="logo">校校读吧管理平台</div>
+        <div class="user-info">管理员</div>
+    </div>
+
+    <div class="main">
+        <!-- 侧边栏 -->
+        <div class="sidebar">
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>用户管理</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">学校管理</div>
+                    <div class="menu-item">老师管理</div>
+                    <div class="menu-item">学生管理</div>
+                </div>
+            </div>
+
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>内容管理</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">阅读计划</div>
+                    <div class="menu-item">书籍资源库</div>
+                    <div class="menu-item">测评管理</div>
+                </div>
+            </div>
+
+            <div class="menu-group expanded">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>数据分析</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">阅读数据分析</div>
+                    <div class="menu-item">测评数据分析</div>
+                    <div class="menu-item">用户行为分析</div>
+                    <div class="menu-item active">学校数据对比</div>
+                    <div class="menu-item">数据导出中心</div>
+                </div>
+                </div>
+                </div>
+            </div>
+
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>激励体系</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">积分管理</div>
+                    <div class="menu-item">勋章管理</div>
+                    </div>
+            </div>
+
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>用户反馈</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">意见反馈</div>
+                </div>
+                </div>
+                </div>
+                </div>
+            </div>
+
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>系统配置</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">系统参数</div>
+                    <div class="menu-item">操作日志</div>
+                    <div class="menu-item">操作日志</div>
+                    <div class="menu-item">数据字典</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 内容区 -->
+        <div class="content">
+            <!-- 面包屑 -->
+            <div class="breadcrumb">
+                <a href="#">首页</a>
+                <span>></span>
+                <a href="#">数据分析</a>
+                <span>></span>
+                <span>学校对比</span>
+            </div>
+
+            <!-- 页面标题 -->
+            <div class="page-title">学校数据对比</div>
+
+            <!-- 筛选区域 -->
+            <div class="filter-section">
+                <div class="filter-grid">
+                    <div class="filter-item">
+                        <label class="filter-label">开始日期</label>
+                        <input type="date" class="filter-input" value="2024-01-01">
+                    </div>
+                    <div class="filter-item">
+                        <label class="filter-label">结束日期</label>
+                        <input type="date" class="filter-input" value="2024-02-10">
+                    </div>
+                    <div class="filter-item">
+                        <label class="filter-label">对比维度</label>
+                        <select class="filter-select">
+                            <option value="all">全部维度</option>
+                            <option value="reading">阅读数据</option>
+                            <option value="test">测评数据</option>
+                            <option value="activity">活跃度</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="filter-actions">
+                    <button class="btn btn-primary">查询</button>
+                    <button class="btn btn-secondary">重置</button>
+                    <button class="btn btn-secondary">导出报表</button>
+                </div>
+            </div>
+
+            <!-- 学校选择 -->
+            <div class="school-select-card">
+                <div class="school-select-title">选择对比学校（最多选择5所）</div>
+                <div class="school-tags">
+                    <div class="school-tag selected">实验小学</div>
+                    <div class="school-tag selected">育才小学</div>
+                    <div class="school-tag selected">明德小学</div>
+                    <div class="school-tag">光明小学</div>
+                    <div class="school-tag">希望小学</div>
+                    <div class="school-tag">新华小学</div>
+                    <div class="school-tag">文化小学</div>
+                    <div class="school-tag">阳光小学</div>
+                </div>
+            </div>
+
+            <!-- 综合排名 -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <div class="chart-title">学校综合排名</div>
+                </div>
+                <div class="table-container">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th width="60">排名</th>
+                                <th>学校名称</th>
+                                <th>学生总数</th>
+                                <th>活跃学生数</th>
+                                <th>阅读总次数</th>
+                                <th>测评总次数</th>
+                                <th>平均分数</th>
+                                <th>完成率</th>
+                                <th>环比</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="rank-badge top1">1</span></td>
+                                <td>实验小学</td>
+                                <td>856</td>
+                                <td>742</td>
+                                <td>12,458</td>
+                                <td>8,562</td>
+                                <td>82.5分</td>
+                                <td>75.2%</td>
+                                <td><span class="trend-badge up">[↑] +5.3%</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="rank-badge top2">2</span></td>
+                                <td>育才小学</td>
+                                <td>742</td>
+                                <td>658</td>
+                                <td>10,856</td>
+                                <td>7,456</td>
+                                <td>79.8分</td>
+                                <td>72.8%</td>
+                                <td><span class="trend-badge up">[↑] +3.8%</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="rank-badge top3">3</span></td>
+                                <td>明德小学</td>
+                                <td>689</td>
+                                <td>598</td>
+                                <td>9,562</td>
+                                <td>6,842</td>
+                                <td>78.6分</td>
+                                <td>68.5%</td>
+                                <td><span class="trend-badge down">[↓] -1.2%</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="rank-badge other">4</span></td>
+                                <td>光明小学</td>
+                                <td>623</td>
+                                <td>542</td>
+                                <td>8,456</td>
+                                <td>5,986</td>
+                                <td>76.2分</td>
+                                <td>65.8%</td>
+                                <td><span class="trend-badge up">[↑] +2.5%</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="rank-badge other">5</span></td>
+                                <td>希望小学</td>
+                                <td>578</td>
+                                <td>486</td>
+                                <td>7,562</td>
+                                <td>5,234</td>
+                                <td>74.8分</td>
+                                <td>62.3%</td>
+                                <td><span class="trend-badge down">[↓] -0.8%</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 阅读数据对比 -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <div class="chart-title">阅读数据对比</div>
+                </div>
+                <div class="chart-placeholder">[柱状图：各学校阅读次数、参与人数、完成率对比]</div>
+            </div>
+
+            <!-- 测评数据对比 -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <div class="chart-title">测评数据对比</div>
+                </div>
+                <div class="chart-placeholder">[雷达图：各学校在不同维度的测评表现]</div>
+            </div>
+
+            <!-- 活跃度趋势对比 -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <div class="chart-title">活跃度趋势对比</div>
+                </div>
+                <div class="chart-placeholder">[折线图：各学校日活跃用户数趋势]</div>
+            </div>
+
+            <!-- 年级分布对比 -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <div class="chart-title">年级分布对比</div>
+                </div>
+                <div class="chart-placeholder">[堆叠柱状图：各学校各年级学生数量分布]</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    function toggleMenu(element) {
+        const menuGroup = element.parentElement;
+        menuGroup.classList.toggle('expanded');
+    }
+    </script>
+</body>
+</html>

@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>等级体系 - 校校读吧管理平台</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+        }
+
+        /* 顶部导航 */
+        .header {
+            height: 60px;
+            background: #fff;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header .logo {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+        .header .user-info {
+            margin-left: auto;
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* 主体布局 */
+        .main {
+            display: flex;
+            min-height: calc(100vh - 60px);
+        }
+
+        /* 侧边栏 */
+        .sidebar {
+            width: 240px;
+            background: #fff;
+            border-right: 1px solid #e0e0e0;
+            overflow-y: auto;
+        }
+        .menu-group {
+            margin-bottom: 8px;
+        }
+        .menu-group-title {
+            padding: 12px 24px;
+            font-size: 14px;
+            color: #333;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .menu-group-icon {
+            font-size: 12px;
+            color: #999;
+            transition: transform 0.2s;
+        }
+        .menu-group.expanded .menu-group-icon {
+            transform: rotate(90deg);
+        }
+        .menu-group-items {
+            display: none;
+        }
+        .menu-group.expanded .menu-group-items {
+            display: block;
+        }
+        .menu-item {
+            padding: 10px 24px 10px 48px;
+            font-size: 14px;
+            color: #666;
+            cursor: pointer;
+        }
+        .menu-item:hover {
+            background: #f5f5f5;
+        }
+        .menu-item.active {
+            color: #333;
+            font-weight: 600;
+            background: #f5f5f5;
+            border-left: 3px solid #333;
+        }
+
+        /* 内容区 */
+        .content {
+            flex: 1;
+            padding: 24px;
+            overflow-y: auto;
+        }
+
+        /* 面包屑 */
+        .breadcrumb {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+        .breadcrumb a {
+            color: #666;
+            text-decoration: none;
+        }
+        .breadcrumb a:hover {
+            color: #333;
+        }
+        .breadcrumb span {
+            margin: 0 8px;
+        }
+
+        /* 页面标题 */
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .page-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        /* 按钮 */
+        .btn {
+            height: 36px;
+            padding: 0 20px;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            border: none;
+        }
+        .btn-primary {
+            background: #333;
+            color: #fff;
+            border: 1px solid #333;
+        }
+        .btn-primary:hover {
+            background: #555;
+        }
+        .btn-secondary {
+            background: #fff;
+            color: #333;
+            border: 1px solid #999;
+        }
+        .btn-secondary:hover {
+            background: #f5f5f5;
+        }
+
+        /* 等级卡片 */
+        .level-card {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+        .level-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .level-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+        .level-desc {
+            font-size: 14px;
+            color: #999;
+            margin-bottom: 20px;
+        }
+
+        /* 表格 */
+        .table-container {
+            overflow-x: auto;
+        }
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+        }
+        .table th,
+        .table td {
+            padding: 12px 16px;
+            text-align: left;
+            border: 1px solid #e0e0e0;
+            font-size: 14px;
+        }
+        .table th {
+            background: #f5f5f5;
+            font-weight: 600;
+            color: #333;
+        }
+        .table td {
+            color: #666;
+        }
+        .table a {
+            color: #333;
+            text-decoration: underline;
+            cursor: pointer;
+            margin: 0 4px;
+        }
+        .table a:hover {
+            color: #666;
+        }
+
+        /* 状态标签 */
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .status-badge.enabled {
+            background: #333;
+            color: #fff;
+        }
+        .status-badge.disabled {
+            background: #f5f5f5;
+            color: #999;
+        }
+
+        /* 等级图标 */
+        .level-icon {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            text-align: center;
+            line-height: 40px;
+            font-size: 12px;
+            color: #999;
+        }
+
+        /* 积分值 */
+        .points-value {
+            font-weight: 600;
+            color: #333;
+        }
+
+        /* 权益列表 */
+        .benefits-list {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <div class="header">
+        <div class="logo">校校读吧管理平台</div>
+        <div class="user-info">管理员</div>
+    </div>
+
+    <div class="main">
+        <!-- 侧边栏 -->
+        <div class="sidebar">
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>用户管理</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">学校管理</div>
+                    <div class="menu-item">老师管理</div>
+                    <div class="menu-item">学生管理</div>
+                </div>
+            </div>
+
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>内容管理</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">阅读计划</div>
+                    <div class="menu-item">书籍资源库</div>
+                </div>
+            </div>
+
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>数据分析</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">阅读数据分析</div>
+                    <div class="menu-item">测评数据分析</div>
+                    <div class="menu-item">用户行为分析</div>
+                    <div class="menu-item">学校数据对比</div>
+                    <div class="menu-item">数据导出中心</div>
+                </div>
+                </div>
+                </div>
+                </div>
+                </div>
+            </div>
+            </div>
+
+            <div class="menu-group expanded">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>激励体系</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">积分规则</div>
+                    <div class="menu-item active">等级体系</div>
+                    <div class="menu-item">徽章配置</div>
+                    <div class="menu-item">证书配置</div>
+                </div>
+            </div>
+
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>用户反馈</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">意见反馈</div>
+                </div>
+                </div>
+                </div>
+                </div>
+            </div>
+
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>系统配置</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">系统参数</div>
+                    <div class="menu-item">字典管理</div>
+                    <div class="menu-item">操作日志</div>
+                    <div class="menu-item">版本管理</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 内容区 -->
+        <div class="content">
+            <!-- 面包屑 -->
+            <div class="breadcrumb">
+                <a href="#">首页</a>
+                <span>></span>
+                <a href="#">激励体系</a>
+                <span>></span>
+                <span>等级体系</span>
+            </div>
+
+            <!-- 页面标题 -->
+            <div class="page-header">
+                <div class="page-title">等级体系配置</div>
+                <button class="btn btn-primary">+ 新增等级</button>
+            </div>
+
+            <!-- 等级配置说明 -->
+            <div class="level-card">
+                <div class="level-desc">
+                    等级体系用于激励学生持续阅读，学生通过累积积分提升等级，不同等级享有不同权益
+                </div>
+            </div>
+
+            <!-- 等级列表 -->
+            <div class="level-card">
+                <div class="level-header">
+                    <div class="level-title">等级列表</div>
+                </div>
+                <div class="table-container">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th style="width: 80px;">等级</th>
+                                <th style="width: 80px;">图标</th>
+                                <th style="width: 150px;">等级名称</th>
+                                <th style="width: 120px;">所需积分</th>
+                                <th>等级权益</th>
+                                <th style="width: 100px;">当前人数</th>
+                                <th style="width: 100px;">状态</th>
+                                <th style="width: 160px;">创建时间</th>
+                                <th style="width: 140px;">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td><div class="level-icon">[图标]</div></td>
+                                <td>初级读者</td>
+                                <td><span class="points-value">0</span></td>
+                                <td class="benefits-list">基础阅读功能</td>
+                                <td>1,234</td>
+                                <td><span class="status-badge enabled">启用</span></td>
+                                <td>2024-01-15 10:00:00</td>
+                                <td>
+                                    <a href="#">编辑</a>
+                                    <a href="#">禁用</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td><div class="level-icon">[图标]</div></td>
+                                <td>青铜读者</td>
+                                <td><span class="points-value">100</span></td>
+                                <td class="benefits-list">解锁书评功能、获得专属头像框</td>
+                                <td>856</td>
+                                <td><span class="status-badge enabled">启用</span></td>
+                                <td>2024-01-15 10:00:00</td>
+                                <td>
+                                    <a href="#">编辑</a>
+                                    <a href="#">禁用</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td><div class="level-icon">[图标]</div></td>
+                                <td>白银读者</td>
+                                <td><span class="points-value">300</span></td>
+                                <td class="benefits-list">解锁特殊书籍、每日签到积分+2、专属称号</td>
+                                <td>542</td>
+                                <td><span class="status-badge enabled">启用</span></td>
+                                <td>2024-01-15 10:00:00</td>
+                                <td>
+                                    <a href="#">编辑</a>
+                                    <a href="#">禁用</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td><div class="level-icon">[图标]</div></td>
+                                <td>黄金读者</td>
+                                <td><span class="points-value">600</span></td>
+                                <td class="benefits-list">解锁全部书籍、每日签到积分+5、优先参与活动、专属徽章</td>
+                                <td>328</td>
+                                <td><span class="status-badge enabled">启用</span></td>
+                                <td>2024-01-15 10:00:00</td>
+                                <td>
+                                    <a href="#">编辑</a>
+                                    <a href="#">禁用</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>5</td>
+                                <td><div class="level-icon">[图标]</div></td>
+                                <td>铂金读者</td>
+                                <td><span class="points-value">1000</span></td>
+                                <td class="benefits-list">全部黄金权益、每月赠送实体书、专属客服、优先体验新功能</td>
+                                <td>156</td>
+                                <td><span class="status-badge enabled">启用</span></td>
+                                <td>2024-01-15 10:00:00</td>
+                                <td>
+                                    <a href="#">编辑</a>
+                                    <a href="#">禁用</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>6</td>
+                                <td><div class="level-icon">[图标]</div></td>
+                                <td>钻石读者</td>
+                                <td><span class="points-value">2000</span></td>
+                                <td class="benefits-list">全部铂金权益、每月赠送2本实体书、参与产品决策、年度荣誉证书</td>
+                                <td>68</td>
+                                <td><span class="status-badge enabled">启用</span></td>
+                                <td>2024-01-15 10:00:00</td>
+                                <td>
+                                    <a href="#">编辑</a>
+                                    <a href="#">禁用</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>7</td>
+                                <td><div class="level-icon">[图标]</div></td>
+                                <td>王者读者</td>
+                                <td><span class="points-value">5000</span></td>
+                                <td class="benefits-list">全部钻石权益、终身VIP、专属定制服务、平台推广大使</td>
+                                <td>12</td>
+                                <td><span class="status-badge enabled">启用</span></td>
+                                <td>2024-01-15 10:00:00</td>
+                                <td>
+                                    <a href="#">编辑</a>
+                                    <a href="#">禁用</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>8</td>
+                                <td><div class="level-icon">[图标]</div></td>
+                                <td>荣耀读者</td>
+                                <td><span class="points-value">10000</span></td>
+                                <td class="benefits-list">全部王者权益、平台股东身份、年度盛典邀请、永久荣誉殿堂</td>
+                                <td>3</td>
+                                <td><span class="status-badge disabled">禁用</span></td>
+                                <td>2024-01-20 10:00:00</td>
+                                <td>
+                                    <a href="#">编辑</a>
+                                    <a href="#">启用</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 升级规则说明 -->
+            <div class="level-card">
+                <div class="level-header">
+                    <div class="level-title">升级规则说明</div>
+                </div>
+                <div style="font-size: 14px; color: #666; line-height: 1.8;">
+                    <p style="margin-bottom: 12px;">1. 学生通过完成阅读任务、测评等方式获得积分</p>
+                    <p style="margin-bottom: 12px;">2. 积分累积达到对应等级要求后自动升级</p>
+                    <p style="margin-bottom: 12px;">3. 等级只升不降，积分消耗不影响已获得的等级</p>
+                    <p style="margin-bottom: 12px;">4. 每个等级的权益会自动继承下级等级的所有权益</p>
+                    <p style="margin-bottom: 12px;">5. 管理员可以手动调整学生等级（需记录操作日志）</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    function toggleMenu(element) {
+        const menuGroup = element.parentElement;
+        menuGroup.classList.toggle('expanded');
+    }
+    </script>
+</body>
+</html>

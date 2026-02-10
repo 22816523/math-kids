@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学校详情 - 校校读吧管理平台</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+        }
+
+        /* 顶部导航 */
+        .header {
+            height: 60px;
+            background: #fff;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header .logo {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+        .header .user-info {
+            margin-left: auto;
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* 主体布局 */
+        .main {
+            display: flex;
+            min-height: calc(100vh - 60px);
+        }
+
+        /* 侧边栏 */
+        .sidebar {
+            width: 240px;
+            background: #fff;
+            border-right: 1px solid #e0e0e0;
+            overflow-y: auto;
+        }
+        .menu-group {
+            margin-bottom: 8px;
+        }
+        .menu-group-title {
+            padding: 12px 24px;
+            font-size: 14px;
+            color: #333;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .menu-group-icon {
+            font-size: 12px;
+            color: #999;
+            transition: transform 0.2s;
+        }
+        .menu-group.expanded .menu-group-icon {
+            transform: rotate(90deg);
+        }
+        .menu-group-items {
+            display: none;
+        }
+        .menu-group.expanded .menu-group-items {
+            display: block;
+        }
+        .menu-item {
+            padding: 10px 24px 10px 48px;
+            font-size: 14px;
+            color: #666;
+            cursor: pointer;
+        }
+        .menu-item:hover {
+            background: #f5f5f5;
+        }
+        .menu-item.active {
+            color: #333;
+            font-weight: 600;
+            background: #f5f5f5;
+            border-left: 3px solid #333;
+        }
+
+        /* 内容区 */
+        .content {
+            flex: 1;
+            padding: 24px;
+            overflow-y: auto;
+        }
+
+        /* 面包屑 */
+        .breadcrumb {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+        .breadcrumb a {
+            color: #666;
+            text-decoration: none;
+        }
+        .breadcrumb a:hover {
+            color: #333;
+        }
+        .breadcrumb span {
+            margin: 0 8px;
+        }
+
+        /* 页面标题和操作区 */
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+        }
+        .page-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+        }
+        .page-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        /* 按钮 */
+        .btn {
+            height: 36px;
+            padding: 0 20px;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            border: none;
+        }
+        .btn-primary {
+            background: #333;
+            color: #fff;
+            border: 1px solid #333;
+        }
+        .btn-primary:hover {
+            background: #555;
+        }
+        .btn-secondary {
+            background: #fff;
+            color: #333;
+            border: 1px solid #999;
+        }
+        .btn-secondary:hover {
+            background: #f5f5f5;
+        }
+
+        /* 卡片 */
+        .card {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            margin-bottom: 16px;
+        }
+        .card-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid #e0e0e0;
+            font-weight: 600;
+            font-size: 16px;
+            color: #333;
+        }
+        .card-body {
+            padding: 20px;
+        }
+
+        /* 信息展示 */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px 40px;
+        }
+        .info-item {
+            display: flex;
+        }
+        .info-label {
+            width: 100px;
+            font-size: 14px;
+            color: #666;
+            flex-shrink: 0;
+        }
+        .info-value {
+            font-size: 14px;
+            color: #333;
+            flex: 1;
+        }
+
+        /* 统计卡片 */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+        .stat-card {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 20px;
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 28px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* 表格 */
+        .table-wrapper {
+            overflow-x: auto;
+        }
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+        }
+        .table th,
+        .table td {
+            padding: 12px 16px;
+            text-align: left;
+            border: 1px solid #e0e0e0;
+            font-size: 14px;
+        }
+        .table th {
+            background: #f5f5f5;
+            font-weight: 600;
+            color: #333;
+        }
+        .table td {
+            color: #666;
+        }
+        .table a {
+            color: #333;
+            text-decoration: underline;
+            cursor: pointer;
+            margin: 0 4px;
+        }
+        .table a:hover {
+            color: #666;
+        }
+
+        /* 分页 */
+        .pagination {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 16px;
+        }
+        .pagination-info {
+            font-size: 14px;
+            color: #666;
+        }
+        .pagination-controls {
+            display: flex;
+            gap: 8px;
+        }
+        .pagination-btn {
+            height: 32px;
+            padding: 0 12px;
+            border: 1px solid #e0e0e0;
+            background: #fff;
+            border-radius: 4px;
+            font-size: 14px;
+            color: #333;
+            cursor: pointer;
+        }
+        .pagination-btn:hover:not(:disabled) {
+            background: #f5f5f5;
+        }
+        .pagination-btn:disabled {
+            color: #ccc;
+            cursor: not-allowed;
+        }
+        .pagination-btn.active {
+            background: #333;
+            color: #fff;
+            border-color: #333;
+        }
+
+        /* 状态标签 */
+        .status {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 2px;
+            font-size: 12px;
+        }
+        .status-active {
+            background: #f5f5f5;
+            color: #333;
+        }
+        .status-inactive {
+            background: #f5f5f5;
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <div class="header">
+        <div class="logo">校校读吧管理平台</div>
+        <div class="user-info">管理员</div>
+    </div>
+
+    <div class="main">
+        <!-- 侧边栏 -->
+        <div class="sidebar">
+            <div class="menu-group expanded">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>用户管理</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item active">学校管理</div>
+                    <div class="menu-item">老师管理</div>
+                    <div class="menu-item">学生管理</div>
+                </div>
+            </div>
+
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>内容管理</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">阅读计划</div>
+                    <div class="menu-item">书籍资源库</div>
+                    <div class="menu-item">测评管理</div>
+                </div>
+            </div>
+
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>数据分析</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">阅读数据分析</div>
+                    <div class="menu-item">测评数据分析</div>
+                    <div class="menu-item">用户行为分析</div>
+                    <div class="menu-item">学校数据对比</div>
+                    <div class="menu-item">数据导出中心</div>
+                </div>
+                </div>
+                </div>
+                </div>
+                </div>
+            </div>
+            </div>
+
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>激励体系</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">积分管理</div>
+                    <div class="menu-item">勋章管理</div>
+                    </div>
+            </div>
+
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>用户反馈</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">意见反馈</div>
+                </div>
+                </div>
+                </div>
+                </div>
+            </div>
+
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>系统配置</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">系统参数</div>
+                    <div class="menu-item">操作日志</div>
+                    <div class="menu-item">操作日志</div>
+                    <div class="menu-item">数据字典</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 内容区 -->
+        <div class="content">
+            <!-- 面包屑 -->
+            <div class="breadcrumb">
+                <a href="#">首页</a>
+                <span>></span>
+                <a href="#">用户管理</a>
+                <span>></span>
+                <a href="#">学校管理</a>
+                <span>></span>
+                <span>学校详情</span>
+            </div>
+
+            <!-- 页面标题和操作 -->
+            <div class="page-header">
+                <div class="page-title">学校详情</div>
+                <div class="page-actions">
+                    <button class="btn btn-secondary">返回列表</button>
+                    <button class="btn btn-secondary">编辑</button>
+                    <button class="btn btn-secondary">禁用</button>
+                </div>
+            </div>
+
+            <!-- 基本信息 -->
+            <div class="card">
+                <div class="card-header">基本信息</div>
+                <div class="card-body">
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <div class="info-label">学校名称</div>
+                            <div class="info-value">北京市第一中学</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">学段</div>
+                            <div class="info-value">初中</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">地区</div>
+                            <div class="info-value">北京市 海淀区</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">详细地址</div>
+                            <div class="info-value">海淀区中关村大街1号</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">联系电话</div>
+                            <div class="info-value">010-12345678</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">创建时间</div>
+                            <div class="info-value">2024-01-15 10:30:00</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">状态</div>
+                            <div class="info-value"><span class="status status-active">正常</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 管理员信息 -->
+            <div class="card">
+                <div class="card-header">管理员信息</div>
+                <div class="card-body">
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <div class="info-label">姓名</div>
+                            <div class="info-value">张三</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">手机号</div>
+                            <div class="info-value">13800138000</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">企业微信</div>
+                            <div class="info-value">zhangsan</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">添加时间</div>
+                            <div class="info-value">2024-01-15 10:30:00</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 统计数据 -->
+            <div class="card">
+                <div class="card-header">统计数据</div>
+                <div class="card-body">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value">45</div>
+                            <div class="stat-label">老师总数</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">1,280</div>
+                            <div class="stat-label">学生总数</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">36</div>
+                            <div class="stat-label">班级总数</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">12</div>
+                            <div class="stat-label">阅读计划数</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 关联老师列表 -->
+            <div class="card">
+                <div class="card-header">关联老师列表</div>
+                <div class="card-body">
+                    <div class="table-wrapper">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>姓名</th>
+                                    <th>手机号</th>
+                                    <th>所属年级</th>
+                                    <th>班级数</th>
+                                    <th>学生数</th>
+                                    <th>状态</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>李老师</td>
+                                    <td>13900139001</td>
+                                    <td>初一</td>
+                                    <td>2</td>
+                                    <td>80</td>
+                                    <td><span class="status status-active">正常</span></td>
+                                    <td>
+                                        <a href="#">查看</a>
+                                        <a href="#">编辑</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>王老师</td>
+                                    <td>13900139002</td>
+                                    <td>初二</td>
+                                    <td>3</td>
+                                    <td>120</td>
+                                    <td><span class="status status-active">正常</span></td>
+                                    <td>
+                                        <a href="#">查看</a>
+                                        <a href="#">编辑</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>赵老师</td>
+                                    <td>13900139003</td>
+                                    <td>初三</td>
+                                    <td>2</td>
+                                    <td>75</td>
+                                    <td><span class="status status-active">正常</span></td>
+                                    <td>
+                                        <a href="#">查看</a>
+                                        <a href="#">编辑</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>刘老师</td>
+                                    <td>13900139004</td>
+                                    <td>初一</td>
+                                    <td>2</td>
+                                    <td>82</td>
+                                    <td><span class="status status-inactive">禁用</span></td>
+                                    <td>
+                                        <a href="#">查看</a>
+                                        <a href="#">编辑</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>陈老师</td>
+                                    <td>13900139005</td>
+                                    <td>初二</td>
+                                    <td>3</td>
+                                    <td>115</td>
+                                    <td><span class="status status-active">正常</span></td>
+                                    <td>
+                                        <a href="#">查看</a>
+                                        <a href="#">编辑</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="pagination">
+                        <div class="pagination-info">共 45 条记录，当前第 1/5 页</div>
+                        <div class="pagination-controls">
+                            <button class="pagination-btn" disabled>上一页</button>
+                            <button class="pagination-btn active">1</button>
+                            <button class="pagination-btn">2</button>
+                            <button class="pagination-btn">3</button>
+                            <button class="pagination-btn">4</button>
+                            <button class="pagination-btn">5</button>
+                            <button class="pagination-btn">下一页</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 关联学生列表 -->
+            <div class="card">
+                <div class="card-header">关联学生列表</div>
+                <div class="card-body">
+                    <div class="table-wrapper">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>姓名</th>
+                                    <th>学号</th>
+                                    <th>年级班级</th>
+                                    <th>阅读计划数</th>
+                                    <th>阅读时长</th>
+                                    <th>状态</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>张小明</td>
+                                    <td>2024010101</td>
+                                    <td>初一(1)班</td>
+                                    <td>3</td>
+                                    <td>120小时</td>
+                                    <td><span class="status status-active">正常</span></td>
+                                    <td>
+                                        <a href="#">查看</a>
+                                        <a href="#">编辑</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>李小红</td>
+                                    <td>2024010102</td>
+                                    <td>初一(1)班</td>
+                                    <td>2</td>
+                                    <td>85小时</td>
+                                    <td><span class="status status-active">正常</span></td>
+                                    <td>
+                                        <a href="#">查看</a>
+                                        <a href="#">编辑</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>王小刚</td>
+                                    <td>2024010103</td>
+                                    <td>初一(2)班</td>
+                                    <td>4</td>
+                                    <td>156小时</td>
+                                    <td><span class="status status-active">正常</span></td>
+                                    <td>
+                                        <a href="#">查看</a>
+                                        <a href="#">编辑</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>赵小丽</td>
+                                    <td>2024020101</td>
+                                    <td>初二(1)班</td>
+                                    <td>5</td>
+                                    <td>200小时</td>
+                                    <td><span class="status status-active">正常</span></td>
+                                    <td>
+                                        <a href="#">查看</a>
+                                        <a href="#">编辑</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>刘小强</td>
+                                    <td>2024020102</td>
+                                    <td>初二(1)班</td>
+                                    <td>3</td>
+                                    <td>98小时</td>
+                                    <td><span class="status status-inactive">禁用</span></td>
+                                    <td>
+                                        <a href="#">查看</a>
+                                        <a href="#">编辑</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="pagination">
+                        <div class="pagination-info">共 1,280 条记录，当前第 1/128 页</div>
+                        <div class="pagination-controls">
+                            <button class="pagination-btn" disabled>上一页</button>
+                            <button class="pagination-btn active">1</button>
+                            <button class="pagination-btn">2</button>
+                            <button class="pagination-btn">3</button>
+                            <button class="pagination-btn">4</button>
+                            <button class="pagination-btn">5</button>
+                            <button class="pagination-btn">...</button>
+                            <button class="pagination-btn">128</button>
+                            <button class="pagination-btn">下一页</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    function toggleMenu(element) {
+        const menuGroup = element.parentElement;
+        menuGroup.classList.toggle('expanded');
+    }
+    </script>
+</body>
+</html>

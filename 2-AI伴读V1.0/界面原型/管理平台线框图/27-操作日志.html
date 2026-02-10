@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>操作日志 - 校校读吧管理平台</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+        }
+
+        /* 顶部导航 */
+        .header {
+            height: 60px;
+            background: #fff;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header .logo {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+        .header .user-info {
+            margin-left: auto;
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* 主体布局 */
+        .main {
+            display: flex;
+            min-height: calc(100vh - 60px);
+        }
+
+        /* 侧边栏 */
+        .sidebar {
+            width: 240px;
+            background: #fff;
+            border-right: 1px solid #e0e0e0;
+            overflow-y: auto;
+        }
+        .menu-group {
+            margin-bottom: 8px;
+        }
+        .menu-group-title {
+            padding: 12px 24px;
+            font-size: 14px;
+            color: #333;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .menu-group-icon {
+            font-size: 12px;
+            color: #999;
+            transition: transform 0.2s;
+        }
+        .menu-group.expanded .menu-group-icon {
+            transform: rotate(90deg);
+        }
+        .menu-group-items {
+            display: none;
+        }
+        .menu-group.expanded .menu-group-items {
+            display: block;
+        }
+        .menu-item {
+            padding: 10px 24px 10px 48px;
+            font-size: 14px;
+            color: #666;
+            cursor: pointer;
+        }
+        .menu-item:hover {
+            background: #f5f5f5;
+        }
+        .menu-item.active {
+            color: #333;
+            font-weight: 600;
+            background: #f5f5f5;
+            border-left: 3px solid #333;
+        }
+
+        /* 内容区 */
+        .content {
+            flex: 1;
+            padding: 24px;
+            overflow-y: auto;
+        }
+
+        /* 面包屑 */
+        .breadcrumb {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+        .breadcrumb a {
+            color: #666;
+            text-decoration: none;
+        }
+        .breadcrumb a:hover {
+            color: #333;
+        }
+        .breadcrumb span {
+            margin: 0 8px;
+        }
+
+        /* 页面标题 */
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .page-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        /* 按钮 */
+        .btn {
+            height: 36px;
+            padding: 0 20px;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            border: none;
+        }
+        .btn-primary {
+            background: #333;
+            color: #fff;
+            border: 1px solid #333;
+        }
+        .btn-primary:hover {
+            background: #555;
+        }
+        .btn-secondary {
+            background: #fff;
+            color: #333;
+            border: 1px solid #999;
+        }
+        .btn-secondary:hover {
+            background: #f5f5f5;
+        }
+
+        /* 筛选区域 */
+        .filter-section {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .filter-row {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+        }
+        .filter-row:last-child {
+            margin-bottom: 0;
+        }
+        .filter-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .filter-label {
+            font-size: 14px;
+            color: #666;
+            white-space: nowrap;
+        }
+        .filter-input {
+            height: 36px;
+            padding: 0 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            font-size: 14px;
+            width: 160px;
+        }
+        .filter-select {
+            height: 36px;
+            padding: 0 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            font-size: 14px;
+            width: 140px;
+        }
+
+        /* 统计卡片 */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        .stat-card {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 20px;
+        }
+        .stat-label {
+            font-size: 14px;
+            color: #999;
+            margin-bottom: 12px;
+        }
+        .stat-value {
+            font-size: 28px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        /* 表格容器 */
+        .table-card {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 24px;
+        }
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .table-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        /* 表格 */
+        .table-container {
+            overflow-x: auto;
+        }
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+        }
+        .table th,
+        .table td {
+            padding: 12px 16px;
+            text-align: left;
+            border: 1px solid #e0e0e0;
+            font-size: 14px;
+        }
+        .table th {
+            background: #f5f5f5;
+            font-weight: 600;
+            color: #333;
+        }
+        .table td {
+            color: #666;
+        }
+        .table a {
+            color: #333;
+            text-decoration: underline;
+            cursor: pointer;
+            margin: 0 4px;
+        }
+        .table a:hover {
+            color: #666;
+        }
+
+        /* 操作类型标签 */
+        .action-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .action-badge.create {
+            background: #333;
+            color: #fff;
+        }
+        .action-badge.update {
+            background: #e0e0e0;
+            color: #666;
+        }
+        .action-badge.delete {
+            background: #f5f5f5;
+            color: #999;
+        }
+        .action-badge.view {
+            background: #f5f5f5;
+            color: #666;
+        }
+        .action-badge.export {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        /* 状态标签 */
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .status-badge.success {
+            background: #333;
+            color: #fff;
+        }
+        .status-badge.failed {
+            background: #f5f5f5;
+            color: #999;
+        }
+
+        /* 分页 */
+        .pagination {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .pagination-info {
+            font-size: 14px;
+            color: #666;
+        }
+        .pagination-controls {
+            display: flex;
+            gap: 8px;
+        }
+        .pagination-btn {
+            height: 32px;
+            padding: 0 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            background: #fff;
+            font-size: 14px;
+            color: #666;
+            cursor: pointer;
+        }
+        .pagination-btn:hover {
+            background: #f5f5f5;
+        }
+        .pagination-btn.active {
+            background: #333;
+            color: #fff;
+            border-color: #333;
+        }
+
+        /* IP地址 */
+        .ip-address {
+            font-family: monospace;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <div class="header">
+        <div class="logo">校校读吧管理平台</div>
+        <div class="user-info">管理员</div>
+    </div>
+
+    <div class="main">
+        <!-- 侧边栏 -->
+        <div class="sidebar">
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>用户管理</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">学校管理</div>
+                    <div class="menu-item">老师管理</div>
+                    <div class="menu-item">学生管理</div>
+                </div>
+            </div>
+
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>内容管理</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">阅读计划</div>
+                    <div class="menu-item">书籍资源库</div>
+                    <div class="menu-item">测评管理</div>
+                </div>
+            </div>
+
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>数据分析</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">阅读数据分析</div>
+                    <div class="menu-item">测评数据分析</div>
+                    <div class="menu-item">用户行为分析</div>
+                    <div class="menu-item">学校数据对比</div>
+                    <div class="menu-item">数据导出中心</div>
+                </div>
+                </div>
+                </div>
+                </div>
+                </div>
+            </div>
+            </div>
+
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>激励体系</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">积分管理</div>
+                    <div class="menu-item">勋章管理</div>
+                    </div>
+            </div>
+
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>用户反馈</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">意见反馈</div>
+                </div>
+                </div>
+                </div>
+                </div>
+            </div>
+
+            <div class="menu-group expanded">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>系统配置</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">系统参数</div>
+                    <div class="menu-item">权限管理</div>
+                    <div class="menu-item active">操作日志</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 内容区 -->
+        <div class="content">
+            <!-- 面包屑 -->
+            <div class="breadcrumb">
+                <a href="#">首页</a>
+                <span>></span>
+                <a href="#">系统配置</a>
+                <span>></span>
+                <span>操作日志</span>
+            </div>
+
+            <!-- 页面标题 -->
+            <div class="page-header">
+                <div class="page-title">操作日志</div>
+                <button class="btn btn-primary">导出日志</button>
+            </div>
+
+            <!-- 筛选区域 -->
+            <div class="filter-section">
+                <div class="filter-row">
+                    <div class="filter-item">
+                        <span class="filter-label">操作人</span>
+                        <input type="text" class="filter-input" placeholder="请输入操作人">
+                    </div>
+                    <div class="filter-item">
+                        <span class="filter-label">操作模块</span>
+                        <select class="filter-select">
+                            <option>全部模块</option>
+                            <option>用户管理</option>
+                            <option>内容管理</option>
+                            <option>数据分析</option>
+                            <option>激励体系</option>
+                            <option>用户反馈</option>
+                            <option>系统配置</option>
+                        </select>
+                    </div>
+                    <div class="filter-item">
+                        <span class="filter-label">操作类型</span>
+                        <select class="filter-select">
+                            <option>全部类型</option>
+                            <option>新增</option>
+                            <option>修改</option>
+                            <option>删除</option>
+                            <option>查看</option>
+                            <option>导出</option>
+                        </select>
+                    </div>
+                    <div class="filter-item">
+                        <span class="filter-label">执行状态</span>
+                        <select class="filter-select">
+                            <option>全部状态</option>
+                            <option>成功</option>
+                            <option>失败</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="filter-row">
+                    <div class="filter-item">
+                        <span class="filter-label">操作时间</span>
+                        <input type="date" class="filter-input" value="2024-02-01">
+                        <span>至</span>
+                        <input type="date" class="filter-input" value="2024-02-10">
+                    </div>
+                    <button class="btn btn-primary">查询</button>
+                    <button class="btn btn-secondary">重置</button>
+                </div>
+            </div>
+
+            <!-- 统计卡片 -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">今日操作数</div>
+                    <div class="stat-value">2,458</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">本周操作数</div>
+                    <div class="stat-value">15,234</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">本月操作数</div>
+                    <div class="stat-value">68,956</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">失败操作数</div>
+                    <div class="stat-value">128</div>
+                </div>
+            </div>
+
+            <!-- 日志列表 -->
+            <div class="table-card">
+                <div class="table-header">
+                    <div class="table-title">操作日志列表</div>
+                </div>
+                <div class="table-container">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th style="width: 80px;">日志ID</th>
+                                <th style="width: 100px;">操作人</th>
+                                <th style="width: 120px;">操作模块</th>
+                                <th style="width: 100px;">操作类型</th>
+                                <th>操作内容</th>
+                                <th style="width: 140px;">IP地址</th>
+                                <th style="width: 100px;">执行状态</th>
+                                <th style="width: 160px;">操作时间</th>
+                                <th style="width: 100px;">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>10256</td>
+                                <td>李管理员</td>
+                                <td>用户管理</td>
+                                <td><span class="action-badge create">新增</span></td>
+                                <td>新增学校：北京市第一小学</td>
+                                <td><span class="ip-address">192.168.1.100</span></td>
+                                <td><span class="status-badge success">成功</span></td>
+                                <td>2024-02-10 15:30:25</td>
+                                <td><a href="#">详情</a></td>
+                            </tr>
+                            <tr>
+                                <td>10255</td>
+                                <td>王管理员</td>
+                                <td>内容管理</td>
+                                <td><span class="action-badge update">修改</span></td>
+                                <td>编辑阅读计划：寒假阅读计划</td>
+                                <td><span class="ip-address">192.168.1.105</span></td>
+                                <td><span class="status-badge success">成功</span></td>
+                                <td>2024-02-10 15:28:12</td>
+                                <td><a href="#">详情</a></td>
+                            </tr>
+                            <tr>
+                                <td>10254</td>
+                                <td>张管理员</td>
+                                <td>内容管理</td>
+                                <td><span class="action-badge create">新增</span></td>
+                                <td>上传书籍：《西游记》</td>
+                                <td><span class="ip-address">192.168.1.108</span></td>
+                                <td><span class="status-badge success">成功</span></td>
+                                <td>2024-02-10 15:25:48</td>
+                                <td><a href="#">详情</a></td>
+                            </tr>
+                            <tr>
+                                <td>10253</td>
+                                <td>刘管理员</td>
+                                <td>数据分析</td>
+                                <td><span class="action-badge export">导出</span></td>
+                                <td>导出阅读数据报表</td>
+                                <td><span class="ip-address">192.168.1.112</span></td>
+                                <td><span class="status-badge success">成功</span></td>
+                                <td>2024-02-10 15:20:35</td>
+                                <td><a href="#">详情</a></td>
+                            </tr>
+                            <tr>
+                                <td>10252</td>
+                                <td>陈管理员</td>
+                                <td>用户反馈</td>
+                                <td><span class="action-badge update">修改</span></td>
+                                <td>处理反馈：FB20240210001</td>
+                                <td><span class="ip-address">192.168.1.115</span></td>
+                                <td><span class="status-badge success">成功</span></td>
+                                <td>2024-02-10 15:18:22</td>
+                                <td><a href="#">详情</a></td>
+                            </tr>
+                            <tr>
+                                <td>10251</td>
+                                <td>李管理员</td>
+                                <td>系统配置</td>
+                                <td><span class="action-badge update">修改</span></td>
+                                <td>修改系统参数配置</td>
+                                <td><span class="ip-address">192.168.1.100</span></td>
+                                <td><span class="status-badge success">成功</span></td>
+                                <td>2024-02-10 15:15:10</td>
+                                <td><a href="#">详情</a></td>
+                            </tr>
+                            <tr>
+                                <td>10250</td>
+                                <td>王管理员</td>
+                                <td>激励体系</td>
+                                <td><span class="action-badge create">新增</span></td>
+                                <td>新增积分规则：完成阅读任务</td>
+                                <td><span class="ip-address">192.168.1.105</span></td>
+                                <td><span class="status-badge success">成功</span></td>
+                                <td>2024-02-10 15:12:45</td>
+                                <td><a href="#">详情</a></td>
+                            </tr>
+                            <tr>
+                                <td>10249</td>
+                                <td>张管理员</td>
+                                <td>用户管理</td>
+                                <td><span class="action-badge delete">删除</span></td>
+                                <td>删除老师：测试老师</td>
+                                <td><span class="ip-address">192.168.1.108</span></td>
+                                <td><span class="status-badge failed">失败</span></td>
+                                <td>2024-02-10 15:10:28</td>
+                                <td><a href="#">详情</a></td>
+                            </tr>
+                            <tr>
+                                <td>10248</td>
+                                <td>刘管理员</td>
+                                <td>内容管理</td>
+                                <td><span class="action-badge view">查看</span></td>
+                                <td>查看书籍详情：《三国演义》</td>
+                                <td><span class="ip-address">192.168.1.112</span></td>
+                                <td><span class="status-badge success">成功</span></td>
+                                <td>2024-02-10 15:08:15</td>
+                                <td><a href="#">详情</a></td>
+                            </tr>
+                            <tr>
+                                <td>10247</td>
+                                <td>陈管理员</td>
+                                <td>数据分析</td>
+                                <td><span class="action-badge view">查看</span></td>
+                                <td>查看测评数据分析</td>
+                                <td><span class="ip-address">192.168.1.115</span></td>
+                                <td><span class="status-badge success">成功</span></td>
+                                <td>2024-02-10 15:05:42</td>
+                                <td><a href="#">详情</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- 分页 -->
+                <div class="pagination">
+                    <div class="pagination-info">共 2,458 条记录，当前第 1/246 页</div>
+                    <div class="pagination-controls">
+                        <button class="pagination-btn">上一页</button>
+                        <button class="pagination-btn active">1</button>
+                        <button class="pagination-btn">2</button>
+                        <button class="pagination-btn">3</button>
+                        <button class="pagination-btn">4</button>
+                        <button class="pagination-btn">5</button>
+                        <button class="pagination-btn">...</button>
+                        <button class="pagination-btn">246</button>
+                        <button class="pagination-btn">下一页</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    function toggleMenu(element) {
+        const menuGroup = element.parentElement;
+        menuGroup.classList.toggle('expanded');
+    }
+    </script>
+</body>
+</html>

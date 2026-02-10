@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>意见反馈 - 校校读吧管理平台</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+        }
+
+        /* 顶部导航 */
+        .header {
+            height: 60px;
+            background: #fff;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header .logo {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+        .header .user-info {
+            margin-left: auto;
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* 主体布局 */
+        .main {
+            display: flex;
+            min-height: calc(100vh - 60px);
+        }
+
+        /* 侧边栏 */
+        .sidebar {
+            width: 240px;
+            background: #fff;
+            border-right: 1px solid #e0e0e0;
+            overflow-y: auto;
+        }
+        .menu-group {
+            margin-bottom: 8px;
+        }
+        .menu-group-title {
+            padding: 12px 24px;
+            font-size: 14px;
+            color: #333;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .menu-group-icon {
+            font-size: 12px;
+            color: #999;
+            transition: transform 0.2s;
+        }
+        .menu-group.expanded .menu-group-icon {
+            transform: rotate(90deg);
+        }
+        .menu-group-items {
+            display: none;
+        }
+        .menu-group.expanded .menu-group-items {
+            display: block;
+        }
+        .menu-item {
+            padding: 10px 24px 10px 48px;
+            font-size: 14px;
+            color: #666;
+            cursor: pointer;
+        }
+        .menu-item:hover {
+            background: #f5f5f5;
+        }
+        .menu-item.active {
+            color: #333;
+            font-weight: 600;
+            background: #f5f5f5;
+            border-left: 3px solid #333;
+        }
+
+        /* 内容区 */
+        .content {
+            flex: 1;
+            padding: 24px;
+            overflow-y: auto;
+        }
+
+        /* 面包屑 */
+        .breadcrumb {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+        .breadcrumb a {
+            color: #666;
+            text-decoration: none;
+        }
+        .breadcrumb a:hover {
+            color: #333;
+        }
+        .breadcrumb span {
+            margin: 0 8px;
+        }
+
+        /* 页面标题 */
+        .page-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        /* 筛选区域 */
+        .filter-section {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 20px 24px;
+            margin-bottom: 20px;
+        }
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        .filter-item {
+            display: flex;
+            flex-direction: column;
+        }
+        .filter-label {
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        .filter-input,
+        .filter-select {
+            height: 40px;
+            padding: 0 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .filter-input:focus,
+        .filter-select:focus {
+            outline: none;
+            border-color: #999;
+        }
+        .filter-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        /* 按钮 */
+        .btn {
+            height: 40px;
+            padding: 0 24px;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            border: none;
+        }
+        .btn-primary {
+            background: #333;
+            color: #fff;
+            border: 1px solid #333;
+        }
+        .btn-primary:hover {
+            background: #555;
+        }
+        .btn-secondary {
+            background: #fff;
+            color: #333;
+            border: 1px solid #999;
+        }
+        .btn-secondary:hover {
+            background: #f5f5f5;
+        }
+
+        /* 统计卡片 */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        .stat-card {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 20px;
+        }
+        .stat-label {
+            font-size: 14px;
+            color: #999;
+            margin-bottom: 12px;
+        }
+        .stat-value {
+            font-size: 28px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        /* 表格 */
+        .table-card {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 24px;
+        }
+        .table-container {
+            overflow-x: auto;
+        }
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+        }
+        .table th,
+        .table td {
+            padding: 12px 16px;
+            text-align: left;
+            border: 1px solid #e0e0e0;
+            font-size: 14px;
+        }
+        .table th {
+            background: #f5f5f5;
+            font-weight: 600;
+            color: #333;
+        }
+        .table td {
+            color: #666;
+        }
+        .table a {
+            color: #333;
+            text-decoration: underline;
+            cursor: pointer;
+            margin: 0 4px;
+        }
+        .table a:hover {
+            color: #666;
+        }
+
+        /* 状态标签 */
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .status-badge.pending {
+            background: #f5f5f5;
+            color: #999;
+        }
+        .status-badge.processing {
+            background: #666;
+            color: #fff;
+        }
+        .status-badge.completed {
+            background: #333;
+            color: #fff;
+        }
+
+        /* 类型标签 */
+        .type-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            background: #f5f5f5;
+            color: #666;
+        }
+
+        /* 分页 */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin-top: 20px;
+        }
+        .pagination-btn {
+            height: 32px;
+            padding: 0 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            background: #fff;
+            color: #666;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        .pagination-btn:hover {
+            background: #f5f5f5;
+        }
+        .pagination-btn.active {
+            background: #333;
+            color: #fff;
+            border-color: #333;
+        }
+        .pagination-btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <div class="header">
+        <div class="logo">校校读吧管理平台</div>
+        <div class="user-info">管理员</div>
+    </div>
+
+    <div class="main">
+        <!-- 侧边栏 -->
+        <div class="sidebar">
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>用户管理</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">学校管理</div>
+                    <div class="menu-item">老师管理</div>
+                    <div class="menu-item">学生管理</div>
+                </div>
+            </div>
+
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>内容管理</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">阅读计划</div>
+                    <div class="menu-item">书籍资源库</div>
+                    <div class="menu-item">测评管理</div>
+                </div>
+            </div>
+
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>数据分析</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">阅读数据分析</div>
+                    <div class="menu-item">测评数据分析</div>
+                    <div class="menu-item">用户行为分析</div>
+                    <div class="menu-item">学校数据对比</div>
+                    <div class="menu-item">数据导出中心</div>
+                </div>
+                </div>
+                </div>
+                </div>
+                </div>
+            </div>
+            </div>
+
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>激励体系</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">积分管理</div>
+                    <div class="menu-item">勋章管理</div>
+                    </div>
+            </div>
+
+            <div class="menu-group expanded">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>用户反馈</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item active">意见反馈</div>
+                </div>
+                </div>
+            </div>
+
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>系统配置</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">系统参数</div>
+                    <div class="menu-item">操作日志</div>
+                    <div class="menu-item">操作日志</div>
+                    <div class="menu-item">数据字典</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 内容区 -->
+        <div class="content">
+            <!-- 面包屑 -->
+            <div class="breadcrumb">
+                <a href="#">首页</a>
+                <span>></span>
+                <a href="#">用户反馈</a>
+                <span>></span>
+                <span>意见反馈</span>
+            </div>
+
+            <!-- 页面标题 -->
+            <div class="page-title">意见反馈</div>
+
+            <!-- 筛选区域 -->
+            <div class="filter-section">
+                <div class="filter-grid">
+                    <div class="filter-item">
+                        <label class="filter-label">反馈类型</label>
+                        <select class="filter-select">
+                            <option value="">全部类型</option>
+                            <option value="feature">功能建议</option>
+                            <option value="bug">问题反馈</option>
+                            <option value="content">内容建议</option>
+                            <option value="other">其他</option>
+                        </select>
+                    </div>
+                    <div class="filter-item">
+                        <label class="filter-label">处理状态</label>
+                        <select class="filter-select">
+                            <option value="">全部状态</option>
+                            <option value="pending">待处理</option>
+                            <option value="processing">处理中</option>
+                            <option value="completed">已完成</option>
+                        </select>
+                    </div>
+                    <div class="filter-item">
+                        <label class="filter-label">开始日期</label>
+                        <input type="date" class="filter-input" value="2024-01-01">
+                    </div>
+                    <div class="filter-item">
+                        <label class="filter-label">结束日期</label>
+                        <input type="date" class="filter-input" value="2024-02-10">
+                    </div>
+                </div>
+                <div class="filter-actions">
+                    <button class="btn btn-primary">查询</button>
+                    <button class="btn btn-secondary">重置</button>
+                    <button class="btn btn-secondary">导出</button>
+                </div>
+            </div>
+
+            <!-- 统计卡片 -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">反馈总数</div>
+                    <div class="stat-value">856</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">待处理</div>
+                    <div class="stat-value">42</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">处理中</div>
+                    <div class="stat-value">28</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">已完成</div>
+                    <div class="stat-value">786</div>
+                </div>
+            </div>
+
+            <!-- 反馈列表 -->
+            <div class="table-card">
+                <div class="table-container">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>反馈编号</th>
+                                <th>反馈类型</th>
+                                <th>反馈内容</th>
+                                <th>反馈人</th>
+                                <th>联系方式</th>
+                                <th>提交时间</th>
+                                <th>状态</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>FB20240210001</td>
+                                <td><span class="type-badge">功能建议</span></td>
+                                <td>希望增加语音朗读功能，方便低年级学生使用</td>
+                                <td>张老师</td>
+                                <td>138****5678</td>
+                                <td>2024-02-10 14:30</td>
+                                <td><span class="status-badge pending">待处理</span></td>
+                                <td>
+                                    <a href="#">查看</a>
+                                    <a href="#">处理</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>FB20240210002</td>
+                                <td><span class="type-badge">问题反馈</span></td>
+                                <td>测评页面加载速度较慢，影响学生答题体验</td>
+                                <td>李老师</td>
+                                <td>139****1234</td>
+                                <td>2024-02-10 10:15</td>
+                                <td><span class="status-badge processing">处理中</span></td>
+                                <td>
+                                    <a href="#">查看</a>
+                                    <a href="#">跟进</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>FB20240209003</td>
+                                <td><span class="type-badge">内容建议</span></td>
+                                <td>建议增加更多科普类书籍，丰富阅读内容</td>
+                                <td>王老师</td>
+                                <td>137****9876</td>
+                                <td>2024-02-09 16:45</td>
+                                <td><span class="status-badge completed">已完成</span></td>
+                                <td>
+                                    <a href="#">查看</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>FB20240209004</td>
+                                <td><span class="type-badge">功能建议</span></td>
+                                <td>希望能够导出学生的阅读报告，便于家长了解</td>
+                                <td>赵老师</td>
+                                <td>136****5432</td>
+                                <td>2024-02-09 11:20</td>
+                                <td><span class="status-badge pending">待处理</span></td>
+                                <td>
+                                    <a href="#">查看</a>
+                                    <a href="#">处理</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>FB20240208005</td>
+                                <td><span class="type-badge">问题反馈</span></td>
+                                <td>部分书籍的章节顺序显示错误</td>
+                                <td>刘老师</td>
+                                <td>135****7890</td>
+                                <td>2024-02-08 15:30</td>
+                                <td><span class="status-badge completed">已完成</span></td>
+                                <td>
+                                    <a href="#">查看</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>FB20240208006</td>
+                                <td><span class="type-badge">其他</span></td>
+                                <td>感谢平台提供的优质内容，学生们很喜欢</td>
+                                <td>孙老师</td>
+                                <td>134****2468</td>
+                                <td>2024-02-08 09:15</td>
+                                <td><span class="status-badge completed">已完成</span></td>
+                                <td>
+                                    <a href="#">查看</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>FB20240207007</td>
+                                <td><span class="type-badge">功能建议</span></td>
+                                <td>建议增加班级阅读排行榜，激励学生阅读</td>
+                                <td>周老师</td>
+                                <td>133****1357</td>
+                                <td>2024-02-07 14:20</td>
+                                <td><span class="status-badge processing">处理中</span></td>
+                                <td>
+                                    <a href="#">查看</a>
+                                    <a href="#">跟进</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>FB20240207008</td>
+                                <td><span class="type-badge">内容建议</span></td>
+                                <td>希望增加古诗词相关的阅读内容</td>
+                                <td>吴老师</td>
+                                <td>132****9753</td>
+                                <td>2024-02-07 10:45</td>
+                                <td><span class="status-badge completed">已完成</span></td>
+                                <td>
+                                    <a href="#">查看</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>FB20240206009</td>
+                                <td><span class="type-badge">问题反馈</span></td>
+                                <td>移动端APP偶尔会出现闪退现象</td>
+                                <td>郑老师</td>
+                                <td>131****8642</td>
+                                <td>2024-02-06 16:30</td>
+                                <td><span class="status-badge completed">已完成</span></td>
+                                <td>
+                                    <a href="#">查看</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>FB20240206010</td>
+                                <td><span class="type-badge">功能建议</span></td>
+                                <td>建议增加阅读打卡功能，培养学生阅读习惯</td>
+                                <td>钱老师</td>
+                                <td>130****7531</td>
+                                <td>2024-02-06 11:15</td>
+                                <td><span class="status-badge pending">待处理</span></td>
+                                <td>
+                                    <a href="#">查看</a>
+                                    <a href="#">处理</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- 分页 -->
+                <div class="pagination">
+                    <button class="pagination-btn" disabled>上一页</button>
+                    <button class="pagination-btn active">1</button>
+                    <button class="pagination-btn">2</button>
+                    <button class="pagination-btn">3</button>
+                    <button class="pagination-btn">4</button>
+                    <button class="pagination-btn">5</button>
+                    <button class="pagination-btn">下一页</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    function toggleMenu(element) {
+        const menuGroup = element.parentElement;
+        menuGroup.classList.toggle('expanded');
+    }
+    </script>
+</body>
+</html>

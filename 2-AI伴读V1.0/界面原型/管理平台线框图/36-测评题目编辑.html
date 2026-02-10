@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>编辑测评题目 - 校校读吧管理平台</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+        }
+
+        /* 顶部导航 */
+        .header {
+            height: 60px;
+            background: #fff;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header .logo {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+        .header .user-info {
+            margin-left: auto;
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* 主体布局 */
+        .main {
+            display: flex;
+            min-height: calc(100vh - 60px);
+        }
+
+        /* 侧边栏 */
+        .sidebar {
+            width: 240px;
+            background: #fff;
+            border-right: 1px solid #e0e0e0;
+            overflow-y: auto;
+        }
+        .menu-group {
+            margin-bottom: 8px;
+        }
+        .menu-group-title {
+            padding: 12px 24px;
+            font-size: 14px;
+            color: #333;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .menu-group-icon {
+            font-size: 12px;
+            color: #999;
+            transition: transform 0.2s;
+        }
+        .menu-group.expanded .menu-group-icon {
+            transform: rotate(90deg);
+        }
+        .menu-group-items {
+            display: none;
+        }
+        .menu-group.expanded .menu-group-items {
+            display: block;
+        }
+        .menu-item {
+            padding: 10px 24px 10px 48px;
+            font-size: 14px;
+            color: #666;
+            cursor: pointer;
+        }
+        .menu-item:hover {
+            background: #f5f5f5;
+        }
+        .menu-item.active {
+            color: #333;
+            font-weight: 600;
+            background: #f5f5f5;
+            border-left: 3px solid #333;
+        }
+
+        /* 内容区 */
+        .content {
+            flex: 1;
+            padding: 24px;
+            overflow-y: auto;
+        }
+
+        /* 面包屑 */
+        .breadcrumb {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+        .breadcrumb a {
+            color: #666;
+            text-decoration: none;
+        }
+        .breadcrumb a:hover {
+            color: #333;
+        }
+        .breadcrumb span {
+            margin: 0 8px;
+        }
+
+        /* 页面标题 */
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .page-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        /* 按钮 */
+        .btn {
+            height: 36px;
+            padding: 0 20px;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            border: none;
+        }
+        .btn-primary {
+            background: #333;
+            color: #fff;
+            border: 1px solid #333;
+        }
+        .btn-primary:hover {
+            background: #555;
+        }
+        .btn-secondary {
+            background: #fff;
+            color: #333;
+            border: 1px solid #999;
+        }
+        .btn-secondary:hover {
+            background: #f5f5f5;
+        }
+        .btn-danger {
+            background: #fff;
+            color: #999;
+            border: 1px solid #999;
+        }
+        .btn-danger:hover {
+            background: #f5f5f5;
+        }
+
+        /* 卡片 */
+        .card {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+
+        /* 书籍信息 */
+        .book-info {
+            display: flex;
+            gap: 16px;
+            padding: 16px;
+            background: #f5f5f5;
+            border-radius: 4px;
+            margin-bottom: 24px;
+        }
+        .book-cover {
+            width: 80px;
+            height: 120px;
+            background: #e0e0e0;
+            border: 1px solid #999;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: #999;
+        }
+        .book-details {
+            flex: 1;
+        }
+        .book-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        .book-meta {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* 题目导航 */
+        .question-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px;
+            background: #f5f5f5;
+            border-radius: 4px;
+            margin-bottom: 24px;
+        }
+        .question-nav-info {
+            font-size: 14px;
+            color: #666;
+        }
+        .question-nav-info strong {
+            color: #333;
+            font-size: 16px;
+        }
+        .question-nav-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        /* 表单 */
+        .form-item {
+            margin-bottom: 24px;
+        }
+        .form-label {
+            display: block;
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        .form-label .required {
+            color: #999;
+            margin-left: 4px;
+        }
+        .form-select,
+        .form-input,
+        .form-textarea {
+            width: 100%;
+            padding: 0 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+        .form-select {
+            height: 40px;
+            background: #fff;
+            cursor: pointer;
+        }
+        .form-input {
+            height: 40px;
+        }
+        .form-textarea {
+            min-height: 120px;
+            padding: 12px;
+            resize: vertical;
+        }
+        .form-select:focus,
+        .form-input:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: #999;
+        }
+        .form-hint {
+            font-size: 12px;
+            color: #999;
+            margin-top: 6px;
+        }
+        .char-count {
+            font-size: 12px;
+            color: #999;
+            text-align: right;
+            margin-top: 6px;
+        }
+
+        /* 选项组 */
+        .options-group {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+        .option-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .option-label {
+            font-size: 14px;
+            color: #333;
+            font-weight: 600;
+            min-width: 60px;
+        }
+        .option-input {
+            flex: 1;
+            height: 40px;
+            padding: 0 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        /* 答案选择 */
+        .answer-group {
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+        .answer-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+        .answer-option input[type="radio"],
+        .answer-option input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+        .answer-option label {
+            font-size: 14px;
+            color: #333;
+            cursor: pointer;
+        }
+
+        /* 操作按钮组 */
+        .action-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            margin-top: 32px;
+        }
+        .action-buttons-left {
+            display: flex;
+            gap: 12px;
+        }
+        .action-buttons-right {
+            display: flex;
+            gap: 12px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <div class="header">
+        <div class="logo">校校读吧管理平台</div>
+        <div class="user-info">管理员</div>
+    </div>
+
+    <div class="main">
+        <!-- 侧边栏 -->
+        <div class="sidebar">
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>用户管理</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">学校管理</div>
+                    <div class="menu-item">老师管理</div>
+                    <div class="menu-item">学生管理</div>
+                </div>
+            </div>
+
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>内容管理</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">阅读计划</div>
+                    <div class="menu-item">书籍资源库</div>
+                </div>
+            </div>
+
+            <div class="menu-group expanded">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>测评管理</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item active">测评列表</div>
+                </div>
+            </div>
+
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>数据分析</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">阅读数据分析</div>
+                    <div class="menu-item">测评数据分析</div>
+                    <div class="menu-item">用户行为分析</div>
+                    <div class="menu-item">学校数据对比</div>
+                    <div class="menu-item">数据导出中心</div>
+                </div>
+                </div>
+                </div>
+                </div>
+                </div>
+            </div>
+            </div>
+
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>激励体系</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">积分规则</div>
+                    <div class="menu-item">等级体系</div>
+                    <div class="menu-item">徽章配置</div>
+                    <div class="menu-item">证书配置</div>
+                </div>
+            </div>
+
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>用户反馈</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">意见反馈</div>
+                </div>
+                </div>
+                </div>
+                </div>
+            </div>
+
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>系统配置</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">系统参数</div>
+                    <div class="menu-item">字典管理</div>
+                    <div class="menu-item">操作日志</div>
+                    <div class="menu-item">版本管理</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 内容区 -->
+        <div class="content">
+            <!-- 面包屑 -->
+            <div class="breadcrumb">
+                <a href="#">首页</a>
+                <span>></span>
+                <a href="#">测评管理</a>
+                <span>></span>
+                <a href="#">测评列表</a>
+                <span>></span>
+                <span>编辑题目</span>
+            </div>
+
+            <!-- 页面标题 -->
+            <div class="page-header">
+                <div class="page-title">编辑测评题目</div>
+            </div>
+
+            <!-- 书籍信息 -->
+            <div class="book-info">
+                <div class="book-cover">[封面]</div>
+                <div class="book-details">
+                    <div class="book-name">《西游记》</div>
+                    <div class="book-meta">
+                        <div>作者：吴承恩</div>
+                        <div>适用年级：三年级</div>
+                        <div>当前题目数：20题</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 题目导航 -->
+            <div class="question-nav">
+                <div class="question-nav-info">
+                    正在编辑：<strong>第 5 题</strong> / 共 20 题
+                </div>
+                <div class="question-nav-buttons">
+                    <button class="btn btn-secondary">上一题</button>
+                    <button class="btn btn-secondary">下一题</button>
+                </div>
+            </div>
+
+            <!-- 编辑表单 -->
+            <div class="card">
+                <!-- 题目类型 -->
+                <div class="form-item">
+                    <label class="form-label">题目类型<span class="required">*</span></label>
+                    <select class="form-select" id="questionType" onchange="handleTypeChange()">
+                        <option value="single">单选题</option>
+                        <option value="multiple">多选题</option>
+                        <option value="judge">判断题</option>
+                        <option value="blank">填空题</option>
+                    </select>
+                </div>
+
+                <!-- 题目内容 -->
+                <div class="form-item">
+                    <label class="form-label">题目内容<span class="required">*</span></label>
+                    <textarea class="form-textarea" id="questionContent" placeholder="请输入题目内容" oninput="updateCharCount('questionContent', 'contentCount', 500)">孙悟空在花果山自封为什么？</textarea>
+                    <div class="char-count"><span id="contentCount">15</span>/500</div>
+                </div>
+
+                <!-- 选项（单选/多选时显示） -->
+                <div class="form-item" id="optionsGroup">
+                    <label class="form-label">题目选项<span class="required">*</span></label>
+                    <div class="options-group">
+                        <div class="option-item">
+                            <span class="option-label">选项 A</span>
+                            <input type="text" class="option-input" placeholder="请输入选项A内容" value="齐天大圣">
+                        </div>
+                        <div class="option-item">
+                            <span class="option-label">选项 B</span>
+                            <input type="text" class="option-input" placeholder="请输入选项B内容" value="美猴王">
+                        </div>
+                        <div class="option-item">
+                            <span class="option-label">选项 C</span>
+                            <input type="text" class="option-input" placeholder="请输入选项C内容" value="斗战胜佛">
+                        </div>
+                        <div class="option-item">
+                            <span class="option-label">选项 D</span>
+                            <input type="text" class="option-input" placeholder="请输入选项D内容" value="弼马温">
+                        </div>
+                    </div>
+                    <div class="form-hint">每个选项不超过200个字符</div>
+                </div>
+
+                <!-- 正确答案（单选） -->
+                <div class="form-item" id="singleAnswerGroup">
+                    <label class="form-label">正确答案<span class="required">*</span></label>
+                    <div class="answer-group">
+                        <div class="answer-option">
+                            <input type="radio" name="singleAnswer" id="answerA" value="A" checked>
+                            <label for="answerA">A</label>
+                        </div>
+                        <div class="answer-option">
+                            <input type="radio" name="singleAnswer" id="answerB" value="B">
+                            <label for="answerB">B</label>
+                        </div>
+                        <div class="answer-option">
+                            <input type="radio" name="singleAnswer" id="answerC" value="C">
+                            <label for="answerC">C</label>
+                        </div>
+                        <div class="answer-option">
+                            <input type="radio" name="singleAnswer" id="answerD" value="D">
+                            <label for="answerD">D</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 正确答案（多选） -->
+                <div class="form-item" id="multipleAnswerGroup" style="display: none;">
+                    <label class="form-label">正确答案<span class="required">*</span></label>
+                    <div class="answer-group">
+                        <div class="answer-option">
+                            <input type="checkbox" name="multipleAnswer" id="multiAnswerA" value="A">
+                            <label for="multiAnswerA">A</label>
+                        </div>
+                        <div class="answer-option">
+                            <input type="checkbox" name="multipleAnswer" id="multiAnswerB" value="B">
+                            <label for="multiAnswerB">B</label>
+                        </div>
+                        <div class="answer-option">
+                            <input type="checkbox" name="multipleAnswer" id="multiAnswerC" value="C">
+                            <label for="multiAnswerC">C</label>
+                        </div>
+                        <div class="answer-option">
+                            <input type="checkbox" name="multipleAnswer" id="multiAnswerD" value="D">
+                            <label for="multiAnswerD">D</label>
+                        </div>
+                    </div>
+                    <div class="form-hint">可选择多个答案</div>
+                </div>
+
+                <!-- 正确答案（判断） -->
+                <div class="form-item" id="judgeAnswerGroup" style="display: none;">
+                    <label class="form-label">正确答案<span class="required">*</span></label>
+                    <div class="answer-group">
+                        <div class="answer-option">
+                            <input type="radio" name="judgeAnswer" id="answerTrue" value="true">
+                            <label for="answerTrue">对</label>
+                        </div>
+                        <div class="answer-option">
+                            <input type="radio" name="judgeAnswer" id="answerFalse" value="false">
+                            <label for="answerFalse">错</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 正确答案（填空） -->
+                <div class="form-item" id="blankAnswerGroup" style="display: none;">
+                    <label class="form-label">正确答案<span class="required">*</span></label>
+                    <input type="text" class="form-input" placeholder="请输入正确答案">
+                    <div class="form-hint">填空题答案，多个答案用"|"分隔，如：答案1|答案2</div>
+                </div>
+
+                <!-- 题目解析 -->
+                <div class="form-item">
+                    <label class="form-label">题目解析</label>
+                    <textarea class="form-textarea" id="questionExplanation" placeholder="请输入题目解析（选填）" oninput="updateCharCount('questionExplanation', 'explanationCount', 500)">孙悟空在花果山自封为"齐天大圣"，这是他反抗天庭权威的表现。</textarea>
+                    <div class="char-count"><span id="explanationCount">32</span>/500</div>
+                </div>
+
+                <!-- 操作按钮 -->
+                <div class="action-buttons">
+                    <div class="action-buttons-left">
+                        <button class="btn btn-danger" onclick="deleteQuestion()">删除此题</button>
+                    </div>
+                    <div class="action-buttons-right">
+                        <button class="btn btn-secondary">取消</button>
+                        <button class="btn btn-primary">保存</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    function toggleMenu(element) {
+        const menuGroup = element.parentElement;
+        menuGroup.classList.toggle('expanded');
+    }
+
+    function handleTypeChange() {
+        const type = document.getElementById('questionType').value;
+
+        // 隐藏所有答案组
+        document.getElementById('optionsGroup').style.display = 'none';
+        document.getElementById('singleAnswerGroup').style.display = 'none';
+        document.getElementById('multipleAnswerGroup').style.display = 'none';
+        document.getElementById('judgeAnswerGroup').style.display = 'none';
+        document.getElementById('blankAnswerGroup').style.display = 'none';
+
+        // 根据题目类型显示对应的答案组
+        if (type === 'single') {
+            document.getElementById('optionsGroup').style.display = 'block';
+            document.getElementById('singleAnswerGroup').style.display = 'block';
+        } else if (type === 'multiple') {
+            document.getElementById('optionsGroup').style.display = 'block';
+            document.getElementById('multipleAnswerGroup').style.display = 'block';
+        } else if (type === 'judge') {
+            document.getElementById('judgeAnswerGroup').style.display = 'block';
+        } else if (type === 'blank') {
+            document.getElementById('blankAnswerGroup').style.display = 'block';
+        }
+    }
+
+    function updateCharCount(textareaId, countId, maxLength) {
+        const textarea = document.getElementById(textareaId);
+        const count = document.getElementById(countId);
+        const currentLength = textarea.value.length;
+        count.textContent = currentLength;
+
+        if (currentLength > maxLength) {
+            textarea.value = textarea.value.substring(0, maxLength);
+            count.textContent = maxLength;
+        }
+    }
+
+    function deleteQuestion() {
+        if (confirm('确定要删除这道题目吗？删除后无法恢复。')) {
+            alert('题目已删除');
+            // 实际应用中这里会调用删除接口
+        }
+    }
+
+    // 页面加载时初始化字符计数
+    window.onload = function() {
+        updateCharCount('questionContent', 'contentCount', 500);
+        updateCharCount('questionExplanation', 'explanationCount', 500);
+    };
+    </script>
+</body>
+</html>

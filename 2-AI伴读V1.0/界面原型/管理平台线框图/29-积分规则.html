@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>积分规则 - 校校读吧管理平台</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+        }
+
+        /* 顶部导航 */
+        .header {
+            height: 60px;
+            background: #fff;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header .logo {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+        .header .user-info {
+            margin-left: auto;
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* 主体布局 */
+        .main {
+            display: flex;
+            min-height: calc(100vh - 60px);
+        }
+
+        /* 侧边栏 */
+        .sidebar {
+            width: 240px;
+            background: #fff;
+            border-right: 1px solid #e0e0e0;
+            overflow-y: auto;
+        }
+        .menu-group {
+            margin-bottom: 8px;
+        }
+        .menu-group-title {
+            padding: 12px 24px;
+            font-size: 14px;
+            color: #333;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .menu-group-icon {
+            font-size: 12px;
+            color: #999;
+            transition: transform 0.2s;
+        }
+        .menu-group.expanded .menu-group-icon {
+            transform: rotate(90deg);
+        }
+        .menu-group-items {
+            display: none;
+        }
+        .menu-group.expanded .menu-group-items {
+            display: block;
+        }
+        .menu-item {
+            padding: 10px 24px 10px 48px;
+            font-size: 14px;
+            color: #666;
+            cursor: pointer;
+        }
+        .menu-item:hover {
+            background: #f5f5f5;
+        }
+        .menu-item.active {
+            color: #333;
+            font-weight: 600;
+            background: #f5f5f5;
+            border-left: 3px solid #333;
+        }
+
+        /* 内容区 */
+        .content {
+            flex: 1;
+            padding: 24px;
+            overflow-y: auto;
+        }
+
+        /* 面包屑 */
+        .breadcrumb {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+        .breadcrumb a {
+            color: #666;
+            text-decoration: none;
+        }
+        .breadcrumb a:hover {
+            color: #333;
+        }
+        .breadcrumb span {
+            margin: 0 8px;
+        }
+
+        /* 页面标题 */
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .page-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        /* 按钮 */
+        .btn {
+            height: 36px;
+            padding: 0 20px;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            border: none;
+        }
+        .btn-primary {
+            background: #333;
+            color: #fff;
+            border: 1px solid #333;
+        }
+        .btn-primary:hover {
+            background: #555;
+        }
+        .btn-secondary {
+            background: #fff;
+            color: #333;
+            border: 1px solid #999;
+        }
+        .btn-secondary:hover {
+            background: #f5f5f5;
+        }
+
+        /* 规则卡片 */
+        .rule-card {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+        .rule-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .rule-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        /* 表格 */
+        .table-container {
+            overflow-x: auto;
+        }
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+        }
+        .table th,
+        .table td {
+            padding: 12px 16px;
+            text-align: left;
+            border: 1px solid #e0e0e0;
+            font-size: 14px;
+        }
+        .table th {
+            background: #f5f5f5;
+            font-weight: 600;
+            color: #333;
+        }
+        .table td {
+            color: #666;
+        }
+        .table a {
+            color: #333;
+            text-decoration: underline;
+            cursor: pointer;
+            margin: 0 4px;
+        }
+        .table a:hover {
+            color: #666;
+        }
+
+        /* 状态标签 */
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .status-badge.enabled {
+            background: #333;
+            color: #fff;
+        }
+        .status-badge.disabled {
+            background: #f5f5f5;
+            color: #999;
+        }
+
+        /* 积分值 */
+        .points-value {
+            font-weight: 600;
+            color: #333;
+        }
+        .points-value.positive {
+            color: #333;
+        }
+        .points-value.negative {
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <div class="header">
+        <div class="logo">校校读吧管理平台</div>
+        <div class="user-info">管理员</div>
+    </div>
+
+    <div class="main">
+        <!-- 侧边栏 -->
+        <div class="sidebar">
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>用户管理</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">学校管理</div>
+                    <div class="menu-item">老师管理</div>
+                    <div class="menu-item">学生管理</div>
+                </div>
+            </div>
+
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>内容管理</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">阅读计划</div>
+                    <div class="menu-item">书籍资源库</div>
+                </div>
+            </div>
+
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>数据分析</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">阅读数据分析</div>
+                    <div class="menu-item">测评数据分析</div>
+                    <div class="menu-item">用户行为分析</div>
+                    <div class="menu-item">学校数据对比</div>
+                    <div class="menu-item">数据导出中心</div>
+                </div>
+                </div>
+                </div>
+                </div>
+                </div>
+            </div>
+            </div>
+
+            <div class="menu-group expanded">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>激励体系</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item active">积分规则</div>
+                    <div class="menu-item">等级体系</div>
+                    <div class="menu-item">徽章配置</div>
+                    <div class="menu-item">证书配置</div>
+                </div>
+            </div>
+
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>用户反馈</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">意见反馈</div>
+                </div>
+                </div>
+                </div>
+                </div>
+            </div>
+
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>系统配置</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">系统参数</div>
+                    <div class="menu-item">字典管理</div>
+                    <div class="menu-item">操作日志</div>
+                    <div class="menu-item">版本管理</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 内容区 -->
+        <div class="content">
+            <!-- 面包屑 -->
+            <div class="breadcrumb">
+                <a href="#">首页</a>
+                <span>></span>
+                <a href="#">激励体系</a>
+                <span>></span>
+                <span>积分规则</span>
+            </div>
+
+            <!-- 页面标题 -->
+            <div class="page-header">
+                <div class="page-title">积分规则配置</div>
+            </div>
+
+            <!-- 积分获取规则 -->
+            <div class="rule-card">
+                <div class="rule-header">
+                    <div class="rule-title">积分获取规则</div>
+                    <button class="btn btn-primary">+ 新增规则</button>
+                </div>
+                <div class="table-container">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th style="width: 80px;">排序</th>
+                                <th>规则名称</th>
+                                <th>触发条件</th>
+                                <th style="width: 100px;">积分值</th>
+                                <th style="width: 120px;">每日上限</th>
+                                <th style="width: 100px;">状态</th>
+                                <th style="width: 160px;">创建时间</th>
+                                <th style="width: 140px;">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>每日签到</td>
+                                <td>每日首次登录</td>
+                                <td><span class="points-value positive">+5</span></td>
+                                <td>5积分</td>
+                                <td><span class="status-badge enabled">启用</span></td>
+                                <td>2024-01-15 10:00:00</td>
+                                <td>
+                                    <a href="#">编辑</a>
+                                    <a href="#">禁用</a>
+                                    <a href="#">删除</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>完成阅读任务</td>
+                                <td>完成一次阅读任务</td>
+                                <td><span class="points-value positive">+10</span></td>
+                                <td>50积分</td>
+                                <td><span class="status-badge enabled">启用</span></td>
+                                <td>2024-01-15 10:00:00</td>
+                                <td>
+                                    <a href="#">编辑</a>
+                                    <a href="#">禁用</a>
+                                    <a href="#">删除</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>完成测评</td>
+                                <td>完成一次测评</td>
+                                <td><span class="points-value positive">+20</span></td>
+                                <td>100积分</td>
+                                <td><span class="status-badge enabled">启用</span></td>
+                                <td>2024-01-15 10:00:00</td>
+                                <td>
+                                    <a href="#">编辑</a>
+                                    <a href="#">禁用</a>
+                                    <a href="#">删除</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td>测评优秀</td>
+                                <td>测评分数≥90分</td>
+                                <td><span class="points-value positive">+30</span></td>
+                                <td>无限制</td>
+                                <td><span class="status-badge enabled">启用</span></td>
+                                <td>2024-01-15 10:00:00</td>
+                                <td>
+                                    <a href="#">编辑</a>
+                                    <a href="#">禁用</a>
+                                    <a href="#">删除</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>5</td>
+                                <td>连续签到7天</td>
+                                <td>连续7天签到</td>
+                                <td><span class="points-value positive">+50</span></td>
+                                <td>无限制</td>
+                                <td><span class="status-badge enabled">启用</span></td>
+                                <td>2024-01-15 10:00:00</td>
+                                <td>
+                                    <a href="#">编辑</a>
+                                    <a href="#">禁用</a>
+                                    <a href="#">删除</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>6</td>
+                                <td>分享书籍</td>
+                                <td>分享书籍给好友</td>
+                                <td><span class="points-value positive">+15</span></td>
+                                <td>30积分</td>
+                                <td><span class="status-badge disabled">禁用</span></td>
+                                <td>2024-01-20 10:00:00</td>
+                                <td>
+                                    <a href="#">编辑</a>
+                                    <a href="#">启用</a>
+                                    <a href="#">删除</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 积分消耗规则 -->
+            <div class="rule-card">
+                <div class="rule-header">
+                    <div class="rule-title">积分消耗规则</div>
+                    <button class="btn btn-primary">+ 新增规则</button>
+                </div>
+                <div class="table-container">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th style="width: 80px;">排序</th>
+                                <th>规则名称</th>
+                                <th>消耗说明</th>
+                                <th style="width: 100px;">积分值</th>
+                                <th style="width: 100px;">状态</th>
+                                <th style="width: 160px;">创建时间</th>
+                                <th style="width: 140px;">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>兑换实体书籍</td>
+                                <td>使用积分兑换实体书籍</td>
+                                <td><span class="points-value negative">-500</span></td>
+                                <td><span class="status-badge enabled">启用</span></td>
+                                <td>2024-01-15 10:00:00</td>
+                                <td>
+                                    <a href="#">编辑</a>
+                                    <a href="#">禁用</a>
+                                    <a href="#">删除</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>兑换文具礼品</td>
+                                <td>使用积分兑换文具礼品</td>
+                                <td><span class="points-value negative">-200</span></td>
+                                <td><span class="status-badge enabled">启用</span></td>
+                                <td>2024-01-15 10:00:00</td>
+                                <td>
+                                    <a href="#">编辑</a>
+                                    <a href="#">禁用</a>
+                                    <a href="#">删除</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>解锁特殊书籍</td>
+                                <td>使用积分解锁特殊书籍阅读权限</td>
+                                <td><span class="points-value negative">-100</span></td>
+                                <td><span class="status-badge enabled">启用</span></td>
+                                <td>2024-01-15 10:00:00</td>
+                                <td>
+                                    <a href="#">编辑</a>
+                                    <a href="#">禁用</a>
+                                    <a href="#">删除</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td>购买虚拟装扮</td>
+                                <td>使用积分购买头像框、称号等</td>
+                                <td><span class="points-value negative">-50</span></td>
+                                <td><span class="status-badge disabled">禁用</span></td>
+                                <td>2024-01-20 10:00:00</td>
+                                <td>
+                                    <a href="#">编辑</a>
+                                    <a href="#">启用</a>
+                                    <a href="#">删除</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    function toggleMenu(element) {
+        const menuGroup = element.parentElement;
+        menuGroup.classList.toggle('expanded');
+    }
+    </script>
+</body>
+</html>

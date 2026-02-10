@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>测评题目上传 - 校校读吧管理平台</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+        }
+
+        /* 顶部导航 */
+        .header {
+            height: 60px;
+            background: #fff;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header .logo {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+        .header .user-info {
+            margin-left: auto;
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* 主体布局 */
+        .main {
+            display: flex;
+            min-height: calc(100vh - 60px);
+        }
+
+        /* 侧边栏 */
+        .sidebar {
+            width: 240px;
+            background: #fff;
+            border-right: 1px solid #e0e0e0;
+            overflow-y: auto;
+        }
+        .menu-group {
+            margin-bottom: 8px;
+        }
+        .menu-group-title {
+            padding: 12px 24px;
+            font-size: 14px;
+            color: #333;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .menu-group-icon {
+            font-size: 12px;
+            color: #999;
+            transition: transform 0.2s;
+        }
+        .menu-group.expanded .menu-group-icon {
+            transform: rotate(90deg);
+        }
+        .menu-group-items {
+            display: none;
+        }
+        .menu-group.expanded .menu-group-items {
+            display: block;
+        }
+        .menu-item {
+            padding: 10px 24px 10px 48px;
+            font-size: 14px;
+            color: #666;
+            cursor: pointer;
+        }
+        .menu-item:hover {
+            background: #f5f5f5;
+        }
+        .menu-item.active {
+            color: #333;
+            font-weight: 600;
+            background: #f5f5f5;
+            border-left: 3px solid #333;
+        }
+
+        /* 内容区 */
+        .content {
+            flex: 1;
+            padding: 24px;
+            overflow-y: auto;
+        }
+
+        /* 面包屑 */
+        .breadcrumb {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+        .breadcrumb a {
+            color: #666;
+            text-decoration: none;
+        }
+        .breadcrumb a:hover {
+            color: #333;
+        }
+        .breadcrumb span {
+            margin: 0 8px;
+        }
+
+        /* 页面标题 */
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .page-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        /* 按钮 */
+        .btn {
+            height: 36px;
+            padding: 0 20px;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            border: none;
+        }
+        .btn-primary {
+            background: #333;
+            color: #fff;
+            border: 1px solid #333;
+        }
+        .btn-primary:hover {
+            background: #555;
+        }
+        .btn-secondary {
+            background: #fff;
+            color: #333;
+            border: 1px solid #999;
+        }
+        .btn-secondary:hover {
+            background: #f5f5f5;
+        }
+
+        /* 卡片 */
+        .card {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        /* 书籍信息 */
+        .book-info {
+            display: flex;
+            gap: 16px;
+            padding: 16px;
+            background: #f5f5f5;
+            border-radius: 4px;
+            margin-bottom: 24px;
+        }
+        .book-cover {
+            width: 80px;
+            height: 120px;
+            background: #e0e0e0;
+            border: 1px solid #999;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: #999;
+        }
+        .book-details {
+            flex: 1;
+        }
+        .book-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        .book-meta {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* 上传步骤 */
+        .upload-steps {
+            display: flex;
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+        .upload-step {
+            flex: 1;
+            text-align: center;
+            padding: 16px;
+            background: #f5f5f5;
+            border-radius: 4px;
+            position: relative;
+        }
+        .upload-step.active {
+            background: #333;
+            color: #fff;
+        }
+        .upload-step::after {
+            content: '→';
+            position: absolute;
+            right: -20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+        }
+        .upload-step:last-child::after {
+            display: none;
+        }
+        .step-number {
+            font-size: 12px;
+            margin-bottom: 4px;
+        }
+        .step-title {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        /* 上传区域 */
+        .upload-area {
+            border: 2px dashed #e0e0e0;
+            border-radius: 4px;
+            padding: 48px;
+            text-align: center;
+            background: #fafafa;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .upload-area:hover {
+            border-color: #999;
+            background: #f5f5f5;
+        }
+        .upload-icon {
+            font-size: 48px;
+            color: #999;
+            margin-bottom: 16px;
+        }
+        .upload-text {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+        .upload-hint {
+            font-size: 12px;
+            color: #999;
+        }
+
+        /* 模板下载 */
+        .template-download {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+            background: #f5f5f5;
+            border-radius: 4px;
+            margin-bottom: 24px;
+        }
+        .template-icon {
+            font-size: 24px;
+            color: #666;
+        }
+        .template-info {
+            flex: 1;
+        }
+        .template-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
+        .template-desc {
+            font-size: 12px;
+            color: #666;
+        }
+
+        /* 文件列表 */
+        .file-list {
+            margin-top: 24px;
+        }
+        .file-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: #f5f5f5;
+            border-radius: 4px;
+            margin-bottom: 8px;
+        }
+        .file-icon {
+            font-size: 24px;
+            color: #666;
+        }
+        .file-info {
+            flex: 1;
+        }
+        .file-name {
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 4px;
+        }
+        .file-size {
+            font-size: 12px;
+            color: #999;
+        }
+        .file-status {
+            font-size: 12px;
+            color: #666;
+        }
+        .file-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        /* 格式说明 */
+        .format-guide {
+            padding: 16px;
+            background: #f5f5f5;
+            border-radius: 4px;
+            font-size: 14px;
+            color: #666;
+            line-height: 1.8;
+        }
+        .format-guide strong {
+            color: #333;
+        }
+
+        /* 操作按钮组 */
+        .action-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 24px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <div class="header">
+        <div class="logo">校校读吧管理平台</div>
+        <div class="user-info">管理员</div>
+    </div>
+
+    <div class="main">
+        <!-- 侧边栏 -->
+        <div class="sidebar">
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>用户管理</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">学校管理</div>
+                    <div class="menu-item">老师管理</div>
+                    <div class="menu-item">学生管理</div>
+                </div>
+            </div>
+
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>内容管理</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">阅读计划</div>
+                    <div class="menu-item">书籍资源库</div>
+                </div>
+            </div>
+
+            <div class="menu-group expanded">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>测评管理</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item active">测评列表</div>
+                </div>
+            </div>
+
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>数据分析</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">阅读数据分析</div>
+                    <div class="menu-item">测评数据分析</div>
+                    <div class="menu-item">用户行为分析</div>
+                    <div class="menu-item">学校数据对比</div>
+                    <div class="menu-item">数据导出中心</div>
+                </div>
+                </div>
+                </div>
+                </div>
+                </div>
+            </div>
+            </div>
+
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>激励体系</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">积分规则</div>
+                    <div class="menu-item">等级体系</div>
+                    <div class="menu-item">徽章配置</div>
+                    <div class="menu-item">证书配置</div>
+                </div>
+            </div>
+
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>用户反馈</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">意见反馈</div>
+                </div>
+                </div>
+                </div>
+                </div>
+            </div>
+
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>系统配置</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">系统参数</div>
+                    <div class="menu-item">字典管理</div>
+                    <div class="menu-item">操作日志</div>
+                    <div class="menu-item">版本管理</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 内容区 -->
+        <div class="content">
+            <!-- 面包屑 -->
+            <div class="breadcrumb">
+                <a href="#">首页</a>
+                <span>></span>
+                <a href="#">测评管理</a>
+                <span>></span>
+                <a href="#">测评列表</a>
+                <span>></span>
+                <span>上传题目</span>
+            </div>
+
+            <!-- 页面标题 -->
+            <div class="page-header">
+                <div class="page-title">批量上传测评题目</div>
+            </div>
+
+            <!-- 书籍信息 -->
+            <div class="book-info">
+                <div class="book-cover">[封面]</div>
+                <div class="book-details">
+                    <div class="book-name">《西游记》</div>
+                    <div class="book-meta">
+                        <div>作者：吴承恩</div>
+                        <div>适用年级：三年级</div>
+                        <div>当前题目数：20题</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 上传步骤 -->
+            <div class="upload-steps">
+                <div class="upload-step active">
+                    <div class="step-number">步骤 1</div>
+                    <div class="step-title">下载模板</div>
+                </div>
+                <div class="upload-step">
+                    <div class="step-number">步骤 2</div>
+                    <div class="step-title">填写题目</div>
+                </div>
+                <div class="upload-step">
+                    <div class="step-number">步骤 3</div>
+                    <div class="step-title">上传文件</div>
+                </div>
+                <div class="upload-step">
+                    <div class="step-number">步骤 4</div>
+                    <div class="step-title">导入完成</div>
+                </div>
+            </div>
+
+            <!-- 模板下载 -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">第一步：下载Excel模板</div>
+                </div>
+                <div class="template-download">
+                    <div class="template-icon">[📄]</div>
+                    <div class="template-info">
+                        <div class="template-title">测评题目导入模板.xlsx</div>
+                        <div class="template-desc">包含题目类型、题目内容、选项、答案、解析等字段</div>
+                    </div>
+                    <button class="btn btn-primary">下载模板</button>
+                </div>
+            </div>
+
+            <!-- 格式说明 -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">第二步：按模板格式填写题目</div>
+                </div>
+                <div class="format-guide">
+                    <p style="margin-bottom: 12px;"><strong>Excel格式要求：</strong></p>
+                    <p style="margin-bottom: 8px;">• <strong>题目类型</strong>（必填）：单选、多选、判断、填空</p>
+                    <p style="margin-bottom: 8px;">• <strong>题目内容</strong>（必填）：不超过500个字符</p>
+                    <p style="margin-bottom: 8px;">• <strong>选项A/B/C/D</strong>（选择题必填）：每个选项不超过200个字符</p>
+                    <p style="margin-bottom: 8px;">• <strong>正确答案</strong>（必填）：单选填A/B/C/D，多选填AB/ABC等，判断填对/错，填空填答案文本</p>
+                    <p style="margin-bottom: 8px;">• <strong>题目解析</strong>（选填）：不超过500个字符</p>
+                    <p style="margin-bottom: 16px;"></p>
+                    <p style="margin-bottom: 12px;"><strong>注意事项：</strong></p>
+                    <p style="margin-bottom: 8px;">• 请勿修改模板的列标题</p>
+                    <p style="margin-bottom: 8px;">• 每个Excel文件最多支持导入200道题目</p>
+                    <p style="margin-bottom: 8px;">• 题目类型必须填写准确，否则导入失败</p>
+                    <p style="margin-bottom: 8px;">• 选择题必须填写选项，判断题和填空题不需要填写选项</p>
+                </div>
+            </div>
+
+            <!-- 文件上传 -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">第三步：上传填好的Excel文件</div>
+                </div>
+                <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+                    <div class="upload-icon">[📤]</div>
+                    <div class="upload-text">点击或拖拽文件到此区域上传</div>
+                    <div class="upload-hint">支持.xlsx格式，文件大小不超过10MB</div>
+                    <input type="file" id="fileInput" style="display: none;" accept=".xlsx">
+                </div>
+
+                <!-- 文件列表 -->
+                <div class="file-list" style="display: none;">
+                    <div class="file-item">
+                        <div class="file-icon">[📄]</div>
+                        <div class="file-info">
+                            <div class="file-name">测评题目_西游记.xlsx</div>
+                            <div class="file-size">256 KB</div>
+                        </div>
+                        <div class="file-status">等待上传</div>
+                        <div class="file-actions">
+                            <button class="btn btn-secondary">移除</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 导入结果（上传后显示） -->
+            <div class="card" style="display: none;">
+                <div class="card-header">
+                    <div class="card-title">第四步：导入结果</div>
+                </div>
+                <div style="padding: 16px; background: #f5f5f5; border-radius: 4px; margin-bottom: 16px;">
+                    <div style="font-size: 14px; color: #333; margin-bottom: 8px;">
+                        <strong>导入成功：</strong>共导入 45 道题目
+                    </div>
+                    <div style="font-size: 14px; color: #333; margin-bottom: 8px;">
+                        <strong>导入失败：</strong>5 道题目
+                    </div>
+                </div>
+                <div style="font-size: 14px; color: #666; line-height: 1.8;">
+                    <p style="margin-bottom: 8px;"><strong>失败原因：</strong></p>
+                    <p style="margin-bottom: 4px;">• 第3行：题目类型填写错误，应为"单选"、"多选"、"判断"或"填空"</p>
+                    <p style="margin-bottom: 4px;">• 第8行：选择题未填写选项</p>
+                    <p style="margin-bottom: 4px;">• 第15行：正确答案格式错误</p>
+                    <p style="margin-bottom: 4px;">• 第22行：题目内容超过500个字符</p>
+                    <p style="margin-bottom: 4px;">• 第30行：题目内容为空</p>
+                </div>
+            </div>
+
+            <!-- 操作按钮 -->
+            <div class="action-buttons">
+                <button class="btn btn-secondary">取消</button>
+                <button class="btn btn-primary">开始导入</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    function toggleMenu(element) {
+        const menuGroup = element.parentElement;
+        menuGroup.classList.toggle('expanded');
+    }
+    </script>
+</body>
+</html>

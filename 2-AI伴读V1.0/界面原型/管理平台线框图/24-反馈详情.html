@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>反馈详情 - 校校读吧管理平台</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+        }
+
+        /* 顶部导航 */
+        .header {
+            height: 60px;
+            background: #fff;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header .logo {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+        .header .user-info {
+            margin-left: auto;
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* 主体布局 */
+        .main {
+            display: flex;
+            min-height: calc(100vh - 60px);
+        }
+
+        /* 侧边栏 */
+        .sidebar {
+            width: 240px;
+            background: #fff;
+            border-right: 1px solid #e0e0e0;
+            overflow-y: auto;
+        }
+        .menu-group {
+            margin-bottom: 8px;
+        }
+        .menu-group-title {
+            padding: 12px 24px;
+            font-size: 14px;
+            color: #333;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .menu-group-icon {
+            font-size: 12px;
+            color: #999;
+            transition: transform 0.2s;
+        }
+        .menu-group.expanded .menu-group-icon {
+            transform: rotate(90deg);
+        }
+        .menu-group-items {
+            display: none;
+        }
+        .menu-group.expanded .menu-group-items {
+            display: block;
+        }
+        .menu-item {
+            padding: 10px 24px 10px 48px;
+            font-size: 14px;
+            color: #666;
+            cursor: pointer;
+        }
+        .menu-item:hover {
+            background: #f5f5f5;
+        }
+        .menu-item.active {
+            color: #333;
+            font-weight: 600;
+            background: #f5f5f5;
+            border-left: 3px solid #333;
+        }
+
+        /* 内容区 */
+        .content {
+            flex: 1;
+            padding: 24px;
+            overflow-y: auto;
+        }
+
+        /* 面包屑 */
+        .breadcrumb {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+        .breadcrumb a {
+            color: #666;
+            text-decoration: none;
+        }
+        .breadcrumb a:hover {
+            color: #333;
+        }
+        .breadcrumb span {
+            margin: 0 8px;
+        }
+
+        /* 页面标题 */
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .page-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        /* 按钮 */
+        .btn {
+            height: 36px;
+            padding: 0 20px;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            border: none;
+        }
+        .btn-primary {
+            background: #333;
+            color: #fff;
+            border: 1px solid #333;
+        }
+        .btn-primary:hover {
+            background: #555;
+        }
+        .btn-secondary {
+            background: #fff;
+            color: #333;
+            border: 1px solid #999;
+        }
+        .btn-secondary:hover {
+            background: #f5f5f5;
+        }
+        .btn-group {
+            display: flex;
+            gap: 12px;
+        }
+
+        /* 信息卡片 */
+        .info-card {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+        .info-card-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        /* 信息行 */
+        .info-row {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px 32px;
+            margin-bottom: 16px;
+        }
+        .info-item {
+            display: flex;
+            font-size: 14px;
+        }
+        .info-label {
+            color: #999;
+            width: 100px;
+            flex-shrink: 0;
+        }
+        .info-value {
+            color: #333;
+            flex: 1;
+        }
+
+        /* 状态标签 */
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .status-badge.pending {
+            background: #f5f5f5;
+            color: #999;
+        }
+        .status-badge.processing {
+            background: #333;
+            color: #fff;
+        }
+        .status-badge.resolved {
+            background: #e0e0e0;
+            color: #666;
+        }
+
+        /* 类型标签 */
+        .type-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            background: #f5f5f5;
+            color: #666;
+        }
+
+        /* 内容区域 */
+        .content-section {
+            margin-bottom: 20px;
+        }
+        .content-text {
+            font-size: 14px;
+            color: #333;
+            line-height: 1.8;
+            white-space: pre-wrap;
+        }
+
+        /* 附件列表 */
+        .attachment-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .attachment-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            background: #f5f5f5;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            font-size: 14px;
+            color: #333;
+            cursor: pointer;
+        }
+        .attachment-item:hover {
+            background: #e0e0e0;
+        }
+        .attachment-icon {
+            font-size: 16px;
+            color: #999;
+        }
+
+        /* 时间线 */
+        .timeline {
+            position: relative;
+            padding-left: 32px;
+        }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 8px;
+            top: 8px;
+            bottom: 8px;
+            width: 2px;
+            background: #e0e0e0;
+        }
+        .timeline-item {
+            position: relative;
+            margin-bottom: 24px;
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -28px;
+            top: 4px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #fff;
+            border: 2px solid #333;
+        }
+        .timeline-item.system::before {
+            border-color: #999;
+        }
+        .timeline-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+        .timeline-user {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+        }
+        .timeline-time {
+            font-size: 12px;
+            color: #999;
+        }
+        .timeline-content {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.6;
+            padding: 12px;
+            background: #f5f5f5;
+            border-radius: 4px;
+        }
+
+        /* 回复表单 */
+        .reply-form {
+            margin-top: 20px;
+        }
+        .form-item {
+            margin-bottom: 16px;
+        }
+        .form-label {
+            display: block;
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        .form-textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            font-size: 14px;
+            font-family: inherit;
+            resize: vertical;
+        }
+        .form-textarea:focus {
+            outline: none;
+            border-color: #999;
+        }
+        .form-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <div class="header">
+        <div class="logo">校校读吧管理平台</div>
+        <div class="user-info">管理员</div>
+    </div>
+
+    <div class="main">
+        <!-- 侧边栏 -->
+        <div class="sidebar">
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>用户管理</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">学校管理</div>
+                    <div class="menu-item">老师管理</div>
+                    <div class="menu-item">学生管理</div>
+                </div>
+            </div>
+
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>内容管理</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">阅读计划</div>
+                    <div class="menu-item">书籍资源库</div>
+                    <div class="menu-item">测评管理</div>
+                </div>
+            </div>
+
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>数据分析</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">阅读数据分析</div>
+                    <div class="menu-item">测评数据分析</div>
+                    <div class="menu-item">用户行为分析</div>
+                    <div class="menu-item">学校数据对比</div>
+                    <div class="menu-item">数据导出中心</div>
+                </div>
+                </div>
+                </div>
+                </div>
+                </div>
+            </div>
+            </div>
+
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>激励体系</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">积分管理</div>
+                    <div class="menu-item">勋章管理</div>
+                    </div>
+            </div>
+
+            <div class="menu-group expanded">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>用户反馈</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item active">意见反馈</div>
+                </div>
+                </div>
+            </div>
+
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>系统配置</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">系统参数</div>
+                    <div class="menu-item">操作日志</div>
+                    <div class="menu-item">操作日志</div>
+                    <div class="menu-item">数据字典</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 内容区 -->
+        <div class="content">
+            <!-- 面包屑 -->
+            <div class="breadcrumb">
+                <a href="#">首页</a>
+                <span>></span>
+                <a href="#">用户反馈</a>
+                <span>></span>
+                <a href="#">意见反馈</a>
+                <span>></span>
+                <span>反馈详情</span>
+            </div>
+
+            <!-- 页面标题 -->
+            <div class="page-header">
+                <div class="page-title">反馈详情 #FB20240210001</div>
+                <div class="btn-group">
+                    <button class="btn btn-secondary">返回列表</button>
+                    <button class="btn btn-primary">标记已解决</button>
+                </div>
+            </div>
+
+            <!-- 基本信息 -->
+            <div class="info-card">
+                <div class="info-card-title">基本信息</div>
+                <div class="info-row">
+                    <div class="info-item">
+                        <span class="info-label">反馈编号</span>
+                        <span class="info-value">FB20240210001</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">反馈类型</span>
+                        <span class="info-value"><span class="type-badge">功能建议</span></span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">提交人</span>
+                        <span class="info-value">张老师</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">联系方式</span>
+                        <span class="info-value">13800138001</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">所属学校</span>
+                        <span class="info-value">北京市第一小学</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">提交时间</span>
+                        <span class="info-value">2024-02-10 14:30:25</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">当前状态</span>
+                        <span class="info-value"><span class="status-badge processing">处理中</span></span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">处理人</span>
+                        <span class="info-value">李管理员</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 反馈内容 -->
+            <div class="info-card">
+                <div class="info-card-title">反馈内容</div>
+                <div class="content-section">
+                    <div class="content-text">希望能在阅读计划中增加"阅读打卡"功能，让学生每天完成阅读后可以打卡记录，这样老师可以更直观地看到学生的阅读习惯和坚持情况。
+
+建议功能包括：
+1. 学生端每日打卡入口
+2. 打卡日历展示
+3. 连续打卡天数统计
+4. 打卡提醒功能
+
+这个功能可以提高学生的阅读积极性，也方便老师进行督促和鼓励</div>
+                </div>
+            </div>
+
+            <!-- 附件 -->
+            <div class="info-card">
+                <div class="info-card-title">附件</div>
+                <div class="attachment-list">
+                    <div class="attachment-item">
+                        <span class="attachment-icon">[📄]</span>
+                        <span>功能需求说明.docx</span>
+                    </div>
+                    <div class="attachment-item">
+                        <span class="attachment-icon">[🖼️]</span>
+                        <span>界面参考图.png</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 处理记录 -->
+            <div class="info-card">
+                <div class="info-card-title">处理记录</div>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-header">
+                            <span class="timeline-user">张老师</span>
+                            <span class="timeline-time">2024-02-10 14:30:25</span>
+                        </div>
+                        <div class="timeline-content">
+                            提交了反馈：希望能在阅读计划中增加"阅读打卡"功能
+                        </div>
+                    </div>
+
+                    <div class="timeline-item system">
+                        <div class="timeline-header">
+                            <span class="timeline-user">系统</span>
+                            <span class="timeline-time">2024-02-10 14:30:26</span>
+                        </div>
+                        <div class="timeline-content">
+                            反馈已自动分配给李管理员处理
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-header">
+                            <span class="timeline-user">李管理员</span>
+                            <span class="timeline-time">2024-02-10 15:20:10</span>
+                        </div>
+                        <div class="timeline-content">
+                            感谢您的建议！这是一个很好的功能需求，我们已经将其记录并转交给产品团队评估。阅读打卡功能确实能够提升学生的阅读积极性，我们会认真考虑在下一个版本中加入此功能。预计评估时间为1-2周，届时会给您反馈评估结果
+                        </div>
+                    </div>
+
+                    <div class="timeline-item system">
+                        <div class="timeline-header">
+                            <span class="timeline-user">系统</span>
+                            <span class="timeline-time">2024-02-10 15:20:11</span>
+                        </div>
+                        <div class="timeline-content">
+                            状态已更新为：处理中
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 回复表单 -->
+                <div class="reply-form">
+                    <div class="form-item">
+                        <label class="form-label">添加回复</label>
+                        <textarea class="form-textarea" placeholder="请输入回复内容"></textarea>
+                    </div>
+                    <div class="form-footer">
+                        <button class="btn btn-secondary">取消</button>
+                        <button class="btn btn-primary">提交回复</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    function toggleMenu(element) {
+        const menuGroup = element.parentElement;
+        menuGroup.classList.toggle('expanded');
+    }
+    </script>
+</body>
+</html>

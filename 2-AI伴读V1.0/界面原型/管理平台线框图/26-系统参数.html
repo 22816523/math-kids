@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>系统参数 - 校校读吧管理平台</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+        }
+
+        /* 顶部导航 */
+        .header {
+            height: 60px;
+            background: #fff;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header .logo {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+        .header .user-info {
+            margin-left: auto;
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* 主体布局 */
+        .main {
+            display: flex;
+            min-height: calc(100vh - 60px);
+        }
+
+        /* 侧边栏 */
+        .sidebar {
+            width: 240px;
+            background: #fff;
+            border-right: 1px solid #e0e0e0;
+            overflow-y: auto;
+        }
+        .menu-group {
+            margin-bottom: 8px;
+        }
+        .menu-group-title {
+            padding: 12px 24px;
+            font-size: 14px;
+            color: #333;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .menu-group-icon {
+            font-size: 12px;
+            color: #999;
+            transition: transform 0.2s;
+        }
+        .menu-group.expanded .menu-group-icon {
+            transform: rotate(90deg);
+        }
+        .menu-group-items {
+            display: none;
+        }
+        .menu-group.expanded .menu-group-items {
+            display: block;
+        }
+        .menu-item {
+            padding: 10px 24px 10px 48px;
+            font-size: 14px;
+            color: #666;
+            cursor: pointer;
+        }
+        .menu-item:hover {
+            background: #f5f5f5;
+        }
+        .menu-item.active {
+            color: #333;
+            font-weight: 600;
+            background: #f5f5f5;
+            border-left: 3px solid #333;
+        }
+
+        /* 内容区 */
+        .content {
+            flex: 1;
+            padding: 24px;
+            overflow-y: auto;
+        }
+
+        /* 面包屑 */
+        .breadcrumb {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+        .breadcrumb a {
+            color: #666;
+            text-decoration: none;
+        }
+        .breadcrumb a:hover {
+            color: #333;
+        }
+        .breadcrumb span {
+            margin: 0 8px;
+        }
+
+        /* 页面标题 */
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .page-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        /* 按钮 */
+        .btn {
+            height: 36px;
+            padding: 0 20px;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            border: none;
+        }
+        .btn-primary {
+            background: #333;
+            color: #fff;
+            border: 1px solid #333;
+        }
+        .btn-primary:hover {
+            background: #555;
+        }
+        .btn-secondary {
+            background: #fff;
+            color: #333;
+            border: 1px solid #999;
+        }
+        .btn-secondary:hover {
+            background: #f5f5f5;
+        }
+
+        /* 标签页 */
+        .tabs {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 0 24px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 32px;
+        }
+        .tab {
+            padding: 16px 0;
+            font-size: 14px;
+            color: #666;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+        .tab:hover {
+            color: #333;
+        }
+        .tab.active {
+            color: #333;
+            font-weight: 600;
+            border-bottom-color: #333;
+        }
+
+        /* 配置卡片 */
+        .config-card {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+        .config-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .config-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        /* 表单 */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        .form-item {
+            margin-bottom: 16px;
+        }
+        .form-item.full-width {
+            grid-column: 1 / -1;
+        }
+        .form-label {
+            display: block;
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        .form-label .required {
+            color: #999;
+            margin-left: 4px;
+        }
+        .form-input {
+            width: 100%;
+            height: 40px;
+            padding: 0 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .form-input:focus {
+            outline: none;
+            border-color: #999;
+        }
+        .form-textarea {
+            width: 100%;
+            min-height: 80px;
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            font-size: 14px;
+            font-family: inherit;
+            resize: vertical;
+        }
+        .form-textarea:focus {
+            outline: none;
+            border-color: #999;
+        }
+        .form-select {
+            width: 100%;
+            height: 40px;
+            padding: 0 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .form-hint {
+            font-size: 12px;
+            color: #999;
+            margin-top: 6px;
+        }
+
+        /* 开关 */
+        .switch-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .switch-item:last-child {
+            border-bottom: none;
+        }
+        .switch-info {
+            flex: 1;
+        }
+        .switch-label {
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 4px;
+        }
+        .switch-desc {
+            font-size: 12px;
+            color: #999;
+        }
+        .switch {
+            width: 48px;
+            height: 24px;
+            background: #e0e0e0;
+            border-radius: 12px;
+            position: relative;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .switch.on {
+            background: #333;
+        }
+        .switch-handle {
+            width: 20px;
+            height: 20px;
+            background: #fff;
+            border-radius: 50%;
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            transition: left 0.2s;
+        }
+        .switch.on .switch-handle {
+            left: 26px;
+        }
+
+        /* 上传区域 */
+        .upload-area {
+            border: 2px dashed #e0e0e0;
+            border-radius: 4px;
+            padding: 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .upload-area:hover {
+            border-color: #999;
+            background: #f5f5f5;
+        }
+        .upload-icon {
+            font-size: 32px;
+            color: #999;
+            margin-bottom: 12px;
+        }
+        .upload-text {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+        .upload-hint {
+            font-size: 12px;
+            color: #999;
+        }
+
+        /* 预览图片 */
+        .preview-image {
+            width: 120px;
+            height: 120px;
+            background: #f5f5f5;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            font-size: 12px;
+            margin-top: 12px;
+        }
+
+        /* 参数列表 */
+        .param-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .param-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .param-label {
+            width: 200px;
+            font-size: 14px;
+            color: #333;
+            flex-shrink: 0;
+        }
+        .param-input {
+            flex: 1;
+            height: 40px;
+            padding: 0 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .param-unit {
+            font-size: 14px;
+            color: #999;
+            flex-shrink: 0;
+        }
+
+        /* 保存按钮区域 */
+        .save-section {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 20px 24px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <div class="header">
+        <div class="logo">校校读吧管理平台</div>
+        <div class="user-info">管理员</div>
+    </div>
+
+    <div class="main">
+        <!-- 侧边栏 -->
+        <div class="sidebar">
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>用户管理</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">学校管理</div>
+                    <div class="menu-item">老师管理</div>
+                    <div class="menu-item">学生管理</div>
+                </div>
+            </div>
+
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>内容管理</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">阅读计划</div>
+                    <div class="menu-item">书籍资源库</div>
+                    <div class="menu-item">测评管理</div>
+                </div>
+            </div>
+
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>数据分析</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">阅读数据分析</div>
+                    <div class="menu-item">测评数据分析</div>
+                    <div class="menu-item">用户行为分析</div>
+                    <div class="menu-item">学校数据对比</div>
+                    <div class="menu-item">数据导出中心</div>
+                </div>
+                </div>
+                </div>
+                </div>
+                </div>
+            </div>
+            </div>
+
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>激励体系</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">积分管理</div>
+                    <div class="menu-item">勋章管理</div>
+                    </div>
+            </div>
+
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>用户反馈</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">意见反馈</div>
+                </div>
+                </div>
+                </div>
+                </div>
+            </div>
+
+            <div class="menu-group expanded">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>系统配置</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item active">系统参数</div>
+                    <div class="menu-item">操作日志</div>
+                    <div class="menu-item">数据字典</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 内容区 -->
+        <div class="content">
+            <!-- 面包屑 -->
+            <div class="breadcrumb">
+                <a href="#">首页</a>
+                <span>></span>
+                <a href="#">系统配置</a>
+                <span>></span>
+                <span>系统参数</span>
+            </div>
+
+            <!-- 页面标题 -->
+            <div class="page-header">
+                <div class="page-title">系统参数</div>
+            </div>
+
+            <!-- 标签页 -->
+            <div class="tabs">
+                <div class="tab active">基本配置</div>
+                <div class="tab">功能开关</div>
+                <div class="tab">业务参数</div>
+                <div class="tab">通知配置</div>
+            </div>
+
+            <!-- 基本信息配置 -->
+            <div class="config-card">
+                <div class="config-header">
+                    <div class="config-title">基本信息</div>
+                </div>
+                <div class="form-grid">
+                    <div class="form-item">
+                        <label class="form-label">系统名称<span class="required">*</span></label>
+                        <input type="text" class="form-input" value="校校读吧管理平台">
+                    </div>
+                    <div class="form-item">
+                        <label class="form-label">系统版本</label>
+                        <input type="text" class="form-input" value="V1.0.0" readonly>
+                    </div>
+                    <div class="form-item">
+                        <label class="form-label">客服电话</label>
+                        <input type="text" class="form-input" value="400-888-8888">
+                    </div>
+                    <div class="form-item">
+                        <label class="form-label">客服邮箱</label>
+                        <input type="text" class="form-input" value="service@xxduba.com">
+                    </div>
+                    <div class="form-item full-width">
+                        <label class="form-label">版权信息</label>
+                        <input type="text" class="form-input" value="© 2024 校校读吧 版权所有">
+                    </div>
+                    <div class="form-item full-width">
+                        <label class="form-label">备案号</label>
+                        <input type="text" class="form-input" value="京ICP备12345678号">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Logo配置 -->
+            <div class="config-card">
+                <div class="config-header">
+                    <div class="config-title">Logo配置</div>
+                </div>
+                <div class="form-grid">
+                    <div class="form-item">
+                        <label class="form-label">系统Logo</label>
+                        <div class="upload-area">
+                            <div class="upload-icon">[📁]</div>
+                            <div class="upload-text">点击上传Logo</div>
+                            <div class="upload-hint">建议尺寸：200x60px，支持PNG、JPG格式</div>
+                        </div>
+                        <div class="preview-image">[Logo预览]</div>
+                    </div>
+                    <div class="form-item">
+                        <label class="form-label">系统图标</label>
+                        <div class="upload-area">
+                            <div class="upload-icon">[📁]</div>
+                            <div class="upload-text">点击上传图标</div>
+                            <div class="upload-hint">建议尺寸：64x64px，支持PNG、ICO格式</div>
+                        </div>
+                        <div class="preview-image">[图标预览]</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 功能开关 -->
+            <div class="config-card">
+                <div class="config-header">
+                    <div class="config-title">功能开关</div>
+                </div>
+                <div class="switch-item">
+                    <div class="switch-info">
+                        <div class="switch-label">新用户注册</div>
+                        <div class="switch-desc">关闭后将不允许新用户注册</div>
+                    </div>
+                    <div class="switch on" onclick="toggleSwitch(this)">
+                        <div class="switch-handle"></div>
+                    </div>
+                </div>
+                <div class="switch-item">
+                    <div class="switch-info">
+                        <div class="switch-label">学生端注册</div>
+                        <div class="switch-desc">关闭后学生端将无法注册新账号</div>
+                    </div>
+                    <div class="switch on" onclick="toggleSwitch(this)">
+                        <div class="switch-handle"></div>
+                    </div>
+                </div>
+                <div class="switch-item">
+                    <div class="switch-info">
+                        <div class="switch-label">老师端注册</div>
+                        <div class="switch-desc">关闭后老师端将无法注册新账号</div>
+                    </div>
+                    <div class="switch on" onclick="toggleSwitch(this)">
+                        <div class="switch-handle"></div>
+                    </div>
+                </div>
+                <div class="switch-item">
+                    <div class="switch-info">
+                        <div class="switch-label">维护模式</div>
+                        <div class="switch-desc">开启后系统将进入维护模式，用户无法访问</div>
+                    </div>
+                    <div class="switch" onclick="toggleSwitch(this)">
+                        <div class="switch-handle"></div>
+                    </div>
+                </div>
+                <div class="switch-item">
+                    <div class="switch-info">
+                        <div class="switch-label">数据统计</div>
+                        <div class="switch-desc">关闭后将停止收集用户行为数据</div>
+                    </div>
+                    <div class="switch on" onclick="toggleSwitch(this)">
+                        <div class="switch-handle"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 业务参数 -->
+            <div class="config-card">
+                <div class="config-header">
+                    <div class="config-title">业务参数</div>
+                </div>
+                <div class="param-list">
+                    <div class="param-item">
+                        <div class="param-label">单次阅读最短时长</div>
+                        <input type="number" class="param-input" value="5">
+                        <div class="param-unit">分钟</div>
+                    </div>
+                    <div class="param-item">
+                        <div class="param-label">单次阅读最长时长</div>
+                        <input type="number" class="param-input" value="120">
+                        <div class="param-unit">分钟</div>
+                    </div>
+                    <div class="param-item">
+                        <div class="param-label">测评答题时长</div>
+                        <input type="number" class="param-input" value="30">
+                        <div class="param-unit">分钟</div>
+                    </div>
+                    <div class="param-item">
+                        <div class="param-label">阅读计划最大书籍数</div>
+                        <input type="number" class="param-input" value="20">
+                        <div class="param-unit">本</div>
+                    </div>
+                    <div class="param-item">
+                        <div class="param-label">班级最大学生数</div>
+                        <input type="number" class="param-input" value="60">
+                        <div class="param-unit">人</div>
+                    </div>
+                    <div class="param-item">
+                        <div class="param-label">老师最大班级数</div>
+                        <input type="number" class="param-input" value="10">
+                        <div class="param-unit">个</div>
+                    </div>
+                    <div class="param-item">
+                        <div class="param-label">书籍上传大小限制</div>
+                        <input type="number" class="param-input" value="50">
+                        <div class="param-unit">MB</div>
+                    </div>
+                    <div class="param-item">
+                        <div class="param-label">图片上传大小限制</div>
+                        <input type="number" class="param-input" value="5">
+                        <div class="param-unit">MB</div>
+                    </div>
+                    <div class="param-item">
+                        <div class="param-label">阅读计划结束后可查看天数</div>
+                        <input type="number" class="param-input" value="30">
+                        <div class="param-unit">天</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 通知配置 -->
+            <div class="config-card">
+                <div class="config-header">
+                    <div class="config-title">通知配置</div>
+                </div>
+                <div class="switch-item">
+                    <div class="switch-info">
+                        <div class="switch-label">邮件通知</div>
+                        <div class="switch-desc">开启后将通过邮件发送系统通知</div>
+                    </div>
+                    <div class="switch on" onclick="toggleSwitch(this)">
+                        <div class="switch-handle"></div>
+                    </div>
+                </div>
+                <div class="switch-item">
+                    <div class="switch-info">
+                        <div class="switch-label">短信通知</div>
+                        <div class="switch-desc">开启后将通过短信发送重要通知</div>
+                    </div>
+                    <div class="switch on" onclick="toggleSwitch(this)">
+                        <div class="switch-handle"></div>
+                    </div>
+                </div>
+                <div class="switch-item">
+                    <div class="switch-info">
+                        <div class="switch-label">站内消息</div>
+                        <div class="switch-desc">开启后将在系统内推送消息通知</div>
+                    </div>
+                    <div class="switch on" onclick="toggleSwitch(this)">
+                        <div class="switch-handle"></div>
+                    </div>
+                </div>
+                <div class="switch-item">
+                    <div class="switch-info">
+                        <div class="switch-label">微信通知</div>
+                        <div class="switch-desc">开启后将通过微信公众号推送通知</div>
+                    </div>
+                    <div class="switch" onclick="toggleSwitch(this)">
+                        <div class="switch-handle"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SMTP配置 -->
+            <div class="config-card">
+                <div class="config-header">
+                    <div class="config-title">SMTP邮件配置</div>
+                </div>
+                <div class="form-grid">
+                    <div class="form-item">
+                        <label class="form-label">SMTP服务器</label>
+                        <input type="text" class="form-input" value="smtp.example.com">
+                    </div>
+                    <div class="form-item">
+                        <label class="form-label">SMTP端口</label>
+                        <input type="text" class="form-input" value="465">
+                    </div>
+                    <div class="form-item">
+                        <label class="form-label">发件人邮箱</label>
+                        <input type="text" class="form-input" value="noreply@xxduba.com">
+                    </div>
+                    <div class="form-item">
+                        <label class="form-label">发件人名称</label>
+                        <input type="text" class="form-input" value="校校读吧">
+                    </div>
+                    <div class="form-item">
+                        <label class="form-label">邮箱账号</label>
+                        <input type="text" class="form-input" value="noreply@xxduba.com">
+                    </div>
+                    <div class="form-item">
+                        <label class="form-label">邮箱密码</label>
+                        <input type="password" class="form-input" value="********">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 保存按钮 -->
+            <div class="save-section">
+                <button class="btn btn-secondary">重置</button>
+                <button class="btn btn-primary">保存配置</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    function toggleMenu(element) {
+        const menuGroup = element.parentElement;
+        menuGroup.classList.toggle('expanded');
+    }
+
+    function toggleSwitch(element) {
+        element.classList.toggle('on');
+    }
+    </script>
+</body>
+</html>

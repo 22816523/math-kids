@@ -3,13 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>校校读吧管理平台 - 登录</title>
+    <title>登录 - 校校读吧管理平台</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body {
+            height: 100%;
+        }
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background: #f5f5f5;
-            min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -17,32 +19,99 @@
 
         /* 登录容器 */
         .login-container {
-            width: 400px;
+            width: 1000px;
+            height: 550px;
             background: #fff;
             border: 1px solid #e0e0e0;
             border-radius: 4px;
+            display: flex;
+        }
+
+        /* 左侧品牌区 */
+        .login-brand {
+            flex: 1;
+            background: #333;
+            border-radius: 4px 0 0 4px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
             padding: 40px;
+        }
+        .brand-logo {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .brand-desc {
+            font-size: 13px;
+            color: #ccc;
+        }
+
+        /* 右侧表单区 */
+        .login-form-wrapper {
+            width: 450px;
+            padding: 60px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
 
         /* 标题 */
         .login-header {
-            text-align: center;
-            margin-bottom: 32px;
+            margin-bottom: 24px;
         }
         .login-title {
-            font-size: 24px;
+            font-size: 20px;
             font-weight: 600;
             color: #333;
-            margin-bottom: 8px;
+            margin-bottom: 16px;
         }
         .login-subtitle {
-            font-size: 14px;
+            font-size: 13px;
             color: #999;
         }
 
+        /* 登录方式切换 */
+        .login-tabs {
+            display: flex;
+            gap: 24px;
+            margin-bottom: 24px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        .login-tab {
+            padding: 12px 0;
+            font-size: 14px;
+            color: #666;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+            transition: all 0.2s;
+        }
+        .login-tab:hover {
+            color: #333;
+        }
+        .login-tab.active {
+            color: #333;
+            font-weight: 600;
+            border-bottom-color: #333;
+        }
+
+        /* 登录内容区 */
+        .login-content {
+            display: none;
+        }
+        .login-content.active {
+            display: block;
+        }
+
         /* 表单 */
-        .form-item {
+        .login-form {
             margin-bottom: 20px;
+        }
+        .form-item {
+            margin-bottom: 16px;
         }
         .form-label {
             display: block;
@@ -52,7 +121,7 @@
         }
         .form-input {
             width: 100%;
-            height: 40px;
+            height: 44px;
             padding: 0 12px;
             border: 1px solid #e0e0e0;
             border-radius: 4px;
@@ -62,28 +131,31 @@
             outline: none;
             border-color: #999;
         }
+        .form-input::placeholder {
+            color: #ccc;
+        }
 
-        /* 记住密码和忘记密码 */
-        .form-extra {
+        /* 记住密码 */
+        .form-options {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
             font-size: 14px;
         }
-        .form-checkbox {
+        .remember-me {
             display: flex;
             align-items: center;
             color: #666;
         }
-        .form-checkbox input {
+        .remember-me input {
             margin-right: 6px;
         }
-        .form-link {
+        .forgot-password {
             color: #666;
             text-decoration: none;
         }
-        .form-link:hover {
+        .forgot-password:hover {
             text-decoration: underline;
         }
 
@@ -99,88 +171,135 @@
         .btn-primary {
             background: #333;
             color: #fff;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
+        }
+        .btn-primary:hover {
+            background: #555;
         }
         .btn-secondary {
             background: #fff;
             color: #333;
-            border: 1px solid #999;
+            border: 1px solid #e0e0e0;
+        }
+        .btn-secondary:hover {
+            background: #f5f5f5;
+        }
+
+        /* 企微登录区域 */
+        .wechat-login {
+            text-align: center;
+        }
+        .wechat-qr {
+            width: 200px;
+            height: 200px;
+            background: #e0e0e0;
+            margin: 0 auto 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+            color: #999;
+        }
+        .wechat-tip {
+            font-size: 13px;
+            color: #666;
         }
 
         /* 分割线 */
         .divider {
-            display: flex;
-            align-items: center;
-            margin: 24px 0;
-            color: #999;
-            font-size: 12px;
-        }
-        .divider::before,
-        .divider::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: #e0e0e0;
-        }
-        .divider::before {
-            margin-right: 12px;
-        }
-        .divider::after {
-            margin-left: 12px;
+            display: none;
         }
 
-        /* 版权信息 */
+        /* 底部提示 */
         .login-footer {
-            text-align: center;
-            margin-top: 32px;
             font-size: 12px;
             color: #999;
+            margin-top: 16px;
         }
     </style>
 </head>
 <body>
     <div class="login-container">
-        <!-- 标题 -->
-        <div class="login-header">
-            <div class="login-title">校校读吧管理平台</div>
-            <div class="login-subtitle">Reading Platform Management System</div>
+        <!-- 左侧品牌区 -->
+        <div class="login-brand">
+            <div class="brand-logo">校校读吧</div>
+            <div class="brand-desc">智能阅读管理平台</div>
         </div>
 
-        <!-- 登录表单 -->
-        <form>
-            <div class="form-item">
-                <label class="form-label">账号</label>
-                <input type="text" class="form-input" placeholder="请输入手机号或邮箱">
+        <!-- 右侧表单区 -->
+        <div class="login-form-wrapper">
+            <!-- 标题 -->
+            <div class="login-header">
+                <div class="login-title">管理平台登录</div>
+                <div class="login-subtitle">欢迎使用校校读吧管理平台</div>
             </div>
 
-            <div class="form-item">
-                <label class="form-label">密码</label>
-                <input type="password" class="form-input" placeholder="请输入密码">
+            <!-- 登录方式切换 -->
+            <div class="login-tabs">
+                <div class="login-tab active" onclick="switchLoginType('account')">账号密码登录</div>
+                <div class="login-tab" onclick="switchLoginType('wechat')">企业微信登录</div>
             </div>
 
-            <div class="form-extra">
-                <label class="form-checkbox">
-                    <input type="checkbox">
-                    <span>记住密码</span>
-                </label>
-                <a href="#" class="form-link">忘记密码？</a>
+            <!-- 账号密码登录 -->
+            <div class="login-content active" id="accountLogin">
+                <form class="login-form">
+                    <div class="form-item">
+                        <label class="form-label">账号</label>
+                        <input type="text" class="form-input" placeholder="请输入账号">
+                    </div>
+                    <div class="form-item">
+                        <label class="form-label">密码</label>
+                        <input type="password" class="form-input" placeholder="请输入密码">
+                    </div>
+
+                    <!-- 记住密码和忘记密码 -->
+                    <div class="form-options">
+                        <label class="remember-me">
+                            <input type="checkbox">
+                            <span>记住密码</span>
+                        </label>
+                        <a href="#" class="forgot-password">忘记密码？</a>
+                    </div>
+
+                    <!-- 登录按钮 -->
+                    <button type="submit" class="btn btn-primary">登录</button>
+                </form>
             </div>
 
-            <button type="submit" class="btn btn-primary">登录</button>
-        </form>
+            <!-- 企微登录 -->
+            <div class="login-content" id="wechatLogin">
+                <div class="wechat-login">
+                    <div class="wechat-qr">[二维码]</div>
+                    <div class="wechat-tip">请使用企业微信扫码登录</div>
+                </div>
+            </div>
 
-        <!-- 分割线 -->
-        <div class="divider">或</div>
-
-        <!-- 企微登录 -->
-        <button class="btn btn-secondary">
-            [企微图标] 企业微信登录
-        </button>
-
-        <!-- 版权信息 -->
-        <div class="login-footer">
-            © 2026 校校读吧 All Rights Reserved
+            <!-- 底部提示 -->
+            <div class="login-footer">
+                © 2026 校校读吧 版权所有
+            </div>
         </div>
     </div>
+
+    <script>
+    function switchLoginType(type) {
+        // 切换标签状态
+        const tabs = document.querySelectorAll('.login-tab');
+        tabs.forEach(tab => tab.classList.remove('active'));
+        event.target.classList.add('active');
+
+        // 切换内容区域
+        const contents = document.querySelectorAll('.login-content');
+        contents.forEach(content => content.classList.remove('active'));
+
+        if (type === 'account') {
+            document.getElementById('accountLogin').classList.add('active');
+        } else {
+            document.getElementById('wechatLogin').classList.add('active');
+        }
+    }
+    </script>
 </body>
 </html>

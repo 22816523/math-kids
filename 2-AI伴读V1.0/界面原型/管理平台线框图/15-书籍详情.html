@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>书籍详情 - 校校读吧管理平台</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+        }
+
+        /* 顶部导航 */
+        .header {
+            height: 60px;
+            background: #fff;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header .logo {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+        .header .user-info {
+            margin-left: auto;
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* 主体布局 */
+        .main {
+            display: flex;
+            min-height: calc(100vh - 60px);
+        }
+
+        /* 侧边栏 */
+        .sidebar {
+            width: 240px;
+            background: #fff;
+            border-right: 1px solid #e0e0e0;
+            overflow-y: auto;
+        }
+        .menu-group {
+            margin-bottom: 8px;
+        }
+        .menu-group-title {
+            padding: 12px 24px;
+            font-size: 14px;
+            color: #333;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .menu-group-icon {
+            font-size: 12px;
+            color: #999;
+            transition: transform 0.2s;
+        }
+        .menu-group.expanded .menu-group-icon {
+            transform: rotate(90deg);
+        }
+        .menu-group-items {
+            display: none;
+        }
+        .menu-group.expanded .menu-group-items {
+            display: block;
+        }
+        .menu-item {
+            padding: 10px 24px 10px 48px;
+            font-size: 14px;
+            color: #666;
+            cursor: pointer;
+        }
+        .menu-item:hover {
+            background: #f5f5f5;
+        }
+        .menu-item.active {
+            color: #333;
+            font-weight: 600;
+            background: #f5f5f5;
+            border-left: 3px solid #333;
+        }
+
+        /* 内容区 */
+        .content {
+            flex: 1;
+            padding: 24px;
+            overflow-y: auto;
+        }
+
+        /* 面包屑 */
+        .breadcrumb {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+        .breadcrumb a {
+            color: #666;
+            text-decoration: none;
+        }
+        .breadcrumb a:hover {
+            color: #333;
+        }
+        .breadcrumb span {
+            margin: 0 8px;
+        }
+
+        /* 页面头部 */
+        .page-header {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 20px 24px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .page-header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .page-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+        }
+        .page-header-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        /* 按钮 */
+        .btn {
+            height: 36px;
+            padding: 0 20px;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            border: none;
+        }
+        .btn-primary {
+            background: #333;
+            color: #fff;
+            border: 1px solid #333;
+        }
+        .btn-primary:hover {
+            background: #555;
+        }
+        .btn-secondary {
+            background: #fff;
+            color: #333;
+            border: 1px solid #999;
+        }
+        .btn-secondary:hover {
+            background: #f5f5f5;
+        }
+
+        /* 详情布局 */
+        .detail-layout {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 20px;
+        }
+
+        /* 书籍封面卡片 */
+        .cover-card {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 24px;
+            height: fit-content;
+        }
+        .book-cover {
+            width: 100%;
+            aspect-ratio: 3/4;
+            background: #e0e0e0;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: #999;
+            margin-bottom: 16px;
+        }
+        .cover-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .cover-actions .btn {
+            width: 100%;
+        }
+
+        /* 信息卡片 */
+        .info-card {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+        .info-card-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        /* 信息网格 */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+        .info-item {
+            display: flex;
+            font-size: 14px;
+        }
+        .info-label {
+            color: #999;
+            width: 100px;
+            flex-shrink: 0;
+        }
+        .info-value {
+            color: #333;
+            flex: 1;
+        }
+
+        /* 描述区域 */
+        .description-text {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* 统计卡片 */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        .stat-card {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 20px;
+            text-align: center;
+        }
+        .stat-label {
+            font-size: 14px;
+            color: #999;
+            margin-bottom: 8px;
+        }
+        .stat-value {
+            font-size: 24px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        /* 表格 */
+        .table-container {
+            overflow-x: auto;
+        }
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+        }
+        .table th,
+        .table td {
+            padding: 12px 16px;
+            text-align: left;
+            border: 1px solid #e0e0e0;
+            font-size: 14px;
+        }
+        .table th {
+            background: #f5f5f5;
+            font-weight: 600;
+            color: #333;
+        }
+        .table td {
+            color: #666;
+        }
+        .table a {
+            color: #333;
+            text-decoration: underline;
+            cursor: pointer;
+            margin: 0 4px;
+        }
+        .table a:hover {
+            color: #666;
+        }
+
+        /* 状态标签 */
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            border: 1px solid #e0e0e0;
+            background: #f5f5f5;
+            color: #666;
+        }
+        .status-badge.active {
+            background: #333;
+            color: #fff;
+            border-color: #333;
+        }
+
+        /* 资源管理 */
+        .resource-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .resource-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .resource-item {
+            padding: 12px;
+            background: #f5f5f5;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .resource-item-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+        }
+        .resource-icon {
+            width: 40px;
+            height: 40px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: #999;
+            flex-shrink: 0;
+        }
+        .resource-info {
+            flex: 1;
+        }
+        .resource-name {
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 4px;
+        }
+        .resource-meta {
+            font-size: 12px;
+            color: #999;
+        }
+        .resource-actions {
+            display: flex;
+            gap: 8px;
+        }
+        .resource-actions a {
+            font-size: 14px;
+            color: #333;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+        .resource-actions a:hover {
+            color: #666;
+        }
+        .empty-resource {
+            padding: 40px;
+            text-align: center;
+            color: #999;
+            font-size: 14px;
+            background: #f5f5f5;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <div class="header">
+        <div class="logo">校校读吧管理平台</div>
+        <div class="user-info">管理员</div>
+    </div>
+
+    <div class="main">
+        <!-- 侧边栏 -->
+        <div class="sidebar">
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>用户管理</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">学校管理</div>
+                    <div class="menu-item">老师管理</div>
+                    <div class="menu-item">学生管理</div>
+                </div>
+            </div>
+
+            <div class="menu-group expanded">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>内容管理</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">阅读计划</div>
+                    <div class="menu-item active">书籍资源库</div>
+                    <div class="menu-item">测评管理</div>
+                </div>
+            </div>
+
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>数据分析</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">阅读数据分析</div>
+                    <div class="menu-item">测评数据分析</div>
+                    <div class="menu-item">用户行为分析</div>
+                    <div class="menu-item">学校数据对比</div>
+                    <div class="menu-item">数据导出中心</div>
+                </div>
+                </div>
+                </div>
+                </div>
+                </div>
+            </div>
+            </div>
+
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>激励体系</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">积分管理</div>
+                    <div class="menu-item">勋章管理</div>
+                    </div>
+            </div>
+
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>用户反馈</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">意见反馈</div>
+                </div>
+                </div>
+                </div>
+                </div>
+            </div>
+
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>系统配置</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">系统参数</div>
+                    <div class="menu-item">操作日志</div>
+                    <div class="menu-item">数据字典</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 内容区 -->
+        <div class="content">
+            <!-- 面包屑 -->
+            <div class="breadcrumb">
+                <a href="#">首页</a>
+                <span>></span>
+                <a href="#">内容管理</a>
+                <span>></span>
+                <a href="#">书籍资源库</a>
+                <span>></span>
+                <span>书籍详情</span>
+            </div>
+
+            <!-- 页面头部 -->
+            <div class="page-header">
+                <div class="page-header-left">
+                    <div class="page-title">《西游记》</div>
+                </div>
+                <div class="page-header-actions">
+                    <button class="btn btn-secondary">返回列表</button>
+                    <button class="btn btn-secondary">编辑</button>
+                    <button class="btn btn-secondary">删除</button>
+                </div>
+            </div>
+
+            <!-- 统计数据 -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">使用次数</div>
+                    <div class="stat-value">12</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">参与学生数</div>
+                    <div class="stat-value">156</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">完成人数</div>
+                    <div class="stat-value">89</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">完成率</div>
+                    <div class="stat-value">57.1%</div>
+                </div>
+            </div>
+
+            <!-- 详情布局 -->
+            <div class="detail-layout">
+                <!-- 左侧：封面 -->
+                <div class="cover-card">
+                    <div class="book-cover">[书籍封面]</div>
+                    <div class="cover-actions">
+                        <button class="btn btn-secondary">更换封面</button>
+                        <button class="btn btn-secondary">下载封面</button>
+                    </div>
+                </div>
+
+                <!-- 右侧：详细信息 -->
+                <div>
+                    <!-- 基本信息 -->
+                    <div class="info-card">
+                        <div class="info-card-title">基本信息</div>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <div class="info-label">书籍名称</div>
+                                <div class="info-value">《西游记》</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">作者</div>
+                                <div class="info-value">吴承恩</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">适合年级</div>
+                                <div class="info-value">三年级</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">书籍标签</div>
+                                <div class="info-value">文学名著</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">字数</div>
+                                <div class="info-value">约82万字</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">出版社</div>
+                                <div class="info-value">人民文学出版社</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">ISBN</div>
+                                <div class="info-value">978-7-02-008892-8</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">上传时间</div>
+                                <div class="info-value">2024-01-15 10:30:00</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">上传人</div>
+                                <div class="info-value">管理员</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">更新时间</div>
+                                <div class="info-value">2024-02-20 14:20:00</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 书籍简介 -->
+                    <div class="info-card">
+                        <div class="info-card-title">书籍简介</div>
+                        <div class="description-text">
+                            《西游记》是中国古代第一部浪漫主义章回体长篇神魔小说。全书主要描写了孙悟空出世及大闹天宫后，遇见了唐僧、猪八戒、沙僧和白龙马，西行取经，一路上历经艰险、降妖伏魔，经历了九九八十一难，终于到达西天见到如来佛祖，最终五圣成真的故事。该小说以"唐僧取经"这一历史事件为蓝本，通过作者的艺术加工，深刻地描绘了明代社会现实。
+                        </div>
+                    </div>
+
+                    <!-- 视频资源 -->
+                    <div class="info-card">
+                        <div class="info-card-title">
+                            <div class="resource-header">
+                                <span>视频资源（3个）</span>
+                                <button class="btn btn-primary">上传视频</button>
+                            </div>
+                        </div>
+                        <div class="resource-list">
+                            <div class="resource-item">
+                                <div class="resource-item-left">
+                                    <div class="resource-icon">[▶]</div>
+                                    <div class="resource-info">
+                                        <div class="resource-name">第一回：灵根育孕源流出 心性修持大道生</div>
+                                        <div class="resource-meta">时长：15:30 | 大小：125MB | 上传时间：2024-01-15 10:30</div>
+                                    </div>
+                                </div>
+                                <div class="resource-actions">
+                                    <a href="#">预览</a>
+                                    <a href="#">下载</a>
+                                    <a href="#">删除</a>
+                                </div>
+                            </div>
+                            <div class="resource-item">
+                                <div class="resource-item-left">
+                                    <div class="resource-icon">[▶]</div>
+                                    <div class="resource-info">
+                                        <div class="resource-name">第二回：悟彻菩提真妙理 断魔归本合元神</div>
+                                        <div class="resource-meta">时长：18:45 | 大小：156MB | 上传时间：2024-01-16 14:20</div>
+                                    </div>
+                                </div>
+                                <div class="resource-actions">
+                                    <a href="#">预览</a>
+                                    <a href="#">下载</a>
+                                    <a href="#">删除</a>
+                                </div>
+                            </div>
+                            <div class="resource-item">
+                                <div class="resource-item-left">
+                                    <div class="resource-icon">[▶]</div>
+                                    <div class="resource-info">
+                                        <div class="resource-name">第三回：四海千山皆拱伏 九幽十类尽除名</div>
+                                        <div class="resource-meta">时长：16:20 | 大小：138MB | 上传时间：2024-01-17 09:15</div>
+                                    </div>
+                                </div>
+                                <div class="resource-actions">
+                                    <a href="#">预览</a>
+                                    <a href="#">下载</a>
+                                    <a href="#">删除</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 音频资源 -->
+                    <div class="info-card">
+                        <div class="info-card-title">
+                            <div class="resource-header">
+                                <span>音频资源（2个）</span>
+                                <button class="btn btn-primary">上传音频</button>
+                            </div>
+                        </div>
+                        <div class="resource-list">
+                            <div class="resource-item">
+                                <div class="resource-item-left">
+                                    <div class="resource-icon">[♪]</div>
+                                    <div class="resource-info">
+                                        <div class="resource-name">西游记全书朗读版（上）</div>
+                                        <div class="resource-meta">时长：2:35:20 | 大小：85MB | 上传时间：2024-01-15 11:00</div>
+                                    </div>
+                                </div>
+                                <div class="resource-actions">
+                                    <a href="#">播放</a>
+                                    <a href="#">下载</a>
+                                    <a href="#">删除</a>
+                                </div>
+                            </div>
+                            <div class="resource-item">
+                                <div class="resource-item-left">
+                                    <div class="resource-icon">[♪]</div>
+                                    <div class="resource-info">
+                                        <div class="resource-name">西游记全书朗读版（下）</div>
+                                        <div class="resource-meta">时长：2:48:15 | 大小：92MB | 上传时间：2024-01-15 11:30</div>
+                                    </div>
+                                </div>
+                                <div class="resource-actions">
+                                    <a href="#">播放</a>
+                                    <a href="#">下载</a>
+                                    <a href="#">删除</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 导读单资源 -->
+                    <div class="info-card">
+                        <div class="info-card-title">
+                            <div class="resource-header">
+                                <span>导读单资源（5个）</span>
+                                <button class="btn btn-primary">上传导读单</button>
+                            </div>
+                        </div>
+                        <div class="resource-list">
+                            <div class="resource-item">
+                                <div class="resource-item-left">
+                                    <div class="resource-icon">[📄]</div>
+                                    <div class="resource-info">
+                                        <div class="resource-name">第一回导读单：石猴出世</div>
+                                        <div class="resource-meta">格式：PNG | 大小：2.5MB | 上传时间：2024-01-15 10:45</div>
+                                    </div>
+                                </div>
+                                <div class="resource-actions">
+                                    <a href="#">预览</a>
+                                    <a href="#">下载</a>
+                                    <a href="#">删除</a>
+                                </div>
+                            </div>
+                            <div class="resource-item">
+                                <div class="resource-item-left">
+                                    <div class="resource-icon">[📄]</div>
+                                    <div class="resource-info">
+                                        <div class="resource-name">第二回导读单：拜师学艺</div>
+                                        <div class="resource-meta">格式：PNG | 大小：2.3MB | 上传时间：2024-01-16 14:30</div>
+                                    </div>
+                                </div>
+                                <div class="resource-actions">
+                                    <a href="#">预览</a>
+                                    <a href="#">下载</a>
+                                    <a href="#">删除</a>
+                                </div>
+                            </div>
+                            <div class="resource-item">
+                                <div class="resource-item-left">
+                                    <div class="resource-icon">[📄]</div>
+                                    <div class="resource-info">
+                                        <div class="resource-name">第三回导读单：大闹天宫</div>
+                                        <div class="resource-meta">格式：PNG | 大小：2.8MB | 上传时间：2024-01-17 09:30</div>
+                                    </div>
+                                </div>
+                                <div class="resource-actions">
+                                    <a href="#">预览</a>
+                                    <a href="#">下载</a>
+                                    <a href="#">删除</a>
+                                </div>
+                            </div>
+                            <div class="resource-item">
+                                <div class="resource-item-left">
+                                    <div class="resource-icon">[📄]</div>
+                                    <div class="resource-info">
+                                        <div class="resource-name">第四回导读单：取经之路</div>
+                                        <div class="resource-meta">格式：PNG | 大小：2.6MB | 上传时间：2024-01-18 10:15</div>
+                                    </div>
+                                </div>
+                                <div class="resource-actions">
+                                    <a href="#">预览</a>
+                                    <a href="#">下载</a>
+                                    <a href="#">删除</a>
+                                </div>
+                            </div>
+                            <div class="resource-item">
+                                <div class="resource-item-left">
+                                    <div class="resource-icon">[📄]</div>
+                                    <div class="resource-info">
+                                        <div class="resource-name">第五回导读单：师徒情深</div>
+                                        <div class="resource-meta">格式：PNG | 大小：2.4MB | 上传时间：2024-01-19 11:00</div>
+                                    </div>
+                                </div>
+                                <div class="resource-actions">
+                                    <a href="#">预览</a>
+                                    <a href="#">下载</a>
+                                    <a href="#">删除</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 相关阅读计划 -->
+                    <div class="info-card">
+                        <div class="info-card-title">相关阅读计划（12个）</div>
+                        <div class="table-container">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>计划名称</th>
+                                        <th>适合年级</th>
+                                        <th>参与学生数</th>
+                                        <th>开始时间</th>
+                                        <th>结束时间</th>
+                                        <th>状态</th>
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>2024春季阅读计划</td>
+                                        <td>三年级</td>
+                                        <td>45</td>
+                                        <td>2024-03-01</td>
+                                        <td>2024-06-30</td>
+                                        <td><span class="status-badge active">进行中</span></td>
+                                        <td><a href="#">查看</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td>名著阅读专项计划</td>
+                                        <td>三年级</td>
+                                        <td>38</td>
+                                        <td>2024-02-15</td>
+                                        <td>2024-05-15</td>
+                                        <td><span class="status-badge active">进行中</span></td>
+                                        <td><a href="#">查看</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td>寒假阅读计划</td>
+                                        <td>三年级</td>
+                                        <td>52</td>
+                                        <td>2024-01-20</td>
+                                        <td>2024-02-20</td>
+                                        <td><span class="status-badge">已结束</span></td>
+                                        <td><a href="#">查看</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td>四大名著阅读计划</td>
+                                        <td>四年级</td>
+                                        <td>41</td>
+                                        <td>2024-03-10</td>
+                                        <td>2024-07-10</td>
+                                        <td><span class="status-badge active">进行中</span></td>
+                                        <td><a href="#">查看</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td>经典文学阅读计划</td>
+                                        <td>三年级</td>
+                                        <td>36</td>
+                                        <td>2024-01-01</td>
+                                        <td>2024-03-31</td>
+                                        <td><span class="status-badge">已结束</span></td>
+                                        <td><a href="#">查看</a></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    function toggleMenu(element) {
+        const menuGroup = element.parentElement;
+        menuGroup.classList.toggle('expanded');
+    }
+    </script>
+</body>
+</html>
