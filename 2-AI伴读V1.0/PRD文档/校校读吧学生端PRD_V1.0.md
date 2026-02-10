@@ -120,11 +120,24 @@
 
 **典型用户旅程：小学生完成每日阅读打卡**
 
-```
-[打开APP]  →  [查看今日任务]  →  [进入打卡页面]  →  [完成阅读打卡]  →  [获得积分奖励]
-    ↓              ↓                  ↓                  ↓                  ↓
-  期待😊        明确目标📋         专注阅读📖         成就感🎉          满足感⭐
-  好奇心         任务清晰           操作简单           即时反馈          持续动力
+```mermaid
+graph LR
+    A[打开APP] --> B[查看今日任务]
+    B --> C[进入打卡页面]
+    C --> D[完成阅读打卡]
+    D --> E[获得积分奖励]
+
+    A -.情绪.-> A1[期待😊<br/>好奇心]
+    B -.情绪.-> B1[明确目标📋<br/>任务清晰]
+    C -.情绪.-> C1[专注阅读📖<br/>操作简单]
+    D -.情绪.-> D1[成就感🎉<br/>即时反馈]
+    E -.情绪.-> E1[满足感⭐<br/>持续动力]
+
+    style A1 fill:#f9f,stroke:#333,stroke-width:2px
+    style B1 fill:#f9f,stroke:#333,stroke-width:2px
+    style C1 fill:#f9f,stroke:#333,stroke-width:2px
+    style D1 fill:#f9f,stroke:#333,stroke-width:2px
+    style E1 fill:#f9f,stroke:#333,stroke-width:2px
 ```
 
 **关键触点与优化方向：**
@@ -143,36 +156,71 @@
 
 ### 4.1 功能架构图
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                        校校读吧学生端                             │
-├─────────────────────────────────────────────────────────────────┤
-│         ┌─────────┐    ┌─────────┐    ┌─────────┐              │
-│         │  首页   │    │  书架   │    │  我的   │              │
-│         └────┬────┘    └────┬────┘    └────┬────┘              │
-│              │              │              │                    │
-│         ┌────┴────┐    ┌────┴────┐    ┌────┴────┐              │
-│         │顶部消息 │    │阅读计划 │    │个人信息 │              │
-│         │今日任务 │    │书籍列表 │    │我的阅读 │              │
-│         │阅读打卡 │    │书籍详情 │    │等级勋章 │              │
-│         │AI导语  │    │阅读书籍 │    │我的奖状 │              │
-│         │班级排行 │    └─────────┘    │积分明细 │              │
-│         │资讯动态 │                    │班级广场 │              │
-│         └─────────┘                    │阅读图谱 │              │
-│                                        │阅读图谱 │              │
-│  ┌─────────────────────────────────┐   │用户反馈 │              │
-│  │           测评模块              │   │账号设置 │              │
-│  │  测评答题 → 测评结果 → 答案详情  │   └─────────┘              │
-│  └─────────────────────────────────┘                           │
-│                                                                 │
-│  ┌─────────────────────────────────┐                           │
-│  │           消息模块              │                           │
-│  │  消息列表 → 消息详情（从首页顶部进入）                        │
-│  └─────────────────────────────────┘                           │
-└─────────────────────────────────────────────────────────────────┘
+```mermaid
+graph TB
+    App[校校读吧学生端]
+
+    subgraph 底部导航
+        Home[首页]
+        Bookshelf[书架]
+        Mine[我的]
+    end
+
+    App --> Home
+    App --> Bookshelf
+    App --> Mine
+
+    subgraph 首页模块
+        Home --> TopMsg[顶部消息]
+        Home --> TodayTask[今日任务]
+        Home --> CheckIn[阅读打卡]
+        Home --> AIGuide[AI导语]
+        Home --> ClassRank[班级排行]
+        Home --> News[资讯动态]
+    end
+
+    subgraph 书架模块
+        Bookshelf --> ReadPlan[阅读计划]
+        Bookshelf --> BookList[书籍列表]
+        Bookshelf --> BookDetail[书籍详情]
+        Bookshelf --> ReadBook[阅读书籍]
+    end
+
+    subgraph 我的模块
+        Mine --> Profile[个人信息]
+        Mine --> MyRead[我的阅读]
+        Mine --> LevelBadge[等级勋章]
+        Mine --> MyCert[我的奖状]
+        Mine --> Points[积分明细]
+        Mine --> ClassSquare[班级广场]
+        Mine --> ReadMap[阅读图谱]
+        Mine --> Feedback[用户反馈]
+        Mine --> Settings[账号设置]
+    end
+
+    subgraph 测评模块
+        Exam[测评模块]
+        Exam --> ExamAnswer[测评答题]
+        ExamAnswer --> ExamResult[测评结果]
+        ExamResult --> ExamDetail[答案详情]
+    end
+
+    subgraph 消息模块
+        Message[消息模块]
+        TopMsg --> Message
+        Message --> MsgList[消息列表]
+        MsgList --> MsgDetail[消息详情]
+    end
+
+    style App fill:#36CFC9,stroke:#333,stroke-width:3px,color:#fff
+    style Home fill:#FFC857,stroke:#333,stroke-width:2px
+    style Bookshelf fill:#FFC857,stroke:#333,stroke-width:2px
+    style Mine fill:#FFC857,stroke:#333,stroke-width:2px
 ```
 
 ### 4.2 功能结构树
+
+由于功能结构树层级较深，这里保留原始文本格式以便查看完整层级关系
 
 ```
 校校读吧学生端
@@ -302,6 +350,58 @@
             └── 反馈记录
 ```
 
+**简化版Mermaid流程图（主要模块）：**
+
+```mermaid
+graph TD
+    Root[校校读吧学生端]
+
+    Root --> Login[登录流程]
+    Root --> JoinClass[加入班级]
+    Root --> HomeTab[首页Tab]
+    Root --> BookshelfTab[书架Tab]
+    Root --> MineTab[我的Tab]
+
+    Login --> WechatLogin[微信授权登录]
+    Login --> PhoneLogin[手机号验证码登录]
+
+    JoinClass --> ClassConfirm[班级信息确认]
+    JoinClass --> JoinSuccess[加入成功]
+
+    HomeTab --> TopBar[顶部信息栏]
+    HomeTab --> TodayTask[今日任务卡片]
+    HomeTab --> ReadStats[阅读统计区]
+    HomeTab --> ClassRank[班级排行榜]
+    HomeTab --> NewsList[资讯列表]
+
+    TodayTask --> CheckInTask[阅读打卡任务]
+    TodayTask --> ExamTask[测评任务]
+    TodayTask --> AIGuideTask[导读视频任务]
+
+    BookshelfTab --> BookFilter[状态筛选]
+    BookshelfTab --> BookCards[书籍卡片列表]
+    BookCards --> BookDetail[书籍详情页]
+    BookDetail --> ReadBook[阅读书籍]
+    BookDetail --> ExamList[测评列表]
+
+    MineTab --> ProfileInfo[个人信息区]
+    MineTab --> FuncList[功能入口列表]
+
+    FuncList --> MyRead[我的阅读]
+    FuncList --> LevelBadge[等级勋章]
+    FuncList --> MyCert[我的奖状]
+    FuncList --> PointsDetail[积分明细]
+    FuncList --> ReadMap[阅读图谱]
+    FuncList --> ClassSquare[班级广场]
+    FuncList --> ClassRankFull[班级排行榜]
+    FuncList --> UserFeedback[用户反馈]
+
+    style Root fill:#36CFC9,stroke:#333,stroke-width:3px,color:#fff
+    style HomeTab fill:#FFC857,stroke:#333,stroke-width:2px
+    style BookshelfTab fill:#FFC857,stroke:#333,stroke-width:2px
+    style MineTab fill:#FFC857,stroke:#333,stroke-width:2px
+```
+
 ### 4.3 功能清单
 
 **优先级说明：**
@@ -396,110 +496,151 @@
 
 #### 4.4.1 用户登录流程
 
-```
-开始 → 打开APP → 选择登录方式
-                       ↓
-        ┌──────────────┴──────────────┐
-        ↓                              ↓
-   微信授权登录                  手机号验证码登录
-        ↓                              ↓
-   微信授权确认                   输入手机号
-        ↓                              ↓
-   获取用户信息                   获取验证码
-        ↓                              ↓
-        └──────────────┬──────────────┘
-                       ↓
-                   登录成功
-                       ↓
-                   进入首页
+```mermaid
+graph TD
+    Start[开始] --> OpenApp[打开APP]
+    OpenApp --> ChooseLogin[选择登录方式]
+
+    ChooseLogin --> WechatAuth[微信授权登录]
+    ChooseLogin --> PhoneLogin[手机号验证码登录]
+
+    WechatAuth --> WechatConfirm[微信授权确认]
+    WechatConfirm --> GetUserInfo[获取用户信息]
+
+    PhoneLogin --> InputPhone[输入手机号]
+    InputPhone --> GetCode[获取验证码]
+
+    GetUserInfo --> LoginSuccess[登录成功]
+    GetCode --> LoginSuccess
+
+    LoginSuccess --> EnterHome[进入首页]
+
+    style Start fill:#f9f,stroke:#333,stroke-width:2px
+    style LoginSuccess fill:#9f9,stroke:#333,stroke-width:2px
+    style EnterHome fill:#9f9,stroke:#333,stroke-width:2px
 ```
 
 #### 4.4.2 加入班级流程
 
-```
-老师分享班级链接 → 学生点击链接 → 打开APP
-                                    ↓
-                              是否已登录？
-                                    ↓
-                    是 ←────────────┴────────────→ 否
-                    ↓                              ↓
-              显示班级信息                    跳转登录页
-                    ↓                              ↓
-              确认加入班级                    完成登录
-                    ↓                              ↓
-              加入成功                        返回班级信息页
-                    ↓                              ↓
-              查看该班级阅读计划 ←──────────────────┘
+```mermaid
+graph TD
+    Start[老师分享班级链接] --> StudentClick[学生点击链接]
+    StudentClick --> OpenApp[打开APP]
+    OpenApp --> CheckLogin{是否已登录}
+
+    CheckLogin -->|是| ShowClassInfo[显示班级信息]
+    CheckLogin -->|否| GoLogin[跳转登录页]
+
+    ShowClassInfo --> ConfirmJoin[确认加入班级]
+    GoLogin --> FinishLogin[完成登录]
+
+    ConfirmJoin --> JoinSuccess[加入成功]
+    FinishLogin --> BackToClass[返回班级信息页]
+
+    JoinSuccess --> ViewPlan[查看该班级阅读计划]
+    BackToClass --> ViewPlan
+
+    style Start fill:#f9f,stroke:#333,stroke-width:2px
+    style CheckLogin fill:#ff9,stroke:#333,stroke-width:2px
+    style JoinSuccess fill:#9f9,stroke:#333,stroke-width:2px
+    style ViewPlan fill:#9f9,stroke:#333,stroke-width:2px
 ```
 
 #### 4.4.3 阅读打卡流程
 
-```
-首页 → 点击"去打卡" → 打卡页面 → 查看今日任务
-                                    ↓
-                              上传导读单、阅读书籍图片（必填）
-                                    ↓
-                              输入阅读心得（可选）
-                                    ↓
-                              提交打卡
-                                    ↓
-                              打卡成功页
-                                    ↓
-                    ┌───────────────┼───────────────┐
-                    ↓               ↓               ↓
-              查看AI点评      查看参考答案      返回首页
+```mermaid
+graph TD
+    Start[首页] --> ClickCheckIn[点击"去打卡"]
+    ClickCheckIn --> CheckInPage[打卡页面]
+    CheckInPage --> ViewTask[查看今日任务]
+    ViewTask --> UploadImages[上传导读单、阅读书籍图片<br/>必填]
+    UploadImages --> InputThoughts[输入阅读心得<br/>可选]
+    InputThoughts --> Submit[提交打卡]
+    Submit --> SuccessPage[打卡成功页]
+
+    SuccessPage --> ViewAI[查看AI点评]
+    SuccessPage --> ViewAnswer[查看参考答案]
+    SuccessPage --> BackHome[返回首页]
+
+    style Start fill:#f9f,stroke:#333,stroke-width:2px
+    style SuccessPage fill:#9f9,stroke:#333,stroke-width:2px
+    style UploadImages fill:#ff9,stroke:#333,stroke-width:2px
 ```
 
 #### 4.4.4 测评答题流程
 
-```
-测评入口 → 测评列表 → 选择测评 → 开始答题
-                                    ↓
-                              显示题目
-                                    ↓
-                              选择答案
-                                    ↓
-                              下一题/提交
-                                    ↓
-                    未完成 ←────┴────→ 已完成
-                    ↓                    ↓
-                返回答题              提交答卷
-                                        ↓
-                                    测评结果页
-                                        ↓
-                        ┌───────────────┼───────────────┐
-                        ↓               ↓               ↓
-                  查看答案详情     查看/分享奖状     返回首页
+```mermaid
+graph TD
+    Start[测评入口] --> ExamList[测评列表]
+    ExamList --> SelectExam[选择测评]
+    SelectExam --> StartAnswer[开始答题]
+    StartAnswer --> ShowQuestion[显示题目]
+    ShowQuestion --> SelectAnswer[选择答案]
+    SelectAnswer --> NextOrSubmit{下一题/提交}
+
+    NextOrSubmit -->|未完成| BackToAnswer[返回答题]
+    NextOrSubmit -->|已完成| SubmitExam[提交答卷]
+
+    BackToAnswer --> ShowQuestion
+    SubmitExam --> ResultPage[测评结果页]
+
+    ResultPage --> ViewDetail[查看答案详情]
+    ResultPage --> ViewCert[查看/分享奖状]
+    ResultPage --> BackHome[返回首页]
+
+    style Start fill:#f9f,stroke:#333,stroke-width:2px
+    style NextOrSubmit fill:#ff9,stroke:#333,stroke-width:2px
+    style ResultPage fill:#9f9,stroke:#333,stroke-width:2px
 ```
 
 ### 4.5 业务模型
 
 #### 4.5.1 角色关系模型
 
-```
-┌─────────────────────────────────────────────────────────┐
-│                      业务角色关系                        │
-└─────────────────────────────────────────────────────────┘
+```mermaid
+graph TB
+    subgraph 老师端
+        Teacher[老师]
+    end
 
-    老师端                    学生端                  系统
-      │                        │                      │
-      ├─ 创建班级 ──────────────┼──────────────────────┤
-      │                        │                      │
-      ├─ 发布阅读计划 ──────────┼──────────────────────┤
-      │   ├─ 选择书籍           │                      │
-      │   ├─ 设置任务           │                      │
-      │   └─ 发布测评           │                      │
-      │                        │                      │
-      │                   学生加入班级                 │
-      │                        │                      │
-      │                        ├─ 查看阅读计划         │
-      │                        ├─ 完成阅读打卡 ────────┤
-      │                        ├─ 参与测评答题 ────────┤
-      │                        ├─ 获得积分奖励 ────────┤
-      │                        │                      │
-      ├─ 查看学生打卡 ──────────┼──────────────────────┤
-      ├─ 查看测评成绩 ──────────┼──────────────────────┤
-      └─ 查看班级统计 ──────────┼──────────────────────┘
+    subgraph 学生端
+        Student[学生]
+    end
+
+    subgraph 系统
+        System[系统]
+        Class[班级]
+        Plan[阅读计划]
+        Book[书籍]
+        Task[任务]
+        Exam[测评]
+        CheckIn[打卡]
+        Points[积分]
+    end
+
+    Teacher -->|创建| Class
+    Teacher -->|发布| Plan
+    Plan -->|选择| Book
+    Plan -->|设置| Task
+    Plan -->|发布| Exam
+
+    Student -->|加入| Class
+    Student -->|查看| Plan
+    Student -->|完成| CheckIn
+    Student -->|参与| Exam
+    Student -->|获得| Points
+
+    Teacher -->|查看| CheckIn
+    Teacher -->|查看| Exam
+    Teacher -->|查看| System
+
+    CheckIn -->|记录到| System
+    Exam -->|记录到| System
+    Points -->|记录到| System
+
+    style Teacher fill:#FFC857,stroke:#333,stroke-width:2px
+    style Student fill:#36CFC9,stroke:#333,stroke-width:2px
+    style System fill:#f9f,stroke:#333,stroke-width:2px
 ```
 
 **核心关系：**
@@ -518,295 +659,239 @@
 
 **加入班级业务流程**
 
-```
-老师端                          学生端                      系统
-  │                              │                          │
-  ├─ 生成班级分享链接             │                          │
-  │   └─ 设置有效期               │                          │
-  │                              │                          │
-  ├─ 分享链接给学生 ──────────────>│                          │
-  │                              │                          │
-  │                              ├─ 点击链接打开APP          │
-  │                              │                          │
-  │                              ├─ 是否已登录？             │
-  │                              │   ├─ 否 → 跳转登录        │
-  │                              │   └─ 是 → 继续            │
-  │                              │                          │
-  │                              ├─ 显示班级信息确认页       │
-  │                              │                          │
-  │                              ├─ 确认加入 ────────────────>│
-  │                              │                          │
-  │                              │                    验证链接有效性
-  │                              │                    检查是否已加入其他班级
-  │                              │                          │
-  │                              │<──────────── 加入成功/失败 │
-  │                              │                          │
-  │<──────────── 通知老师新成员加入│                          │
-  │                              │                          │
-  │                              ├─ 查看班级阅读计划          │
-  │                              │                          │
+```mermaid
+sequenceDiagram
+    participant Teacher as 老师端
+    participant Student as 学生端
+    participant System as 系统
+
+    Teacher->>Teacher: 生成班级分享链接
+    Note right of Teacher: 设置有效期
+    Teacher->>Student: 分享链接给学生
+
+    Student->>Student: 点击链接打开APP
+
+    alt 未登录
+        Student->>Student: 跳转登录
+        Student->>Student: 完成登录
+    else 已登录
+        Student->>Student: 继续
+    end
+
+    Student->>Student: 显示班级信息确认页
+    Student->>System: 确认加入
+
+    System->>System: 验证链接有效性
+    System->>System: 检查是否已加入其他班级
+
+    alt 加入成功
+        System->>Student: 加入成功
+        System->>Teacher: 通知老师新成员加入
+        Student->>Student: 查看班级阅读计划
+    else 加入失败
+        System->>Student: 加入失败
+    end
 ```
 
 **阅读打卡业务流程**
 
-```
-学生端                          系统                      老师端
-  │                              │                          │
-  ├─ 查看今日阅读任务             │                          │
-  │                              │                          │
-  ├─ 线下完成阅读                 │                          │
-  │   └─ 填写纸质导读单           │                          │
-  │                              │                          │
-  ├─ 打开打卡页面                 │                          │
-  │                              │                          │
-  ├─ 拍照上传导读单 ──────────────>│                          │
-  ├─ 拍照上传阅读书籍 ────────────>│                          │
-  ├─ 输入阅读心得 ────────────────>│                          │
-  │                              │                          │
-  ├─ 提交打卡 ────────────────────>│                          │
-  │                              │                          │
-  │                         验证打卡数据                      │
-  │                         检查今日是否已打卡                │
-  │                         保存打卡记录                      │
-  │                         更新阅读进度                      │
-  │                         计算连续打卡天数                  │
-  │                         发放积分奖励                      │
-  │                         AI生成点评                       │
-  │                              │                          │
-  │<──────────── 打卡成功+积分奖励 │                          │
-  │                              │                          │
-  ├─ 查看AI点评                   │                          │
-  ├─ 查看参考答案                 │                          │
-  │                              │                          │
-  │                              ├─────────────> 通知老师学生已打卡
-  │                              │                          │
-  │                              │                    老师查看打卡详情
-  │                              │                          │
+```mermaid
+sequenceDiagram
+    participant Student as 学生端
+    participant System as 系统
+    participant Teacher as 老师端
+
+    Student->>Student: 查看今日阅读任务
+    Student->>Student: 线下完成阅读
+    Note right of Student: 填写纸质导读单
+
+    Student->>Student: 打开打卡页面
+    Student->>System: 拍照上传导读单
+    Student->>System: 拍照上传阅读书籍
+    Student->>System: 输入阅读心得
+    Student->>System: 提交打卡
+
+    System->>System: 验证打卡数据
+    System->>System: 检查今日是否已打卡
+    System->>System: 保存打卡记录
+    System->>System: 更新阅读进度
+    System->>System: 计算连续打卡天数
+    System->>System: 发放积分奖励
+    System->>System: AI生成点评
+
+    System->>Student: 打卡成功+积分奖励
+    Student->>Student: 查看AI点评
+    Student->>Student: 查看参考答案
+
+    System->>Teacher: 通知老师学生已打卡
+    Teacher->>Teacher: 老师查看打卡详情
 ```
 
 **测评答题业务流程**
 
-```
-老师端                          学生端                      系统
-  │                              │                          │
-  ├─ 创建测评                     │                          │
-  │   ├─ 选择书籍                 │                          │
-  │   ├─ 添加题目                 │                          │
-  │   ├─ 设置分值                 │                          │
-  │   └─ 发布测评 ────────────────>│                          │
-  │                              │                          │
-  │                              ├─ 查看测评列表              │
-  │                              │                          │
-  │                              ├─ 开始答题                 │
-  │                              │                          │
-  │                              ├─ 逐题作答 ────────────────>│
-  │                              │                    保存答题进度
-  │                              │                          │
-  │                              ├─ 提交答卷 ────────────────>│
-  │                              │                          │
-  │                              │                    自动评分
-  │                              │                    计算正确率
-  │                              │                    发放积分
-  │                              │                    生成奖状（整本书测评）
-  │                              │                    更新能力图谱
-  │                              │                          │
-  │                              │<──────────── 测评结果+奖励 │
-  │                              │                          │
-  │                              ├─ 查看成绩                 │
-  │                              ├─ 查看答案解析             │
-  │                              ├─ 查看/分享奖状            │
-  │                              │                          │
-  │<──────────────────────────────┼────────── 通知老师测评完成│
-  │                              │                          │
-  ├─ 查看学生成绩                 │                          │
-  ├─ 查看班级统计                 │                          │
-  │                              │                          │
+```mermaid
+sequenceDiagram
+    participant Teacher as 老师端
+    participant Student as 学生端
+    participant System as 系统
+
+    Teacher->>Teacher: 创建测评
+    Note right of Teacher: 选择书籍<br/>添加题目<br/>设置分值
+    Teacher->>Student: 发布测评
+
+    Student->>Student: 查看测评列表
+    Student->>Student: 开始答题
+    Student->>System: 逐题作答
+    Note right of System: 保存答题进度
+
+    Student->>System: 提交答卷
+
+    System->>System: 自动评分
+    System->>System: 计算正确率
+    System->>System: 发放积分
+    System->>System: 生成奖状（整本书测评）
+    System->>System: 更新能力图谱
+
+    System->>Student: 测评结果+奖励
+
+    Student->>Student: 查看成绩
+    Student->>Student: 查看答案解析
+    Student->>Student: 查看/分享奖状
+
+    System->>Teacher: 通知老师测评完成
+    Teacher->>Teacher: 查看学生成绩
+    Teacher->>Teacher: 查看班级统计
 ```
 
 #### 4.5.3 数据流转关系
 
 **打卡数据流转**
 
-```
-学生端                    服务器                    老师端
-  │                        │                        │
-  ├─ 打卡数据               │                        │
-  │   ├─ 图片（导读单）     │                        │
-  │   ├─ 图片（书籍）       │                        │
-  │   ├─ 阅读心得           │                        │
-  │   └─ 打卡时间 ─────────>│                        │
-  │                        │                        │
-  │                   存储打卡记录                    │
-  │                   更新统计数据                    │
-  │                   ├─ 连续打卡天数                │
-  │                   ├─ 累计阅读本数                │
-  │                   ├─ 阅读进度                    │
-  │                   └─ 班级排名                    │
-  │                        │                        │
-  │<──── 打卡成功反馈 ──────┤                        │
-  │<──── AI点评 ────────────┤                        │
-  │<──── 积分奖励 ──────────┤                        │
-  │                        │                        │
-  │                        ├───────────────────────>│
-  │                        │      推送打卡通知       │
-  │                        │                        │
-  │                        │                   老师查看打卡
-  │                        │<───────────────────────┤
-  │                        │      请求打卡详情       │
-  │                        │                        │
-  │                        ├───────────────────────>│
-  │                        │      返回打卡数据       │
-  │                        │                        │
+```mermaid
+sequenceDiagram
+    participant Student as 学生端
+    participant Server as 服务器
+    participant Teacher as 老师端
+
+    Student->>Server: 打卡数据
+    Note right of Student: 图片（导读单）<br/>图片（书籍）<br/>阅读心得<br/>打卡时间
+
+    Server->>Server: 存储打卡记录
+    Server->>Server: 更新统计数据
+    Note right of Server: 连续打卡天数<br/>累计阅读本数<br/>阅读进度<br/>班级排名
+
+    Server->>Student: 打卡成功反馈
+    Server->>Student: AI点评
+    Server->>Student: 积分奖励
+
+    Server->>Teacher: 推送打卡通知
+    Teacher->>Teacher: 老师查看打卡
+    Teacher->>Server: 请求打卡详情
+    Server->>Teacher: 返回打卡数据
 ```
 
 **测评数据流转**
 
-```
-老师端                    服务器                    学生端
-  │                        │                        │
-  ├─ 测评数据               │                        │
-  │   ├─ 题目内容           │                        │
-  │   ├─ 正确答案           │                        │
-  │   ├─ 答案解析           │                        │
-  │   └─ 分值设置 ─────────>│                        │
-  │                        │                        │
-  │                   存储测评数据                    │
-  │                        │                        │
-  │                        ├───────────────────────>│
-  │                        │      推送测评任务       │
-  │                        │                        │
-  │                        │                   学生答题
-  │                        │<───────────────────────┤
-  │                        │      提交答案           │
-  │                        │                        │
-  │                   自动评分                        │
-  │                   生成成绩报告                    │
-  │                   更新统计数据                    │
-  │                        │                        │
-  │                        ├───────────────────────>│
-  │                        │      返回成绩+解析      │
-  │                        │                        │
-  │<───────────────────────┤                        │
-  │      推送成绩通知       │                        │
-  │                        │                        │
-  ├─ 查看班级成绩统计       │                        │
-  │<───────────────────────┤                        │
-  │                        │                        │
+```mermaid
+sequenceDiagram
+    participant Teacher as 老师端
+    participant Server as 服务器
+    participant Student as 学生端
+
+    Teacher->>Server: 测评数据
+    Note right of Teacher: 题目内容<br/>正确答案<br/>答案解析<br/>分值设置
+
+    Server->>Server: 存储测评数据
+    Server->>Student: 推送测评任务
+
+    Student->>Student: 学生答题
+    Student->>Server: 提交答案
+
+    Server->>Server: 自动评分
+    Server->>Server: 生成成绩报告
+    Server->>Server: 更新统计数据
+
+    Server->>Student: 返回成绩+解析
+    Server->>Teacher: 推送成绩通知
+
+    Teacher->>Server: 查看班级成绩统计
+    Server->>Teacher: 返回统计数据
 ```
 
 **积分数据流转**
 
-```
-学生行为                  系统                    积分变化
-  │                        │                        │
-  ├─ 完成打卡 ─────────────>│                        │
-  │                   验证打卡有效性                  │
-  │                        ├───────────────────────>│
-  │                        │      +5积分             │
-  │                        │                        │
-  ├─ 连续打卡7天 ──────────>│                        │
-  │                   检查连续打卡记录                │
-  │                        ├───────────────────────>│
-  │                        │      +10积分（奖励）    │
-  │                        │                        │
-  ├─ 完成测评 ─────────────>│                        │
-  │                   根据成绩计算积分                │
-  │                        ├───────────────────────>│
-  │                        │      +20积分            │
-  │                        │                        │
-  ├─ 观看导读视频 ──────────>│                        │
-  │                   验证观看完成                    │
-  │                        ├───────────────────────>│
-  │                        │      +5积分             │
-  │                        │                        │
-  │                   累计积分                        │
-  │                   计算等级                        │
-  │                   判断勋章获得条件                │
-  │                        │                        │
-  │<──── 积分变化通知 ──────┤                        │
-  │<──── 等级提升通知 ──────┤                        │
-  │<──── 勋章获得通知 ──────┤                        │
-  │                        │                        │
+```mermaid
+sequenceDiagram
+    participant Behavior as 学生行为
+    participant System as 系统
+    participant Points as 积分变化
+
+    Behavior->>System: 完成打卡
+    System->>System: 验证打卡有效性
+    System->>Points: +5积分
+
+    Behavior->>System: 连续打卡7天
+    System->>System: 检查连续打卡记录
+    System->>Points: +10积分（奖励）
+
+    Behavior->>System: 完成测评
+    System->>System: 根据成绩计算积分
+    System->>Points: +20积分
+
+    Behavior->>System: 观看导读视频
+    System->>System: 验证观看完成
+    System->>Points: +5积分
+
+    System->>System: 累计积分
+    System->>System: 计算等级
+    System->>System: 判断勋章获得条件
+
+    System->>Behavior: 积分变化通知
+    System->>Behavior: 等级提升通知
+    System->>Behavior: 勋章获得通知
 ```
 
 #### 4.5.4 状态流转图
 
 **书籍阅读状态**
 
-```
-    ┌──────────┐
-    │ 未开始   │
-    └────┬─────┘
-         │ 学生开始阅读
-         ↓
-    ┌──────────┐
-    │  在读    │<──────┐
-    └────┬─────┘       │
-         │             │ 继续阅读
-         │ 完成所有章节 │
-         ↓             │
-    ┌──────────┐       │
-    │  已读    │───────┘
-    └──────────┘
+```mermaid
+stateDiagram-v2
+    [*] --> 未开始
+    未开始 --> 在读: 学生开始阅读
+    在读 --> 在读: 继续阅读
+    在读 --> 已读: 完成所有章节
+    已读 --> [*]
 ```
 
 **测评状态**
 
-```
-    ┌──────────┐
-    │ 待完成   │
-    └────┬─────┘
-         │ 开始答题
-         ↓
-    ┌──────────┐
-    │ 答题中   │
-    └────┬─────┘
-         │ 提交答卷
-         ↓
-    ┌──────────┐
-    │ 已完成   │
-    └──────────┘
+```mermaid
+stateDiagram-v2
+    [*] --> 待完成
+    待完成 --> 答题中: 开始答题
+    答题中 --> 已完成: 提交答卷
+    已完成 --> [*]
 ```
 
 **打卡状态（每日重置）**
 
-```
-    ┌──────────┐
-    │ 未打卡   │
-    └────┬─────┘
-         │ 提交打卡
-         ↓
-    ┌──────────┐
-    │ 已打卡   │
-    └────┬─────┘
-         │ 每日0点
-         ↓
-    ┌──────────┐
-    │ 未打卡   │（重置）
-    └──────────┘
+```mermaid
+stateDiagram-v2
+    [*] --> 未打卡
+    未打卡 --> 已打卡: 提交打卡
+    已打卡 --> 未打卡: 每日0点重置
 ```
 
 **班级成员状态**
 
-```
-    ┌──────────┐
-    │ 未加入   │
-    └────┬─────┘
-         │ 点击班级链接
-         ↓
-    ┌──────────┐
-    │ 待确认   │
-    └────┬─────┘
-         │ 确认加入
-         ↓
-    ┌──────────┐
-    │ 已加入   │
-    └────┬─────┘
-         │ 退出班级
-         ↓
-    ┌──────────┐
-    │ 已退出   │
-    └──────────┘
+```mermaid
+stateDiagram-v2
+    [*] --> 未加入
+    未加入 --> 待确认: 点击班级链接
+    待确认 --> 已加入: 确认加入
+    已加入 --> 已退出: 退出班级
+    已退出 --> [*]
 ```
 
 ---
@@ -2432,16 +2517,16 @@
 
 **菜单项：**
 
-| 菜单       | 功能         | 跳转页面                 |
-| ---------- | ------------ | ------------------------ |
-| 我的阅读   | 查看阅读统计 | F024-我的阅读            |
-| 等级勋章   | 查看等级勋章 | F025-等级勋章            |
-| 我的奖状   | 查看奖状     | F026-我的奖状            |
-| 积分明细   | 查看积分     | F027-积分明细            |
-| 阅读图谱   | 查看能力图谱 | F028-阅读能力图谱        |
-| 班级广场   | 进入班级广场 | F029-班级广场            |
-| 班级排行榜 | 查看排行榜   | F030-班级排行榜          |
-| 用户反馈   | 提交反馈     | F031-用户反馈            |
+| 菜单       | 功能         | 跳转页面          |
+| ---------- | ------------ | ----------------- |
+| 我的阅读   | 查看阅读统计 | F024-我的阅读     |
+| 等级勋章   | 查看等级勋章 | F025-等级勋章     |
+| 我的奖状   | 查看奖状     | F026-我的奖状     |
+| 积分明细   | 查看积分     | F027-积分明细     |
+| 阅读图谱   | 查看能力图谱 | F028-阅读能力图谱 |
+| 班级广场   | 进入班级广场 | F029-班级广场     |
+| 班级排行榜 | 查看排行榜   | F030-班级排行榜   |
+| 用户反馈   | 提交反馈     | F031-用户反馈     |
 
 **验收标准：**
 
@@ -3732,18 +3817,18 @@
 
 #### 7.2.1 打卡数据
 
-| 数据项     | 类型     | 必填 | 说明              | 存储要求   |
-| ---------- | -------- | ---- | ----------------- | ---------- |
-| 打卡ID     | String   | 是   | 打卡记录唯一标识  | 系统生成   |
-| 用户ID     | String   | 是   | 打卡学生          | 关联用户表 |
-| 书籍ID     | String   | 是   | 打卡书籍          | 关联书籍表 |
-| 计划ID     | String   | 是   | 所属阅读计划      | 关联计划表 |
-| 打卡时间   | DateTime | 是   | 提交打卡时间      | 精确到秒   |
-| 打卡图片   | Array    | 是   | 打卡照片URL列表   | 最多9张    |
-| 阅读心得   | String   | 否   | 学生填写的心得    | 最多500字  |
-| AI点评     | String   | 否   | AI生成的点评内容  | 系统生成   |
-| 获得积分   | Integer  | 是   | 本次打卡获得积分  | 默认5分    |
-| 是否连续   | Boolean  | 是   | 是否连续打卡      | 系统判断   |
+| 数据项   | 类型     | 必填 | 说明             | 存储要求   |
+| -------- | -------- | ---- | ---------------- | ---------- |
+| 打卡ID   | String   | 是   | 打卡记录唯一标识 | 系统生成   |
+| 用户ID   | String   | 是   | 打卡学生         | 关联用户表 |
+| 书籍ID   | String   | 是   | 打卡书籍         | 关联书籍表 |
+| 计划ID   | String   | 是   | 所属阅读计划     | 关联计划表 |
+| 打卡时间 | DateTime | 是   | 提交打卡时间     | 精确到秒   |
+| 打卡图片 | Array    | 是   | 打卡照片URL列表  | 最多9张    |
+| 阅读心得 | String   | 否   | 学生填写的心得   | 最多500字  |
+| AI点评   | String   | 否   | AI生成的点评内容 | 系统生成   |
+| 获得积分 | Integer  | 是   | 本次打卡获得积分 | 默认5分    |
+| 是否连续 | Boolean  | 是   | 是否连续打卡     | 系统判断   |
 
 #### 7.2.2 测评数据
 

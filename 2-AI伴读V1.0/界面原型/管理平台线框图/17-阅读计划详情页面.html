@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>阅读计划详情 - 校校读吧管理平台</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: #f5f5f5;
+            padding: 24px;
+        }
+
+        /* 页面头部 */
+        .page-header {
+            margin-bottom: 24px;
+        }
+        .breadcrumb {
+            font-size: 14px;
+            color: #999;
+            margin-bottom: 12px;
+        }
+        .breadcrumb a {
+            color: #666;
+            text-decoration: none;
+        }
+        .page-title {
+            font-size: 20px;
+            font-weight: 500;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .btn-back {
+            padding: 6px 16px;
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            font-size: 14px;
+            color: #666;
+            cursor: pointer;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            background: #e8f5e9;
+            color: #4caf50;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .status-badge.draft {
+            background: #e0e0e0;
+            color: #666;
+        }
+
+        .status-badge.ended {
+            background: #ffebee;
+            color: #f44336;
+        }
+
+        /* 卡片容器 */
+        .card {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 24px;
+            margin-bottom: 16px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .btn-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 6px 16px;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-primary {
+            background: #333;
+            color: #fff;
+        }
+
+        .btn-default {
+            background: #fff;
+            color: #666;
+            border: 1px solid #e0e0e0;
+        }
+
+        .btn-danger {
+            background: #f44336;
+            color: #fff;
+        }
+
+        /* 信息列表 */
+        .info-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        .info-item {
+            display: flex;
+            font-size: 14px;
+        }
+
+        .info-label {
+            width: 100px;
+            color: #999;
+        }
+
+        .info-value {
+            flex: 1;
+            color: #333;
+        }
+
+        /* 统计卡片 */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+
+        .stat-card {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #999;
+        }
+
+        /* 书籍列表 */
+        .book-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .book-item {
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 16px;
+        }
+
+        .book-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .book-cover {
+            width: 50px;
+            height: 70px;
+            background: #e0e0e0;
+            border-radius: 4px;
+        }
+
+        .book-info {
+            flex: 1;
+        }
+
+        .book-name {
+            font-size: 15px;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .book-meta {
+            font-size: 13px;
+            color: #999;
+        }
+
+        .book-detail {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.8;
+        }
+
+        .book-detail-item {
+            display: flex;
+            margin-bottom: 4px;
+        }
+
+        .detail-label {
+            width: 100px;
+            color: #999;
+        }
+
+        .detail-value {
+            flex: 1;
+            color: #333;
+        }
+
+        /* 表格 */
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        th {
+            background: #f5f5f5;
+            color: #666;
+            font-weight: 500;
+            text-align: left;
+            padding: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #e0e0e0;
+            color: #333;
+        }
+
+        tr:hover {
+            background: #fafafa;
+        }
+
+        .table-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-link {
+            color: #666;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .btn-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="page-header">
+        <div class="breadcrumb">
+            <a href="#">首页</a> / <a href="#">阅读计划列表</a> / 计划详情
+        </div>
+        <div class="page-title">
+            <button class="btn-back">返回</button>
+            2026春季阅读计划
+            <span class="status-badge">已发布</span>
+        </div>
+    </div>
+
+    <!-- 基本信息卡片 -->
+    <div class="card">
+        <div class="card-header">
+            <div class="card-title">基本信息</div>
+            <div class="btn-actions">
+                <button class="btn btn-primary">编辑</button>
+                <button class="btn btn-danger">下架</button>
+            </div>
+        </div>
+        <div class="info-list">
+            <div class="info-item">
+                <div class="info-label">计划ID</div>
+                <div class="info-value">P001</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">计划名称</div>
+                <div class="info-value">2026春季阅读计划</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">适用年级</div>
+                <div class="info-value">1-3年级</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">计划状态</div>
+                <div class="info-value"><span class="status-badge">已发布</span></div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">开始时间</div>
+                <div class="info-value">2026-02-15</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">结束时间</div>
+                <div class="info-value">2026-04-30</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">书籍数量</div>
+                <div class="info-value">3本</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">总阅读天数</div>
+                <div class="info-value">27天</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">创建时间</div>
+                <div class="info-value">2026-02-09 10:30:00</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">发布时间</div>
+                <div class="info-value">2026-02-09 11:00:00</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 计划简介 -->
+    <div class="card">
+        <div class="card-header">
+            <div class="card-title">计划简介</div>
+        </div>
+        <div class="info-value" style="line-height: 1.8;">
+            本学期阅读计划精选了三本经典儿童文学作品，包括《小王子》《夏洛的网》和《窗边的小豆豆》。通过系统化的阅读安排和丰富的配套资源，帮助孩子们培养良好的阅读习惯，提升阅读理解能力
+        </div>
+    </div>
+
+    <!-- 统计数据 -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-value">156</div>
+            <div class="stat-label">报名班级数</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">42</div>
+            <div class="stat-label">参与学校数</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">4,856</div>
+            <div class="stat-label">参与学生数</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">78%</div>
+            <div class="stat-label">整体完成率</div>
+        </div>
+    </div>
+
+    <!-- 书籍列表 -->
+    <div class="card">
+        <div class="card-header">
+            <div class="card-title">书籍列表</div>
+        </div>
+        <div class="book-list">
+            <!-- 书籍1 -->
+            <div class="book-item">
+                <div class="book-header">
+                    <div class="book-cover"></div>
+                    <div class="book-info">
+                        <div class="book-name">1. 《小王子》</div>
+                        <div class="book-meta">作者：圣埃克苏佩里 | 适用年级：1-3年级</div>
+                    </div>
+                </div>
+                <div class="book-detail">
+                    <div class="book-detail-item">
+                        <div class="detail-label">阅读天数</div>
+                        <div class="detail-value">7天</div>
+                    </div>
+                    <div class="book-detail-item">
+                        <div class="detail-label">每日任务</div>
+                        <div class="detail-value">视频、音频、导读单、阅读打卡</div>
+                    </div>
+                    <div class="book-detail-item">
+                        <div class="detail-label">AI导语</div>
+                        <div class="detail-value">已配置</div>
+                    </div>
+                    <div class="book-detail-item">
+                        <div class="detail-label">完成率</div>
+                        <div class="detail-value">82%</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 书籍2 -->
+            <div class="book-item">
+                <div class="book-header">
+                    <div class="book-cover"></div>
+                    <div class="book-info">
+                        <div class="book-name">2. 《夏洛的网》</div>
+                        <div class="book-meta">作者：E.B.怀特 | 适用年级：2-4年级</div>
+                    </div>
+                </div>
+                <div class="book-detail">
+                    <div class="book-detail-item">
+                        <div class="detail-label">阅读天数</div>
+                        <div class="detail-value">10天</div>
+                    </div>
+                    <div class="book-detail-item">
+                        <div class="detail-label">每日任务</div>
+                        <div class="detail-value">视频、音频、导读单、阅读打卡</div>
+                    </div>
+                    <div class="book-detail-item">
+                        <div class="detail-label">AI导语</div>
+                        <div class="detail-value">已配置</div>
+                    </div>
+                    <div class="book-detail-item">
+                        <div class="detail-label">完成率</div>
+                        <div class="detail-value">75%</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 书籍3 -->
+            <div class="book-item">
+                <div class="book-header">
+                    <div class="book-cover"></div>
+                    <div class="book-info">
+                        <div class="book-name">3. 《窗边的小豆豆》</div>
+                        <div class="book-meta">作者：黑柳彻子 | 适用年级：3-5年级</div>
+                    </div>
+                </div>
+                <div class="book-detail">
+                    <div class="book-detail-item">
+                        <div class="detail-label">阅读天数</div>
+                        <div class="detail-value">10天</div>
+                    </div>
+                    <div class="book-detail-item">
+                        <div class="detail-label">每日任务</div>
+                        <div class="detail-value">视频、音频、导读单、阅读打卡</div>
+                    </div>
+                    <div class="book-detail-item">
+                        <div class="detail-label">AI导语</div>
+                        <div class="detail-value">未配置</div>
+                    </div>
+                    <div class="book-detail-item">
+                        <div class="detail-label">完成率</div>
+                        <div class="detail-value">68%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 参与学校 -->
+    <div class="card">
+        <div class="card-header">
+            <div class="card-title">参与学校（前10名）</div>
+        </div>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>学校名称</th>
+                        <th>报名班级数</th>
+                        <th>参与学生数</th>
+                        <th>平均打卡率</th>
+                        <th>平均完成率</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>北京市第一小学</td>
+                        <td>12</td>
+                        <td>386</td>
+                        <td>85%</td>
+                        <td>82%</td>
+                        <td>
+                            <div class="table-actions">
+                                <a href="#" class="btn-link">查看详情</a>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>北京市第二小学</td>
+                        <td>8</td>
+                        <td>256</td>
+                        <td>82%</td>
+                        <td>79%</td>
+                        <td>
+                            <div class="table-actions">
+                                <a href="#" class="btn-link">查看详情</a>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>上海市实验小学</td>
+                        <td>15</td>
+                        <td>512</td>
+                        <td>88%</td>
+                        <td>85%</td>
+                        <td>
+                            <div class="table-actions">
+                                <a href="#" class="btn-link">查看详情</a>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

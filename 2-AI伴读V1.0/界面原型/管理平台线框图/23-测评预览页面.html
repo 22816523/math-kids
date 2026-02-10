@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>测评预览 - 校校读吧管理平台</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: #f5f5f5;
+            padding: 24px;
+        }
+
+        /* 页面头部 */
+        .page-header {
+            margin-bottom: 24px;
+        }
+        .breadcrumb {
+            font-size: 14px;
+            color: #999;
+            margin-bottom: 12px;
+        }
+        .breadcrumb a {
+            color: #666;
+            text-decoration: none;
+        }
+        .page-title {
+            font-size: 20px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        /* 预览容器 */
+        .preview-container {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .preview-title {
+            font-size: 16px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .btn {
+            padding: 6px 16px;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-default {
+            background: #fff;
+            color: #666;
+            border: 1px solid #e0e0e0;
+        }
+
+        /* 书籍信息 */
+        .book-info-card {
+            background: #f5f5f5;
+            border-radius: 4px;
+            padding: 16px;
+            margin-bottom: 24px;
+        }
+
+        .book-info-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 12px;
+        }
+
+        .book-info-content {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.8;
+        }
+
+        /* 题目列表 */
+        .question-list {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .question-item {
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 20px;
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+
+        .question-number {
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .question-type {
+            display: inline-block;
+            padding: 2px 8px;
+            background: #e3f2fd;
+            color: #1976d2;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .question-content {
+            font-size: 15px;
+            color: #333;
+            line-height: 1.8;
+            margin-bottom: 16px;
+        }
+
+        .question-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .option-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            padding: 12px;
+            background: #f5f5f5;
+            border-radius: 4px;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .option-item.correct {
+            background: #e8f5e9;
+            color: #2e7d32;
+            font-weight: 500;
+        }
+
+        .option-label {
+            font-weight: 500;
+        }
+
+        .question-answer {
+            padding: 12px;
+            background: #e8f5e9;
+            border-radius: 4px;
+            margin-bottom: 12px;
+        }
+
+        .answer-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: #2e7d32;
+            margin-bottom: 4px;
+        }
+
+        .answer-content {
+            font-size: 14px;
+            color: #2e7d32;
+        }
+
+        .question-explanation {
+            padding: 12px;
+            background: #fff3e0;
+            border-radius: 4px;
+        }
+
+        .explanation-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: #f57c00;
+            margin-bottom: 4px;
+        }
+
+        .explanation-content {
+            font-size: 14px;
+            color: #f57c00;
+            line-height: 1.6;
+        }
+
+        /* 底部按钮 */
+        .form-actions {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            padding-top: 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+    </style>
+</head>
+<body>
+    <div class="page-header">
+        <div class="breadcrumb">
+            <a href="#">首页</a> / <a href="#">测评列表</a> / 测评预览
+        </div>
+        <div class="page-title">测评预览</div>
+    </div>
+
+    <!-- 预览容器 -->
+    <div class="preview-container">
+        <div class="preview-header">
+            <div class="preview-title">《小王子》测评题目</div>
+            <button class="btn btn-default">关闭预览</button>
+        </div>
+
+        <!-- 书籍信息 -->
+        <div class="book-info-card">
+            <div class="book-info-title">书籍信息</div>
+            <div class="book-info-content">
+                书名：《小王子》<br>
+                作者：圣埃克苏佩里<br>
+                适用年级：1-3年级<br>
+                题目数量：15题（单选题8题、多选题3题、判断题2题、填空题2题）
+            </div>
+        </div>
+
+        <!-- 题目列表 -->
+        <div class="question-list">
+            <!-- 单选题 -->
+            <div class="question-item">
+                <div class="question-header">
+                    <div class="question-number">第1题</div>
+                    <div class="question-type">单选题</div>
+                </div>
+                <div class="question-content">
+                    小王子来自哪个星球
+                </div>
+                <div class="question-options">
+                    <div class="option-item">
+                        <span class="option-label">A.</span>
+                        <span>地球</span>
+                    </div>
+                    <div class="option-item correct">
+                        <span class="option-label">B.</span>
+                        <span>B-612星球 ✓</span>
+                    </div>
+                    <div class="option-item">
+                        <span class="option-label">C.</span>
+                        <span>火星</span>
+                    </div>
+                    <div class="option-item">
+                        <span class="option-label">D.</span>
+                        <span>月球</span>
+                    </div>
+                </div>
+                <div class="question-answer">
+                    <div class="answer-label">正确答案</div>
+                    <div class="answer-content">B</div>
+                </div>
+                <div class="question-explanation">
+                    <div class="explanation-label">题目解析</div>
+                    <div class="explanation-content">
+                        小王子来自B-612星球，这是一个非常小的星球，上面有三座火山和一朵玫瑰花
+                    </div>
+                </div>
+            </div>
+
+            <!-- 多选题 -->
+            <div class="question-item">
+                <div class="question-header">
+                    <div class="question-number">第2题</div>
+                    <div class="question-type">多选题</div>
+                </div>
+                <div class="question-content">
+                    小王子在旅途中遇到了哪些人（多选）
+                </div>
+                <div class="question-options">
+                    <div class="option-item correct">
+                        <span class="option-label">A.</span>
+                        <span>国王 ✓</span>
+                    </div>
+                    <div class="option-item correct">
+                        <span class="option-label">B.</span>
+                        <span>狐狸 ✓</span>
+                    </div>
+                    <div class="option-item">
+                        <span class="option-label">C.</span>
+                        <span>巨人</span>
+                    </div>
+                    <div class="option-item correct">
+                        <span class="option-label">D.</span>
+                        <span>飞行员 ✓</span>
+                    </div>
+                </div>
+                <div class="question-answer">
+                    <div class="answer-label">正确答案</div>
+                    <div class="answer-content">A、B、D</div>
+                </div>
+                <div class="question-explanation">
+                    <div class="explanation-label">题目解析</div>
+                    <div class="explanation-content">
+                        小王子在旅途中遇到了国王、狐狸、飞行员等许多有趣的人物，每个人物都给小王子带来了不同的启发
+                    </div>
+                </div>
+            </div>
+
+            <!-- 判断题 -->
+            <div class="question-item">
+                <div class="question-header">
+                    <div class="question-number">第3题</div>
+                    <div class="question-type">判断题</div>
+                </div>
+                <div class="question-content">
+                    小王子的星球上有一朵玫瑰花
+                </div>
+                <div class="question-options">
+                    <div class="option-item correct">
+                        <span class="option-label">对 ✓</span>
+                    </div>
+                    <div class="option-item">
+                        <span class="option-label">错</span>
+                    </div>
+                </div>
+                <div class="question-answer">
+                    <div class="answer-label">正确答案</div>
+                    <div class="answer-content">对</div>
+                </div>
+                <div class="question-explanation">
+                    <div class="explanation-label">题目解析</div>
+                    <div class="explanation-content">
+                        小王子的星球上确实有一朵玫瑰花，小王子非常爱护这朵玫瑰花
+                    </div>
+                </div>
+            </div>
+
+            <!-- 填空题 -->
+            <div class="question-item">
+                <div class="question-header">
+                    <div class="question-number">第4题</div>
+                    <div class="question-type">填空题</div>
+                </div>
+                <div class="question-content">
+                    狐狸对小王子说："真正重要的东西，用眼睛是看不见的，要用____去看"
+                </div>
+                <div class="question-answer">
+                    <div class="answer-label">正确答案</div>
+                    <div class="answer-content">心</div>
+                </div>
+                <div class="question-explanation">
+                    <div class="explanation-label">题目解析</div>
+                    <div class="explanation-content">
+                        这是《小王子》中最经典的一句话，告诉我们要用心去感受和理解事物的本质
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 底部按钮 -->
+        <div class="form-actions">
+            <button class="btn btn-default">关闭预览</button>
+        </div>
+    </div>
+</body>
+</html>
