@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>学校列表 - 校校读吧管理平台</title>
+    <title>用户列表 - 校校读吧管理平台</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -159,6 +159,14 @@
             overflow-y: auto;
         }
 
+        /* 页面标题 */
+        .page-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 24px;
+        }
+
         /* 筛选区域 */
         .filter-section {
             background: #fff;
@@ -210,6 +218,8 @@
             gap: 12px;
             align-items: flex-end;
         }
+
+        /* 按钮 */
         .btn {
             height: 36px;
             padding: 0 20px;
@@ -282,14 +292,8 @@
         .table tbody tr:last-child td {
             border-bottom: none;
         }
-        .table a {
-            color: #333;
-            text-decoration: none;
-            margin: 0 4px;
-        }
-        .table a:hover {
-            text-decoration: underline;
-        }
+
+        /* 状态标签 */
         .status-badge {
             display: inline-block;
             padding: 2px 8px;
@@ -305,6 +309,16 @@
             color: #999;
         }
 
+        /* 用户类型标签 */
+        .user-type-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 2px;
+            font-size: 12px;
+            background: #f5f5f5;
+            color: #666;
+        }
+
         /* 复选框列 */
         .table th:first-child,
         .table td:first-child {
@@ -313,34 +327,6 @@
         }
         .table input[type="checkbox"] {
             cursor: pointer;
-        }
-
-        /* 表格操作按钮 */
-        .table-actions {
-            display: flex;
-            gap: 8px;
-        }
-        .btn-table {
-            height: 28px;
-            padding: 0 12px;
-            border-radius: 4px;
-            font-size: 13px;
-            cursor: pointer;
-            border: 1px solid #e0e0e0;
-            background: #fff;
-            color: #333;
-            transition: all 0.2s;
-        }
-        .btn-table:hover {
-            background: #f5f5f5;
-        }
-        .btn-table-primary {
-            background: #333;
-            color: #fff;
-            border-color: #333;
-        }
-        .btn-table-primary:hover {
-            background: #555;
         }
 
         /* 分页 */
@@ -400,9 +386,9 @@
                         <span class="menu-group-icon">[▶]</span>
                     </div>
                     <div class="menu-group-items">
-                        <div class="menu-item active">学校管理</div>
+                        <div class="menu-item">学校管理</div>
                         <div class="menu-item">班级管理</div>
-                        <div class="menu-item">小程序用户管理</div>
+                        <div class="menu-item active">小程序用户管理</div>
                     </div>
                 </div>
 
@@ -419,63 +405,63 @@
                 </div>
 
                 <div class="menu-group">
-                <div class="menu-group-title" onclick="toggleMenu(this)">
-                                        <span>数据分析</span>
-                    <span class="menu-group-icon">[▶]</span>
+                    <div class="menu-group-title" onclick="toggleMenu(this)">
+                        <span>数据分析</span>
+                        <span class="menu-group-icon">[▶]</span>
+                    </div>
+                    <div class="menu-group-items">
+                        <div class="menu-item">阅读数据分析</div>
+                        <div class="menu-item">测评数据分析</div>
+                        <div class="menu-item">用户行为分析</div>
+                        <div class="menu-item">学校数据对比</div>
+                        <div class="menu-item">数据导出中心</div>
+                    </div>
                 </div>
-                <div class="menu-group-items">
-                    <div class="menu-item">阅读数据分析</div>
-                    <div class="menu-item">测评数据分析</div>
-                    <div class="menu-item">用户行为分析</div>
-                    <div class="menu-item">学校数据对比</div>
-                    <div class="menu-item">数据导出中心</div>
-                </div>
-            </div>
 
-            <div class="menu-group">
-                <div class="menu-group-title" onclick="toggleMenu(this)">
-                    <span>激励体系</span>
-                    <span class="menu-group-icon">[▶]</span>
+                <div class="menu-group">
+                    <div class="menu-group-title" onclick="toggleMenu(this)">
+                        <span>激励体系</span>
+                        <span class="menu-group-icon">[▶]</span>
+                    </div>
+                    <div class="menu-group-items">
+                        <div class="menu-item">积分规则</div>
+                        <div class="menu-item">等级体系</div>
+                        <div class="menu-item">徽章配置</div>
+                        <div class="menu-item">证书配置</div>
+                    </div>
                 </div>
-                <div class="menu-group-items">
-                    <div class="menu-item">积分规则</div>
-                    <div class="menu-item">等级体系</div>
-                    <div class="menu-item">徽章配置</div>
-                    <div class="menu-item">证书配置</div>
-                </div>
-            </div>
 
-            <div class="menu-group">
-                <div class="menu-group-title" onclick="toggleMenu(this)">
-                    <span>消息管理</span>
-                    <span class="menu-group-icon">[▶]</span>
+                <div class="menu-group">
+                    <div class="menu-group-title" onclick="toggleMenu(this)">
+                        <span>消息管理</span>
+                        <span class="menu-group-icon">[▶]</span>
+                    </div>
+                    <div class="menu-group-items">
+                        <div class="menu-item">系统消息</div>
+                    </div>
                 </div>
-                <div class="menu-group-items">
-                    <div class="menu-item">系统消息</div>
-                </div>
-            </div>
 
-            <div class="menu-group">
-                <div class="menu-group-title" onclick="toggleMenu(this)">
-                    <span>用户反馈</span>
-                    <span class="menu-group-icon">[▶]</span>
+                <div class="menu-group">
+                    <div class="menu-group-title" onclick="toggleMenu(this)">
+                        <span>用户反馈</span>
+                        <span class="menu-group-icon">[▶]</span>
+                    </div>
+                    <div class="menu-group-items">
+                        <div class="menu-item">意见反馈</div>
+                    </div>
                 </div>
-                <div class="menu-group-items">
-                    <div class="menu-item">意见反馈</div>
-                </div>
-            </div>
 
-            <div class="menu-group">
-                <div class="menu-group-title" onclick="toggleMenu(this)">
-                    <span>系统配置</span>
-                    <span class="menu-group-icon">[▶]</span>
+                <div class="menu-group">
+                    <div class="menu-group-title" onclick="toggleMenu(this)">
+                        <span>系统配置</span>
+                        <span class="menu-group-icon">[▶]</span>
+                    </div>
+                    <div class="menu-group-items">
+                        <div class="menu-item">系统参数</div>
+                        <div class="menu-item">操作日志</div>
+                        <div class="menu-item">数据字典</div>
+                    </div>
                 </div>
-                <div class="menu-group-items">
-                    <div class="menu-item">系统参数</div>
-                    <div class="menu-item">操作日志</div>
-                    <div class="menu-item">数据字典</div>
-                </div>
-            </div>
             </div>
         </div>
 
@@ -484,7 +470,7 @@
             <!-- 顶部栏 -->
             <div class="header">
                 <div class="breadcrumb">
-                    <a href="#">首页</a> > <a href="#">用户管理</a> > 学校管理
+                    <a href="#">首页</a> > <a href="#">用户管理</a> > <span>小程序用户管理</span>
                 </div>
                 <div class="user-info">
                     <span class="user-name">管理员</span>
@@ -498,49 +484,31 @@
                 <div class="filter-section">
                     <div class="filter-row">
                         <div class="filter-item">
+                            <label class="filter-label">用户类型</label>
+                            <select class="filter-select">
+                                <option value="">全部</option>
+                                <option value="teacher">老师</option>
+                                <option value="student">学生</option>
+                            </select>
+                        </div>
+                        <div class="filter-item">
+                            <label class="filter-label">姓名</label>
+                            <input type="text" class="filter-input" placeholder="请输入姓名">
+                        </div>
+                        <div class="filter-item">
+                            <label class="filter-label">手机号</label>
+                            <input type="text" class="filter-input" placeholder="请输入手机号">
+                        </div>
+                        <div class="filter-item">
                             <label class="filter-label">学校名称</label>
                             <input type="text" class="filter-input" placeholder="请输入学校名称">
                         </div>
                         <div class="filter-item">
-                            <label class="filter-label">省份</label>
-                            <select class="filter-select">
-                                <option>全部</option>
-                                <option>北京市</option>
-                                <option>上海市</option>
-                                <option>广东省</option>
-                            </select>
+                            <label class="filter-label">班级</label>
+                            <input type="text" class="filter-input" placeholder="请输入班级">
                         </div>
                         <div class="filter-item">
-                            <label class="filter-label">城市</label>
-                            <select class="filter-select">
-                                <option>全部</option>
-                                <option>北京市</option>
-                                <option>上海市</option>
-                                <option>广州市</option>
-                                <option>深圳市</option>
-                            </select>
-                        </div>
-                        <div class="filter-item">
-                            <label class="filter-label">区县</label>
-                            <select class="filter-select">
-                                <option>全部</option>
-                                <option>海淀区</option>
-                                <option>朝阳区</option>
-                                <option>浦东新区</option>
-                                <option>天河区</option>
-                                <option>南山区</option>
-                            </select>
-                        </div>
-                        <div class="filter-item">
-                            <label class="filter-label">阅读状态</label>
-                            <select class="filter-select">
-                                <option>全部</option>
-                                <option>已开通</option>
-                                <option>未开通</option>
-                            </select>
-                        </div>
-                        <div class="filter-item">
-                            <label class="filter-label">创建时间</label>
+                            <label class="filter-label">注册时间</label>
                             <input type="text" class="filter-input" placeholder="请选择日期范围">
                         </div>
                         <div class="filter-buttons">
@@ -553,9 +521,7 @@
                 <!-- 操作栏 -->
                 <div class="action-bar">
                     <div class="action-buttons">
-                        <button class="btn btn-secondary" onclick="window.location.href='04-学校详情.html'">查看</button>
-                        <button class="btn btn-primary">开通</button>
-                        <button class="btn btn-secondary">停用</button>
+                        <button class="btn btn-secondary" onclick="window.location.href='06-用户详情.html'">查看</button>
                         <button class="btn btn-secondary">导出</button>
                     </div>
                 </div>
@@ -567,83 +533,77 @@
                             <thead>
                                 <tr>
                                     <th><input type="checkbox"></th>
-                                    <th>学校编码</th>
-                                    <th>学校名称</th>
-                                    <th>省份</th>
-                                    <th>城市</th>
-                                    <th>区县</th>
-                                    <th>街道</th>
-                                    <th>地址</th>
-                                    <th>学生数</th>
-                                    <th>阅读状态</th>
-                                    <th>创建时间</th>
+                                    <th>用户类型</th>
+                                    <th>姓名</th>
+                                    <th>手机号</th>
+                                    <th>学校</th>
+                                    <th>班级</th>
+                                    <th>累计打卡天数</th>
+                                    <th>完成测评数</th>
+                                    <th>最后登录时间</th>
+                                    <th>注册时间</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
                                     <td><input type="checkbox"></td>
-                                    <td>C096277</td>
+                                    <td><span class="user-type-badge">老师</span></td>
+                                    <td>张老师</td>
+                                    <td>13800138001</td>
                                     <td>实验小学</td>
-                                    <td>北京市</td>
-                                    <td>北京市</td>
-                                    <td>海淀区</td>
-                                    <td>中关村街道</td>
-                                    <td>中关村大街1号</td>
-                                    <td>1,200</td>
-                                    <td><span class="status-badge status-active">已开通</span></td>
+                                    <td>三年级1班</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>2026-02-11 09:30:00</td>
                                     <td>2026-01-15 10:30:00</td>
                                 </tr>
                                 <tr>
                                     <td><input type="checkbox"></td>
-                                    <td>C096278</td>
+                                    <td><span class="user-type-badge">学生</span></td>
+                                    <td>王小明</td>
+                                    <td>13900139001</td>
+                                    <td>实验小学</td>
+                                    <td>三年级1班</td>
+                                    <td>45</td>
+                                    <td>3</td>
+                                    <td>2026-02-11 08:15:00</td>
+                                    <td>2026-01-15 11:20:00</td>
+                                </tr>
+                                <tr>
+                                    <td><input type="checkbox"></td>
+                                    <td><span class="user-type-badge">学生</span></td>
+                                    <td>李小红</td>
+                                    <td>13900139002</td>
+                                    <td>实验小学</td>
+                                    <td>三年级1班</td>
+                                    <td>42</td>
+                                    <td>2</td>
+                                    <td>2026-02-11 07:45:00</td>
+                                    <td>2026-01-15 11:25:00</td>
+                                </tr>
+                                <tr>
+                                    <td><input type="checkbox"></td>
+                                    <td><span class="user-type-badge">老师</span></td>
+                                    <td>李老师</td>
+                                    <td>13800138002</td>
                                     <td>育才小学</td>
-                                    <td>北京市</td>
-                                    <td>北京市</td>
-                                    <td>朝阳区</td>
-                                    <td>望京街道</td>
-                                    <td>望京西路88号</td>
-                                    <td>1,350</td>
-                                    <td><span class="status-badge status-active">已开通</span></td>
+                                    <td>四年级2班</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>2026-02-11 10:20:00</td>
                                     <td>2026-01-12 14:20:00</td>
                                 </tr>
                                 <tr>
                                     <td><input type="checkbox"></td>
-                                    <td>C096279</td>
-                                    <td>明德小学</td>
-                                    <td>上海市</td>
-                                    <td>上海市</td>
-                                    <td>浦东新区</td>
-                                    <td>陆家嘴街道</td>
-                                    <td>世纪大道200号</td>
-                                    <td>980</td>
-                                    <td><span class="status-badge status-active">已开通</span></td>
-                                    <td>2026-01-10 09:15:00</td>
-                                </tr>
-                                <tr>
-                                    <td><input type="checkbox"></td>
-                                    <td>C096280</td>
-                                    <td>阳光小学</td>
-                                    <td>广东省</td>
-                                    <td>广州市</td>
-                                    <td>天河区</td>
-                                    <td>天河南街道</td>
-                                    <td>天河路123号</td>
-                                    <td>1,150</td>
-                                    <td><span class="status-badge status-inactive">未开通</span></td>
-                                    <td>2026-01-08 16:45:00</td>
-                                </tr>
-                                <tr>
-                                    <td><input type="checkbox"></td>
-                                    <td>C096281</td>
-                                    <td>希望小学</td>
-                                    <td>广东省</td>
-                                    <td>深圳市</td>
-                                    <td>南山区</td>
-                                    <td>南头街道</td>
-                                    <td>深南大道9号</td>
-                                    <td>1,080</td>
-                                    <td><span class="status-badge status-active">已开通</span></td>
-                                    <td>2026-01-05 11:00:00</td>
+                                    <td><span class="user-type-badge">学生</span></td>
+                                    <td>张小华</td>
+                                    <td>13900139003</td>
+                                    <td>育才小学</td>
+                                    <td>四年级2班</td>
+                                    <td>38</td>
+                                    <td>2</td>
+                                    <td>2026-02-10 19:30:00</td>
+                                    <td>2026-01-12 15:10:00</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -652,7 +612,7 @@
                     <!-- 分页 -->
                     <div class="pagination">
                         <div class="pagination-info">
-                            共 156 条记录，当前第 1/16 页
+                            共 1,245 条记录，当前第 1/125 页
                         </div>
                         <div class="pagination-controls">
                             <button class="pagination-btn" disabled>上一页</button>
@@ -661,8 +621,6 @@
                             <button class="pagination-btn">3</button>
                             <button class="pagination-btn">4</button>
                             <button class="pagination-btn">5</button>
-                            <span>...</span>
-                            <button class="pagination-btn">16</button>
                             <button class="pagination-btn">下一页</button>
                         </div>
                     </div>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>学生详情 - 校校读吧管理平台</title>
+    <title>班级详情 - 校校读吧管理平台</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -255,44 +255,6 @@
             color: #666;
         }
 
-        /* 分页 */
-        .pagination {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-top: 16px;
-        }
-        .pagination-info {
-            font-size: 14px;
-            color: #666;
-        }
-        .pagination-controls {
-            display: flex;
-            gap: 8px;
-        }
-        .pagination-btn {
-            height: 32px;
-            padding: 0 12px;
-            border: 1px solid #e0e0e0;
-            background: #fff;
-            border-radius: 4px;
-            font-size: 14px;
-            color: #333;
-            cursor: pointer;
-        }
-        .pagination-btn:hover:not(:disabled) {
-            background: #f5f5f5;
-        }
-        .pagination-btn:disabled {
-            color: #ccc;
-            cursor: not-allowed;
-        }
-        .pagination-btn.active {
-            background: #333;
-            color: #fff;
-            border-color: #333;
-        }
-
         /* 状态标签 */
         .status {
             display: inline-block;
@@ -327,8 +289,8 @@
                 </div>
                 <div class="menu-group-items">
                     <div class="menu-item">学校管理</div>
-                    <div class="menu-item">老师管理</div>
-                    <div class="menu-item active">学生管理</div>
+                    <div class="menu-item active">班级管理</div>
+                    <div class="menu-item">小程序用户管理</div>
                 </div>
             </div>
 
@@ -356,11 +318,6 @@
                     <div class="menu-item">学校数据对比</div>
                     <div class="menu-item">数据导出中心</div>
                 </div>
-                </div>
-                </div>
-                </div>
-                </div>
-            </div>
             </div>
 
             <div class="menu-group">
@@ -378,14 +335,21 @@
 
             <div class="menu-group">
                 <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>消息管理</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">系统消息</div>
+                </div>
+            </div>
+
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
                     <span>用户反馈</span>
                     <span class="menu-group-icon">[▶]</span>
                 </div>
                 <div class="menu-group-items">
                     <div class="menu-item">意见反馈</div>
-                </div>
-                </div>
-                </div>
                 </div>
             </div>
 
@@ -410,18 +374,16 @@
                 <span>></span>
                 <a href="#">用户管理</a>
                 <span>></span>
-                <a href="#">学生管理</a>
+                <a href="#">班级管理</a>
                 <span>></span>
-                <span>学生详情</span>
+                <span>班级详情</span>
             </div>
 
             <!-- 页面标题和操作 -->
             <div class="page-header">
-                <div class="page-title">学生详情</div>
+                <div class="page-title">班级详情</div>
                 <div class="page-actions">
-                    <button class="btn btn-secondary">返回列表</button>
-                    <button class="btn btn-secondary">编辑</button>
-                    <button class="btn btn-secondary">禁用</button>
+                    <button class="btn btn-secondary" onclick="window.location.href='07-班级列表.html'">返回列表</button>
                 </div>
             </div>
 
@@ -431,36 +393,40 @@
                 <div class="card-body">
                     <div class="info-grid">
                         <div class="info-item">
-                            <div class="info-label">姓名</div>
-                            <div class="info-value">张小明</div>
+                            <div class="info-label">学校名称</div>
+                            <div class="info-value">实验小学</div>
                         </div>
                         <div class="info-item">
-                            <div class="info-label">学号</div>
-                            <div class="info-value">2024010101</div>
+                            <div class="info-label">年级</div>
+                            <div class="info-value">三年级</div>
                         </div>
                         <div class="info-item">
-                            <div class="info-label">所属学校</div>
-                            <div class="info-value">北京市第一中学</div>
+                            <div class="info-label">班级名称</div>
+                            <div class="info-value">1班</div>
                         </div>
                         <div class="info-item">
-                            <div class="info-label">所属班级</div>
-                            <div class="info-value">初一(1)班</div>
+                            <div class="info-label">班主任</div>
+                            <div class="info-value">张老师</div>
                         </div>
                         <div class="info-item">
-                            <div class="info-label">家长姓名</div>
-                            <div class="info-value">张先生</div>
+                            <div class="info-label">班主任手机</div>
+                            <div class="info-value">13800138001</div>
                         </div>
                         <div class="info-item">
-                            <div class="info-label">家长手机</div>
-                            <div class="info-value">13800138000</div>
+                            <div class="info-label">学生数</div>
+                            <div class="info-value">42</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">阅读计划</div>
+                            <div class="info-value">春季阅读计划</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">阅读状态</div>
+                            <div class="info-value"><span class="status status-active">已开通</span></div>
                         </div>
                         <div class="info-item">
                             <div class="info-label">创建时间</div>
-                            <div class="info-value">2024-01-15 10:30:00</div>
-                        </div>
-                        <div class="info-item">
-                            <div class="info-label">状态</div>
-                            <div class="info-value"><span class="status status-active">正常</span></div>
+                            <div class="info-value">2026-01-15 10:30:00</div>
                         </div>
                     </div>
                 </div>
@@ -472,171 +438,96 @@
                 <div class="card-body">
                     <div class="stats-grid">
                         <div class="stat-card">
-                            <div class="stat-value">3</div>
-                            <div class="stat-label">阅读计划数</div>
+                            <div class="stat-value">42</div>
+                            <div class="stat-label">学生总数</div>
                         </div>
                         <div class="stat-card">
-                            <div class="stat-value">120</div>
-                            <div class="stat-label">阅读时长（小时）</div>
+                            <div class="stat-value">38</div>
+                            <div class="stat-label">今日打卡人数</div>
                         </div>
                         <div class="stat-card">
-                            <div class="stat-value">8</div>
-                            <div class="stat-label">完成书籍数</div>
+                            <div class="stat-value">156</div>
+                            <div class="stat-label">累计阅读天数</div>
                         </div>
                         <div class="stat-card">
-                            <div class="stat-value">1,580</div>
-                            <div class="stat-label">获得积分</div>
+                            <div class="stat-value">28</div>
+                            <div class="stat-label">已完成测评人数</div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- 阅读计划列表 -->
+            <!-- 学生列表 -->
             <div class="card">
-                <div class="card-header">阅读计划列表</div>
+                <div class="card-header">学生列表</div>
                 <div class="card-body">
                     <div class="table-wrapper">
                         <table class="table">
                             <thead>
                                 <tr>
-                                    <th>计划名称</th>
-                                    <th>书籍数量</th>
-                                    <th>开始时间</th>
-                                    <th>结束时间</th>
-                                    <th>完成进度</th>
-                                    <th>状态</th>
-                                    <th>操作</th>
+                                    <th>学生姓名</th>
+                                    <th>学号</th>
+                                    <th>性别</th>
+                                    <th>家长姓名</th>
+                                    <th>家长手机</th>
+                                    <th>累计打卡天数</th>
+                                    <th>完成测评数</th>
+                                    <th>加入时间</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>寒假阅读计划</td>
-                                    <td>5</td>
-                                    <td>2024-01-20</td>
-                                    <td>2024-02-20</td>
-                                    <td>80%</td>
-                                    <td><span class="status status-active">进行中</span></td>
-                                    <td>
-                                        <a href="#">查看</a>
-                                        <a href="#">编辑</a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>春季阅读计划</td>
-                                    <td>8</td>
-                                    <td>2024-03-01</td>
-                                    <td>2024-05-31</td>
-                                    <td>45%</td>
-                                    <td><span class="status status-active">进行中</span></td>
-                                    <td>
-                                        <a href="#">查看</a>
-                                        <a href="#">编辑</a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>经典名著阅读</td>
+                                    <td>王小明</td>
+                                    <td>20260101</td>
+                                    <td>男</td>
+                                    <td>王先生</td>
+                                    <td>13900139001</td>
+                                    <td>45</td>
                                     <td>3</td>
-                                    <td>2023-12-01</td>
-                                    <td>2024-01-15</td>
-                                    <td>100%</td>
-                                    <td><span class="status status-inactive">已完成</span></td>
-                                    <td>
-                                        <a href="#">查看</a>
-                                        <a href="#">编辑</a>
-                                    </td>
+                                    <td>2026-01-15 10:30:00</td>
+                                </tr>
+                                <tr>
+                                    <td>李小红</td>
+                                    <td>20260102</td>
+                                    <td>女</td>
+                                    <td>李女士</td>
+                                    <td>13900139002</td>
+                                    <td>42</td>
+                                    <td>2</td>
+                                    <td>2026-01-15 10:35:00</td>
+                                </tr>
+                                <tr>
+                                    <td>张小华</td>
+                                    <td>20260103</td>
+                                    <td>男</td>
+                                    <td>张先生</td>
+                                    <td>13900139003</td>
+                                    <td>38</td>
+                                    <td>2</td>
+                                    <td>2026-01-15 10:40:00</td>
+                                </tr>
+                                <tr>
+                                    <td>赵小刚</td>
+                                    <td>20260104</td>
+                                    <td>男</td>
+                                    <td>赵女士</td>
+                                    <td>13900139004</td>
+                                    <td>40</td>
+                                    <td>3</td>
+                                    <td>2026-01-15 10:45:00</td>
+                                </tr>
+                                <tr>
+                                    <td>孙小丽</td>
+                                    <td>20260105</td>
+                                    <td>女</td>
+                                    <td>孙先生</td>
+                                    <td>13900139005</td>
+                                    <td>43</td>
+                                    <td>2</td>
+                                    <td>2026-01-15 10:50:00</td>
                                 </tr>
                             </tbody>
                         </table>
-                    </div>
-                    <div class="pagination">
-                        <div class="pagination-info">共 3 条记录，当前第 1/1 页</div>
-                        <div class="pagination-controls">
-                            <button class="pagination-btn" disabled>上一页</button>
-                            <button class="pagination-btn active">1</button>
-                            <button class="pagination-btn" disabled>下一页</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 阅读记录列表 -->
-            <div class="card">
-                <div class="card-header">阅读记录列表</div>
-                <div class="card-body">
-                    <div class="table-wrapper">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>书籍名称</th>
-                                    <th>阅读时长</th>
-                                    <th>阅读进度</th>
-                                    <th>最后阅读时间</th>
-                                    <th>状态</th>
-                                    <th>操作</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>《西游记》</td>
-                                    <td>25小时</td>
-                                    <td>100%</td>
-                                    <td>2024-01-15 20:30:00</td>
-                                    <td><span class="status status-inactive">已完成</span></td>
-                                    <td>
-                                        <a href="#">查看</a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>《三国演义》</td>
-                                    <td>18小时</td>
-                                    <td>65%</td>
-                                    <td>2024-01-18 19:45:00</td>
-                                    <td><span class="status status-active">阅读中</span></td>
-                                    <td>
-                                        <a href="#">查看</a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>《水浒传》</td>
-                                    <td>12小时</td>
-                                    <td>40%</td>
-                                    <td>2024-01-17 21:15:00</td>
-                                    <td><span class="status status-active">阅读中</span></td>
-                                    <td>
-                                        <a href="#">查看</a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>《红楼梦》</td>
-                                    <td>8小时</td>
-                                    <td>25%</td>
-                                    <td>2024-01-16 18:20:00</td>
-                                    <td><span class="status status-active">阅读中</span></td>
-                                    <td>
-                                        <a href="#">查看</a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>《骆驼祥子》</td>
-                                    <td>15小时</td>
-                                    <td>100%</td>
-                                    <td>2024-01-10 22:00:00</td>
-                                    <td><span class="status status-inactive">已完成</span></td>
-                                    <td>
-                                        <a href="#">查看</a>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="pagination">
-                        <div class="pagination-info">共 15 条记录，当前第 1/2 页</div>
-                        <div class="pagination-controls">
-                            <button class="pagination-btn" disabled>上一页</button>
-                            <button class="pagination-btn active">1</button>
-                            <button class="pagination-btn">2</button>
-                            <button class="pagination-btn">下一页</button>
-                        </div>
                     </div>
                 </div>
             </div>

@@ -327,8 +327,8 @@
                 </div>
                 <div class="menu-group-items">
                     <div class="menu-item active">学校管理</div>
-                    <div class="menu-item">老师管理</div>
-                    <div class="menu-item">学生管理</div>
+                    <div class="menu-item">班级管理</div>
+                    <div class="menu-item">小程序用户管理</div>
                 </div>
             </div>
 
@@ -346,7 +346,7 @@
 
             <div class="menu-group">
                 <div class="menu-group-title" onclick="toggleMenu(this)">
-                    <span>数据分析</span>
+                                        <span>数据分析</span>
                     <span class="menu-group-icon">[▶]</span>
                 </div>
                 <div class="menu-group-items">
@@ -356,11 +356,6 @@
                     <div class="menu-item">学校数据对比</div>
                     <div class="menu-item">数据导出中心</div>
                 </div>
-                </div>
-                </div>
-                </div>
-                </div>
-            </div>
             </div>
 
             <div class="menu-group">
@@ -378,14 +373,21 @@
 
             <div class="menu-group">
                 <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>消息管理</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">系统消息</div>
+                </div>
+            </div>
+
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
                     <span>用户反馈</span>
                     <span class="menu-group-icon">[▶]</span>
                 </div>
                 <div class="menu-group-items">
                     <div class="menu-item">意见反馈</div>
-                </div>
-                </div>
-                </div>
                 </div>
             </div>
 
@@ -419,9 +421,7 @@
             <div class="page-header">
                 <div class="page-title">学校详情</div>
                 <div class="page-actions">
-                    <button class="btn btn-secondary">返回列表</button>
-                    <button class="btn btn-secondary">编辑</button>
-                    <button class="btn btn-secondary">禁用</button>
+                    <button class="btn btn-secondary" onclick="window.location.href='03-学校列表.html'">返回列表</button>
                 </div>
             </div>
 
@@ -431,58 +431,84 @@
                 <div class="card-body">
                     <div class="info-grid">
                         <div class="info-item">
+                            <div class="info-label">学校编码</div>
+                            <div class="info-value">C096277</div>
+                        </div>
+                        <div class="info-item">
                             <div class="info-label">学校名称</div>
-                            <div class="info-value">北京市第一中学</div>
+                            <div class="info-value">实验小学</div>
                         </div>
                         <div class="info-item">
-                            <div class="info-label">学段</div>
-                            <div class="info-value">初中</div>
+                            <div class="info-label">省份</div>
+                            <div class="info-value">北京市</div>
                         </div>
                         <div class="info-item">
-                            <div class="info-label">地区</div>
-                            <div class="info-value">北京市 海淀区</div>
+                            <div class="info-label">城市</div>
+                            <div class="info-value">北京市</div>
                         </div>
                         <div class="info-item">
-                            <div class="info-label">详细地址</div>
-                            <div class="info-value">海淀区中关村大街1号</div>
+                            <div class="info-label">区县</div>
+                            <div class="info-value">海淀区</div>
                         </div>
                         <div class="info-item">
-                            <div class="info-label">联系电话</div>
-                            <div class="info-value">010-12345678</div>
+                            <div class="info-label">街道</div>
+                            <div class="info-value">中关村街道</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">地址</div>
+                            <div class="info-value">中关村大街1号</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">学生数</div>
+                            <div class="info-value">1,200</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">阅读状态</div>
+                            <div class="info-value"><span class="status status-active">已开通</span></div>
                         </div>
                         <div class="info-item">
                             <div class="info-label">创建时间</div>
-                            <div class="info-value">2024-01-15 10:30:00</div>
-                        </div>
-                        <div class="info-item">
-                            <div class="info-label">状态</div>
-                            <div class="info-value"><span class="status status-active">正常</span></div>
+                            <div class="info-value">2026-01-15 10:30:00</div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- 管理员信息 -->
+            <!-- 联系人列表 -->
             <div class="card">
-                <div class="card-header">管理员信息</div>
+                <div class="card-header">联系人列表</div>
                 <div class="card-body">
-                    <div class="info-grid">
-                        <div class="info-item">
-                            <div class="info-label">姓名</div>
-                            <div class="info-value">张三</div>
-                        </div>
-                        <div class="info-item">
-                            <div class="info-label">手机号</div>
-                            <div class="info-value">13800138000</div>
-                        </div>
-                        <div class="info-item">
-                            <div class="info-label">企业微信</div>
-                            <div class="info-value">zhangsan</div>
-                        </div>
-                        <div class="info-item">
-                            <div class="info-label">添加时间</div>
-                            <div class="info-value">2024-01-15 10:30:00</div>
-                        </div>
+                    <div class="table-wrapper">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>姓名</th>
+                                    <th>手机号</th>
+                                    <th>职务</th>
+                                    <th>添加时间</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>张校长</td>
+                                    <td>13800138001</td>
+                                    <td>校长</td>
+                                    <td>2026-01-15 10:30:00</td>
+                                </tr>
+                                <tr>
+                                    <td>李主任</td>
+                                    <td>13800138002</td>
+                                    <td>教务主任</td>
+                                    <td>2026-01-15 11:20:00</td>
+                                </tr>
+                                <tr>
+                                    <td>王老师</td>
+                                    <td>13800138003</td>
+                                    <td>年级组长</td>
+                                    <td>2026-01-16 09:15:00</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -493,11 +519,7 @@
                 <div class="card-body">
                     <div class="stats-grid">
                         <div class="stat-card">
-                            <div class="stat-value">45</div>
-                            <div class="stat-label">老师总数</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-value">1,280</div>
+                            <div class="stat-value">1,200</div>
                             <div class="stat-label">学生总数</div>
                         </div>
                         <div class="stat-card">
@@ -508,199 +530,9 @@
                             <div class="stat-value">12</div>
                             <div class="stat-label">阅读计划数</div>
                         </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 关联老师列表 -->
-            <div class="card">
-                <div class="card-header">关联老师列表</div>
-                <div class="card-body">
-                    <div class="table-wrapper">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>姓名</th>
-                                    <th>手机号</th>
-                                    <th>所属年级</th>
-                                    <th>班级数</th>
-                                    <th>学生数</th>
-                                    <th>状态</th>
-                                    <th>操作</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>李老师</td>
-                                    <td>13900139001</td>
-                                    <td>初一</td>
-                                    <td>2</td>
-                                    <td>80</td>
-                                    <td><span class="status status-active">正常</span></td>
-                                    <td>
-                                        <a href="#">查看</a>
-                                        <a href="#">编辑</a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>王老师</td>
-                                    <td>13900139002</td>
-                                    <td>初二</td>
-                                    <td>3</td>
-                                    <td>120</td>
-                                    <td><span class="status status-active">正常</span></td>
-                                    <td>
-                                        <a href="#">查看</a>
-                                        <a href="#">编辑</a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>赵老师</td>
-                                    <td>13900139003</td>
-                                    <td>初三</td>
-                                    <td>2</td>
-                                    <td>75</td>
-                                    <td><span class="status status-active">正常</span></td>
-                                    <td>
-                                        <a href="#">查看</a>
-                                        <a href="#">编辑</a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>刘老师</td>
-                                    <td>13900139004</td>
-                                    <td>初一</td>
-                                    <td>2</td>
-                                    <td>82</td>
-                                    <td><span class="status status-inactive">禁用</span></td>
-                                    <td>
-                                        <a href="#">查看</a>
-                                        <a href="#">编辑</a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>陈老师</td>
-                                    <td>13900139005</td>
-                                    <td>初二</td>
-                                    <td>3</td>
-                                    <td>115</td>
-                                    <td><span class="status status-active">正常</span></td>
-                                    <td>
-                                        <a href="#">查看</a>
-                                        <a href="#">编辑</a>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="pagination">
-                        <div class="pagination-info">共 45 条记录，当前第 1/5 页</div>
-                        <div class="pagination-controls">
-                            <button class="pagination-btn" disabled>上一页</button>
-                            <button class="pagination-btn active">1</button>
-                            <button class="pagination-btn">2</button>
-                            <button class="pagination-btn">3</button>
-                            <button class="pagination-btn">4</button>
-                            <button class="pagination-btn">5</button>
-                            <button class="pagination-btn">下一页</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 关联学生列表 -->
-            <div class="card">
-                <div class="card-header">关联学生列表</div>
-                <div class="card-body">
-                    <div class="table-wrapper">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>姓名</th>
-                                    <th>学号</th>
-                                    <th>年级班级</th>
-                                    <th>阅读计划数</th>
-                                    <th>阅读时长</th>
-                                    <th>状态</th>
-                                    <th>操作</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>张小明</td>
-                                    <td>2024010101</td>
-                                    <td>初一(1)班</td>
-                                    <td>3</td>
-                                    <td>120小时</td>
-                                    <td><span class="status status-active">正常</span></td>
-                                    <td>
-                                        <a href="#">查看</a>
-                                        <a href="#">编辑</a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>李小红</td>
-                                    <td>2024010102</td>
-                                    <td>初一(1)班</td>
-                                    <td>2</td>
-                                    <td>85小时</td>
-                                    <td><span class="status status-active">正常</span></td>
-                                    <td>
-                                        <a href="#">查看</a>
-                                        <a href="#">编辑</a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>王小刚</td>
-                                    <td>2024010103</td>
-                                    <td>初一(2)班</td>
-                                    <td>4</td>
-                                    <td>156小时</td>
-                                    <td><span class="status status-active">正常</span></td>
-                                    <td>
-                                        <a href="#">查看</a>
-                                        <a href="#">编辑</a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>赵小丽</td>
-                                    <td>2024020101</td>
-                                    <td>初二(1)班</td>
-                                    <td>5</td>
-                                    <td>200小时</td>
-                                    <td><span class="status status-active">正常</span></td>
-                                    <td>
-                                        <a href="#">查看</a>
-                                        <a href="#">编辑</a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>刘小强</td>
-                                    <td>2024020102</td>
-                                    <td>初二(1)班</td>
-                                    <td>3</td>
-                                    <td>98小时</td>
-                                    <td><span class="status status-inactive">禁用</span></td>
-                                    <td>
-                                        <a href="#">查看</a>
-                                        <a href="#">编辑</a>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="pagination">
-                        <div class="pagination-info">共 1,280 条记录，当前第 1/128 页</div>
-                        <div class="pagination-controls">
-                            <button class="pagination-btn" disabled>上一页</button>
-                            <button class="pagination-btn active">1</button>
-                            <button class="pagination-btn">2</button>
-                            <button class="pagination-btn">3</button>
-                            <button class="pagination-btn">4</button>
-                            <button class="pagination-btn">5</button>
-                            <button class="pagination-btn">...</button>
-                            <button class="pagination-btn">128</button>
-                            <button class="pagination-btn">下一页</button>
+                        <div class="stat-card">
+                            <div class="stat-value">45</div>
+                            <div class="stat-label">老师总数</div>
                         </div>
                     </div>
                 </div>
