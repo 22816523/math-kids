@@ -566,9 +566,13 @@
         /* 按钮组 */
         .form-actions {
             display: flex;
-            justify-content: center;
+            justify-content: flex-start;
             gap: 12px;
-            padding-top: 20px;
+            padding: 20px;
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            margin-bottom: 16px;
         }
         .btn {
             height: 40px;
@@ -706,6 +710,13 @@
             <!-- 页面标题 -->
             <div class="page-title">创建阅读计划</div>
 
+            <!-- 按钮组 -->
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary">取消</button>
+                <button type="button" class="btn btn-secondary">保存草稿</button>
+                <button type="submit" class="btn btn-primary">下一步</button>
+            </div>
+
             <!-- 步骤条 -->
             <div class="steps">
                 <div class="steps-container">
@@ -716,12 +727,12 @@
                     <div class="step-line"></div>
                     <div class="step">
                         <div class="step-number">2</div>
-                        <div class="step-label">配置任务</div>
+                        <div class="step-label">配置阅读次数和任务</div>
                     </div>
                     <div class="step-line"></div>
                     <div class="step">
                         <div class="step-number">3</div>
-                        <div class="step-label">完成</div>
+                        <div class="step-label">阅览发布</div>
                     </div>
                 </div>
             </div>
@@ -812,12 +823,6 @@
                         </div>
                     </div>
 
-                    <!-- 按钮组 -->
-                    <div class="form-actions">
-                        <button type="button" class="btn btn-secondary">取消</button>
-                        <button type="button" class="btn btn-secondary">保存草稿</button>
-                        <button type="submit" class="btn btn-primary">下一步</button>
-                    </div>
                 </form>
             </div>
         </div>

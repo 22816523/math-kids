@@ -179,39 +179,6 @@
             margin: 0 16px;
         }
 
-        /* 完成卡片 */
-        .complete-card {
-            background: #fff;
-            border: 1px solid #e0e0e0;
-            border-radius: 4px;
-            padding: 40px;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        .complete-icon {
-            width: 80px;
-            height: 80px;
-            margin: 0 auto 24px;
-            background: #e0e0e0;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 40px;
-            color: #666;
-        }
-        .complete-title {
-            font-size: 24px;
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 12px;
-        }
-        .complete-desc {
-            font-size: 14px;
-            color: #999;
-            margin-bottom: 32px;
-        }
-
         /* 摘要卡片 */
         .summary-card {
             background: #fff;
@@ -258,36 +225,250 @@
             color: #333;
             flex: 1;
         }
-        .summary-list {
+
+        /* 书籍卡片 */
+        .book-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .book-card {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 20px;
+        }
+        .book-card-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .book-cover {
+            width: 80px;
+            height: 106px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: #999;
+            flex-shrink: 0;
+        }
+        .book-info {
+            flex: 1;
+        }
+        .book-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        .book-meta {
+            font-size: 14px;
+            color: #999;
+            margin-bottom: 4px;
+        }
+        .book-start-date {
+            font-size: 14px;
+            color: #666;
+            margin-top: 8px;
+        }
+        .book-start-date span {
+            color: #333;
+            font-weight: 600;
+        }
+
+        /* 任务列表 */
+        .task-section {
+            margin-top: 16px;
+        }
+        .task-section-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 12px;
+        }
+        .task-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .task-item {
+            background: #f5f5f5;
+            border-radius: 4px;
+            padding: 16px;
+        }
+        .task-item-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 12px;
+        }
+        .task-content {
             display: flex;
             flex-direction: column;
             gap: 8px;
         }
-        .summary-list-item {
-            padding: 12px;
+        .task-row {
+            display: flex;
+            font-size: 14px;
+        }
+        .task-row-label {
+            color: #999;
+            width: 120px;
+            flex-shrink: 0;
+        }
+        .task-row-value {
+            color: #333;
+            flex: 1;
+        }
+        .task-files {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .task-file {
+            color: #666;
+            font-size: 13px;
+        }
+
+        /* 无任务状态 */
+        .no-tasks {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+            font-size: 14px;
             background: #f5f5f5;
             border-radius: 4px;
-            font-size: 14px;
-            color: #333;
         }
-        .summary-list-item-title {
-            font-weight: 600;
-            margin-bottom: 4px;
-        }
-        .summary-list-item-meta {
+
+        /* 计划封面 */
+        .plan-cover {
+            width: 120px;
+            height: 160px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-size: 12px;
             color: #999;
+        }
+
+        /* 确认弹窗 */
+        .confirm-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        .confirm-modal.show {
+            display: flex;
+        }
+        .confirm-modal-content {
+            background: #fff;
+            border-radius: 4px;
+            width: 480px;
+            max-width: 90%;
+        }
+        .confirm-modal-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+        .confirm-modal-body {
+            padding: 24px;
+        }
+        .confirm-modal-text {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.6;
+        }
+        .confirm-modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            padding: 16px 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        /* 成功弹窗 */
+        .success-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        .success-modal.show {
+            display: flex;
+        }
+        .success-modal-content {
+            background: #fff;
+            border-radius: 4px;
+            width: 480px;
+            max-width: 90%;
+        }
+        .success-modal-body {
+            padding: 40px;
+            text-align: center;
+        }
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 24px;
+            background: #e0e0e0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            color: #666;
+        }
+        .success-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 12px;
+        }
+        .success-desc {
+            font-size: 14px;
+            color: #999;
+        }
+        .success-modal-footer {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            padding: 0 40px 40px;
         }
 
         /* 按钮组 */
         .form-actions {
             display: flex;
-            justify-content: center;
+            justify-content: flex-start;
             gap: 12px;
             padding: 20px;
             background: #fff;
             border: 1px solid #e0e0e0;
             border-radius: 4px;
+            margin-bottom: 16px;
         }
         .btn {
             height: 40px;
@@ -425,6 +606,13 @@
             <!-- 页面标题 -->
             <div class="page-title">创建阅读计划</div>
 
+            <!-- 按钮组 -->
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary" onclick="window.location.href='12-创建阅读计划-步骤2.html'">上一步</button>
+                <button type="button" class="btn btn-secondary" onclick="saveDraft()">保存草稿</button>
+                <button type="button" class="btn btn-primary" onclick="showConfirmModal()">发布阅读计划</button>
+            </div>
+
             <!-- 步骤条 -->
             <div class="steps">
                 <div class="steps-container">
@@ -435,75 +623,196 @@
                     <div class="step-line"></div>
                     <div class="step completed">
                         <div class="step-number">2</div>
-                        <div class="step-label">配置任务</div>
+                        <div class="step-label">配置阅读次数和任务</div>
                     </div>
                     <div class="step-line"></div>
                     <div class="step active">
                         <div class="step-number">3</div>
-                        <div class="step-label">完成</div>
+                        <div class="step-label">阅览发布</div>
                     </div>
                 </div>
             </div>
 
-            <!-- 完成提示 -->
-            <div class="complete-card">
-                <div class="complete-icon">[✓]</div>
-                <div class="complete-title">阅读计划创建成功</div>
-                <div class="complete-desc">您可以查看计划详情或返回列表页面</div>
-            </div>
-
-            <!-- 计划摘要 -->
+            <!-- 基本信息 -->
             <div class="summary-card">
-                <div class="summary-title">计划摘要</div>
-
-                <!-- 基本信息 -->
-                <div class="summary-section">
-                    <div class="summary-section-title">基本信息</div>
-                    <div class="summary-grid">
-                        <div class="summary-item">
-                            <div class="summary-label">计划名称</div>
-                            <div class="summary-value">2024春季阅读计划</div>
-                        </div>
-                        <div class="summary-item">
-                            <div class="summary-label">适合年级</div>
-                            <div class="summary-value">三年级</div>
-                        </div>
-                        <div class="summary-item">
-                            <div class="summary-label">开始时间</div>
-                            <div class="summary-value">2024-03-01</div>
-                        </div>
-                        <div class="summary-item">
-                            <div class="summary-label">结束时间</div>
-                            <div class="summary-value">2024-06-30</div>
-                        </div>
-                        <div class="summary-item">
-                            <div class="summary-label">计划描述</div>
-                            <div class="summary-value">本学期阅读计划，培养学生阅读兴趣，提升阅读能力</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 书籍列表 -->
-                <div class="summary-section">
-                    <div class="summary-section-title">已选书籍（2本）</div>
-                    <div class="summary-list">
-                        <div class="summary-list-item">
-                            <div class="summary-list-item-title">《西游记》</div>
-                            <div class="summary-list-item-meta">作者：吴承恩 | 开始时间：2024-03-01 | 已配置 3 次阅读，8 个任务</div>
-                        </div>
-                        <div class="summary-list-item">
-                            <div class="summary-list-item-title">《三国演义》</div>
-                            <div class="summary-list-item-meta">作者：罗贯中 | 开始时间：2024-04-01 | 未配置</div>
+                <div class="summary-title">基本信息</div>
+                <div style="display: flex; gap: 24px; margin-bottom: 20px;">
+                    <div class="plan-cover">[计划封面]</div>
+                    <div style="flex: 1;">
+                        <div class="summary-grid">
+                            <div class="summary-item">
+                                <div class="summary-label">计划名称</div>
+                                <div class="summary-value">2024春季阅读计划</div>
+                            </div>
+                            <div class="summary-item">
+                                <div class="summary-label">适合年级</div>
+                                <div class="summary-value">三年级</div>
+                            </div>
+                            <div class="summary-item">
+                                <div class="summary-label">开始时间</div>
+                                <div class="summary-value">2024-03-01</div>
+                            </div>
+                            <div class="summary-item">
+                                <div class="summary-label">结束时间</div>
+                                <div class="summary-value">2024-06-30</div>
+                            </div>
+                            <div class="summary-item" style="grid-column: span 2;">
+                                <div class="summary-label">计划描述</div>
+                                <div class="summary-value">本学期阅读计划，培养学生阅读兴趣，提升阅读能力</div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- 按钮组 -->
-            <div class="form-actions">
+            <!-- 书籍详情 -->
+            <div class="summary-card">
+                <div class="summary-title">书籍与任务配置（共2本）</div>
+
+                <div class="book-cards">
+                    <!-- 书籍1：西游记 -->
+                    <div class="book-card">
+                        <div class="book-card-header">
+                            <div class="book-cover">[封面]</div>
+                            <div class="book-info">
+                                <div class="book-name">《西游记》</div>
+                                <div class="book-meta">作者：吴承恩</div>
+                                <div class="book-start-date">开始时间：<span>2024-03-01</span></div>
+                            </div>
+                        </div>
+
+                        <div class="task-section">
+                            <div class="task-section-title">阅读任务（共3次阅读）</div>
+                            <div class="task-list">
+                                <!-- 第1次阅读 -->
+                                <div class="task-item">
+                                    <div class="task-item-title">第1次阅读</div>
+                                    <div class="task-content">
+                                        <div class="task-row">
+                                            <div class="task-row-label">任务内容</div>
+                                            <div class="task-row-value">指定阅读页码、完成导读单、观看视频</div>
+                                        </div>
+                                        <div class="task-row">
+                                            <div class="task-row-label">阅读页码</div>
+                                            <div class="task-row-value">第1页 - 第50页</div>
+                                        </div>
+                                        <div class="task-row">
+                                            <div class="task-row-label">导读单（学生版）</div>
+                                            <div class="task-row-value">西游记-第1回导读单.jpg</div>
+                                        </div>
+                                        <div class="task-row">
+                                            <div class="task-row-label">导读单（教师版）</div>
+                                            <div class="task-row-value">西游记-第1回导读单答案.jpg</div>
+                                        </div>
+                                        <div class="task-row">
+                                            <div class="task-row-label">视频</div>
+                                            <div class="task-row-value">西游记-第1回讲解.mp4</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 第2次阅读 -->
+                                <div class="task-item">
+                                    <div class="task-item-title">第2次阅读</div>
+                                    <div class="task-content">
+                                        <div class="task-row">
+                                            <div class="task-row-label">任务内容</div>
+                                            <div class="task-row-value">指定阅读页码、完成导读单</div>
+                                        </div>
+                                        <div class="task-row">
+                                            <div class="task-row-label">阅读页码</div>
+                                            <div class="task-row-value">第51页 - 第100页</div>
+                                        </div>
+                                        <div class="task-row">
+                                            <div class="task-row-label">导读单（学生版）</div>
+                                            <div class="task-row-value">西游记-第3回导读单.jpg</div>
+                                        </div>
+                                        <div class="task-row">
+                                            <div class="task-row-label">导读单（教师版）</div>
+                                            <div class="task-row-value">西游记-第3回导读单答案.jpg</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 第3次阅读 -->
+                                <div class="task-item">
+                                    <div class="task-item-title">第3次阅读</div>
+                                    <div class="task-content">
+                                        <div class="task-row">
+                                            <div class="task-row-label">任务内容</div>
+                                            <div class="task-row-value">指定阅读页码、完成导读单、观看视频</div>
+                                        </div>
+                                        <div class="task-row">
+                                            <div class="task-row-label">阅读页码</div>
+                                            <div class="task-row-value">第101页 - 第150页</div>
+                                        </div>
+                                        <div class="task-row">
+                                            <div class="task-row-label">导读单（学生版）</div>
+                                            <div class="task-row-value">西游记-第5回导读单.jpg</div>
+                                        </div>
+                                        <div class="task-row">
+                                            <div class="task-row-label">导读单（教师版）</div>
+                                            <div class="task-row-value">西游记-第5回导读单答案.jpg</div>
+                                        </div>
+                                        <div class="task-row">
+                                            <div class="task-row-label">视频</div>
+                                            <div class="task-row-value">西游记-第5回讲解.mp4</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 书籍2：三国演义 -->
+                    <div class="book-card">
+                        <div class="book-card-header">
+                            <div class="book-cover">[封面]</div>
+                            <div class="book-info">
+                                <div class="book-name">《三国演义》</div>
+                                <div class="book-meta">作者：罗贯中</div>
+                                <div class="book-start-date">开始时间：<span>2024-04-01</span></div>
+                            </div>
+                        </div>
+
+                        <div class="task-section">
+                            <div class="task-section-title">阅读任务</div>
+                            <div class="no-tasks">暂未配置阅读任务</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 确认弹窗 -->
+    <div class="confirm-modal" id="confirmModal">
+        <div class="confirm-modal-content">
+            <div class="confirm-modal-header">确认发布</div>
+            <div class="confirm-modal-body">
+                <div class="confirm-modal-text">
+                    确认要发布此阅读计划吗？<br>
+                    阅读计划发布后会显示在小程序界面上，老师能够看到并报名参与
+                </div>
+            </div>
+            <div class="confirm-modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeConfirmModal()">取消</button>
+                <button type="button" class="btn btn-primary" onclick="confirmPublish()">确认发布</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 成功弹窗 -->
+    <div class="success-modal" id="successModal">
+        <div class="success-modal-content">
+            <div class="success-modal-body">
+                <div class="success-icon">[✓]</div>
+                <div class="success-title">阅读计划发布成功</div>
+                <div class="success-desc">您可以查看计划详情或返回列表页面</div>
+            </div>
+            <div class="success-modal-footer">
                 <button type="button" class="btn btn-secondary">返回列表</button>
-                <button type="button" class="btn btn-secondary">查看详情</button>
-                <button type="button" class="btn btn-primary">继续创建</button>
+                <button type="button" class="btn btn-primary">查看详情</button>
             </div>
         </div>
     </div>
@@ -512,6 +821,23 @@
     function toggleMenu(element) {
         const menuGroup = element.parentElement;
         menuGroup.classList.toggle('expanded');
+    }
+
+    function showConfirmModal() {
+        document.getElementById('confirmModal').classList.add('show');
+    }
+
+    function closeConfirmModal() {
+        document.getElementById('confirmModal').classList.remove('show');
+    }
+
+    function confirmPublish() {
+        closeConfirmModal();
+        document.getElementById('successModal').classList.add('show');
+    }
+
+    function saveDraft() {
+        alert('草稿已保存');
     }
     </script>
 </body>

@@ -474,6 +474,10 @@
                 <div class="filter-section">
                     <div class="filter-row">
                         <div class="filter-item">
+                            <label class="filter-label">班级ID</label>
+                            <input type="text" class="filter-input" placeholder="请输入班级ID">
+                        </div>
+                        <div class="filter-item">
                             <label class="filter-label">学校名称</label>
                             <input type="text" class="filter-input" placeholder="请输入学校名称">
                         </div>
@@ -494,16 +498,8 @@
                             <input type="text" class="filter-input" placeholder="请输入班级名称">
                         </div>
                         <div class="filter-item">
-                            <label class="filter-label">班主任</label>
-                            <input type="text" class="filter-input" placeholder="请输入班主任姓名">
-                        </div>
-                        <div class="filter-item">
-                            <label class="filter-label">阅读状态</label>
-                            <select class="filter-select">
-                                <option value="">全部</option>
-                                <option value="active">已开通</option>
-                                <option value="inactive">未开通</option>
-                            </select>
+                            <label class="filter-label">老师</label>
+                            <input type="text" class="filter-input" placeholder="请输入老师姓名">
                         </div>
                         <div class="filter-item">
                             <label class="filter-label">创建时间</label>
@@ -520,7 +516,6 @@
                 <div class="action-bar">
                     <div class="action-buttons">
                         <button class="btn btn-secondary" onclick="window.location.href='08-班级详情.html'">查看</button>
-                        <button class="btn btn-primary">新增班级</button>
                         <button class="btn btn-secondary">导出</button>
                     </div>
                 </div>
@@ -532,70 +527,70 @@
                             <thead>
                                 <tr>
                                     <th><input type="checkbox"></th>
+                                    <th>班级ID</th>
                                     <th>学校名称</th>
                                     <th>年级</th>
                                     <th>班级名称</th>
-                                    <th>班主任</th>
+                                    <th>老师</th>
+                                    <th>计划学生数</th>
                                     <th>学生数</th>
-                                    <th>阅读计划</th>
-                                    <th>阅读状态</th>
                                     <th>创建时间</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
                                     <td><input type="checkbox"></td>
+                                    <td>BJ00000001</td>
                                     <td>实验小学</td>
                                     <td>三年级</td>
                                     <td>1班</td>
                                     <td>张老师</td>
+                                    <td>45</td>
                                     <td>42</td>
-                                    <td>春季阅读计划</td>
-                                    <td><span class="status-badge status-active">已开通</span></td>
                                     <td>2026-01-15 10:30:00</td>
                                 </tr>
                                 <tr>
                                     <td><input type="checkbox"></td>
+                                    <td>BJ00000002</td>
                                     <td>实验小学</td>
                                     <td>三年级</td>
                                     <td>2班</td>
                                     <td>李老师</td>
+                                    <td>45</td>
                                     <td>40</td>
-                                    <td>春季阅读计划</td>
-                                    <td><span class="status-badge status-active">已开通</span></td>
                                     <td>2026-01-15 11:20:00</td>
                                 </tr>
                                 <tr>
                                     <td><input type="checkbox"></td>
+                                    <td>BJ00000003</td>
                                     <td>育才小学</td>
                                     <td>四年级</td>
                                     <td>1班</td>
                                     <td>王老师</td>
+                                    <td>40</td>
                                     <td>38</td>
-                                    <td>寒假阅读计划</td>
-                                    <td><span class="status-badge status-active">已开通</span></td>
                                     <td>2026-01-12 14:20:00</td>
                                 </tr>
                                 <tr>
                                     <td><input type="checkbox"></td>
+                                    <td>BJ00000004</td>
                                     <td>育才小学</td>
                                     <td>四年级</td>
                                     <td>2班</td>
                                     <td>赵老师</td>
+                                    <td>45</td>
                                     <td>41</td>
-                                    <td>春季阅读计划</td>
-                                    <td><span class="status-badge status-active">已开通</span></td>
                                     <td>2026-01-12 15:10:00</td>
                                 </tr>
                                 <tr>
                                     <td><input type="checkbox"></td>
+                                    <td>BJ00000005</td>
                                     <td>明德小学</td>
                                     <td>五年级</td>
                                     <td>3班</td>
                                     <td>刘老师</td>
+                                    <td>40</td>
                                     <td>35</td>
-                                    <td>-</td>
-                                    <td><span class="status-badge status-inactive">未开通</span></td>
                                     <td>2026-01-10 09:15:00</td>
                                 </tr>
                             </tbody>

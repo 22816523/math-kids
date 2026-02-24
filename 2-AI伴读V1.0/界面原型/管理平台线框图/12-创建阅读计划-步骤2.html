@@ -306,19 +306,40 @@
             font-size: 14px;
             font-weight: 600;
             color: #333;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
-        .task-item-title input {
-            border: none;
-            background: transparent;
+        .task-item-title-text {
             font-size: 14px;
             font-weight: 600;
             color: #333;
-            width: 120px;
-            padding: 0;
+        }
+        .task-item-title input {
+            border: 1px solid #999;
+            background: #fff;
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            padding: 4px 8px;
+            border-radius: 4px;
         }
         .task-item-title input:focus {
-            outline: 1px solid #999;
-            padding: 2px 4px;
+            outline: none;
+            border-color: #333;
+        }
+        .edit-icon {
+            cursor: pointer;
+            color: #999;
+            font-size: 12px;
+            padding: 2px 6px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            background: #fff;
+        }
+        .edit-icon:hover {
+            color: #333;
+            border-color: #999;
         }
         .task-item-actions {
             display: flex;
@@ -354,6 +375,14 @@
             font-size: 14px;
             color: #333;
             margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .form-label input[type="checkbox"] {
+            cursor: pointer;
+            width: 16px;
+            height: 16px;
         }
         .form-label .required {
             color: #999;
@@ -489,18 +518,23 @@
             gap: 8px;
         }
         .resource-select-group .upload-btn {
-            flex: 1;
+            flex: 0 0 auto;
+            min-width: 100px;
+            height: 32px;
+            padding: 0 12px;
+            font-size: 13px;
         }
 
         /* 按钮组 */
         .form-actions {
             display: flex;
-            justify-content: center;
+            justify-content: flex-start;
             gap: 12px;
             padding: 20px;
             background: #fff;
             border: 1px solid #e0e0e0;
             border-radius: 4px;
+            margin-bottom: 16px;
         }
         .btn {
             height: 40px;
@@ -638,6 +672,13 @@
             <!-- 页面标题 -->
             <div class="page-title">创建阅读计划</div>
 
+            <!-- 按钮组 -->
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary">上一步</button>
+                <button type="button" class="btn btn-secondary">保存草稿</button>
+                <button type="button" class="btn btn-primary">下一步</button>
+            </div>
+
             <!-- 步骤条 -->
             <div class="steps">
                 <div class="steps-container">
@@ -648,12 +689,12 @@
                     <div class="step-line"></div>
                     <div class="step active">
                         <div class="step-number">2</div>
-                        <div class="step-label">配置任务</div>
+                        <div class="step-label">配置阅读次数和任务</div>
                     </div>
                     <div class="step-line"></div>
                     <div class="step">
                         <div class="step-number">3</div>
-                        <div class="step-label">完成</div>
+                        <div class="step-label">阅览发布</div>
                     </div>
                 </div>
             </div>
@@ -712,7 +753,10 @@
                                 <div class="task-item">
                                     <div class="task-item-header">
                                         <div class="task-item-title">
-                                            <input type="text" value="第1次阅读">
+                                            <span class="task-item-title-text" id="title-1">第1次阅读</span>
+                                            <input type="text" value="第1次阅读" id="title-input-1" style="display: none;">
+                                            <button class="edit-icon" id="edit-btn-1" onclick="editTitle(1)">[编辑]</button>
+                                            <button class="edit-icon" id="save-btn-1" onclick="saveTitle(1)" style="display: none;">[保存]</button>
                                         </div>
                                         <div class="task-item-actions">
                                             <button class="btn-icon">删除</button>
@@ -720,104 +764,119 @@
                                     </div>
                                     <div class="form-grid">
                                         <div class="form-item full-width">
-                                            <label class="form-label">任务内容</label>
-                                            <div class="form-checkbox-group">
-                                                <label class="form-checkbox">
-                                                    <input type="checkbox" checked>
-                                                    <span>指定阅读页码</span>
-                                                </label>
-                                                <label class="form-checkbox">
-                                                    <input type="checkbox" checked>
-                                                    <span>完成导读单</span>
-                                                </label>
-                                                <label class="form-checkbox">
-                                                    <input type="checkbox" checked>
-                                                    <span>观看视频</span>
-                                                </label>
-                                            </div>
-                                        </div>
-                                        <div class="form-item">
-                                            <label class="form-label">阅读页码</label>
-                                            <div style="display: flex; gap: 8px; align-items: center;">
-                                                <input type="number" class="form-input" placeholder="起始页" value="1" style="flex: 1;">
-                                                <span style="color: #999;">-</span>
-                                                <input type="number" class="form-input" placeholder="结束页" value="50" style="flex: 1;">
-                                            </div>
-                                        </div>
-                                        <div class="form-item">
-                                            <!-- 占位 -->
-                                        </div>
-                                        <div class="form-item">
-                                            <label class="form-label">导读单（学生版）</label>
-                                            <div class="form-upload">
-                                                <div class="resource-select-group">
-                                                    <button class="upload-btn">从资源库选择</button>
-                                                    <button class="upload-btn">本地上传</button>
-                                                </div>
-                                                <span class="upload-info">西游记-第1回导读单.jpg</span>
-                                            </div>
-                                        </div>
-                                        <div class="form-item">
-                                            <label class="form-label">导读单答案（教师版）</label>
-                                            <div class="form-upload">
-                                                <div class="resource-select-group">
-                                                    <button class="upload-btn">从资源库选择</button>
-                                                    <button class="upload-btn">本地上传</button>
-                                                </div>
-                                                <span class="upload-info">西游记-第1回导读单答案.jpg</span>
-                                            </div>
-                                        </div>
-                                        <div class="form-item">
-                                            <label class="form-label">视频</label>
-                                            <div class="form-upload">
-                                                <div class="resource-select-group">
-                                                    <button class="upload-btn">从资源库选择</button>
-                                                    <button class="upload-btn">本地上传</button>
-                                                </div>
-                                                <span class="upload-info">西游记-第1回讲解.mp4</span>
-                                            </div>
-                                        </div>
-                                        <div class="form-item full-width">
                                             <label class="form-label">AI导语</label>
                                             <textarea class="form-textarea" placeholder="输入本次阅读的AI导语，将在学生开始阅读时展示">同学们好！今天我们开始阅读《西游记》第一回，让我们一起走进孙悟空的世界，看看这只神奇的石猴是如何诞生的...</textarea>
                                         </div>
-                                        <div class="form-item">
-                                            <label class="form-label">导读单解锁时机</label>
-                                            <div class="form-radio-group">
-                                                <label class="form-radio">
-                                                    <input type="radio" name="unlock-guide-1" checked>
-                                                    <span>任务当天解锁</span>
-                                                </label>
-                                                <label class="form-radio">
-                                                    <input type="radio" name="unlock-guide-1">
-                                                    <span>提前解锁</span>
-                                                </label>
+
+                                        <!-- 指定阅读页码 -->
+                                        <div class="form-item full-width">
+                                            <label class="form-label">
+                                                <input type="checkbox" id="page-check-1" checked onchange="toggleTask('page-1')">
+                                                指定阅读页码
+                                            </label>
+                                            <div id="page-1" style="display: flex; gap: 8px; align-items: center; max-width: 400px; margin-top: 8px;">
+                                                <input type="number" class="form-input" placeholder="起始页" value="1" style="flex: 1;">
+                                                <span style="color: #999;">-</span>
+                                                <input type="number" class="form-input" placeholder="结束页" value="50" style="flex: 1;">
+                                                <span style="color: #666; white-space: nowrap;">页</span>
                                             </div>
-                                            <div class="unlock-config" style="margin-top: 8px;">
-                                                <span style="font-size: 14px; color: #666;">提前</span>
-                                                <input type="number" class="form-input" value="0" min="0" max="30">
-                                                <span style="font-size: 14px; color: #666;">天解锁</span>
-                                            </div>
-                                            <div class="unlock-hint">设置学生可以查看导读单的时间</div>
                                         </div>
-                                        <div class="form-item">
-                                            <label class="form-label">视频解锁时机</label>
-                                            <div class="form-radio-group">
-                                                <label class="form-radio">
-                                                    <input type="radio" name="unlock-video-1" checked>
-                                                    <span>任务当天解锁</span>
-                                                </label>
-                                                <label class="form-radio">
-                                                    <input type="radio" name="unlock-video-1">
-                                                    <span>提前解锁</span>
-                                                </label>
+
+                                        <!-- 完成导读单 -->
+                                        <div class="form-item full-width">
+                                            <label class="form-label">
+                                                <input type="checkbox" id="guide-check-1" checked onchange="toggleTask('guide-1')">
+                                                完成导读单
+                                            </label>
+                                            <div id="guide-1" style="margin-top: 12px;">
+                                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+                                                    <div>
+                                                        <div style="margin-bottom: 8px; font-size: 13px; color: #666;">导读单（学生版）</div>
+                                                        <div class="resource-select-group" style="margin-bottom: 8px;">
+                                                            <button class="upload-btn">从资源库选择</button>
+                                                            <button class="upload-btn">本地上传</button>
+                                                        </div>
+                                                        <div class="upload-info">西游记-第1回导读单.jpg</div>
+                                                        <div style="padding: 12px; background: #f9f9f9; border-radius: 4px; margin-top: 12px;">
+                                                            <div style="font-size: 13px; color: #666; margin-bottom: 8px;">配置学生版解锁时机</div>
+                                                            <div class="form-radio-group">
+                                                                <label class="form-radio">
+                                                                    <input type="radio" name="unlock-guide-student-1" checked>
+                                                                    <span>任务当天解锁</span>
+                                                                </label>
+                                                                <label class="form-radio">
+                                                                    <input type="radio" name="unlock-guide-student-1">
+                                                                    <span>提前解锁</span>
+                                                                </label>
+                                                            </div>
+                                                            <div class="unlock-config" style="margin-top: 8px;">
+                                                                <span style="font-size: 14px; color: #666;">提前</span>
+                                                                <input type="number" class="form-input" value="0" min="0" max="30">
+                                                                <span style="font-size: 14px; color: #666;">天解锁</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div>
+                                                        <div style="margin-bottom: 8px; font-size: 13px; color: #666;">导读单答案（教师版）</div>
+                                                        <div class="resource-select-group" style="margin-bottom: 8px;">
+                                                            <button class="upload-btn">从资源库选择</button>
+                                                            <button class="upload-btn">本地上传</button>
+                                                        </div>
+                                                        <div class="upload-info">西游记-第1回导读单答案.jpg</div>
+                                                        <div style="padding: 12px; background: #f9f9f9; border-radius: 4px; margin-top: 12px;">
+                                                            <div style="font-size: 13px; color: #666; margin-bottom: 8px;">配置教师版解锁时机</div>
+                                                            <div class="form-radio-group">
+                                                                <label class="form-radio">
+                                                                    <input type="radio" name="unlock-guide-teacher-1">
+                                                                    <span>任务当天解锁</span>
+                                                                </label>
+                                                                <label class="form-radio">
+                                                                    <input type="radio" name="unlock-guide-teacher-1" checked>
+                                                                    <span>提前解锁</span>
+                                                                </label>
+                                                            </div>
+                                                            <div class="unlock-config" style="margin-top: 8px;">
+                                                                <span style="font-size: 14px; color: #666;">提前</span>
+                                                                <input type="number" class="form-input" value="1" min="0" max="30">
+                                                                <span style="font-size: 14px; color: #666;">天解锁</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div class="unlock-config" style="margin-top: 8px;">
-                                                <span style="font-size: 14px; color: #666;">提前</span>
-                                                <input type="number" class="form-input" value="0" min="0" max="30">
-                                                <span style="font-size: 14px; color: #666;">天解锁</span>
+                                        </div>
+
+                                        <!-- 观看视频 -->
+                                        <div class="form-item full-width">
+                                            <label class="form-label">
+                                                <input type="checkbox" id="video-check-1" checked onchange="toggleTask('video-1')">
+                                                观看视频
+                                            </label>
+                                            <div id="video-1" style="margin-top: 12px;">
+                                                <div class="resource-select-group" style="margin-bottom: 8px;">
+                                                    <button class="upload-btn">从资源库选择</button>
+                                                    <button class="upload-btn">本地上传</button>
+                                                </div>
+                                                <div class="upload-info" style="margin-bottom: 12px;">西游记-第1回讲解.mp4</div>
+                                                <div style="padding: 12px; background: #f9f9f9; border-radius: 4px;">
+                                                    <div style="font-size: 13px; color: #666; margin-bottom: 8px;">配置视频解锁时机</div>
+                                                    <div class="form-radio-group">
+                                                        <label class="form-radio">
+                                                            <input type="radio" name="unlock-video-1" checked>
+                                                            <span>任务当天解锁</span>
+                                                        </label>
+                                                        <label class="form-radio">
+                                                            <input type="radio" name="unlock-video-1">
+                                                            <span>提前解锁</span>
+                                                        </label>
+                                                    </div>
+                                                    <div class="unlock-config" style="margin-top: 8px;">
+                                                        <span style="font-size: 14px; color: #666;">提前</span>
+                                                        <input type="number" class="form-input" value="0" min="0" max="30">
+                                                        <span style="font-size: 14px; color: #666;">天解锁</span>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div class="unlock-hint">设置学生可以观看视频的时间</div>
                                         </div>
                                     </div>
                                 </div>
@@ -826,7 +885,10 @@
                                 <div class="task-item">
                                     <div class="task-item-header">
                                         <div class="task-item-title">
-                                            <input type="text" value="第2次阅读">
+                                            <span class="task-item-title-text" id="title-2">第2次阅读</span>
+                                            <input type="text" value="第2次阅读" id="title-input-2" style="display: none;">
+                                            <button class="edit-icon" id="edit-btn-2" onclick="editTitle(2)">[编辑]</button>
+                                            <button class="edit-icon" id="save-btn-2" onclick="saveTitle(2)" style="display: none;">[保存]</button>
                                         </div>
                                         <div class="task-item-actions">
                                             <button class="btn-icon">删除</button>
@@ -834,75 +896,119 @@
                                     </div>
                                     <div class="form-grid">
                                         <div class="form-item full-width">
-                                            <label class="form-label">任务内容</label>
-                                            <div class="form-checkbox-group">
-                                                <label class="form-checkbox">
-                                                    <input type="checkbox" checked>
-                                                    <span>指定阅读页码</span>
-                                                </label>
-                                                <label class="form-checkbox">
-                                                    <input type="checkbox" checked>
-                                                    <span>完成导读单</span>
-                                                </label>
-                                                <label class="form-checkbox">
-                                                    <input type="checkbox">
-                                                    <span>观看视频</span>
-                                                </label>
-                                            </div>
-                                        </div>
-                                        <div class="form-item">
-                                            <label class="form-label">阅读页码</label>
-                                            <div style="display: flex; gap: 8px; align-items: center;">
-                                                <input type="number" class="form-input" placeholder="起始页" value="51" style="flex: 1;">
-                                                <span style="color: #999;">-</span>
-                                                <input type="number" class="form-input" placeholder="结束页" value="100" style="flex: 1;">
-                                            </div>
-                                        </div>
-                                        <div class="form-item">
-                                            <!-- 占位 -->
-                                        </div>
-                                        <div class="form-item">
-                                            <label class="form-label">导读单（学生版）</label>
-                                            <div class="form-upload">
-                                                <div class="resource-select-group">
-                                                    <button class="upload-btn">从资源库选择</button>
-                                                    <button class="upload-btn">本地上传</button>
-                                                </div>
-                                                <span class="upload-info">西游记-第3回导读单.jpg</span>
-                                            </div>
-                                        </div>
-                                        <div class="form-item">
-                                            <label class="form-label">导读单答案（教师版）</label>
-                                            <div class="form-upload">
-                                                <div class="resource-select-group">
-                                                    <button class="upload-btn">从资源库选择</button>
-                                                    <button class="upload-btn">本地上传</button>
-                                                </div>
-                                                <span class="upload-info">西游记-第3回导读单答案.jpg</span>
-                                            </div>
-                                        </div>
-                                        <div class="form-item full-width">
                                             <label class="form-label">AI导语</label>
                                             <textarea class="form-textarea" placeholder="输入本次阅读的AI导语，将在学生开始阅读时展示">继续我们的西游之旅！这一次我们将看到孙悟空大闹天宫的精彩故事...</textarea>
                                         </div>
-                                        <div class="form-item">
-                                            <label class="form-label">导读单解锁时机</label>
-                                            <div class="form-radio-group">
-                                                <label class="form-radio">
-                                                    <input type="radio" name="unlock-guide-2" checked>
-                                                    <span>任务当天解锁</span>
-                                                </label>
-                                                <label class="form-radio">
-                                                    <input type="radio" name="unlock-guide-2">
-                                                    <span>提前解锁</span>
-                                                </label>
+
+                                        <!-- 指定阅读页码 -->
+                                        <div class="form-item full-width">
+                                            <label class="form-label">
+                                                <input type="checkbox" id="page-check-2" checked onchange="toggleTask('page-2')">
+                                                指定阅读页码
+                                            </label>
+                                            <div id="page-2" style="display: flex; gap: 8px; align-items: center; max-width: 400px; margin-top: 8px;">
+                                                <input type="number" class="form-input" placeholder="起始页" value="51" style="flex: 1;">
+                                                <span style="color: #999;">-</span>
+                                                <input type="number" class="form-input" placeholder="结束页" value="100" style="flex: 1;">
+                                                <span style="color: #666; white-space: nowrap;">页</span>
                                             </div>
-                                            <div class="unlock-config" style="margin-top: 8px;">
-                                                <span style="font-size: 14px; color: #666;">提前</span>
-                                                <input type="number" class="form-input" value="0" min="0" max="30">
-                                                <span style="font-size: 14px; color: #666;">天解锁</span>
+                                        </div>
+
+                                        <!-- 完成导读单 -->
+                                        <div class="form-item full-width">
+                                            <label class="form-label">
+                                                <input type="checkbox" id="guide-check-2" checked onchange="toggleTask('guide-2')">
+                                                完成导读单
+                                            </label>
+                                            <div id="guide-2" style="margin-top: 12px;">
+                                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+                                                    <div>
+                                                        <div style="margin-bottom: 8px; font-size: 13px; color: #666;">导读单（学生版）</div>
+                                                        <div class="resource-select-group" style="margin-bottom: 8px;">
+                                                            <button class="upload-btn">从资源库选择</button>
+                                                            <button class="upload-btn">本地上传</button>
+                                                        </div>
+                                                        <div class="upload-info">西游记-第3回导读单.jpg</div>
+                                                        <div style="padding: 12px; background: #f9f9f9; border-radius: 4px; margin-top: 12px;">
+                                                            <div style="font-size: 13px; color: #666; margin-bottom: 8px;">配置学生版解锁时机</div>
+                                                            <div class="form-radio-group">
+                                                                <label class="form-radio">
+                                                                    <input type="radio" name="unlock-guide-student-2" checked>
+                                                                    <span>任务当天解锁</span>
+                                                                </label>
+                                                                <label class="form-radio">
+                                                                    <input type="radio" name="unlock-guide-student-2">
+                                                                    <span>提前解锁</span>
+                                                                </label>
+                                                            </div>
+                                                            <div class="unlock-config" style="margin-top: 8px;">
+                                                                <span style="font-size: 14px; color: #666;">提前</span>
+                                                                <input type="number" class="form-input" value="0" min="0" max="30">
+                                                                <span style="font-size: 14px; color: #666;">天解锁</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div>
+                                                        <div style="margin-bottom: 8px; font-size: 13px; color: #666;">导读单答案（教师版）</div>
+                                                        <div class="resource-select-group" style="margin-bottom: 8px;">
+                                                            <button class="upload-btn">从资源库选择</button>
+                                                            <button class="upload-btn">本地上传</button>
+                                                        </div>
+                                                        <div class="upload-info">西游记-第3回导读单答案.jpg</div>
+                                                        <div style="padding: 12px; background: #f9f9f9; border-radius: 4px; margin-top: 12px;">
+                                                            <div style="font-size: 13px; color: #666; margin-bottom: 8px;">配置教师版解锁时机</div>
+                                                            <div class="form-radio-group">
+                                                                <label class="form-radio">
+                                                                    <input type="radio" name="unlock-guide-teacher-2" checked>
+                                                                    <span>任务当天解锁</span>
+                                                                </label>
+                                                                <label class="form-radio">
+                                                                    <input type="radio" name="unlock-guide-teacher-2">
+                                                                    <span>提前解锁</span>
+                                                                </label>
+                                                            </div>
+                                                            <div class="unlock-config" style="margin-top: 8px;">
+                                                                <span style="font-size: 14px; color: #666;">提前</span>
+                                                                <input type="number" class="form-input" value="0" min="0" max="30">
+                                                                <span style="font-size: 14px; color: #666;">天解锁</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div class="unlock-hint">设置学生可以查看导读单的时间</div>
+                                        </div>
+
+                                        <!-- 观看视频 -->
+                                        <div class="form-item full-width">
+                                            <label class="form-label">
+                                                <input type="checkbox" id="video-check-2" onchange="toggleTask('video-2')">
+                                                观看视频
+                                            </label>
+                                            <div id="video-2" style="margin-top: 12px; display: none;">
+                                                <div class="resource-select-group" style="margin-bottom: 8px;">
+                                                    <button class="upload-btn">从资源库选择</button>
+                                                    <button class="upload-btn">本地上传</button>
+                                                </div>
+                                                <div class="upload-info empty" style="margin-bottom: 12px;">未上传视频</div>
+                                                <div style="padding: 12px; background: #f9f9f9; border-radius: 4px;">
+                                                    <div style="font-size: 13px; color: #666; margin-bottom: 8px;">配置视频解锁时机</div>
+                                                    <div class="form-radio-group">
+                                                        <label class="form-radio">
+                                                            <input type="radio" name="unlock-video-2" checked>
+                                                            <span>任务当天解锁</span>
+                                                        </label>
+                                                        <label class="form-radio">
+                                                            <input type="radio" name="unlock-video-2">
+                                                            <span>提前解锁</span>
+                                                        </label>
+                                                    </div>
+                                                    <div class="unlock-config" style="margin-top: 8px;">
+                                                        <span style="font-size: 14px; color: #666;">提前</span>
+                                                        <input type="number" class="form-input" value="0" min="0" max="30">
+                                                        <span style="font-size: 14px; color: #666;">天解锁</span>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -911,7 +1017,10 @@
                                 <div class="task-item">
                                     <div class="task-item-header">
                                         <div class="task-item-title">
-                                            <input type="text" value="第3次阅读">
+                                            <span class="task-item-title-text" id="title-3">第3次阅读</span>
+                                            <input type="text" value="第3次阅读" id="title-input-3" style="display: none;">
+                                            <button class="edit-icon" id="edit-btn-3" onclick="editTitle(3)">[编辑]</button>
+                                            <button class="edit-icon" id="save-btn-3" onclick="saveTitle(3)" style="display: none;">[保存]</button>
                                         </div>
                                         <div class="task-item-actions">
                                             <button class="btn-icon">删除</button>
@@ -919,104 +1028,119 @@
                                     </div>
                                     <div class="form-grid">
                                         <div class="form-item full-width">
-                                            <label class="form-label">任务内容</label>
-                                            <div class="form-checkbox-group">
-                                                <label class="form-checkbox">
-                                                    <input type="checkbox" checked>
-                                                    <span>指定阅读页码</span>
-                                                </label>
-                                                <label class="form-checkbox">
-                                                    <input type="checkbox" checked>
-                                                    <span>完成导读单</span>
-                                                </label>
-                                                <label class="form-checkbox">
-                                                    <input type="checkbox" checked>
-                                                    <span>观看视频</span>
-                                                </label>
-                                            </div>
-                                        </div>
-                                        <div class="form-item">
-                                            <label class="form-label">阅读页码</label>
-                                            <div style="display: flex; gap: 8px; align-items: center;">
-                                                <input type="number" class="form-input" placeholder="起始页" value="101" style="flex: 1;">
-                                                <span style="color: #999;">-</span>
-                                                <input type="number" class="form-input" placeholder="结束页" value="150" style="flex: 1;">
-                                            </div>
-                                        </div>
-                                        <div class="form-item">
-                                            <!-- 占位 -->
-                                        </div>
-                                        <div class="form-item">
-                                            <label class="form-label">导读单（学生版）</label>
-                                            <div class="form-upload">
-                                                <div class="resource-select-group">
-                                                    <button class="upload-btn">从资源库选择</button>
-                                                    <button class="upload-btn">本地上传</button>
-                                                </div>
-                                                <span class="upload-info">西游记-第5回导读单.jpg</span>
-                                            </div>
-                                        </div>
-                                        <div class="form-item">
-                                            <label class="form-label">导读单答案（教师版）</label>
-                                            <div class="form-upload">
-                                                <div class="resource-select-group">
-                                                    <button class="upload-btn">从资源库选择</button>
-                                                    <button class="upload-btn">本地上传</button>
-                                                </div>
-                                                <span class="upload-info">西游记-第5回导读单答案.jpg</span>
-                                            </div>
-                                        </div>
-                                        <div class="form-item">
-                                            <label class="form-label">视频</label>
-                                            <div class="form-upload">
-                                                <div class="resource-select-group">
-                                                    <button class="upload-btn">从资源库选择</button>
-                                                    <button class="upload-btn">本地上传</button>
-                                                </div>
-                                                <span class="upload-info">西游记-第5回讲解.mp4</span>
-                                            </div>
-                                        </div>
-                                        <div class="form-item full-width">
                                             <label class="form-label">AI导语</label>
                                             <textarea class="form-textarea" placeholder="输入本次阅读的AI导语，将在学生开始阅读时展示">同学们，我们已经读完了《西游记》的前半部分，现在让我们继续探索唐僧师徒的取经之路...</textarea>
                                         </div>
-                                        <div class="form-item">
-                                            <label class="form-label">导读单解锁时机</label>
-                                            <div class="form-radio-group">
-                                                <label class="form-radio">
-                                                    <input type="radio" name="unlock-guide-3">
-                                                    <span>任务当天解锁</span>
-                                                </label>
-                                                <label class="form-radio">
-                                                    <input type="radio" name="unlock-guide-3" checked>
-                                                    <span>提前解锁</span>
-                                                </label>
+
+                                        <!-- 指定阅读页码 -->
+                                        <div class="form-item full-width">
+                                            <label class="form-label">
+                                                <input type="checkbox" id="page-check-3" checked onchange="toggleTask('page-3')">
+                                                指定阅读页码
+                                            </label>
+                                            <div id="page-3" style="display: flex; gap: 8px; align-items: center; max-width: 400px; margin-top: 8px;">
+                                                <input type="number" class="form-input" placeholder="起始页" value="101" style="flex: 1;">
+                                                <span style="color: #999;">-</span>
+                                                <input type="number" class="form-input" placeholder="结束页" value="150" style="flex: 1;">
+                                                <span style="color: #666; white-space: nowrap;">页</span>
                                             </div>
-                                            <div class="unlock-config" style="margin-top: 8px;">
-                                                <span style="font-size: 14px; color: #666;">提前</span>
-                                                <input type="number" class="form-input" value="3" min="0" max="30">
-                                                <span style="font-size: 14px; color: #666;">天解锁</span>
-                                            </div>
-                                            <div class="unlock-hint">设置学生可以查看导读单的时间</div>
                                         </div>
-                                        <div class="form-item">
-                                            <label class="form-label">视频解锁时机</label>
-                                            <div class="form-radio-group">
-                                                <label class="form-radio">
-                                                    <input type="radio" name="unlock-video-3" checked>
-                                                    <span>任务当天解锁</span>
-                                                </label>
-                                                <label class="form-radio">
-                                                    <input type="radio" name="unlock-video-3">
-                                                    <span>提前解锁</span>
-                                                </label>
+
+                                        <!-- 完成导读单 -->
+                                        <div class="form-item full-width">
+                                            <label class="form-label">
+                                                <input type="checkbox" id="guide-check-3" checked onchange="toggleTask('guide-3')">
+                                                完成导读单
+                                            </label>
+                                            <div id="guide-3" style="margin-top: 12px;">
+                                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+                                                    <div>
+                                                        <div style="margin-bottom: 8px; font-size: 13px; color: #666;">导读单（学生版）</div>
+                                                        <div class="resource-select-group" style="margin-bottom: 8px;">
+                                                            <button class="upload-btn">从资源库选择</button>
+                                                            <button class="upload-btn">本地上传</button>
+                                                        </div>
+                                                        <div class="upload-info">西游记-第5回导读单.jpg</div>
+                                                        <div style="padding: 12px; background: #f9f9f9; border-radius: 4px; margin-top: 12px;">
+                                                            <div style="font-size: 13px; color: #666; margin-bottom: 8px;">配置学生版解锁时机</div>
+                                                            <div class="form-radio-group">
+                                                                <label class="form-radio">
+                                                                    <input type="radio" name="unlock-guide-student-3">
+                                                                    <span>任务当天解锁</span>
+                                                                </label>
+                                                                <label class="form-radio">
+                                                                    <input type="radio" name="unlock-guide-student-3" checked>
+                                                                    <span>提前解锁</span>
+                                                                </label>
+                                                            </div>
+                                                            <div class="unlock-config" style="margin-top: 8px;">
+                                                                <span style="font-size: 14px; color: #666;">提前</span>
+                                                                <input type="number" class="form-input" value="3" min="0" max="30">
+                                                                <span style="font-size: 14px; color: #666;">天解锁</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div>
+                                                        <div style="margin-bottom: 8px; font-size: 13px; color: #666;">导读单答案（教师版）</div>
+                                                        <div class="resource-select-group" style="margin-bottom: 8px;">
+                                                            <button class="upload-btn">从资源库选择</button>
+                                                            <button class="upload-btn">本地上传</button>
+                                                        </div>
+                                                        <div class="upload-info">西游记-第5回导读单答案.jpg</div>
+                                                        <div style="padding: 12px; background: #f9f9f9; border-radius: 4px; margin-top: 12px;">
+                                                            <div style="font-size: 13px; color: #666; margin-bottom: 8px;">配置教师版解锁时机</div>
+                                                            <div class="form-radio-group">
+                                                                <label class="form-radio">
+                                                                    <input type="radio" name="unlock-guide-teacher-3">
+                                                                    <span>任务当天解锁</span>
+                                                                </label>
+                                                                <label class="form-radio">
+                                                                    <input type="radio" name="unlock-guide-teacher-3" checked>
+                                                                    <span>提前解锁</span>
+                                                                </label>
+                                                            </div>
+                                                            <div class="unlock-config" style="margin-top: 8px;">
+                                                                <span style="font-size: 14px; color: #666;">提前</span>
+                                                                <input type="number" class="form-input" value="2" min="0" max="30">
+                                                                <span style="font-size: 14px; color: #666;">天解锁</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div class="unlock-config" style="margin-top: 8px;">
-                                                <span style="font-size: 14px; color: #666;">提前</span>
-                                                <input type="number" class="form-input" value="0" min="0" max="30">
-                                                <span style="font-size: 14px; color: #666;">天解锁</span>
+                                        </div>
+
+                                        <!-- 观看视频 -->
+                                        <div class="form-item full-width">
+                                            <label class="form-label">
+                                                <input type="checkbox" id="video-check-3" checked onchange="toggleTask('video-3')">
+                                                观看视频
+                                            </label>
+                                            <div id="video-3" style="margin-top: 12px;">
+                                                <div class="resource-select-group" style="margin-bottom: 8px;">
+                                                    <button class="upload-btn">从资源库选择</button>
+                                                    <button class="upload-btn">本地上传</button>
+                                                </div>
+                                                <div class="upload-info" style="margin-bottom: 12px;">西游记-第5回讲解.mp4</div>
+                                                <div style="padding: 12px; background: #f9f9f9; border-radius: 4px;">
+                                                    <div style="font-size: 13px; color: #666; margin-bottom: 8px;">配置视频解锁时机</div>
+                                                    <div class="form-radio-group">
+                                                        <label class="form-radio">
+                                                            <input type="radio" name="unlock-video-3" checked>
+                                                            <span>任务当天解锁</span>
+                                                        </label>
+                                                        <label class="form-radio">
+                                                            <input type="radio" name="unlock-video-3">
+                                                            <span>提前解锁</span>
+                                                        </label>
+                                                    </div>
+                                                    <div class="unlock-config" style="margin-top: 8px;">
+                                                        <span style="font-size: 14px; color: #666;">提前</span>
+                                                        <input type="number" class="form-input" value="0" min="0" max="30">
+                                                        <span style="font-size: 14px; color: #666;">天解锁</span>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div class="unlock-hint">设置学生可以观看视频的时间</div>
                                         </div>
                                     </div>
                                 </div>
@@ -1025,14 +1149,6 @@
                     </div>
                 </div>
             </div>
-
-            <!-- 按钮组 -->
-            <div class="form-actions">
-                <button type="button" class="btn btn-secondary">上一步</button>
-                <button type="button" class="btn btn-secondary">保存草稿</button>
-                <button type="button" class="btn btn-secondary">预览计划</button>
-                <button type="button" class="btn btn-primary">下一步</button>
-            </div>
         </div>
     </div>
 
@@ -1040,6 +1156,55 @@
     function toggleMenu(element) {
         const menuGroup = element.parentElement;
         menuGroup.classList.toggle('expanded');
+    }
+
+    function editTitle(id) {
+        // 隐藏文本，显示输入框和保存按钮
+        document.getElementById('title-' + id).style.display = 'none';
+        document.getElementById('title-input-' + id).style.display = 'inline-block';
+        document.getElementById('edit-btn-' + id).style.display = 'none';
+        document.getElementById('save-btn-' + id).style.display = 'inline-block';
+
+        // 聚焦输入框
+        document.getElementById('title-input-' + id).focus();
+        document.getElementById('title-input-' + id).select();
+    }
+
+    function saveTitle(id) {
+        // 获取输入框的值
+        const newTitle = document.getElementById('title-input-' + id).value;
+
+        // 更新文本显示
+        document.getElementById('title-' + id).textContent = newTitle;
+
+        // 显示文本，隐藏输入框和保存按钮
+        document.getElementById('title-' + id).style.display = 'inline';
+        document.getElementById('title-input-' + id).style.display = 'none';
+        document.getElementById('edit-btn-' + id).style.display = 'inline-block';
+        document.getElementById('save-btn-' + id).style.display = 'none';
+    }
+
+    function toggleTask(taskId) {
+        const taskContent = document.getElementById(taskId);
+        const checkbox = document.getElementById(taskId.replace(/^(page|guide|video)-/, '$1-check-'));
+
+        if (checkbox.checked) {
+            // 启用任务
+            taskContent.style.display = 'block';
+            if (taskId.startsWith('page-')) {
+                taskContent.style.display = 'flex';
+            } else {
+                taskContent.style.display = 'block';
+            }
+            // 启用所有输入元素
+            const inputs = taskContent.querySelectorAll('input, button, textarea, select');
+            inputs.forEach(input => {
+                input.disabled = false;
+            });
+        } else {
+            // 禁用任务
+            taskContent.style.display = 'none';
+        }
     }
     </script>
 </body>

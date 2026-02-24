@@ -382,6 +382,111 @@
             color: #fff;
             border-color: #333;
         }
+
+        /* 弹窗遮罩 */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        /* 弹窗容器 */
+        .modal {
+            background: #fff;
+            border-radius: 4px;
+            width: 480px;
+            max-width: 90%;
+        }
+        .modal-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+        .modal-body {
+            padding: 24px;
+        }
+        .modal-text {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.6;
+        }
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            padding: 16px 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        /* 加载状态 */
+        .loading-container {
+            display: none;
+            text-align: center;
+            padding: 20px 0;
+        }
+        .loading-container.show {
+            display: block;
+        }
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            margin: 0 auto 16px;
+            border: 3px solid #e0e0e0;
+            border-top-color: #333;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .loading-text {
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* 成功状态 */
+        .success-container {
+            display: none;
+            text-align: center;
+            padding: 20px 0;
+        }
+        .success-container.show {
+            display: block;
+        }
+        .success-icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 16px;
+            background: #e0e0e0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: #666;
+        }
+        .success-text {
+            font-size: 14px;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .success-detail {
+            font-size: 14px;
+            color: #666;
+        }
     </style>
 </head>
 <body>
@@ -543,6 +648,16 @@
                             <label class="filter-label">创建时间</label>
                             <input type="text" class="filter-input" placeholder="请选择日期范围">
                         </div>
+                    </div>
+                    <div class="filter-row">
+                        <div class="filter-item">
+                            <label class="filter-label">同步时间</label>
+                            <input type="text" class="filter-input" placeholder="请选择日期范围">
+                        </div>
+                        <div class="filter-item"></div>
+                        <div class="filter-item"></div>
+                        <div class="filter-item"></div>
+                        <div class="filter-item"></div>
                         <div class="filter-buttons">
                             <button class="btn btn-primary">查询</button>
                             <button class="btn btn-secondary">重置</button>
@@ -557,6 +672,7 @@
                         <button class="btn btn-primary">开通</button>
                         <button class="btn btn-secondary">停用</button>
                         <button class="btn btn-secondary">导出</button>
+                        <button class="btn btn-secondary" onclick="showSyncModal()">同步ERP数据</button>
                     </div>
                 </div>
 
@@ -577,6 +693,7 @@
                                     <th>学生数</th>
                                     <th>阅读状态</th>
                                     <th>创建时间</th>
+                                    <th>同步时间</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -592,6 +709,7 @@
                                     <td>1,200</td>
                                     <td><span class="status-badge status-active">已开通</span></td>
                                     <td>2026-01-15 10:30:00</td>
+                                    <td>2026-02-10 15:20:00</td>
                                 </tr>
                                 <tr>
                                     <td><input type="checkbox"></td>
@@ -605,6 +723,7 @@
                                     <td>1,350</td>
                                     <td><span class="status-badge status-active">已开通</span></td>
                                     <td>2026-01-12 14:20:00</td>
+                                    <td>2026-02-10 15:20:00</td>
                                 </tr>
                                 <tr>
                                     <td><input type="checkbox"></td>
@@ -618,6 +737,7 @@
                                     <td>980</td>
                                     <td><span class="status-badge status-active">已开通</span></td>
                                     <td>2026-01-10 09:15:00</td>
+                                    <td>2026-02-10 15:20:00</td>
                                 </tr>
                                 <tr>
                                     <td><input type="checkbox"></td>
@@ -631,6 +751,7 @@
                                     <td>1,150</td>
                                     <td><span class="status-badge status-inactive">未开通</span></td>
                                     <td>2026-01-08 16:45:00</td>
+                                    <td>2026-02-10 15:20:00</td>
                                 </tr>
                                 <tr>
                                     <td><input type="checkbox"></td>
@@ -644,6 +765,7 @@
                                     <td>1,080</td>
                                     <td><span class="status-badge status-active">已开通</span></td>
                                     <td>2026-01-05 11:00:00</td>
+                                    <td>2026-02-10 15:20:00</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -671,10 +793,75 @@
         </div>
     </div>
 
+    <!-- 同步ERP数据弹窗 -->
+    <div class="modal-overlay" id="syncModal">
+        <div class="modal">
+            <div class="modal-header">同步ERP数据</div>
+            <div class="modal-body">
+                <!-- 确认状态 -->
+                <div id="confirmState">
+                    <div class="modal-text">
+                        确认要从ERP系统同步学校数据吗？<br>
+                        同步过程可能需要几分钟时间，请耐心等待
+                    </div>
+                </div>
+                <!-- 加载状态 -->
+                <div class="loading-container" id="loadingState">
+                    <div class="loading-spinner"></div>
+                    <div class="loading-text">正在同步数据，请稍候...</div>
+                </div>
+                <!-- 成功状态 -->
+                <div class="success-container" id="successState">
+                    <div class="success-icon">[✓]</div>
+                    <div class="success-text">同步成功</div>
+                    <div class="success-detail">已成功同步 <span id="syncCount">0</span> 条学校数据</div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="cancelBtn" onclick="closeSyncModal()">取消</button>
+                <button class="btn btn-primary" id="confirmBtn" onclick="startSync()">确认同步</button>
+                <button class="btn btn-primary" id="closeBtn" onclick="closeSyncModal()" style="display: none;">关闭</button>
+            </div>
+        </div>
+    </div>
+
     <script>
     function toggleMenu(element) {
         const menuGroup = element.parentElement;
         menuGroup.classList.toggle('expanded');
+    }
+
+    function showSyncModal() {
+        document.getElementById('syncModal').classList.add('show');
+        document.getElementById('confirmState').style.display = 'block';
+        document.getElementById('loadingState').classList.remove('show');
+        document.getElementById('successState').classList.remove('show');
+        document.getElementById('cancelBtn').style.display = 'inline-block';
+        document.getElementById('confirmBtn').style.display = 'inline-block';
+        document.getElementById('closeBtn').style.display = 'none';
+    }
+
+    function closeSyncModal() {
+        document.getElementById('syncModal').classList.remove('show');
+    }
+
+    function startSync() {
+        // 隐藏确认状态，显示加载状态
+        document.getElementById('confirmState').style.display = 'none';
+        document.getElementById('loadingState').classList.add('show');
+        document.getElementById('cancelBtn').style.display = 'none';
+        document.getElementById('confirmBtn').style.display = 'none';
+
+        // 模拟同步过程（实际应该是API调用）
+        setTimeout(function() {
+            // 隐藏加载状态，显示成功状态
+            document.getElementById('loadingState').classList.remove('show');
+            document.getElementById('successState').classList.add('show');
+            document.getElementById('closeBtn').style.display = 'inline-block';
+
+            // 设置同步数量（实际应该从API返回）
+            document.getElementById('syncCount').textContent = '156';
+        }, 2000);
     }
     </script>
 </body>
