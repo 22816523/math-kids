@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>编辑阅读计划 - 校校读吧管理平台</title>
+    <title>编辑阅读计划 - 步骤1 - 校校读吧管理平台</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -566,9 +566,13 @@
         /* 按钮组 */
         .form-actions {
             display: flex;
-            justify-content: center;
+            justify-content: flex-start;
             gap: 12px;
-            padding-top: 20px;
+            padding: 20px;
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            margin-bottom: 16px;
         }
         .btn {
             height: 40px;
@@ -706,7 +710,31 @@
             <!-- 页面标题 -->
             <div class="page-title">编辑阅读计划</div>
 
-            <!-- 步骤条 - 移除 -->
+            <!-- 按钮组 -->
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary" onclick="window.location.href='09-阅读计划列表.html'">取消</button>
+                <button type="submit" class="btn btn-primary" onclick="window.location.href='15-编辑阅读计划-步骤2.html'">下一步</button>
+            </div>
+
+            <!-- 步骤条 -->
+            <div class="steps">
+                <div class="steps-container">
+                    <div class="step active">
+                        <div class="step-number">1</div>
+                        <div class="step-label">基本信息</div>
+                    </div>
+                    <div class="step-line"></div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <div class="step-label">配置阅读次数和任务</div>
+                    </div>
+                    <div class="step-line"></div>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <div class="step-label">阅览发布</div>
+                    </div>
+                </div>
+            </div>
 
             <!-- 表单 -->
             <div class="form-card">
@@ -715,7 +743,7 @@
                     <div class="form-grid">
                         <div class="form-item full-width">
                             <label class="form-label">计划名称<span class="required">*</span></label>
-                            <input type="text" class="form-input" placeholder="请输入计划名称" value="2024春季阅读计划">
+                            <input type="text" class="form-input" placeholder="请输入计划名称" value="课外阅读计划">
                         </div>
 
                         <div class="form-item full-width">
@@ -723,8 +751,8 @@
                             <select class="form-input">
                                 <option value="">请选择适合年级</option>
                                 <option value="1">一年级</option>
-                                <option value="2">二年级</option>
-                                <option value="3" selected>三年级</option>
+                                <option value="2" selected>二年级</option>
+                                <option value="3">三年级</option>
                                 <option value="4">四年级</option>
                                 <option value="5">五年级</option>
                                 <option value="6">六年级</option>
@@ -748,7 +776,7 @@
 
                         <div class="form-item">
                             <label class="form-label">开始时间<span class="required">*</span></label>
-                            <input type="date" class="form-input" value="2024-03-01">
+                            <input type="date" class="form-input" value="2024-04-01">
                         </div>
 
                         <div class="form-item">
@@ -758,7 +786,7 @@
 
                         <div class="form-item full-width">
                             <label class="form-label">计划描述</label>
-                            <textarea class="form-textarea" placeholder="请输入计划描述（选填）">本学期阅读计划，培养学生阅读兴趣，提升阅读能力</textarea>
+                            <textarea class="form-textarea" placeholder="请输入计划描述（选填）">这是一个针对二年级学生的课外阅读计划，旨在培养学生的阅读兴趣和阅读能力</textarea>
                         </div>
                     </div>
 
@@ -794,11 +822,6 @@
                         </div>
                     </div>
 
-                    <!-- 按钮组 -->
-                    <div class="form-actions">
-                        <button type="button" class="btn btn-secondary">取消</button>
-                        <button type="submit" class="btn btn-primary">保存</button>
-                    </div>
                 </form>
             </div>
         </div>

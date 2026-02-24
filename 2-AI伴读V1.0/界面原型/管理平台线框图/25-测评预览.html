@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>手动录入测评题目 - 校校读吧管理平台</title>
+    <title>测评预览 - 校校读吧管理平台</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -162,6 +162,19 @@
             padding: 24px;
             margin-bottom: 20px;
         }
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
 
         /* 书籍信息 */
         .book-info {
@@ -199,116 +212,115 @@
             line-height: 1.6;
         }
 
-        /* 表单 */
-        .form-group {
-            margin-bottom: 20px;
+        /* 测评统计 */
+        .test-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
         }
-        .form-label {
-            display: block;
-            font-size: 14px;
-            color: #333;
+        .stat-item {
+            padding: 16px;
+            background: #f5f5f5;
+            border-radius: 4px;
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 24px;
             font-weight: 600;
-            margin-bottom: 8px;
+            color: #333;
+            margin-bottom: 4px;
         }
-        .form-label .required {
-            color: #999;
-            margin-left: 4px;
-        }
-        .form-input {
-            width: 100%;
-            height: 40px;
-            padding: 0 12px;
-            border: 1px solid #e0e0e0;
-            border-radius: 4px;
-            font-size: 14px;
-        }
-        .form-input:focus {
-            outline: none;
-            border-color: #999;
-        }
-        .form-textarea {
-            width: 100%;
-            min-height: 100px;
-            padding: 12px;
-            border: 1px solid #e0e0e0;
-            border-radius: 4px;
-            font-size: 14px;
-            resize: vertical;
-        }
-        .form-textarea:focus {
-            outline: none;
-            border-color: #999;
-        }
-        .form-select {
-            width: 100%;
-            height: 40px;
-            padding: 0 12px;
-            border: 1px solid #e0e0e0;
-            border-radius: 4px;
-            font-size: 14px;
-        }
-        .form-hint {
+        .stat-label {
             font-size: 12px;
-            color: #999;
-            margin-top: 4px;
-        }
-
-        /* 选项组 */
-        .options-group {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        .option-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .option-label {
-            width: 60px;
-            font-size: 14px;
             color: #666;
         }
-        .option-input {
-            flex: 1;
-            height: 40px;
-            padding: 0 12px;
+
+        /* 题目列表 */
+        .question-list {
+            margin-top: 20px;
+        }
+        .question-item {
+            padding: 20px;
+            background: #fff;
             border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            margin-bottom: 16px;
+        }
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .question-number {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+        }
+        .question-type {
+            display: inline-block;
+            padding: 4px 12px;
+            background: #f5f5f5;
+            border-radius: 4px;
+            font-size: 12px;
+            color: #666;
+        }
+        .question-content {
+            font-size: 14px;
+            color: #333;
+            line-height: 1.6;
+            margin-bottom: 12px;
+        }
+        .question-options {
+            margin-bottom: 12px;
+        }
+        .option-item {
+            padding: 8px 12px;
+            background: #f5f5f5;
             border-radius: 4px;
             font-size: 14px;
+            color: #666;
+            margin-bottom: 8px;
         }
-        .option-input:focus {
-            outline: none;
-            border-color: #999;
+        .option-item.correct {
+            background: #333;
+            color: #fff;
         }
-
-        /* 答案选择 */
-        .answer-group {
-            display: flex;
-            gap: 12px;
-        }
-        .answer-checkbox {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 16px;
-            border: 1px solid #e0e0e0;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .answer-checkbox input {
-            cursor: pointer;
-        }
-        .answer-checkbox:hover {
+        .question-answer {
+            padding: 12px;
             background: #f5f5f5;
+            border-radius: 4px;
+            margin-bottom: 12px;
         }
-
-        /* 字数统计 */
-        .char-count {
-            text-align: right;
+        .answer-label {
             font-size: 12px;
             color: #999;
-            margin-top: 4px;
+            margin-bottom: 4px;
+        }
+        .answer-value {
+            font-size: 14px;
+            color: #333;
+        }
+        .question-explanation {
+            padding: 12px;
+            background: #f5f5f5;
+            border-radius: 4px;
+        }
+        .explanation-label {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 4px;
+        }
+        .explanation-value {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.6;
+        }
+        .question-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 12px;
         }
 
         /* 操作按钮组 */
@@ -433,12 +445,13 @@
                 <span>></span>
                 <a href="#">测评列表</a>
                 <span>></span>
-                <span>手动录入题目</span>
+                <span>测评预览</span>
             </div>
 
             <!-- 页面标题 -->
             <div class="page-header">
-                <div class="page-title">手动录入测评题目</div>
+                <div class="page-title">测评预览</div>
+                <button class="btn btn-secondary">返回列表</button>
             </div>
 
             <!-- 书籍信息 -->
@@ -449,138 +462,117 @@
                     <div class="book-meta">
                         <div>作者：吴承恩</div>
                         <div>适用年级：三年级</div>
-                        <div>当前题目数：20题</div>
                     </div>
                 </div>
             </div>
 
-            <!-- 题目表单 -->
+            <!-- 题目列表 -->
             <div class="card">
-                <!-- 题目类型 -->
-                <div class="form-group">
-                    <label class="form-label">题目类型<span class="required">*</span></label>
-                    <select class="form-select" id="questionType" onchange="handleTypeChange()">
-                        <option value="">请选择题目类型</option>
-                        <option value="single">单选题</option>
-                        <option value="multiple">多选题</option>
-                        <option value="judge">判断题</option>
-                        <option value="blank">填空题</option>
-                    </select>
+                <div class="card-header">
+                    <div class="card-title">题目列表（共 4 题）</div>
                 </div>
 
-                <!-- 题目内容 -->
-                <div class="form-group">
-                    <label class="form-label">题目内容<span class="required">*</span></label>
-                    <textarea class="form-textarea" placeholder="请输入题目内容，不超过500个字符" maxlength="500" oninput="updateCharCount('questionContent', 500)"></textarea>
-                    <div class="char-count" id="questionContent-count">0/500</div>
-                </div>
-
-                <!-- 选项（单选题/多选题） -->
-                <div class="form-group" id="optionsGroup" style="display: none;">
-                    <label class="form-label">题目选项<span class="required">*</span></label>
-                    <div class="options-group">
-                        <div class="option-item">
-                            <span class="option-label">选项 A</span>
-                            <input type="text" class="option-input" placeholder="请输入选项A内容" maxlength="200">
+                <div class="question-list">
+                    <!-- 单选题示例 -->
+                    <div class="question-item">
+                        <div class="question-header">
+                            <span class="question-number">第 1 题</span>
+                            <span class="question-type">单选题</span>
                         </div>
-                        <div class="option-item">
-                            <span class="option-label">选项 B</span>
-                            <input type="text" class="option-input" placeholder="请输入选项B内容" maxlength="200">
+                        <div class="question-content">
+                            孙悟空在花果山自封为什么？
                         </div>
-                        <div class="option-item">
-                            <span class="option-label">选项 C</span>
-                            <input type="text" class="option-input" placeholder="请输入选项C内容" maxlength="200">
+                        <div class="question-options">
+                            <div class="option-item correct">A. 齐天大圣</div>
+                            <div class="option-item">B. 美猴王</div>
+                            <div class="option-item">C. 斗战胜佛</div>
+                            <div class="option-item">D. 弼马温</div>
                         </div>
-                        <div class="option-item">
-                            <span class="option-label">选项 D</span>
-                            <input type="text" class="option-input" placeholder="请输入选项D内容" maxlength="200">
+                        <div class="question-answer">
+                            <div class="answer-label">正确答案</div>
+                            <div class="answer-value">A</div>
+                        </div>
+                        <div class="question-explanation">
+                            <div class="explanation-label">题目解析</div>
+                            <div class="explanation-value">孙悟空在花果山自封为"齐天大圣"，这是他反抗天庭权威的表现</div>
                         </div>
                     </div>
-                    <div class="form-hint">每个选项不超过200个字符</div>
-                </div>
 
-                <!-- 正确答案（单选题） -->
-                <div class="form-group" id="singleAnswerGroup" style="display: none;">
-                    <label class="form-label">正确答案<span class="required">*</span></label>
-                    <div class="answer-group">
-                        <div class="answer-checkbox">
-                            <input type="radio" name="answer" value="A" id="answerA">
-                            <label for="answerA">A</label>
+                    <!-- 多选题示例 -->
+                    <div class="question-item">
+                        <div class="question-header">
+                            <span class="question-number">第 2 题</span>
+                            <span class="question-type">多选题</span>
                         </div>
-                        <div class="answer-checkbox">
-                            <input type="radio" name="answer" value="B" id="answerB">
-                            <label for="answerB">B</label>
+                        <div class="question-content">
+                            以下哪些是唐僧的徒弟？
                         </div>
-                        <div class="answer-checkbox">
-                            <input type="radio" name="answer" value="C" id="answerC">
-                            <label for="answerC">C</label>
+                        <div class="question-options">
+                            <div class="option-item correct">A. 孙悟空</div>
+                            <div class="option-item correct">B. 猪八戒</div>
+                            <div class="option-item correct">C. 沙僧</div>
+                            <div class="option-item">D. 白龙马</div>
                         </div>
-                        <div class="answer-checkbox">
-                            <input type="radio" name="answer" value="D" id="answerD">
-                            <label for="answerD">D</label>
+                        <div class="question-answer">
+                            <div class="answer-label">正确答案</div>
+                            <div class="answer-value">ABC</div>
+                        </div>
+                        <div class="question-explanation">
+                            <div class="explanation-label">题目解析</div>
+                            <div class="explanation-value">唐僧有三个徒弟：孙悟空、猪八戒、沙僧。白龙马是坐骑，不是徒弟</div>
                         </div>
                     </div>
-                </div>
 
-                <!-- 正确答案（多选题） -->
-                <div class="form-group" id="multipleAnswerGroup" style="display: none;">
-                    <label class="form-label">正确答案<span class="required">*</span></label>
-                    <div class="answer-group">
-                        <div class="answer-checkbox">
-                            <input type="checkbox" name="multiAnswer" value="A" id="multiAnswerA">
-                            <label for="multiAnswerA">A</label>
+                    <!-- 判断题示例 -->
+                    <div class="question-item">
+                        <div class="question-header">
+                            <span class="question-number">第 3 题</span>
+                            <span class="question-type">判断题</span>
                         </div>
-                        <div class="answer-checkbox">
-                            <input type="checkbox" name="multiAnswer" value="B" id="multiAnswerB">
-                            <label for="multiAnswerB">B</label>
+                        <div class="question-content">
+                            孙悟空是从石头里蹦出来的
                         </div>
-                        <div class="answer-checkbox">
-                            <input type="checkbox" name="multiAnswer" value="C" id="multiAnswerC">
-                            <label for="multiAnswerC">C</label>
+                        <div class="question-answer">
+                            <div class="answer-label">正确答案</div>
+                            <div class="answer-value">对</div>
                         </div>
-                        <div class="answer-checkbox">
-                            <input type="checkbox" name="multiAnswer" value="D" id="multiAnswerD">
-                            <label for="multiAnswerD">D</label>
+                        <div class="question-explanation">
+                            <div class="explanation-label">题目解析</div>
+                            <div class="explanation-value">孙悟空是从花果山顶的仙石中孕育而生，因此说他是从石头里蹦出来的是正确的</div>
                         </div>
                     </div>
-                    <div class="form-hint">可选择多个答案</div>
-                </div>
 
-                <!-- 正确答案（判断题） -->
-                <div class="form-group" id="judgeAnswerGroup" style="display: none;">
-                    <label class="form-label">正确答案<span class="required">*</span></label>
-                    <div class="answer-group">
-                        <div class="answer-checkbox">
-                            <input type="radio" name="judgeAnswer" value="true" id="answerTrue">
-                            <label for="answerTrue">对</label>
+                    <!-- 单选题示例2 -->
+                    <div class="question-item">
+                        <div class="question-header">
+                            <span class="question-number">第 4 题</span>
+                            <span class="question-type">单选题</span>
                         </div>
-                        <div class="answer-checkbox">
-                            <input type="radio" name="judgeAnswer" value="false" id="answerFalse">
-                            <label for="answerFalse">错</label>
+                        <div class="question-content">
+                            猪八戒原来在天庭担任什么职务？
+                        </div>
+                        <div class="question-options">
+                            <div class="option-item">A. 齐天大圣</div>
+                            <div class="option-item correct">B. 天蓬元帅</div>
+                            <div class="option-item">C. 卷帘大将</div>
+                            <div class="option-item">D. 托塔天王</div>
+                        </div>
+                        <div class="question-answer">
+                            <div class="answer-label">正确答案</div>
+                            <div class="answer-value">B</div>
+                        </div>
+                        <div class="question-explanation">
+                            <div class="explanation-label">题目解析</div>
+                            <div class="explanation-value">猪八戒原是天庭的天蓬元帅，因调戏嫦娥被贬下凡间</div>
                         </div>
                     </div>
-                </div>
-
-                <!-- 正确答案（填空题） -->
-                <div class="form-group" id="blankAnswerGroup" style="display: none;">
-                    <label class="form-label">正确答案<span class="required">*</span></label>
-                    <input type="text" class="form-input" placeholder="请输入正确答案" maxlength="200">
-                    <div class="form-hint">如有多个答案，请用分号（;）分隔</div>
-                </div>
-
-                <!-- 题目解析 -->
-                <div class="form-group">
-                    <label class="form-label">题目解析</label>
-                    <textarea class="form-textarea" placeholder="请输入题目解析，不超过500个字符（选填）" maxlength="500" oninput="updateCharCount('questionExplain', 500)"></textarea>
-                    <div class="char-count" id="questionExplain-count">0/500</div>
                 </div>
             </div>
 
             <!-- 操作按钮 -->
             <div class="action-buttons">
-                <button class="btn btn-secondary">取消</button>
-                <button class="btn btn-secondary">保存并继续录入</button>
-                <button class="btn btn-primary">保存</button>
+                <button class="btn btn-secondary">继续添加题目</button>
+                <button class="btn btn-primary">发布测评</button>
             </div>
         </div>
     </div>
@@ -589,36 +581,6 @@
     function toggleMenu(element) {
         const menuGroup = element.parentElement;
         menuGroup.classList.toggle('expanded');
-    }
-
-    function handleTypeChange() {
-        const type = document.getElementById('questionType').value;
-
-        // 隐藏所有答案组
-        document.getElementById('optionsGroup').style.display = 'none';
-        document.getElementById('singleAnswerGroup').style.display = 'none';
-        document.getElementById('multipleAnswerGroup').style.display = 'none';
-        document.getElementById('judgeAnswerGroup').style.display = 'none';
-        document.getElementById('blankAnswerGroup').style.display = 'none';
-
-        // 根据题目类型显示对应的答案组
-        if (type === 'single') {
-            document.getElementById('optionsGroup').style.display = 'block';
-            document.getElementById('singleAnswerGroup').style.display = 'block';
-        } else if (type === 'multiple') {
-            document.getElementById('optionsGroup').style.display = 'block';
-            document.getElementById('multipleAnswerGroup').style.display = 'block';
-        } else if (type === 'judge') {
-            document.getElementById('judgeAnswerGroup').style.display = 'block';
-        } else if (type === 'blank') {
-            document.getElementById('blankAnswerGroup').style.display = 'block';
-        }
-    }
-
-    function updateCharCount(id, max) {
-        const textarea = event.target;
-        const count = textarea.value.length;
-        document.getElementById(id + '-count').textContent = count + '/' + max;
     }
     </script>
 </body>

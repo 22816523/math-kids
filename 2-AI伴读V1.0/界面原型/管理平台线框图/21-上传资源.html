@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>上传资源 - 校校读吧管理平台</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+        }
+
+        /* 主体布局 */
+        .main {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* 侧边栏 */
+        .sidebar {
+            width: 240px;
+            background: #fff;
+            border-right: 1px solid #e0e0e0;
+            overflow-y: auto;
+        }
+        .sidebar-header {
+            padding: 20px 24px;
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .menu-group {
+            margin-bottom: 8px;
+        }
+        .menu-group-title {
+            padding: 12px 24px;
+            font-size: 14px;
+            color: #333;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .menu-group-icon {
+            font-size: 12px;
+            color: #999;
+            transition: transform 0.2s;
+        }
+        .menu-group.expanded .menu-group-icon {
+            transform: rotate(90deg);
+        }
+        .menu-group-items {
+            display: none;
+        }
+        .menu-group.expanded .menu-group-items {
+            display: block;
+        }
+        .menu-item {
+            padding: 10px 24px 10px 48px;
+            font-size: 14px;
+            color: #666;
+            cursor: pointer;
+        }
+        .menu-item:hover {
+            background: #f5f5f5;
+        }
+        .menu-item.active {
+            color: #333;
+            font-weight: 600;
+            background: #f5f5f5;
+            border-left: 3px solid #333;
+        }
+
+        /* 内容区 */
+        .content {
+            flex: 1;
+            padding: 24px;
+            overflow-y: auto;
+        }
+
+        /* 面包屑 */
+        .breadcrumb {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+        .breadcrumb a {
+            color: #666;
+            text-decoration: none;
+        }
+        .breadcrumb a:hover {
+            color: #333;
+        }
+        .breadcrumb span {
+            margin: 0 8px;
+        }
+
+        /* 页面头部 */
+        .page-header {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 20px 24px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .page-header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .page-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+        }
+        .book-info {
+            font-size: 14px;
+            color: #666;
+        }
+        .page-header-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        /* 按钮 */
+        .btn {
+            height: 36px;
+            padding: 0 20px;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            border: none;
+        }
+        .btn-primary {
+            background: #333;
+            color: #fff;
+            border: 1px solid #333;
+        }
+        .btn-primary:hover {
+            background: #555;
+        }
+        .btn-secondary {
+            background: #fff;
+            color: #333;
+            border: 1px solid #999;
+        }
+        .btn-secondary:hover {
+            background: #f5f5f5;
+        }
+
+        /* 信息卡片 */
+        .info-card {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+        .info-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .info-card-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        /* 资源列表 */
+        .resource-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .resource-item {
+            padding: 12px;
+            background: #f5f5f5;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .resource-item-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+        }
+        .resource-icon {
+            width: 40px;
+            height: 40px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: #999;
+            flex-shrink: 0;
+        }
+        .resource-info {
+            flex: 1;
+        }
+        .resource-name {
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 4px;
+        }
+        .resource-meta {
+            font-size: 12px;
+            color: #999;
+        }
+        .resource-actions {
+            display: flex;
+            gap: 8px;
+        }
+        .resource-actions a {
+            font-size: 14px;
+            color: #333;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+        .resource-actions a:hover {
+            color: #666;
+        }
+        .empty-resource {
+            padding: 40px;
+            text-align: center;
+            color: #999;
+            font-size: 14px;
+            background: #f5f5f5;
+            border-radius: 4px;
+        }
+
+        /* 上传区域 */
+        .upload-area {
+            border: 2px dashed #e0e0e0;
+            border-radius: 4px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 16px;
+        }
+        .upload-area:hover {
+            border-color: #999;
+            background: #fafafa;
+        }
+        .upload-area-icon {
+            font-size: 48px;
+            color: #999;
+            margin-bottom: 12px;
+        }
+        .upload-area-text {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+        .upload-area-hint {
+            font-size: 12px;
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+    <div class="main">
+        <!-- 左侧导航 -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                校校读吧管理平台
+            </div>
+            <div class="menu-group expanded">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>内容管理</span>
+                    <span class="menu-group-icon">[>]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">阅读计划列表</div>
+                    <div class="menu-item active">书籍资源库</div>
+                    <div class="menu-item">测评管理</div>
+                </div>
+            </div>
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>用户管理</span>
+                    <span class="menu-group-icon">[>]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">学校管理</div>
+                    <div class="menu-item">班级管理</div>
+                    <div class="menu-item">老师管理</div>
+                    <div class="menu-item">学生管理</div>
+                </div>
+            </div>
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>数据统计</span>
+                    <span class="menu-group-icon">[>]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">阅读数据</div>
+                    <div class="menu-item">测评数据</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 右侧内容 -->
+        <div class="content">
+            <!-- 面包屑 -->
+            <div class="breadcrumb">
+                <a href="#">首页</a>
+                <span>/</span>
+                <a href="#">内容管理</a>
+                <span>/</span>
+                <a href="17-书籍资源库列表.html">书籍资源库</a>
+                <span>/</span>
+                <span>上传资源</span>
+            </div>
+
+            <!-- 页面头部 -->
+            <div class="page-header">
+                <div class="page-header-left">
+                    <div class="page-title">上传资源</div>
+                    <div class="book-info">《西游记》 - 吴承恩</div>
+                </div>
+                <div class="page-header-actions">
+                    <button class="btn btn-secondary" onclick="window.location.href='17-书籍资源库列表.html'">返回列表</button>
+                </div>
+            </div>
+
+            <!-- 视频资源 -->
+            <div class="info-card">
+                <div class="info-card-header">
+                    <div class="info-card-title">视频资源(3个)</div>
+                    <button class="btn btn-primary" onclick="uploadVideo()">上传视频</button>
+                </div>
+                <div class="resource-list">
+                    <div class="resource-item">
+                        <div class="resource-item-left">
+                            <div class="resource-icon">[▶]</div>
+                            <div class="resource-info">
+                                <div class="resource-name">第一回：灵根育孕源流出 心性修持大道生</div>
+                                <div class="resource-meta">时长：15:30 | 大小：125MB | 上传时间：2024-01-15 10:30</div>
+                            </div>
+                        </div>
+                        <div class="resource-actions">
+                            <a href="#">预览</a>
+                            <a href="#">下载</a>
+                            <a href="#">删除</a>
+                        </div>
+                    </div>
+                    <div class="resource-item">
+                        <div class="resource-item-left">
+                            <div class="resource-icon">[▶]</div>
+                            <div class="resource-info">
+                                <div class="resource-name">第二回：悟彻菩提真妙理 断魔归本合元神</div>
+                                <div class="resource-meta">时长：18:45 | 大小：156MB | 上传时间：2024-01-16 14:20</div>
+                            </div>
+                        </div>
+                        <div class="resource-actions">
+                            <a href="#">预览</a>
+                            <a href="#">下载</a>
+                            <a href="#">删除</a>
+                        </div>
+                    </div>
+                    <div class="resource-item">
+                        <div class="resource-item-left">
+                            <div class="resource-icon">[▶]</div>
+                            <div class="resource-info">
+                                <div class="resource-name">第三回：四海千山皆拱伏 九幽十类尽除名</div>
+                                <div class="resource-meta">时长：16:20 | 大小：138MB | 上传时间：2024-01-17 09:15</div>
+                            </div>
+                        </div>
+                        <div class="resource-actions">
+                            <a href="#">预览</a>
+                            <a href="#">下载</a>
+                            <a href="#">删除</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 音频资源 -->
+            <div class="info-card">
+                <div class="info-card-header">
+                    <div class="info-card-title">音频资源(2个)</div>
+                    <button class="btn btn-primary" onclick="uploadAudio()">上传音频</button>
+                </div>
+                <div class="resource-list">
+                    <div class="resource-item">
+                        <div class="resource-item-left">
+                            <div class="resource-icon">[♪]</div>
+                            <div class="resource-info">
+                                <div class="resource-name">西游记全书朗读版（上）</div>
+                                <div class="resource-meta">时长：2:35:20 | 大小：85MB | 上传时间：2024-01-15 11:00</div>
+                            </div>
+                        </div>
+                        <div class="resource-actions">
+                            <a href="#">播放</a>
+                            <a href="#">下载</a>
+                            <a href="#">删除</a>
+                        </div>
+                    </div>
+                    <div class="resource-item">
+                        <div class="resource-item-left">
+                            <div class="resource-icon">[♪]</div>
+                            <div class="resource-info">
+                                <div class="resource-name">西游记全书朗读版（下）</div>
+                                <div class="resource-meta">时长：2:48:15 | 大小：92MB | 上传时间：2024-01-15 11:30</div>
+                            </div>
+                        </div>
+                        <div class="resource-actions">
+                            <a href="#">播放</a>
+                            <a href="#">下载</a>
+                            <a href="#">删除</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 导读单资源（学生版） -->
+            <div class="info-card">
+                <div class="info-card-header">
+                    <div class="info-card-title">导读单资源(学生版)(3个)</div>
+                    <button class="btn btn-primary" onclick="uploadGuideStudent()">上传导读单</button>
+                </div>
+                <div class="resource-list">
+                    <div class="resource-item">
+                        <div class="resource-item-left">
+                            <div class="resource-icon">[📄]</div>
+                            <div class="resource-info">
+                                <div class="resource-name">第1次阅读：石猴出世</div>
+                                <div class="resource-meta">格式：PNG | 大小：2.5MB | 上传时间：2024-01-15 10:45</div>
+                            </div>
+                        </div>
+                        <div class="resource-actions">
+                            <a href="#">预览</a>
+                            <a href="#">下载</a>
+                            <a href="#">删除</a>
+                        </div>
+                    </div>
+                    <div class="resource-item">
+                        <div class="resource-item-left">
+                            <div class="resource-icon">[📄]</div>
+                            <div class="resource-info">
+                                <div class="resource-name">第2次阅读：拜师学艺</div>
+                                <div class="resource-meta">格式：PNG | 大小：2.3MB | 上传时间：2024-01-16 14:30</div>
+                            </div>
+                        </div>
+                        <div class="resource-actions">
+                            <a href="#">预览</a>
+                            <a href="#">下载</a>
+                            <a href="#">删除</a>
+                        </div>
+                    </div>
+                    <div class="resource-item">
+                        <div class="resource-item-left">
+                            <div class="resource-icon">[📄]</div>
+                            <div class="resource-info">
+                                <div class="resource-name">第3次阅读：大闹天宫</div>
+                                <div class="resource-meta">格式：PNG | 大小：2.8MB | 上传时间：2024-01-17 09:30</div>
+                            </div>
+                        </div>
+                        <div class="resource-actions">
+                            <a href="#">预览</a>
+                            <a href="#">下载</a>
+                            <a href="#">删除</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 导读单资源（教师版） -->
+            <div class="info-card">
+                <div class="info-card-header">
+                    <div class="info-card-title">导读单资源(老师版/答案)(2个)</div>
+                    <button class="btn btn-primary" onclick="uploadGuideTeacher()">上传导读单</button>
+                </div>
+                <div class="resource-list">
+                    <div class="resource-item">
+                        <div class="resource-item-left">
+                            <div class="resource-icon">[📄]</div>
+                            <div class="resource-info">
+                                <div class="resource-name">第1次阅读答案：石猴出世</div>
+                                <div class="resource-meta">格式：PNG | 大小：2.6MB | 上传时间：2024-01-15 11:00</div>
+                            </div>
+                        </div>
+                        <div class="resource-actions">
+                            <a href="#">预览</a>
+                            <a href="#">下载</a>
+                            <a href="#">删除</a>
+                        </div>
+                    </div>
+                    <div class="resource-item">
+                        <div class="resource-item-left">
+                            <div class="resource-icon">[📄]</div>
+                            <div class="resource-info">
+                                <div class="resource-name">第3次阅读答案：大闹天宫</div>
+                                <div class="resource-meta">格式：PNG | 大小：2.9MB | 上传时间：2024-01-17 10:00</div>
+                            </div>
+                        </div>
+                        <div class="resource-actions">
+                            <a href="#">预览</a>
+                            <a href="#">下载</a>
+                            <a href="#">删除</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    function toggleMenu(element) {
+        const menuGroup = element.parentElement;
+        menuGroup.classList.toggle('expanded');
+    }
+
+    function uploadVideo() {
+        alert('打开上传视频对话框\n支持格式：MP4、AVI、MOV等\n单个文件不超过500MB');
+    }
+
+    function uploadAudio() {
+        alert('打开上传音频对话框\n支持格式：MP3、WAV、AAC等\n单个文件不超过200MB');
+    }
+
+    function uploadGuideStudent() {
+        alert('打开上传导读单（学生版）对话框\n支持格式：PNG、JPG、PDF等\n单个文件不超过10MB');
+    }
+
+    function uploadGuideTeacher() {
+        alert('打开上传导读单（老师版/答案）对话框\n支持格式：PNG、JPG、PDF等\n单个文件不超过10MB');
+    }
+    </script>
+</body>
+</html>

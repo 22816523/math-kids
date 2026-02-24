@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>书籍资源库 - 校校读吧管理平台</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+        }
+
+        /* 主体布局 */
+        .main {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* 左侧导航 */
+        .sidebar {
+            width: 240px;
+            background: #fff;
+            border-right: 1px solid #e0e0e0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Logo区域 */
+        .sidebar-header {
+            height: 60px;
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        /* 菜单区域 */
+        .sidebar-menu {
+            flex: 1;
+            padding: 16px 0;
+            overflow-y: auto;
+        }
+
+        /* 一级菜单 */
+        .menu-group {
+            margin-bottom: 4px;
+        }
+        .menu-group-title {
+            padding: 12px 24px;
+            font-size: 14px;
+            color: #333;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.2s;
+        }
+        .menu-group-title:hover {
+            background: #f5f5f5;
+        }
+        .menu-group-icon {
+            font-size: 12px;
+            color: #999;
+            transition: transform 0.2s;
+        }
+        .menu-group.expanded .menu-group-icon {
+            transform: rotate(90deg);
+        }
+
+        /* 二级菜单容器 */
+        .menu-group-items {
+            display: none;
+            background: #fafafa;
+        }
+        .menu-group.expanded .menu-group-items {
+            display: block;
+        }
+
+        /* 菜单项 */
+        .menu-item {
+            padding: 12px 24px 12px 40px;
+            font-size: 14px;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .menu-item:hover {
+            background: #f0f0f0;
+            color: #333;
+        }
+        .menu-item.active {
+            background: #e8e8e8;
+            color: #333;
+            font-weight: 600;
+            border-left: 3px solid #333;
+        }
+
+        /* 右侧内容区 */
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 顶部栏 */
+        .header {
+            height: 60px;
+            background: #fff;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+        }
+
+        /* 面包屑 */
+        .breadcrumb {
+            font-size: 14px;
+            color: #999;
+        }
+        .breadcrumb a {
+            color: #666;
+            text-decoration: none;
+        }
+        .breadcrumb a:hover {
+            color: #333;
+        }
+
+        /* 用户信息 */
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .user-name {
+            font-size: 14px;
+            color: #333;
+        }
+        .logout-btn {
+            font-size: 14px;
+            color: #666;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .logout-btn:hover {
+            color: #333;
+        }
+
+        /* 主内容区 */
+        .main-content {
+            flex: 1;
+            padding: 24px;
+            overflow-y: auto;
+        }
+
+        /* 筛选区域 */
+        .filter-section {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 16px;
+        }
+        .filter-item {
+            display: flex;
+            flex-direction: column;
+        }
+        .filter-label {
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        .filter-input {
+            height: 36px;
+            padding: 0 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .filter-input:focus {
+            outline: none;
+            border-color: #999;
+        }
+        .filter-select {
+            height: 36px;
+            padding: 0 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            font-size: 14px;
+            background: #fff;
+            cursor: pointer;
+        }
+        .filter-select:focus {
+            outline: none;
+            border-color: #999;
+        }
+        .filter-actions {
+            display: flex;
+            gap: 12px;
+        }
+        .btn {
+            height: 36px;
+            padding: 0 24px;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            border: none;
+        }
+        .btn-primary {
+            background: #333;
+            color: #fff;
+            border: 1px solid #333;
+        }
+        .btn-primary:hover {
+            background: #555;
+        }
+        .btn-secondary {
+            background: #fff;
+            color: #333;
+            border: 1px solid #999;
+        }
+        .btn-secondary:hover {
+            background: #f5f5f5;
+        }
+
+        /* 操作栏 */
+        .action-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .action-left {
+            display: flex;
+            gap: 12px;
+        }
+
+        /* 表格容器 */
+        .table-container {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+        }
+        .table-wrapper {
+            overflow-x: auto;
+        }
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .table th,
+        .table td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 14px;
+        }
+        .table th {
+            background: #f5f5f5;
+            font-weight: 600;
+            color: #333;
+        }
+        .table td {
+            color: #666;
+        }
+        .table tbody tr:hover {
+            background: #fafafa;
+        }
+        .table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* 书籍封面缩略图 */
+        .book-cover-thumb {
+            width: 60px;
+            height: 80px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: #999;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .book-cover-thumb:hover {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            transform: scale(1.05);
+        }
+
+        /* 操作按钮 */
+        .action-link {
+            color: #333;
+            text-decoration: underline;
+            cursor: pointer;
+            margin: 0 4px;
+        }
+        .action-link:hover {
+            color: #666;
+        }
+
+        /* 封面大图弹窗 */
+        .cover-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        .cover-modal.show {
+            display: flex;
+        }
+        .cover-modal-content {
+            max-width: 80%;
+            max-height: 80%;
+            background: #fff;
+            border-radius: 4px;
+            padding: 20px;
+            position: relative;
+        }
+        .cover-modal-image {
+            width: 400px;
+            height: 533px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: #999;
+        }
+        .cover-modal-close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 32px;
+            height: 32px;
+            background: #333;
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .cover-modal-close:hover {
+            background: #555;
+        }
+
+        /* 分页 */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            padding: 20px;
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            margin-top: 16px;
+        }
+        .page-btn {
+            height: 32px;
+            padding: 0 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            background: #fff;
+            color: #333;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        .page-btn:hover {
+            background: #f5f5f5;
+        }
+        .page-btn.active {
+            background: #333;
+            color: #fff;
+            border-color: #333;
+        }
+        .page-btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+        .page-info {
+            font-size: 14px;
+            color: #666;
+            margin: 0 8px;
+        }
+    </style>
+        .assessment-status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .assessment-status-badge.configured {
+            background: #333;
+            color: #fff;
+        }
+        .assessment-status-badge.unconfigured {
+            background: #f5f5f5;
+            color: #999;
+            border: 1px solid #e0e0e0;
+        }
+
+        /* 操作列 */
+        .action-cell {
+            display: flex;
+            gap: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="main">
+        <!-- 左侧导航 -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                校校读吧管理平台
+            </div>
+            <div class="sidebar-menu">
+                <div class="menu-item">首页</div>
+
+                <div class="menu-group">
+                    <div class="menu-group-title" onclick="toggleMenu(this)">
+                        <span>用户管理</span>
+                        <span class="menu-group-icon">[▶]</span>
+                    </div>
+                    <div class="menu-group-items">
+                        <div class="menu-item">学校管理</div>
+                        <div class="menu-item">班级管理</div>
+                        <div class="menu-item">小程序用户管理</div>
+                    </div>
+                </div>
+
+                <div class="menu-group expanded">
+                    <div class="menu-group-title" onclick="toggleMenu(this)">
+                        <span>内容管理</span>
+                        <span class="menu-group-icon">[▶]</span>
+                    </div>
+                    <div class="menu-group-items">
+                        <div class="menu-item">阅读计划</div>
+                        <div class="menu-item active">书籍资源库</div>
+                        <div class="menu-item">测评管理</div>
+                    </div>
+                </div>
+
+                <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                                        <span>数据分析</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">阅读数据分析</div>
+                    <div class="menu-item">测评数据分析</div>
+                    <div class="menu-item">用户行为分析</div>
+                    <div class="menu-item">学校数据对比</div>
+                    <div class="menu-item">数据导出中心</div>
+                </div>
+            </div>
+
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>激励体系</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">积分规则</div>
+                    <div class="menu-item">等级体系</div>
+                    <div class="menu-item">徽章配置</div>
+                    <div class="menu-item">证书配置</div>
+                </div>
+            </div>
+
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>消息管理</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">系统消息</div>
+                </div>
+            </div>
+
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>用户反馈</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">意见反馈</div>
+                </div>
+            </div>
+
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>系统配置</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">系统参数</div>
+                    <div class="menu-item">操作日志</div>
+                    <div class="menu-item">数据字典</div>
+                </div>
+            </div>
+            </div>
+        </div>
+
+        <!-- 右侧内容区 -->
+        <div class="content">
+            <!-- 顶部栏 -->
+            <div class="header">
+                <div class="breadcrumb">
+                    <a href="#">首页</a> > <a href="#">内容管理</a> > <span>书籍资源库</span>
+                </div>
+                <div class="user-info">
+                    <span class="user-name">管理员</span>
+                    <a href="#" class="logout-btn">退出登录</a>
+                </div>
+            </div>
+
+            <!-- 主内容区 -->
+            <div class="main-content">
+                <!-- 筛选区域 -->
+                <div class="filter-section">
+                    <div class="filter-grid">
+                        <div class="filter-item">
+                            <label class="filter-label">书籍ID</label>
+                            <input type="text" class="filter-input" placeholder="请输入书籍ID">
+                        </div>
+                        <div class="filter-item">
+                            <label class="filter-label">书籍名称</label>
+                            <input type="text" class="filter-input" placeholder="请输入书籍名称">
+                        </div>
+                        <div class="filter-item">
+                            <label class="filter-label">作者</label>
+                            <input type="text" class="filter-input" placeholder="请输入作者">
+                        </div>
+                        <div class="filter-item">
+                            <label class="filter-label">出版社</label>
+                            <input type="text" class="filter-input" placeholder="请输入出版社">
+                        </div>
+                        <div class="filter-item">
+                            <label class="filter-label">适合年级</label>
+                            <input type="text" class="filter-input" placeholder="请选择年级（可多选）">
+                        </div>
+                        <div class="filter-item">
+                            <label class="filter-label">标签</label>
+                            <input type="text" class="filter-input" placeholder="请输入标签">
+                        </div>
+                        <div class="filter-item">
+                            <label class="filter-label">创建时间</label>
+                            <input type="text" class="filter-input" placeholder="请选择日期范围">
+                        </div>
+                        <div class="filter-item">
+                            <label class="filter-label">&nbsp;</label>
+                            <div style="display: flex; gap: 12px;">
+                                <button class="btn btn-primary">查询</button>
+                                <button class="btn btn-secondary">重置</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 操作栏 -->
+                <div class="action-bar">
+                    <div class="action-left">
+                        <button class="btn btn-primary">新增书籍</button>
+                        <button class="btn btn-secondary">导入书籍</button>
+                        <button class="btn btn-secondary">上传资源</button>
+                        <button class="btn btn-secondary">配置测评</button>
+                        <button class="btn btn-secondary">编辑</button>
+                        <button class="btn btn-secondary">查看</button>
+                        <button class="btn btn-secondary">删除</button>
+                        <button class="btn btn-secondary">导出</button>
+                    </div>
+                </div>
+
+                <!-- 书籍列表 -->
+                <div class="table-container">
+                    <div class="table-wrapper">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th><input type="checkbox"></th>
+                                    <th>书籍ID</th>
+                                    <th>封面</th>
+                                    <th>书籍名称</th>
+                                    <th>作者</th>
+                                    <th>出版社</th>
+                                    <th>适合年级</th>
+                                    <th>标签</th>
+                                    <th>测评状态</th>
+                                    <th>创建时间</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><input type="checkbox"></td>
+                                    <td>BK00000001</td>
+                                    <td><div class="book-cover-thumb" onclick="showCover('《西游记》')">[封面]</div></td>
+                                    <td>《西游记》</td>
+                                    <td>吴承恩</td>
+                                    <td>人民文学出版社</td>
+                                    <td>三年级, 四年级</td>
+                                    <td>文学名著, 古典文学</td>
+                                    <td><span class="assessment-status-badge configured">已配置</span></td>
+                                    <td>2026-01-15 10:30:00</td>
+                                    <td>
+                                        <div class="action-cell">
+                                            <a class="action-link" href="22-测评题目配置.html">配置测评</a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><input type="checkbox"></td>
+                                    <td>BK00000002</td>
+                                    <td><div class="book-cover-thumb" onclick="showCover('《三国演义》')">[封面]</div></td>
+                                    <td>《三国演义》</td>
+                                    <td>罗贯中</td>
+                                    <td>人民文学出版社</td>
+                                    <td>四年级, 五年级</td>
+                                    <td>文学名著, 历史传记</td>
+                                    <td><span class="assessment-status-badge configured">已配置</span></td>
+                                    <td>2026-01-15 11:20:00</td>
+                                    <td>
+                                        <div class="action-cell">
+                                            <a class="action-link" href="22-测评题目配置.html">配置测评</a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><input type="checkbox"></td>
+                                    <td>BK00000003</td>
+                                    <td><div class="book-cover-thumb" onclick="showCover('《水浒传》')">[封面]</div></td>
+                                    <td>《水浒传》</td>
+                                    <td>施耐庵</td>
+                                    <td>人民文学出版社</td>
+                                    <td>五年级, 六年级</td>
+                                    <td>文学名著, 古典文学</td>
+                                    <td><span class="assessment-status-badge configured">已配置</span></td>
+                                    <td>2026-01-16 09:15:00</td>
+                                    <td>
+                                        <div class="action-cell">
+                                            <a class="action-link" href="22-测评题目配置.html">配置测评</a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><input type="checkbox"></td>
+                                    <td>BK00000004</td>
+                                    <td><div class="book-cover-thumb" onclick="showCover('《红楼梦》')">[封面]</div></td>
+                                    <td>《红楼梦》</td>
+                                    <td>曹雪芹</td>
+                                    <td>人民文学出版社</td>
+                                    <td>六年级</td>
+                                    <td>文学名著, 古典文学</td>
+                                    <td><span class="assessment-status-badge unconfigured">未配置</span></td>
+                                    <td>2026-01-16 14:30:00</td>
+                                    <td>
+                                        <div class="action-cell">
+                                            <a class="action-link" href="22-测评题目配置.html">配置测评</a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><input type="checkbox"></td>
+                                    <td>BK00000005</td>
+                                    <td><div class="book-cover-thumb" onclick="showCover('《骆驼祥子》')">[封面]</div></td>
+                                    <td>《骆驼祥子》</td>
+                                    <td>老舍</td>
+                                    <td>北京十月文艺出版社</td>
+                                    <td>五年级, 六年级</td>
+                                    <td>文学名著, 现代文学</td>
+                                    <td><span class="assessment-status-badge configured">已配置</span></td>
+                                    <td>2026-01-17 10:00:00</td>
+                                    <td>
+                                        <div class="action-cell">
+                                            <a class="action-link" href="22-测评题目配置.html">配置测评</a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><input type="checkbox"></td>
+                                    <td>BK00000006</td>
+                                    <td><div class="book-cover-thumb" onclick="showCover('《朝花夕拾》')">[封面]</div></td>
+                                    <td>《朝花夕拾》</td>
+                                    <td>鲁迅</td>
+                                    <td>人民文学出版社</td>
+                                    <td>四年级, 五年级</td>
+                                    <td>文学名著, 散文</td>
+                                    <td><span class="assessment-status-badge configured">已配置</span></td>
+                                    <td>2026-01-17 15:20:00</td>
+                                    <td>
+                                        <div class="action-cell">
+                                            <a class="action-link" href="22-测评题目配置.html">配置测评</a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><input type="checkbox"></td>
+                                    <td>BK00000007</td>
+                                    <td><div class="book-cover-thumb" onclick="showCover('《城南旧事》')">[封面]</div></td>
+                                    <td>《城南旧事》</td>
+                                    <td>林海音</td>
+                                    <td>中国青年出版社</td>
+                                    <td>三年级, 四年级</td>
+                                    <td>童话故事, 儿童文学</td>
+                                    <td><span class="assessment-status-badge unconfigured">未配置</span></td>
+                                    <td>2026-01-18 09:30:00</td>
+                                    <td>
+                                        <div class="action-cell">
+                                            <a class="action-link" href="22-测评题目配置.html">配置测评</a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><input type="checkbox"></td>
+                                    <td>BK00000008</td>
+                                    <td><div class="book-cover-thumb" onclick="showCover('《草房子》')">[封面]</div></td>
+                                    <td>《草房子》</td>
+                                    <td>曹文轩</td>
+                                    <td>江苏少年儿童出版社</td>
+                                    <td>四年级, 五年级</td>
+                                    <td>童话故事, 儿童文学</td>
+                                    <td><span class="assessment-status-badge configured">已配置</span></td>
+                                    <td>2026-01-18 14:15:00</td>
+                                    <td>
+                                        <div class="action-cell">
+                                            <a class="action-link" href="22-测评题目配置.html">配置测评</a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><input type="checkbox"></td>
+                                    <td>BK00000009</td>
+                                    <td><div class="book-cover-thumb" onclick="showCover('《昆虫记》')">[封面]</div></td>
+                                    <td>《昆虫记》</td>
+                                    <td>法布尔</td>
+                                    <td>译林出版社</td>
+                                    <td>三年级, 四年级, 五年级</td>
+                                    <td>科普读物, 自然科学</td>
+                                    <td><span class="assessment-status-badge configured">已配置</span></td>
+                                    <td>2026-01-19 10:45:00</td>
+                                    <td>
+                                        <div class="action-cell">
+                                            <a class="action-link" href="22-测评题目配置.html">配置测评</a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><input type="checkbox"></td>
+                                    <td>BK00000010</td>
+                                    <td><div class="book-cover-thumb" onclick="showCover('《海底两万里》')">[封面]</div></td>
+                                    <td>《海底两万里》</td>
+                                    <td>儒勒·凡尔纳</td>
+                                    <td>译林出版社</td>
+                                    <td>五年级, 六年级</td>
+                                    <td>科普读物, 科幻小说</td>
+                                    <td><span class="assessment-status-badge unconfigured">未配置</span></td>
+                                    <td>2026-01-19 16:00:00</td>
+                                    <td>
+                                        <div class="action-cell">
+                                            <a class="action-link" href="22-测评题目配置.html">配置测评</a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 分页 -->
+                <div class="pagination">
+                    <button class="page-btn" disabled>上一页</button>
+                    <button class="page-btn active">1</button>
+                    <button class="page-btn">2</button>
+                    <button class="page-btn">3</button>
+                    <button class="page-btn">4</button>
+                    <button class="page-btn">5</button>
+                    <span class="page-info">共 120 本</span>
+                    <button class="page-btn">下一页</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 封面大图弹窗 -->
+    <div class="cover-modal" id="coverModal" onclick="closeCover()">
+        <div class="cover-modal-content" onclick="event.stopPropagation()">
+            <button class="cover-modal-close" onclick="closeCover()">×</button>
+            <div class="cover-modal-image" id="coverImage">[封面大图]</div>
+        </div>
+    </div>
+
+    <script>
+    function toggleMenu(element) {
+        const menuGroup = element.parentElement;
+        menuGroup.classList.toggle('expanded');
+    }
+
+    function showCover(bookName) {
+        document.getElementById('coverImage').textContent = bookName + ' [封面大图]';
+        document.getElementById('coverModal').classList.add('show');
+    }
+
+    function closeCover() {
+        document.getElementById('coverModal').classList.remove('show');
+    }
+
+    // 绑定按钮点击事件
+    document.addEventListener('DOMContentLoaded', function() {
+        const buttons = document.querySelectorAll('.action-left .btn');
+        buttons.forEach(btn => {
+            if (btn.textContent.trim() === '上传资源') {
+                btn.onclick = function() {
+                    window.location.href = '21-上传资源.html';
+                };
+            }
+            if (btn.textContent.trim() === '配置测评') {
+                btn.onclick = function() {
+                    // 获取选中的书籍
+                    const checkboxes = document.querySelectorAll('.table tbody input[type="checkbox"]:checked');
+
+                    if (checkboxes.length === 0) {
+                        alert('请选择要配置测评的书籍');
+                        return;
+                    }
+
+                    if (checkboxes.length > 1) {
+                        alert('只能选择一本书籍进行测评配置');
+                        return;
+                    }
+
+                    // 跳转到测评题目配置页面
+                    window.location.href = '22-测评题目配置.html';
+                };
+            }
+        });
+    });
+    </script>
+</body>
+</html>

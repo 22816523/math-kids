@@ -1,0 +1,1401 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>测评题目配置 - 校校读吧管理平台</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+        }
+
+        /* 顶部导航 */
+        .header {
+            height: 60px;
+            background: #fff;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header .logo {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+        .header .user-info {
+            margin-left: auto;
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* 主体布局 */
+        .main {
+            display: flex;
+            min-height: calc(100vh - 60px);
+        }
+
+        /* 侧边栏 */
+        .sidebar {
+            width: 240px;
+            background: #fff;
+            border-right: 1px solid #e0e0e0;
+            overflow-y: auto;
+        }
+        .menu-group {
+            margin-bottom: 8px;
+        }
+        .menu-group-title {
+            padding: 12px 24px;
+            font-size: 14px;
+            color: #333;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .menu-group-icon {
+            font-size: 12px;
+            color: #999;
+            transition: transform 0.2s;
+        }
+        .menu-group.expanded .menu-group-icon {
+            transform: rotate(90deg);
+        }
+        .menu-group-items {
+            display: none;
+        }
+        .menu-group.expanded .menu-group-items {
+            display: block;
+        }
+        .menu-item {
+            padding: 10px 24px 10px 48px;
+            font-size: 14px;
+            color: #666;
+            cursor: pointer;
+        }
+        .menu-item:hover {
+            background: #f5f5f5;
+        }
+        .menu-item.active {
+            color: #333;
+            font-weight: 600;
+            background: #f5f5f5;
+            border-left: 3px solid #333;
+        }
+
+        /* 内容区 */
+        .content {
+            flex: 1;
+            padding: 24px;
+            overflow-y: auto;
+        }
+
+        /* 面包屑 */
+        .breadcrumb {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+        .breadcrumb a {
+            color: #666;
+            text-decoration: none;
+        }
+        .breadcrumb a:hover {
+            color: #333;
+        }
+        .breadcrumb span {
+            margin: 0 8px;
+        }
+
+        /* 页面标题 */
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .page-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        /* 按钮 */
+        .btn {
+            height: 36px;
+            padding: 0 20px;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            border: none;
+        }
+        .btn-primary {
+            background: #333;
+            color: #fff;
+            border: 1px solid #333;
+        }
+        .btn-primary:hover {
+            background: #555;
+        }
+        .btn-secondary {
+            background: #fff;
+            color: #333;
+            border: 1px solid #999;
+        }
+        .btn-secondary:hover {
+            background: #f5f5f5;
+        }
+
+        /* 书籍信息 */
+        .book-info {
+            display: flex;
+            gap: 16px;
+            padding: 16px;
+            background: #f5f5f5;
+            border-radius: 4px;
+            margin-bottom: 24px;
+        }
+        .book-cover {
+            width: 80px;
+            height: 120px;
+            background: #e0e0e0;
+            border: 1px solid #999;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: #999;
+        }
+        .book-details {
+            flex: 1;
+        }
+        .book-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        .book-meta {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* 操作按钮组 */
+        .action-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .action-bar-left {
+            font-size: 14px;
+            color: #666;
+        }
+        .action-bar-right {
+            display: flex;
+            gap: 12px;
+        }
+
+        /* 题目列表 */
+        .question-list {
+            margin-bottom: 24px;
+        }
+        .question-item {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            margin-bottom: 12px;
+        }
+        .question-header {
+            display: flex;
+            align-items: center;
+            padding: 16px;
+            cursor: pointer;
+        }
+        .question-header:hover {
+            background: #f5f5f5;
+        }
+        .question-number {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            min-width: 60px;
+        }
+        .question-type {
+            padding: 4px 12px;
+            background: #f5f5f5;
+            border-radius: 4px;
+            font-size: 12px;
+            color: #666;
+            margin-right: 12px;
+        }
+        .question-content-preview {
+            flex: 1;
+            font-size: 14px;
+            color: #666;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .question-actions {
+            display: flex;
+            gap: 8px;
+        }
+        .btn-icon {
+            padding: 0 12px;
+            height: 32px;
+            font-size: 12px;
+        }
+
+        /* 题目编辑表单（已移除，改用弹窗） */
+        .form-item {
+            margin-bottom: 24px;
+        }
+        .form-item-inline {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        .form-label {
+            display: block;
+            font-size: 14px;
+            color: #333;
+            font-weight: 600;
+            min-width: 80px;
+            flex-shrink: 0;
+            margin-bottom: 8px;
+        }
+        .form-label .required {
+            color: #999;
+            margin-left: 4px;
+        }
+        .form-control {
+            flex: 1;
+        }
+        .form-select,
+        .form-input,
+        .form-textarea {
+            width: 100%;
+            padding: 0 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+        .form-select {
+            height: 40px;
+            background: #fff;
+            cursor: pointer;
+        }
+        .form-input {
+            height: 40px;
+        }
+        .form-textarea {
+            min-height: 80px;
+            padding: 12px;
+            resize: vertical;
+        }
+        .form-hint {
+            font-size: 12px;
+            color: #999;
+            margin-top: 6px;
+        }
+        .char-count {
+            font-size: 12px;
+            color: #999;
+            text-align: right;
+            margin-top: 6px;
+        }
+        /* 多选标签 */
+        .multi-select-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 8px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            min-height: 40px;
+        }
+        .tag-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            background: #f5f5f5;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            font-size: 13px;
+            color: #333;
+        }
+        .tag-remove {
+            cursor: pointer;
+            color: #999;
+            font-size: 14px;
+            line-height: 1;
+        }
+        .tag-remove:hover {
+            color: #333;
+        }
+        .tag-add-btn {
+            padding: 4px 12px;
+            background: #fff;
+            border: 1px dashed #e0e0e0;
+            border-radius: 4px;
+            font-size: 13px;
+            color: #999;
+            cursor: pointer;
+        }
+        .tag-add-btn:hover {
+            border-color: #999;
+            color: #666;
+        }
+
+        /* 选择弹窗 */
+        .select-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1001;
+            align-items: center;
+            justify-content: center;
+        }
+        .select-modal.show {
+            display: flex;
+        }
+        .select-modal-content {
+            background: #fff;
+            border-radius: 4px;
+            width: 400px;
+            max-height: 500px;
+            display: flex;
+            flex-direction: column;
+        }
+        .select-modal-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+        .select-modal-search {
+            padding: 12px 20px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .select-modal-search input {
+            width: 100%;
+            height: 36px;
+            padding: 0 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .select-modal-search input:focus {
+            outline: none;
+            border-color: #999;
+        }
+        .select-modal-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 8px 0;
+        }
+        .select-option {
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .select-option:hover {
+            background: #f5f5f5;
+        }
+        .select-option.disabled {
+            color: #ccc;
+            cursor: not-allowed;
+        }
+        .select-option.disabled:hover {
+            background: transparent;
+        }
+        .select-option-checkbox {
+            width: 16px;
+            height: 16px;
+            border: 1px solid #e0e0e0;
+            border-radius: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: #333;
+        }
+        .select-option.selected .select-option-checkbox {
+            background: #333;
+            border-color: #333;
+            color: #fff;
+        }
+        .select-modal-footer {
+            padding: 12px 20px;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+        .options-group {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        .option-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .option-label {
+            font-size: 14px;
+            color: #333;
+            font-weight: 600;
+            min-width: 60px;
+        }
+        .option-input {
+            flex: 1;
+            height: 40px;
+            padding: 0 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .answer-group {
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+        .answer-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+        .answer-option input[type="radio"],
+        .answer-option input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+        .answer-option label {
+            font-size: 14px;
+            color: #333;
+            cursor: pointer;
+        }
+        .edit-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        /* 批量导入弹窗 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal.active {
+            display: flex;
+        }
+        .modal-content {
+            background: #fff;
+            border-radius: 4px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .modal-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+        .modal-close {
+            font-size: 24px;
+            color: #999;
+            cursor: pointer;
+            border: none;
+            background: none;
+        }
+        .modal-body {
+            padding: 24px;
+        }
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+        .upload-area {
+            border: 2px dashed #e0e0e0;
+            border-radius: 4px;
+            padding: 48px;
+            text-align: center;
+            background: #fafafa;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+        .upload-area:hover {
+            border-color: #999;
+            background: #f5f5f5;
+        }
+        .upload-icon {
+            font-size: 48px;
+            color: #999;
+            margin-bottom: 16px;
+        }
+        .upload-text {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+        .upload-hint {
+            font-size: 12px;
+            color: #999;
+        }
+        .template-download {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+            background: #f5f5f5;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        .template-icon {
+            font-size: 24px;
+            color: #666;
+        }
+        .template-info {
+            flex: 1;
+        }
+        .template-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
+        .template-desc {
+            font-size: 12px;
+            color: #666;
+        }
+
+        /* 底部固定按钮 */
+        .bottom-actions {
+            position: sticky;
+            bottom: 0;
+            background: #fff;
+            border-top: 1px solid #e0e0e0;
+            padding: 16px 24px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin: 24px -24px -24px -24px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <div class="header">
+        <div class="logo">校校读吧管理平台</div>
+        <div class="user-info">管理员</div>
+    </div>
+
+    <div class="main">
+        <!-- 侧边栏 -->
+        <div class="sidebar">
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>用户管理</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">学校管理</div>
+                    <div class="menu-item">班级管理</div>
+                    <div class="menu-item">小程序用户管理</div>
+                </div>
+            </div>
+
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>内容管理</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">阅读计划</div>
+                    <div class="menu-item">书籍资源库</div>
+                </div>
+            </div>
+
+            <div class="menu-group expanded">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>测评管理</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item active">测评列表</div>
+                </div>
+            </div>
+
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>数据分析</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">阅读数据分析</div>
+                    <div class="menu-item">测评数据分析</div>
+                    <div class="menu-item">用户行为分析</div>
+                    <div class="menu-item">学校数据对比</div>
+                    <div class="menu-item">数据导出中心</div>
+                </div>
+            </div>
+
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>激励体系</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">积分规则</div>
+                    <div class="menu-item">等级体系</div>
+                    <div class="menu-item">徽章配置</div>
+                    <div class="menu-item">证书配置</div>
+                </div>
+            </div>
+
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>消息管理</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">系统消息</div>
+                </div>
+            </div>
+
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>用户反馈</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">意见反馈</div>
+                </div>
+            </div>
+
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>系统配置</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">系统参数</div>
+                    <div class="menu-item">操作日志</div>
+                    <div class="menu-item">数据字典</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 内容区 -->
+        <div class="content">
+            <!-- 面包屑 -->
+            <div class="breadcrumb">
+                <a href="#">首页</a>
+                <span>></span>
+                <a href="#">内容管理</a>
+                <span>></span>
+                <a href="17-书籍资源库列表.html">书籍资源库</a>
+                <span>></span>
+                <span>测评题目配置</span>
+            </div>
+
+            <!-- 页面标题 -->
+            <div class="page-header">
+                <div class="page-title">测评题目配置</div>
+            </div>
+
+            <!-- 书籍信息 -->
+            <div class="book-info">
+                <div class="book-cover">[封面]</div>
+                <div class="book-details">
+                    <div class="book-name">《西游记》</div>
+                    <div class="book-meta">
+                        <div>作者：吴承恩</div>
+                        <div>适用年级：三年级</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 操作按钮区 -->
+            <div class="action-bar">
+                <div class="action-bar-left">
+                    共 4 道题目
+                </div>
+                <div class="action-bar-right">
+                    <button class="btn btn-secondary" onclick="showImportModal()">批量导入</button>
+                    <button class="btn btn-primary" onclick="addNewQuestion()">添加题目</button>
+                </div>
+            </div>
+
+            <!-- 题目列表 -->
+            <div class="question-list">
+                <!-- 题目1 - 单选题 -->
+                <div class="question-item">
+                    <div class="question-header">
+                        <div class="question-number">第 1 题</div>
+                        <div class="question-type">单选题</div>
+                        <div class="question-content-preview">孙悟空在花果山自封为什么？</div>
+                        <div class="question-actions">
+                            <button class="btn btn-secondary btn-icon" onclick="editQuestion(1, event)">编辑</button>
+                            <button class="btn btn-secondary btn-icon" onclick="deleteQuestion(1, event)">删除</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 题目2 - 多选题 -->
+                <div class="question-item">
+                    <div class="question-header">
+                        <div class="question-number">第 2 题</div>
+                        <div class="question-type">多选题</div>
+                        <div class="question-content-preview">以下哪些是唐僧的徒弟？</div>
+                        <div class="question-actions">
+                            <button class="btn btn-secondary btn-icon" onclick="editQuestion(2, event)">编辑</button>
+                            <button class="btn btn-secondary btn-icon" onclick="deleteQuestion(2, event)">删除</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 题目3 - 判断题 -->
+                <div class="question-item">
+                    <div class="question-header">
+                        <div class="question-number">第 3 题</div>
+                        <div class="question-type">判断题</div>
+                        <div class="question-content-preview">孙悟空被压在五指山下五百年</div>
+                        <div class="question-actions">
+                            <button class="btn btn-secondary btn-icon" onclick="editQuestion(3, event)">编辑</button>
+                            <button class="btn btn-secondary btn-icon" onclick="deleteQuestion(3, event)">删除</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 题目4 - 问答题 -->
+                <div class="question-item">
+                    <div class="question-header">
+                        <div class="question-number">第 4 题</div>
+                        <div class="question-type">问答题</div>
+                        <div class="question-content-preview">请简述孙悟空三打白骨精的故事情节</div>
+                        <div class="question-actions">
+                            <button class="btn btn-secondary btn-icon" onclick="editQuestion(4, event)">编辑</button>
+                            <button class="btn btn-secondary btn-icon" onclick="deleteQuestion(4, event)">删除</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 底部操作按钮 -->
+            <div class="bottom-actions">
+                <button class="btn btn-secondary">预览测评</button>
+                <button class="btn btn-primary">保存配置</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 批量导入弹窗 -->
+    <div class="modal" id="importModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">批量导入题目</div>
+                <button class="modal-close" onclick="closeImportModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <!-- 模板下载 -->
+                <div class="template-download">
+                    <div class="template-icon">[📄]</div>
+                    <div class="template-info">
+                        <div class="template-title">测评题目导入模板.xlsx</div>
+                        <div class="template-desc">包含题目类型、题目内容、选项、答案、解析等字段</div>
+                    </div>
+                    <button class="btn btn-primary">下载模板</button>
+                </div>
+
+                <!-- 上传区域 -->
+                <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+                    <div class="upload-icon">[📤]</div>
+                    <div class="upload-text">点击或拖拽文件到此区域上传</div>
+                    <div class="upload-hint">支持.xlsx格式，文件大小不超过10MB，最多200道题目</div>
+                    <input type="file" id="fileInput" style="display: none;" accept=".xlsx">
+                </div>
+
+                <!-- 格式说明 -->
+                <div style="padding: 16px; background: #f5f5f5; border-radius: 4px; font-size: 14px; color: #666; line-height: 1.8;">
+                    <p style="margin-bottom: 12px; font-weight: 600; color: #333;">Excel格式要求</p>
+                    <p style="margin-bottom: 8px;">• 题目类型（必填）：单选、多选、判断、填空、问答</p>
+                    <p style="margin-bottom: 8px;">• 题目内容（必填）：不超过500个字符</p>
+                    <p style="margin-bottom: 8px;">• 选项A/B/C/D（选择题必填）：每个选项不超过200个字符</p>
+                    <p style="margin-bottom: 8px;">• 正确答案（必填）：单选填A/B/C/D，多选填AB/ABC等，判断填对/错</p>
+                    <p>• 题目解析（选填）：不超过500个字符</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeImportModal()">取消</button>
+                <button class="btn btn-primary">开始导入</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 编辑题目弹窗 -->
+    <div class="modal" id="editModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title" id="editModalTitle">编辑题目</div>
+                <button class="modal-close" onclick="closeEditModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-item-inline">
+                    <label class="form-label">题目类型<span class="required">*</span></label>
+                    <div class="form-control">
+                        <select class="form-select" id="questionType">
+                            <option value="">请选择题目类型</option>
+                            <option value="single">单选题</option>
+                            <option value="multiple">多选题</option>
+                            <option value="judge">判断题</option>
+                            <option value="essay">问答题</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-item-inline">
+                    <label class="form-label">阅读能力<span class="required">*</span></label>
+                    <div class="form-control">
+                        <div class="multi-select-tags" id="abilityContainer">
+                            <button type="button" class="tag-add-btn" onclick="openAbilityModal()">+ 添加阅读能力</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-item">
+                    <label class="form-label">题目内容<span class="required">*</span></label>
+                    <textarea class="form-textarea" id="questionContent" placeholder="请输入题目内容"></textarea>
+                    <div class="char-count">0/500</div>
+                </div>
+                <div class="form-item" id="optionsArea">
+                    <div style="padding: 48px; text-align: center; background: #fafafa; border: 1px dashed #e0e0e0; border-radius: 4px;">
+                        <div style="font-size: 14px; color: #999; margin-bottom: 8px;">请先选择题目类型</div>
+                        <div style="font-size: 12px; color: #ccc;">根据题目类型将显示对应的选项和答案设置</div>
+                    </div>
+                </div>
+                <div class="form-item">
+                    <label class="form-label">题目解析</label>
+                    <textarea class="form-textarea" id="questionExplanation" placeholder="请输入题目解析（选填）"></textarea>
+                    <div class="char-count">0/500</div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeEditModal()">取消</button>
+                <button class="btn btn-primary" onclick="saveQuestion()">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 阅读能力选择弹窗 -->
+    <div class="select-modal" id="abilityModal">
+        <div class="select-modal-content">
+            <div class="select-modal-header">选择阅读能力</div>
+            <div class="select-modal-search">
+                <input type="text" id="abilitySearch" placeholder="搜索阅读能力" oninput="filterAbilityOptions()">
+            </div>
+            <div class="select-modal-body" id="abilityOptions">
+                <div class="select-option" data-value="1" data-label="信息提取能力" onclick="toggleAbilitySelection(this)">
+                    <div class="select-option-checkbox"></div>
+                    <span>信息提取能力</span>
+                </div>
+                <div class="select-option" data-value="2" data-label="理解分析能力" onclick="toggleAbilitySelection(this)">
+                    <div class="select-option-checkbox"></div>
+                    <span>理解分析能力</span>
+                </div>
+                <div class="select-option" data-value="3" data-label="推理判断能力" onclick="toggleAbilitySelection(this)">
+                    <div class="select-option-checkbox"></div>
+                    <span>推理判断能力</span>
+                </div>
+                <div class="select-option" data-value="4" data-label="综合概括能力" onclick="toggleAbilitySelection(this)">
+                    <div class="select-option-checkbox"></div>
+                    <span>综合概括能力</span>
+                </div>
+                <div class="select-option" data-value="5" data-label="鉴赏评价能力" onclick="toggleAbilitySelection(this)">
+                    <div class="select-option-checkbox"></div>
+                    <span>鉴赏评价能力</span>
+                </div>
+            </div>
+            <div class="select-modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeAbilityModal()">取消</button>
+                <button type="button" class="btn btn-primary" onclick="confirmAbilitySelection()">确定</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    // 菜单折叠
+    function toggleMenu(element) {
+        const menuGroup = element.parentElement;
+        menuGroup.classList.toggle('expanded');
+    }
+
+    // 阅读能力选择
+    const selectedAbilities = new Set();
+    const tempSelectedAbilities = new Set();
+
+    function openAbilityModal() {
+        tempSelectedAbilities.clear();
+        selectedAbilities.forEach(ability => tempSelectedAbilities.add(ability));
+
+        // 更新选项状态
+        const options = document.querySelectorAll('#abilityOptions .select-option');
+        options.forEach(option => {
+            const value = option.getAttribute('data-value');
+            if (tempSelectedAbilities.has(value)) {
+                option.classList.add('selected');
+                option.querySelector('.select-option-checkbox').textContent = '✓';
+            } else {
+                option.classList.remove('selected');
+                option.querySelector('.select-option-checkbox').textContent = '';
+            }
+        });
+
+        document.getElementById('abilityModal').classList.add('show');
+        document.getElementById('abilitySearch').value = '';
+        filterAbilityOptions();
+    }
+
+    function closeAbilityModal() {
+        document.getElementById('abilityModal').classList.remove('show');
+    }
+
+    function toggleAbilitySelection(element) {
+        const value = element.getAttribute('data-value');
+
+        if (tempSelectedAbilities.has(value)) {
+            tempSelectedAbilities.delete(value);
+            element.classList.remove('selected');
+            element.querySelector('.select-option-checkbox').textContent = '';
+        } else {
+            tempSelectedAbilities.add(value);
+            element.classList.add('selected');
+            element.querySelector('.select-option-checkbox').textContent = '✓';
+        }
+    }
+
+    function confirmAbilitySelection() {
+        selectedAbilities.clear();
+        tempSelectedAbilities.forEach(ability => selectedAbilities.add(ability));
+
+        // 更新显示
+        const container = document.getElementById('abilityContainer');
+        const addBtn = container.querySelector('.tag-add-btn');
+
+        // 清除现有标签
+        container.querySelectorAll('.tag-item').forEach(item => item.remove());
+
+        // 添加选中的标签
+        const options = document.querySelectorAll('#abilityOptions .select-option');
+        options.forEach(option => {
+            const value = option.getAttribute('data-value');
+            if (selectedAbilities.has(value)) {
+                const label = option.getAttribute('data-label');
+                const tagItem = document.createElement('div');
+                tagItem.className = 'tag-item';
+                tagItem.innerHTML = `${label}<span class="tag-remove" onclick="removeAbility('${value}')">[×]</span>`;
+                container.insertBefore(tagItem, addBtn);
+            }
+        });
+
+        closeAbilityModal();
+    }
+
+    function removeAbility(value) {
+        selectedAbilities.delete(value);
+
+        const container = document.getElementById('abilityContainer');
+        const tags = container.querySelectorAll('.tag-item');
+
+        tags.forEach(tag => {
+            if (tag.querySelector('.tag-remove').getAttribute('onclick').includes(value)) {
+                tag.remove();
+            }
+        });
+    }
+
+    function filterAbilityOptions() {
+        const searchValue = document.getElementById('abilitySearch').value.toLowerCase();
+        const options = document.querySelectorAll('#abilityOptions .select-option');
+
+        options.forEach(option => {
+            const label = option.getAttribute('data-label').toLowerCase();
+            if (label.includes(searchValue)) {
+                option.style.display = 'flex';
+            } else {
+                option.style.display = 'none';
+            }
+        });
+    }
+
+    // 点击阅读能力弹窗背景关闭
+    document.getElementById('abilityModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeAbilityModal();
+        }
+    });
+
+    // 题型切换
+    document.getElementById('questionType').addEventListener('change', function() {
+        const type = this.value;
+        const optionsArea = document.getElementById('optionsArea');
+
+        if (!type) {
+            optionsArea.innerHTML = `
+                <div style="padding: 48px; text-align: center; background: #fafafa; border: 1px dashed #e0e0e0; border-radius: 4px;">
+                    <div style="font-size: 14px; color: #999; margin-bottom: 8px;">请先选择题目类型</div>
+                    <div style="font-size: 12px; color: #ccc;">根据题目类型将显示对应的选项和答案设置</div>
+                </div>
+            `;
+            return;
+        }
+
+        let content = '';
+
+        if (type === 'single') {
+            // 单选题
+            content = `
+                <div style="margin-bottom: 24px;">
+                    <label class="form-label">选项设置<span class="required">*</span></label>
+                    <div class="options-group">
+                        <div class="option-item">
+                            <span class="option-label">选项 A</span>
+                            <input type="text" class="option-input" placeholder="请输入选项A内容" value="美猴王">
+                        </div>
+                        <div class="option-item">
+                            <span class="option-label">选项 B</span>
+                            <input type="text" class="option-input" placeholder="请输入选项B内容" value="齐天大圣">
+                        </div>
+                        <div class="option-item">
+                            <span class="option-label">选项 C</span>
+                            <input type="text" class="option-input" placeholder="请输入选项C内容" value="孙行者">
+                        </div>
+                        <div class="option-item">
+                            <span class="option-label">选项 D</span>
+                            <input type="text" class="option-input" placeholder="请输入选项D内容" value="斗战胜佛">
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <label class="form-label">正确答案<span class="required">*</span></label>
+                    <div class="answer-group">
+                        <div class="answer-option">
+                            <input type="radio" name="answer" id="answerA" value="A" checked>
+                            <label for="answerA">选项 A</label>
+                        </div>
+                        <div class="answer-option">
+                            <input type="radio" name="answer" id="answerB" value="B">
+                            <label for="answerB">选项 B</label>
+                        </div>
+                        <div class="answer-option">
+                            <input type="radio" name="answer" id="answerC" value="C">
+                            <label for="answerC">选项 C</label>
+                        </div>
+                        <div class="answer-option">
+                            <input type="radio" name="answer" id="answerD" value="D">
+                            <label for="answerD">选项 D</label>
+                        </div>
+                    </div>
+                </div>
+            `;
+        } else if (type === 'multiple') {
+            // 多选题
+            content = `
+                <div style="margin-bottom: 24px;">
+                    <label class="form-label">选项设置<span class="required">*</span></label>
+                    <div class="options-group">
+                        <div class="option-item">
+                            <span class="option-label">选项 A</span>
+                            <input type="text" class="option-input" placeholder="请输入选项A内容" value="孙悟空">
+                        </div>
+                        <div class="option-item">
+                            <span class="option-label">选项 B</span>
+                            <input type="text" class="option-input" placeholder="请输入选项B内容" value="猪八戒">
+                        </div>
+                        <div class="option-item">
+                            <span class="option-label">选项 C</span>
+                            <input type="text" class="option-input" placeholder="请输入选项C内容" value="沙僧">
+                        </div>
+                        <div class="option-item">
+                            <span class="option-label">选项 D</span>
+                            <input type="text" class="option-input" placeholder="请输入选项D内容" value="白龙马">
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <label class="form-label">正确答案<span class="required">*</span></label>
+                    <div class="answer-group">
+                        <div class="answer-option">
+                            <input type="checkbox" id="answerA" value="A" checked>
+                            <label for="answerA">选项 A</label>
+                        </div>
+                        <div class="answer-option">
+                            <input type="checkbox" id="answerB" value="B" checked>
+                            <label for="answerB">选项 B</label>
+                        </div>
+                        <div class="answer-option">
+                            <input type="checkbox" id="answerC" value="C" checked>
+                            <label for="answerC">选项 C</label>
+                        </div>
+                        <div class="answer-option">
+                            <input type="checkbox" id="answerD" value="D">
+                            <label for="answerD">选项 D</label>
+                        </div>
+                    </div>
+                    <div class="form-hint">多选题可以选择多个正确答案</div>
+                </div>
+            `;
+        } else if (type === 'judge') {
+            // 判断题
+            content = `
+                <div>
+                    <label class="form-label">正确答案<span class="required">*</span></label>
+                    <div class="answer-group">
+                        <div class="answer-option">
+                            <input type="radio" name="answer" id="answerTrue" value="true" checked>
+                            <label for="answerTrue">正确</label>
+                        </div>
+                        <div class="answer-option">
+                            <input type="radio" name="answer" id="answerFalse" value="false">
+                            <label for="answerFalse">错误</label>
+                        </div>
+                    </div>
+                </div>
+            `;
+        } else if (type === 'essay') {
+            // 问答题
+            content = `
+                <div>
+                    <label class="form-label">参考答案<span class="required">*</span></label>
+                    <textarea class="form-textarea" placeholder="请输入参考答案" style="min-height: 120px;">白骨精三次变化想要吃唐僧肉,第一次变成少女,第二次变成老妇人,第三次变成老公公。孙悟空三次识破妖怪真身并将其打死,但唐僧不明真相,误以为孙悟空滥杀无辜,最终将孙悟空赶走。这个故事体现了孙悟空的火眼金睛和降妖除魔的本领,也反映了唐僧的善良但缺乏辨别能力</textarea>
+                    <div class="char-count">0/1000</div>
+                    <div class="form-hint">问答题的参考答案用于评分参考,学生答案需要人工评阅</div>
+                </div>
+            `;
+        }
+
+        optionsArea.innerHTML = content;
+    });
+
+    // 题目数据
+    const questionsData = {
+        1: {
+            type: 'single',
+            abilities: ['1', '2'],
+            content: '孙悟空在花果山自封为什么？',
+            options: {
+                A: '美猴王',
+                B: '齐天大圣',
+                C: '孙行者',
+                D: '斗战胜佛'
+            },
+            answer: 'A',
+            explanation: '孙悟空在花果山自封为美猴王，后来大闹天宫时才被封为齐天大圣'
+        },
+        2: {
+            type: 'multiple',
+            abilities: ['1', '3'],
+            content: '以下哪些是唐僧的徒弟？',
+            options: {
+                A: '孙悟空',
+                B: '猪八戒',
+                C: '沙僧',
+                D: '白龙马'
+            },
+            answer: ['A', 'B', 'C'],
+            explanation: '唐僧有三个徒弟：孙悟空、猪八戒、沙僧。白龙马是坐骑，不是徒弟'
+        },
+        3: {
+            type: 'judge',
+            abilities: ['2'],
+            content: '孙悟空被压在五指山下五百年',
+            answer: 'true',
+            explanation: '孙悟空大闹天宫后被如来佛祖压在五指山下整整五百年，直到唐僧路过才被救出'
+        },
+        4: {
+            type: 'essay',
+            abilities: ['2', '4'],
+            content: '请简述孙悟空三打白骨精的故事情节',
+            answer: '白骨精三次变化想要吃唐僧肉，第一次变成少女，第二次变成老妇人，第三次变成老公公。孙悟空三次识破妖怪真身并将其打死，但唐僧不明真相，误以为孙悟空滥杀无辜，最终将孙悟空赶走。这个故事体现了孙悟空的火眼金睛和降妖除魔的本领，也反映了唐僧的善良但缺乏辨别能力',
+            explanation: '这是《西游记》中的经典情节，展现了孙悟空的本领和唐僧的善良'
+        }
+    };
+
+    // 编辑题目
+    function editQuestion(id, event) {
+        event.stopPropagation();
+        document.getElementById('editModalTitle').textContent = '编辑题目 - 第 ' + id + ' 题';
+
+        const question = questionsData[id];
+        if (!question) return;
+
+        // 设置题目类型
+        document.getElementById('questionType').value = question.type;
+
+        // 触发题型切换事件以显示对应的选项和答案区域
+        const event2 = new Event('change');
+        document.getElementById('questionType').dispatchEvent(event2);
+
+        // 设置阅读能力
+        selectedAbilities.clear();
+        const container = document.getElementById('abilityContainer');
+        container.querySelectorAll('.tag-item').forEach(item => item.remove());
+
+        question.abilities.forEach(abilityValue => {
+            selectedAbilities.add(abilityValue);
+            const option = document.querySelector(`#abilityOptions .select-option[data-value="${abilityValue}"]`);
+            if (option) {
+                const label = option.getAttribute('data-label');
+                const tagItem = document.createElement('div');
+                tagItem.className = 'tag-item';
+                tagItem.innerHTML = `${label}<span class="tag-remove" onclick="removeAbility('${abilityValue}')">[×]</span>`;
+                const addBtn = container.querySelector('.tag-add-btn');
+                container.insertBefore(tagItem, addBtn);
+            }
+        });
+
+        // 设置题目内容
+        document.getElementById('questionContent').value = question.content;
+
+        // 延迟设置选项和答案，等待DOM更新
+        setTimeout(() => {
+            if (question.type === 'single') {
+                // 设置单选题选项
+                const optionInputs = document.querySelectorAll('#optionsArea .option-input');
+                optionInputs[0].value = question.options.A;
+                optionInputs[1].value = question.options.B;
+                optionInputs[2].value = question.options.C;
+                optionInputs[3].value = question.options.D;
+
+                // 设置单选题答案
+                document.querySelector(`#optionsArea input[type="radio"][value="${question.answer}"]`).checked = true;
+            } else if (question.type === 'multiple') {
+                // 设置多选题选项
+                const optionInputs = document.querySelectorAll('#optionsArea .option-input');
+                optionInputs[0].value = question.options.A;
+                optionInputs[1].value = question.options.B;
+                optionInputs[2].value = question.options.C;
+                optionInputs[3].value = question.options.D;
+
+                // 设置多选题答案
+                document.querySelectorAll('#optionsArea input[type="checkbox"]').forEach(checkbox => {
+                    checkbox.checked = question.answer.includes(checkbox.value);
+                });
+            } else if (question.type === 'judge') {
+                // 设置判断题答案
+                document.querySelector(`#optionsArea input[type="radio"][value="${question.answer}"]`).checked = true;
+            } else if (question.type === 'essay') {
+                // 设置问答题参考答案
+                document.querySelector('#optionsArea textarea').value = question.answer;
+            }
+
+            // 设置题目解析
+            document.getElementById('questionExplanation').value = question.explanation;
+        }, 100);
+
+        document.getElementById('editModal').classList.add('active');
+    }
+
+    // 删除题目
+    function deleteQuestion(id, event) {
+        event.stopPropagation();
+        if (confirm('确定要删除这道题目吗？')) {
+            alert('题目已删除');
+        }
+    }
+
+    // 保存题目
+    function saveQuestion() {
+        alert('题目已保存');
+        closeEditModal();
+    }
+
+    // 添加新题目
+    function addNewQuestion() {
+        document.getElementById('editModalTitle').textContent = '添加题目';
+        document.getElementById('questionType').value = '';
+        document.getElementById('questionContent').value = '';
+        document.getElementById('questionExplanation').value = '';
+        // 清空阅读能力选择
+        selectedAbilities.clear();
+        const container = document.getElementById('abilityContainer');
+        container.querySelectorAll('.tag-item').forEach(item => item.remove());
+        document.getElementById('editModal').classList.add('active');
+    }
+
+    // 关闭编辑弹窗
+    function closeEditModal() {
+        document.getElementById('editModal').classList.remove('active');
+    }
+
+    // 显示导入弹窗
+    function showImportModal() {
+        document.getElementById('importModal').classList.add('active');
+    }
+
+    // 关闭导入弹窗
+    function closeImportModal() {
+        document.getElementById('importModal').classList.remove('active');
+    }
+
+    // 点击弹窗背景关闭
+    document.getElementById('importModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeImportModal();
+        }
+    });
+
+    document.getElementById('editModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeEditModal();
+        }
+    });
+    </script>
+</body>
+</html>

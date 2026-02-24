@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>编辑书籍 - 校校读吧管理平台</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+        }
+
+        /* 顶部导航 */
+        .header {
+            height: 60px;
+            background: #fff;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header .logo {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+        .header .user-info {
+            margin-left: auto;
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* 主体布局 */
+        .main {
+            display: flex;
+            min-height: calc(100vh - 60px);
+        }
+
+        /* 侧边栏 */
+        .sidebar {
+            width: 240px;
+            background: #fff;
+            border-right: 1px solid #e0e0e0;
+            overflow-y: auto;
+        }
+        .menu-group {
+            margin-bottom: 8px;
+        }
+        .menu-group-title {
+            padding: 12px 24px;
+            font-size: 14px;
+            color: #333;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .menu-group-icon {
+            font-size: 12px;
+            color: #999;
+            transition: transform 0.2s;
+        }
+        .menu-group.expanded .menu-group-icon {
+            transform: rotate(90deg);
+        }
+        .menu-group-items {
+            display: none;
+        }
+        .menu-group.expanded .menu-group-items {
+            display: block;
+        }
+        .menu-item {
+            padding: 10px 24px 10px 48px;
+            font-size: 14px;
+            color: #666;
+            cursor: pointer;
+        }
+        .menu-item:hover {
+            background: #f5f5f5;
+        }
+        .menu-item.active {
+            color: #333;
+            font-weight: 600;
+            background: #f5f5f5;
+            border-left: 3px solid #333;
+        }
+
+        /* 内容区 */
+        .content {
+            flex: 1;
+            padding: 24px;
+            overflow-y: auto;
+        }
+
+        /* 面包屑 */
+        .breadcrumb {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+        .breadcrumb a {
+            color: #666;
+            text-decoration: none;
+        }
+        .breadcrumb a:hover {
+            color: #333;
+        }
+        .breadcrumb span {
+            margin: 0 8px;
+        }
+
+        /* 页面标题 */
+        .page-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        /* 表单容器 */
+        .form-container {
+            max-width: 800px;
+        }
+
+        /* 表单卡片 */
+        .form-card {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+        .form-section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        /* 表单项 */
+        .form-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .form-item:last-child {
+            margin-bottom: 0;
+        }
+        .form-label {
+            width: 100px;
+            flex-shrink: 0;
+            font-size: 14px;
+            color: #333;
+            line-height: 40px;
+        }
+        .form-label .required {
+            color: #999;
+            margin-left: 4px;
+        }
+        .form-item-content {
+            flex: 1;
+        }
+        .form-input,
+        .form-select,
+        .form-textarea {
+            width: 100%;
+            padding: 0 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            font-size: 14px;
+            color: #333;
+        }
+        .form-input,
+        .form-select {
+            height: 40px;
+        }
+        .form-textarea {
+            min-height: 100px;
+            padding: 12px;
+            resize: vertical;
+        }
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: #999;
+        }
+        .form-hint {
+            font-size: 12px;
+            color: #999;
+            margin-top: 6px;
+        }
+
+        /* 多选标签 */
+        .multi-select-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 8px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            min-height: 40px;
+        }
+        .tag-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            background: #f5f5f5;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            font-size: 13px;
+            color: #333;
+        }
+        .tag-remove {
+            cursor: pointer;
+            color: #999;
+            font-size: 14px;
+            line-height: 1;
+        }
+        .tag-remove:hover {
+            color: #333;
+        }
+        .tag-add-btn {
+            padding: 4px 12px;
+            background: #fff;
+            border: 1px dashed #e0e0e0;
+            border-radius: 4px;
+            font-size: 13px;
+            color: #999;
+            cursor: pointer;
+        }
+        .tag-add-btn:hover {
+            border-color: #999;
+            color: #666;
+        }
+
+        /* 选择弹窗 */
+        .select-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        .select-modal.show {
+            display: flex;
+        }
+        .select-modal-content {
+            background: #fff;
+            border-radius: 4px;
+            width: 400px;
+            max-height: 500px;
+            display: flex;
+            flex-direction: column;
+        }
+        .select-modal-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+        .select-modal-search {
+            padding: 12px 20px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .select-modal-search input {
+            width: 100%;
+            height: 36px;
+            padding: 0 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .select-modal-search input:focus {
+            outline: none;
+            border-color: #999;
+        }
+        .select-modal-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 8px 0;
+        }
+        .select-option {
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .select-option:hover {
+            background: #f5f5f5;
+        }
+        .select-option.disabled {
+            color: #ccc;
+            cursor: not-allowed;
+        }
+        .select-option.disabled:hover {
+            background: transparent;
+        }
+        .select-option-checkbox {
+            width: 16px;
+            height: 16px;
+            border: 1px solid #e0e0e0;
+            border-radius: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: #333;
+        }
+        .select-option.selected .select-option-checkbox {
+            background: #333;
+            border-color: #333;
+            color: #fff;
+        }
+        .select-modal-footer {
+            padding: 12px 20px;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        /* 上传区域 */
+        .upload-area {
+            border: 2px dashed #e0e0e0;
+            border-radius: 4px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+        .upload-area:hover {
+            border-color: #999;
+        }
+        .upload-icon {
+            font-size: 32px;
+            color: #e0e0e0;
+            margin-bottom: 8px;
+        }
+        .upload-text {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 6px;
+        }
+        .upload-hint {
+            font-size: 12px;
+            color: #999;
+            line-height: 1.5;
+        }
+        .upload-preview {
+            margin-top: 16px;
+            display: none;
+        }
+        .upload-preview.show {
+            display: block;
+        }
+        .preview-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            background: #f5f5f5;
+            border-radius: 4px;
+            margin-bottom: 8px;
+        }
+        .preview-icon {
+            width: 40px;
+            height: 40px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: #999;
+            margin-right: 12px;
+        }
+        .preview-info {
+            flex: 1;
+        }
+        .preview-name {
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 4px;
+        }
+        .preview-size {
+            font-size: 12px;
+            color: #999;
+        }
+        .preview-remove {
+            color: #999;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .preview-remove:hover {
+            color: #333;
+        }
+
+        /* 封面上传 */
+        .cover-upload {
+            display: flex;
+            gap: 16px;
+        }
+        .cover-preview-container {
+            position: relative;
+            width: 120px;
+            height: 160px;
+            flex-shrink: 0;
+        }
+        .cover-preview {
+            width: 100%;
+            height: 100%;
+            background: #e0e0e0;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: #999;
+            overflow: hidden;
+        }
+        .cover-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .cover-remove-btn {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            width: 24px;
+            height: 24px;
+            background: rgba(0, 0, 0, 0.6);
+            border: none;
+            border-radius: 4px;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+        }
+        .cover-remove-btn:hover {
+            background: rgba(0, 0, 0, 0.8);
+        }
+        .cover-preview-container.has-image .cover-remove-btn {
+            display: flex;
+        }
+        .cover-upload-btn {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        /* 按钮组 */
+        .form-actions {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            padding: 20px;
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+        }
+        .btn {
+            height: 40px;
+            padding: 0 32px;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            border: none;
+        }
+        .btn-primary {
+            background: #333;
+            color: #fff;
+            border: 1px solid #333;
+        }
+        .btn-primary:hover {
+            background: #555;
+        }
+        .btn-secondary {
+            background: #fff;
+            color: #333;
+            border: 1px solid #999;
+        }
+        .btn-secondary:hover {
+            background: #f5f5f5;
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <div class="header">
+        <div class="logo">校校读吧管理平台</div>
+        <div class="user-info">管理员</div>
+    </div>
+
+    <div class="main">
+        <!-- 侧边栏 -->
+        <div class="sidebar">
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>用户管理</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">学校管理</div>
+                    <div class="menu-item">班级管理</div>
+                    <div class="menu-item">小程序用户管理</div>
+                </div>
+            </div>
+
+            <div class="menu-group expanded">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>内容管理</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">阅读计划</div>
+                    <div class="menu-item active">书籍资源库</div>
+                    <div class="menu-item">测评管理</div>
+                </div>
+            </div>
+
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                                        <span>数据分析</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">阅读数据分析</div>
+                    <div class="menu-item">测评数据分析</div>
+                    <div class="menu-item">用户行为分析</div>
+                    <div class="menu-item">学校数据对比</div>
+                    <div class="menu-item">数据导出中心</div>
+                </div>
+            </div>
+
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>激励体系</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">积分规则</div>
+                    <div class="menu-item">等级体系</div>
+                    <div class="menu-item">徽章配置</div>
+                    <div class="menu-item">证书配置</div>
+                </div>
+            </div>
+
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>消息管理</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">系统消息</div>
+                </div>
+            </div>
+
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>用户反馈</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">意见反馈</div>
+                </div>
+            </div>
+
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>系统配置</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item">系统参数</div>
+                    <div class="menu-item">操作日志</div>
+                    <div class="menu-item">数据字典</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 内容区 -->
+        <div class="content">
+            <!-- 面包屑 -->
+            <div class="breadcrumb">
+                <a href="#">首页</a>
+                <span>></span>
+                <a href="#">内容管理</a>
+                <span>></span>
+                <a href="#">书籍资源库</a>
+                <span>></span>
+                <span>编辑书籍</span>
+            </div>
+
+            <!-- 页面标题 -->
+            <div class="page-title">编辑书籍</div>
+
+            <!-- 表单容器 -->
+            <div class="form-container">
+                <!-- 基本信息 -->
+                <div class="form-card">
+                    <div class="form-section-title">基本信息</div>
+
+                    <div class="form-item">
+                        <label class="form-label">书籍名称<span class="required">*</span></label>
+                        <div class="form-item-content">
+                            <input type="text" class="form-input" placeholder="请输入书籍名称">
+                        </div>
+                    </div>
+
+                    <div class="form-item">
+                        <label class="form-label">作者<span class="required">*</span></label>
+                        <div class="form-item-content">
+                            <input type="text" class="form-input" placeholder="请输入作者姓名">
+                        </div>
+                    </div>
+
+                    <div class="form-item">
+                        <label class="form-label">适合年级<span class="required">*</span></label>
+                        <div class="form-item-content">
+                            <div class="multi-select-tags" id="gradeContainer">
+                                <button type="button" class="tag-add-btn" onclick="openGradeModal()">+ 添加年级</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-item">
+                        <label class="form-label">书籍标签</label>
+                        <div class="form-item-content">
+                            <div class="multi-select-tags" id="tagContainer">
+                                <button type="button" class="tag-add-btn" onclick="openTagModal()">+ 添加标签</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-item">
+                        <label class="form-label">字数</label>
+                        <div class="form-item-content">
+                            <input type="text" class="form-input" placeholder="请输入字数，如：82万字">
+                        </div>
+                    </div>
+
+                    <div class="form-item">
+                        <label class="form-label">出版社</label>
+                        <div class="form-item-content">
+                            <input type="text" class="form-input" placeholder="请输入出版社名称">
+                        </div>
+                    </div>
+
+                    <div class="form-item">
+                        <label class="form-label">ISBN</label>
+                        <div class="form-item-content">
+                            <input type="text" class="form-input" placeholder="请输入ISBN编号">
+                        </div>
+                    </div>
+
+                    <div class="form-item">
+                        <label class="form-label">书籍简介</label>
+                        <div class="form-item-content">
+                            <textarea class="form-textarea" placeholder="请输入书籍简介"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 书籍封面 -->
+                <div class="form-card">
+                    <div class="form-section-title">书籍封面</div>
+
+                    <div class="form-item">
+                        <label class="form-label">上传封面<span class="required">*</span></label>
+                        <div class="form-item-content">
+                            <div class="cover-upload">
+                                <div class="cover-preview-container" id="coverPreviewContainer">
+                                    <div class="cover-preview" id="coverPreview">[封面预览]</div>
+                                    <button type="button" class="cover-remove-btn" onclick="removeCover()" title="删除封面">[×]</button>
+                                </div>
+                                <div class="cover-upload-btn">
+                                    <div class="upload-area" onclick="document.getElementById('coverInput').click()">
+                                        <div class="upload-icon">[+]</div>
+                                        <div class="upload-text">点击上传封面图片</div>
+                                        <div class="upload-hint">支持 JPG、PNG 格式，建议尺寸 3:4，大小不超过 2MB</div>
+                                    </div>
+                                    <input type="file" id="coverInput" accept="image/*" style="display:none;" onchange="handleCoverUpload(this)">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 按钮组 -->
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary">取消</button>
+                    <button type="button" class="btn btn-primary">保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 年级选择弹窗 -->
+    <div class="select-modal" id="gradeModal">
+        <div class="select-modal-content">
+            <div class="select-modal-header">选择年级</div>
+            <div class="select-modal-search">
+                <input type="text" id="gradeSearch" placeholder="搜索年级" oninput="filterGradeOptions()">
+            </div>
+            <div class="select-modal-body" id="gradeOptions">
+                <div class="select-option" data-value="1" data-label="一年级" onclick="toggleGradeSelection(this)">
+                    <div class="select-option-checkbox"></div>
+                    <span>一年级</span>
+                </div>
+                <div class="select-option" data-value="2" data-label="二年级" onclick="toggleGradeSelection(this)">
+                    <div class="select-option-checkbox"></div>
+                    <span>二年级</span>
+                </div>
+                <div class="select-option" data-value="3" data-label="三年级" onclick="toggleGradeSelection(this)">
+                    <div class="select-option-checkbox"></div>
+                    <span>三年级</span>
+                </div>
+                <div class="select-option" data-value="4" data-label="四年级" onclick="toggleGradeSelection(this)">
+                    <div class="select-option-checkbox"></div>
+                    <span>四年级</span>
+                </div>
+                <div class="select-option" data-value="5" data-label="五年级" onclick="toggleGradeSelection(this)">
+                    <div class="select-option-checkbox"></div>
+                    <span>五年级</span>
+                </div>
+                <div class="select-option" data-value="6" data-label="六年级" onclick="toggleGradeSelection(this)">
+                    <div class="select-option-checkbox"></div>
+                    <span>六年级</span>
+                </div>
+            </div>
+            <div class="select-modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeGradeModal()">取消</button>
+                <button type="button" class="btn btn-primary" onclick="confirmGradeSelection()">确定</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 标签选择弹窗 -->
+    <div class="select-modal" id="tagModal">
+        <div class="select-modal-content">
+            <div class="select-modal-header">选择标签</div>
+            <div class="select-modal-search">
+                <input type="text" id="tagSearch" placeholder="搜索标签" oninput="filterTagOptions()">
+            </div>
+            <div class="select-modal-body" id="tagOptions">
+                <div class="select-option" data-value="literature" data-label="文学名著" onclick="toggleTagSelection(this)">
+                    <div class="select-option-checkbox"></div>
+                    <span>文学名著</span>
+                </div>
+                <div class="select-option" data-value="science" data-label="科普读物" onclick="toggleTagSelection(this)">
+                    <div class="select-option-checkbox"></div>
+                    <span>科普读物</span>
+                </div>
+                <div class="select-option" data-value="history" data-label="历史传记" onclick="toggleTagSelection(this)">
+                    <div class="select-option-checkbox"></div>
+                    <span>历史传记</span>
+                </div>
+                <div class="select-option" data-value="fairy" data-label="童话故事" onclick="toggleTagSelection(this)">
+                    <div class="select-option-checkbox"></div>
+                    <span>童话故事</span>
+                </div>
+                <div class="select-option" data-value="other" data-label="其他" onclick="toggleTagSelection(this)">
+                    <div class="select-option-checkbox"></div>
+                    <span>其他</span>
+                </div>
+            </div>
+            <div class="select-modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeTagModal()">取消</button>
+                <button type="button" class="btn btn-primary" onclick="confirmTagSelection()">确定</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    function toggleMenu(element) {
+        const menuGroup = element.parentElement;
+        menuGroup.classList.toggle('expanded');
+    }
+
+    // 年级选择
+    const selectedGrades = new Set();
+    const tempSelectedGrades = new Set();
+
+    function openGradeModal() {
+        tempSelectedGrades.clear();
+        selectedGrades.forEach(grade => tempSelectedGrades.add(grade));
+
+        // 更新选项状态
+        const options = document.querySelectorAll('#gradeOptions .select-option');
+        options.forEach(option => {
+            const value = option.getAttribute('data-value');
+            if (tempSelectedGrades.has(value)) {
+                option.classList.add('selected');
+                option.querySelector('.select-option-checkbox').textContent = '✓';
+            } else {
+                option.classList.remove('selected');
+                option.querySelector('.select-option-checkbox').textContent = '';
+            }
+        });
+
+        document.getElementById('gradeModal').classList.add('show');
+        document.getElementById('gradeSearch').value = '';
+        filterGradeOptions();
+    }
+
+    function closeGradeModal() {
+        document.getElementById('gradeModal').classList.remove('show');
+    }
+
+    function toggleGradeSelection(element) {
+        const value = element.getAttribute('data-value');
+
+        if (tempSelectedGrades.has(value)) {
+            tempSelectedGrades.delete(value);
+            element.classList.remove('selected');
+            element.querySelector('.select-option-checkbox').textContent = '';
+        } else {
+            tempSelectedGrades.add(value);
+            element.classList.add('selected');
+            element.querySelector('.select-option-checkbox').textContent = '✓';
+        }
+    }
+
+    function confirmGradeSelection() {
+        selectedGrades.clear();
+        tempSelectedGrades.forEach(grade => selectedGrades.add(grade));
+
+        // 更新显示
+        const container = document.getElementById('gradeContainer');
+        const addBtn = container.querySelector('.tag-add-btn');
+
+        // 清除现有标签
+        container.querySelectorAll('.tag-item').forEach(item => item.remove());
+
+        // 添加选中的标签
+        const options = document.querySelectorAll('#gradeOptions .select-option');
+        options.forEach(option => {
+            const value = option.getAttribute('data-value');
+            if (selectedGrades.has(value)) {
+                const label = option.getAttribute('data-label');
+                const tagItem = document.createElement('div');
+                tagItem.className = 'tag-item';
+                tagItem.innerHTML = `${label}<span class="tag-remove" onclick="removeGrade('${value}')">[×]</span>`;
+                container.insertBefore(tagItem, addBtn);
+            }
+        });
+
+        closeGradeModal();
+    }
+
+    function removeGrade(value) {
+        selectedGrades.delete(value);
+
+        const container = document.getElementById('gradeContainer');
+        const tags = container.querySelectorAll('.tag-item');
+
+        tags.forEach(tag => {
+            if (tag.querySelector('.tag-remove').getAttribute('onclick').includes(value)) {
+                tag.remove();
+            }
+        });
+    }
+
+    function filterGradeOptions() {
+        const searchValue = document.getElementById('gradeSearch').value.toLowerCase();
+        const options = document.querySelectorAll('#gradeOptions .select-option');
+
+        options.forEach(option => {
+            const label = option.getAttribute('data-label').toLowerCase();
+            if (label.includes(searchValue)) {
+                option.style.display = 'flex';
+            } else {
+                option.style.display = 'none';
+            }
+        });
+    }
+
+    // 标签选择
+    const selectedTags = new Set();
+    const tempSelectedTags = new Set();
+
+    function openTagModal() {
+        tempSelectedTags.clear();
+        selectedTags.forEach(tag => tempSelectedTags.add(tag));
+
+        // 更新选项状态
+        const options = document.querySelectorAll('#tagOptions .select-option');
+        options.forEach(option => {
+            const value = option.getAttribute('data-value');
+            if (tempSelectedTags.has(value)) {
+                option.classList.add('selected');
+                option.querySelector('.select-option-checkbox').textContent = '✓';
+            } else {
+                option.classList.remove('selected');
+                option.querySelector('.select-option-checkbox').textContent = '';
+            }
+        });
+
+        document.getElementById('tagModal').classList.add('show');
+        document.getElementById('tagSearch').value = '';
+        filterTagOptions();
+    }
+
+    function closeTagModal() {
+        document.getElementById('tagModal').classList.remove('show');
+    }
+
+    function toggleTagSelection(element) {
+        const value = element.getAttribute('data-value');
+
+        if (tempSelectedTags.has(value)) {
+            tempSelectedTags.delete(value);
+            element.classList.remove('selected');
+            element.querySelector('.select-option-checkbox').textContent = '';
+        } else {
+            tempSelectedTags.add(value);
+            element.classList.add('selected');
+            element.querySelector('.select-option-checkbox').textContent = '✓';
+        }
+    }
+
+    function confirmTagSelection() {
+        selectedTags.clear();
+        tempSelectedTags.forEach(tag => selectedTags.add(tag));
+
+        // 更新显示
+        const container = document.getElementById('tagContainer');
+        const addBtn = container.querySelector('.tag-add-btn');
+
+        // 清除现有标签
+        container.querySelectorAll('.tag-item').forEach(item => item.remove());
+
+        // 添加选中的标签
+        const options = document.querySelectorAll('#tagOptions .select-option');
+        options.forEach(option => {
+            const value = option.getAttribute('data-value');
+            if (selectedTags.has(value)) {
+                const label = option.getAttribute('data-label');
+                const tagItem = document.createElement('div');
+                tagItem.className = 'tag-item';
+                tagItem.innerHTML = `${label}<span class="tag-remove" onclick="removeTag('${value}')">[×]</span>`;
+                container.insertBefore(tagItem, addBtn);
+            }
+        });
+
+        closeTagModal();
+    }
+
+    function removeTag(value) {
+        selectedTags.delete(value);
+
+        const container = document.getElementById('tagContainer');
+        const tags = container.querySelectorAll('.tag-item');
+
+        tags.forEach(tag => {
+            if (tag.querySelector('.tag-remove').getAttribute('onclick').includes(value)) {
+                tag.remove();
+            }
+        });
+    }
+
+    function filterTagOptions() {
+        const searchValue = document.getElementById('tagSearch').value.toLowerCase();
+        const options = document.querySelectorAll('#tagOptions .select-option');
+
+        options.forEach(option => {
+            const label = option.getAttribute('data-label').toLowerCase();
+            if (label.includes(searchValue)) {
+                option.style.display = 'flex';
+            } else {
+                option.style.display = 'none';
+            }
+        });
+    }
+
+    function handleCoverUpload(input) {
+        if (input.files && input.files[0]) {
+            const file = input.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                const preview = document.getElementById('coverPreview');
+                const container = document.getElementById('coverPreviewContainer');
+
+                // 创建图片元素
+                preview.innerHTML = `<img src="${e.target.result}" alt="封面预览">`;
+
+                // 显示删除按钮
+                container.classList.add('has-image');
+            };
+
+            reader.readAsDataURL(file);
+        }
+    }
+
+    function removeCover() {
+        const preview = document.getElementById('coverPreview');
+        const container = document.getElementById('coverPreviewContainer');
+        const input = document.getElementById('coverInput');
+
+        // 重置预览
+        preview.innerHTML = '[封面预览]';
+
+        // 隐藏删除按钮
+        container.classList.remove('has-image');
+
+        // 清空文件输入
+        input.value = '';
+    }
+    </script>
+</body>
+</html>

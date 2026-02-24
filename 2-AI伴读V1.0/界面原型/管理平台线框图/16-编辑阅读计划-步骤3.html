@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>创建阅读计划 - 步骤3 - 校校读吧管理平台</title>
+    <title>编辑阅读计划 - 步骤3 - 校校读吧管理平台</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -600,17 +600,17 @@
                 <span>></span>
                 <a href="#">阅读计划</a>
                 <span>></span>
-                <span>创建阅读计划</span>
+                <span>编辑阅读计划</span>
             </div>
 
             <!-- 页面标题 -->
-            <div class="page-title">创建阅读计划</div>
+            <div class="page-title">编辑阅读计划</div>
 
             <!-- 按钮组 -->
             <div class="form-actions">
-                <button type="button" class="btn btn-secondary" onclick="window.location.href='12-创建阅读计划-步骤2.html'">上一步</button>
-                <button type="button" class="btn btn-secondary" onclick="saveDraft()">保存草稿</button>
-                <button type="button" class="btn btn-primary" onclick="showConfirmModal()">发布阅读计划</button>
+                <button type="button" class="btn btn-secondary" onclick="window.location.href='15-编辑阅读计划-步骤2.html'">上一步</button>
+                <button type="button" class="btn btn-secondary" onclick="showSaveModal()">保存修改</button>
+                <button type="button" class="btn btn-primary" onclick="showPublishModal()">发布阅读计划</button>
             </div>
 
             <!-- 步骤条 -->
@@ -785,8 +785,25 @@
         </div>
     </div>
 
-    <!-- 确认弹窗 -->
-    <div class="confirm-modal" id="confirmModal">
+    <!-- 保存确认弹窗 -->
+    <div class="confirm-modal" id="saveModal">
+        <div class="confirm-modal-content">
+            <div class="confirm-modal-header">确认保存</div>
+            <div class="confirm-modal-body">
+                <div class="confirm-modal-text">
+                    确认要保存此阅读计划的修改吗？<br>
+                    保存后计划仍为未发布状态，不会显示在小程序界面上
+                </div>
+            </div>
+            <div class="confirm-modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeSaveModal()">取消</button>
+                <button type="button" class="btn btn-primary" onclick="confirmSave()">确认保存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 发布确认弹窗 -->
+    <div class="confirm-modal" id="publishModal">
         <div class="confirm-modal-content">
             <div class="confirm-modal-header">确认发布</div>
             <div class="confirm-modal-body">
@@ -796,23 +813,38 @@
                 </div>
             </div>
             <div class="confirm-modal-footer">
-                <button type="button" class="btn btn-secondary" onclick="closeConfirmModal()">取消</button>
+                <button type="button" class="btn btn-secondary" onclick="closePublishModal()">取消</button>
                 <button type="button" class="btn btn-primary" onclick="confirmPublish()">确认发布</button>
             </div>
         </div>
     </div>
 
-    <!-- 成功弹窗 -->
-    <div class="success-modal" id="successModal">
+    <!-- 保存成功弹窗 -->
+    <div class="success-modal" id="saveSuccessModal">
+        <div class="success-modal-content">
+            <div class="success-modal-body">
+                <div class="success-icon">[✓]</div>
+                <div class="success-title">修改已保存</div>
+                <div class="success-desc">您可以查看计划详情或返回列表页面</div>
+            </div>
+            <div class="success-modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="window.location.href='09-阅读计划列表.html'">返回列表</button>
+                <button type="button" class="btn btn-primary" onclick="window.location.href='10-阅读计划详情.html'">查看详情</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 发布成功弹窗 -->
+    <div class="success-modal" id="publishSuccessModal">
         <div class="success-modal-content">
             <div class="success-modal-body">
                 <div class="success-icon">[✓]</div>
                 <div class="success-title">阅读计划发布成功</div>
-                <div class="success-desc">您可以查看计划详情或返回列表页面</div>
+                <div class="success-desc">计划已发布到小程序，老师可以看到并报名参与</div>
             </div>
             <div class="success-modal-footer">
-                <button type="button" class="btn btn-secondary">返回列表</button>
-                <button type="button" class="btn btn-primary">查看详情</button>
+                <button type="button" class="btn btn-secondary" onclick="window.location.href='09-阅读计划列表.html'">返回列表</button>
+                <button type="button" class="btn btn-primary" onclick="window.location.href='10-阅读计划详情.html'">查看详情</button>
             </div>
         </div>
     </div>
@@ -823,21 +855,30 @@
         menuGroup.classList.toggle('expanded');
     }
 
-    function showConfirmModal() {
-        document.getElementById('confirmModal').classList.add('show');
+    function showSaveModal() {
+        document.getElementById('saveModal').classList.add('show');
     }
 
-    function closeConfirmModal() {
-        document.getElementById('confirmModal').classList.remove('show');
+    function closeSaveModal() {
+        document.getElementById('saveModal').classList.remove('show');
+    }
+
+    function confirmSave() {
+        closeSaveModal();
+        document.getElementById('saveSuccessModal').classList.add('show');
+    }
+
+    function showPublishModal() {
+        document.getElementById('publishModal').classList.add('show');
+    }
+
+    function closePublishModal() {
+        document.getElementById('publishModal').classList.remove('show');
     }
 
     function confirmPublish() {
-        closeConfirmModal();
-        document.getElementById('successModal').classList.add('show');
-    }
-
-    function saveDraft() {
-        alert('草稿已保存');
+        closePublishModal();
+        document.getElementById('publishSuccessModal').classList.add('show');
     }
     </script>
 </body>

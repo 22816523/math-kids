@@ -167,24 +167,14 @@
             background: #f5f5f5;
         }
 
-        /* 详情布局 */
-        .detail-layout {
-            display: grid;
-            grid-template-columns: 300px 1fr;
-            gap: 20px;
-        }
-
-        /* 书籍封面卡片 */
-        .cover-card {
-            background: #fff;
-            border: 1px solid #e0e0e0;
-            border-radius: 4px;
-            padding: 24px;
-            height: fit-content;
+        /* 基本信息布局 */
+        .basic-info-layout {
+            display: flex;
+            gap: 24px;
         }
         .book-cover {
-            width: 100%;
-            aspect-ratio: 3/4;
+            width: 150px;
+            height: 200px;
             background: #e0e0e0;
             border-radius: 4px;
             display: flex;
@@ -192,15 +182,21 @@
             justify-content: center;
             font-size: 14px;
             color: #999;
-            margin-bottom: 16px;
+            flex-shrink: 0;
         }
         .cover-actions {
             display: flex;
             flex-direction: column;
             gap: 8px;
+            margin-top: 12px;
         }
         .cover-actions .btn {
-            width: 100%;
+            width: 150px;
+            font-size: 13px;
+            height: 32px;
+        }
+        .cover-section {
+            flex-shrink: 0;
         }
 
         /* 信息卡片 */
@@ -393,6 +389,50 @@
             background: #f5f5f5;
             border-radius: 4px;
         }
+
+        /* 预览图网格 */
+        .preview-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 16px;
+        }
+        .preview-item {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .preview-image {
+            width: 100%;
+            aspect-ratio: 3/4;
+            background: #e0e0e0;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: #999;
+            border: 1px solid #d0d0d0;
+        }
+        .preview-name {
+            font-size: 13px;
+            color: #333;
+            text-align: center;
+            line-height: 1.4;
+        }
+        .preview-actions {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+        }
+        .preview-actions a {
+            font-size: 12px;
+            color: #333;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+        .preview-actions a:hover {
+            color: #666;
+        }
     </style>
 </head>
 <body>
@@ -509,47 +549,24 @@
                 </div>
                 <div class="page-header-actions">
                     <button class="btn btn-secondary">返回列表</button>
-                    <button class="btn btn-secondary">编辑</button>
-                    <button class="btn btn-secondary">删除</button>
                 </div>
             </div>
 
-            <!-- 统计数据 -->
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-label">使用次数</div>
-                    <div class="stat-value">12</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">参与学生数</div>
-                    <div class="stat-value">156</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">完成人数</div>
-                    <div class="stat-value">89</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">完成率</div>
-                    <div class="stat-value">57.1%</div>
-                </div>
-            </div>
-
-            <!-- 详情布局 -->
-            <div class="detail-layout">
-                <!-- 左侧：封面 -->
-                <div class="cover-card">
-                    <div class="book-cover">[书籍封面]</div>
-                    <div class="cover-actions">
-                        <button class="btn btn-secondary">更换封面</button>
-                        <button class="btn btn-secondary">下载封面</button>
+            <!-- 基本信息 -->
+            <div class="info-card">
+                <div class="info-card-title">基本信息</div>
+                <div class="basic-info-layout">
+                    <!-- 封面区域 -->
+                    <div class="cover-section">
+                        <div class="book-cover">[书籍封面]</div>
+                        <div class="cover-actions">
+                            <button class="btn btn-secondary">更换封面</button>
+                            <button class="btn btn-secondary">下载封面</button>
+                        </div>
                     </div>
-                </div>
 
-                <!-- 右侧：详细信息 -->
-                <div>
-                    <!-- 基本信息 -->
-                    <div class="info-card">
-                        <div class="info-card-title">基本信息</div>
+                    <!-- 信息区域 -->
+                    <div style="flex: 1;">
                         <div class="info-grid">
                             <div class="info-item">
                                 <div class="info-label">书籍名称</div>
@@ -580,11 +597,11 @@
                                 <div class="info-value">978-7-02-008892-8</div>
                             </div>
                             <div class="info-item">
-                                <div class="info-label">上传时间</div>
+                                <div class="info-label">创建时间</div>
                                 <div class="info-value">2024-01-15 10:30:00</div>
                             </div>
                             <div class="info-item">
-                                <div class="info-label">上传人</div>
+                                <div class="info-label">创建人</div>
                                 <div class="info-value">管理员</div>
                             </div>
                             <div class="info-item">
@@ -593,23 +610,12 @@
                             </div>
                         </div>
                     </div>
-
-                    <!-- 书籍简介 -->
-                    <div class="info-card">
-                        <div class="info-card-title">书籍简介</div>
-                        <div class="description-text">
-                            《西游记》是中国古代第一部浪漫主义章回体长篇神魔小说。全书主要描写了孙悟空出世及大闹天宫后，遇见了唐僧、猪八戒、沙僧和白龙马，西行取经，一路上历经艰险、降妖伏魔，经历了九九八十一难，终于到达西天见到如来佛祖，最终五圣成真的故事。该小说以"唐僧取经"这一历史事件为蓝本，通过作者的艺术加工，深刻地描绘了明代社会现实。
-                        </div>
-                    </div>
+                </div>
+            </div>
 
                     <!-- 视频资源 -->
                     <div class="info-card">
-                        <div class="info-card-title">
-                            <div class="resource-header">
-                                <span>视频资源（3个）</span>
-                                <button class="btn btn-primary">上传视频</button>
-                            </div>
-                        </div>
+                        <div class="info-card-title">视频资源(3个)</div>
                         <div class="resource-list">
                             <div class="resource-item">
                                 <div class="resource-item-left">
@@ -622,7 +628,6 @@
                                 <div class="resource-actions">
                                     <a href="#">预览</a>
                                     <a href="#">下载</a>
-                                    <a href="#">删除</a>
                                 </div>
                             </div>
                             <div class="resource-item">
@@ -636,7 +641,6 @@
                                 <div class="resource-actions">
                                     <a href="#">预览</a>
                                     <a href="#">下载</a>
-                                    <a href="#">删除</a>
                                 </div>
                             </div>
                             <div class="resource-item">
@@ -650,7 +654,6 @@
                                 <div class="resource-actions">
                                     <a href="#">预览</a>
                                     <a href="#">下载</a>
-                                    <a href="#">删除</a>
                                 </div>
                             </div>
                         </div>
@@ -658,12 +661,7 @@
 
                     <!-- 音频资源 -->
                     <div class="info-card">
-                        <div class="info-card-title">
-                            <div class="resource-header">
-                                <span>音频资源（2个）</span>
-                                <button class="btn btn-primary">上传音频</button>
-                            </div>
-                        </div>
+                        <div class="info-card-title">音频资源(2个)</div>
                         <div class="resource-list">
                             <div class="resource-item">
                                 <div class="resource-item-left">
@@ -676,7 +674,6 @@
                                 <div class="resource-actions">
                                     <a href="#">播放</a>
                                     <a href="#">下载</a>
-                                    <a href="#">删除</a>
                                 </div>
                             </div>
                             <div class="resource-item">
@@ -690,158 +687,87 @@
                                 <div class="resource-actions">
                                     <a href="#">播放</a>
                                     <a href="#">下载</a>
-                                    <a href="#">删除</a>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- 导读单资源 -->
+                    <!-- 导读单资源（学生版） -->
                     <div class="info-card">
-                        <div class="info-card-title">
-                            <div class="resource-header">
-                                <span>导读单资源（5个）</span>
-                                <button class="btn btn-primary">上传导读单</button>
-                            </div>
-                        </div>
+                        <div class="info-card-title">导读单资源(学生版)(3个)</div>
                         <div class="resource-list">
                             <div class="resource-item">
                                 <div class="resource-item-left">
                                     <div class="resource-icon">[📄]</div>
                                     <div class="resource-info">
-                                        <div class="resource-name">第一回导读单：石猴出世</div>
+                                        <div class="resource-name">第1次阅读：石猴出世</div>
                                         <div class="resource-meta">格式：PNG | 大小：2.5MB | 上传时间：2024-01-15 10:45</div>
                                     </div>
                                 </div>
                                 <div class="resource-actions">
                                     <a href="#">预览</a>
                                     <a href="#">下载</a>
-                                    <a href="#">删除</a>
                                 </div>
                             </div>
                             <div class="resource-item">
                                 <div class="resource-item-left">
                                     <div class="resource-icon">[📄]</div>
                                     <div class="resource-info">
-                                        <div class="resource-name">第二回导读单：拜师学艺</div>
+                                        <div class="resource-name">第2次阅读：拜师学艺</div>
                                         <div class="resource-meta">格式：PNG | 大小：2.3MB | 上传时间：2024-01-16 14:30</div>
                                     </div>
                                 </div>
                                 <div class="resource-actions">
                                     <a href="#">预览</a>
                                     <a href="#">下载</a>
-                                    <a href="#">删除</a>
                                 </div>
                             </div>
                             <div class="resource-item">
                                 <div class="resource-item-left">
                                     <div class="resource-icon">[📄]</div>
                                     <div class="resource-info">
-                                        <div class="resource-name">第三回导读单：大闹天宫</div>
+                                        <div class="resource-name">第3次阅读：大闹天宫</div>
                                         <div class="resource-meta">格式：PNG | 大小：2.8MB | 上传时间：2024-01-17 09:30</div>
                                     </div>
                                 </div>
                                 <div class="resource-actions">
                                     <a href="#">预览</a>
                                     <a href="#">下载</a>
-                                    <a href="#">删除</a>
-                                </div>
-                            </div>
-                            <div class="resource-item">
-                                <div class="resource-item-left">
-                                    <div class="resource-icon">[📄]</div>
-                                    <div class="resource-info">
-                                        <div class="resource-name">第四回导读单：取经之路</div>
-                                        <div class="resource-meta">格式：PNG | 大小：2.6MB | 上传时间：2024-01-18 10:15</div>
-                                    </div>
-                                </div>
-                                <div class="resource-actions">
-                                    <a href="#">预览</a>
-                                    <a href="#">下载</a>
-                                    <a href="#">删除</a>
-                                </div>
-                            </div>
-                            <div class="resource-item">
-                                <div class="resource-item-left">
-                                    <div class="resource-icon">[📄]</div>
-                                    <div class="resource-info">
-                                        <div class="resource-name">第五回导读单：师徒情深</div>
-                                        <div class="resource-meta">格式：PNG | 大小：2.4MB | 上传时间：2024-01-19 11:00</div>
-                                    </div>
-                                </div>
-                                <div class="resource-actions">
-                                    <a href="#">预览</a>
-                                    <a href="#">下载</a>
-                                    <a href="#">删除</a>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- 相关阅读计划 -->
+                    <!-- 导读单资源（教师版） -->
                     <div class="info-card">
-                        <div class="info-card-title">相关阅读计划（12个）</div>
-                        <div class="table-container">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th>计划名称</th>
-                                        <th>适合年级</th>
-                                        <th>参与学生数</th>
-                                        <th>开始时间</th>
-                                        <th>结束时间</th>
-                                        <th>状态</th>
-                                        <th>操作</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>2024春季阅读计划</td>
-                                        <td>三年级</td>
-                                        <td>45</td>
-                                        <td>2024-03-01</td>
-                                        <td>2024-06-30</td>
-                                        <td><span class="status-badge active">进行中</span></td>
-                                        <td><a href="#">查看</a></td>
-                                    </tr>
-                                    <tr>
-                                        <td>名著阅读专项计划</td>
-                                        <td>三年级</td>
-                                        <td>38</td>
-                                        <td>2024-02-15</td>
-                                        <td>2024-05-15</td>
-                                        <td><span class="status-badge active">进行中</span></td>
-                                        <td><a href="#">查看</a></td>
-                                    </tr>
-                                    <tr>
-                                        <td>寒假阅读计划</td>
-                                        <td>三年级</td>
-                                        <td>52</td>
-                                        <td>2024-01-20</td>
-                                        <td>2024-02-20</td>
-                                        <td><span class="status-badge">已结束</span></td>
-                                        <td><a href="#">查看</a></td>
-                                    </tr>
-                                    <tr>
-                                        <td>四大名著阅读计划</td>
-                                        <td>四年级</td>
-                                        <td>41</td>
-                                        <td>2024-03-10</td>
-                                        <td>2024-07-10</td>
-                                        <td><span class="status-badge active">进行中</span></td>
-                                        <td><a href="#">查看</a></td>
-                                    </tr>
-                                    <tr>
-                                        <td>经典文学阅读计划</td>
-                                        <td>三年级</td>
-                                        <td>36</td>
-                                        <td>2024-01-01</td>
-                                        <td>2024-03-31</td>
-                                        <td><span class="status-badge">已结束</span></td>
-                                        <td><a href="#">查看</a></td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                        <div class="info-card-title">导读单资源(老师版/答案)(2个)</div>
+                        <div class="resource-list">
+                            <div class="resource-item">
+                                <div class="resource-item-left">
+                                    <div class="resource-icon">[📄]</div>
+                                    <div class="resource-info">
+                                        <div class="resource-name">第1次阅读答案：石猴出世</div>
+                                        <div class="resource-meta">格式：PNG | 大小：2.6MB | 上传时间：2024-01-15 11:00</div>
+                                    </div>
+                                </div>
+                                <div class="resource-actions">
+                                    <a href="#">预览</a>
+                                    <a href="#">下载</a>
+                                </div>
+                            </div>
+                            <div class="resource-item">
+                                <div class="resource-item-left">
+                                    <div class="resource-icon">[📄]</div>
+                                    <div class="resource-info">
+                                        <div class="resource-name">第3次阅读答案：大闹天宫</div>
+                                        <div class="resource-meta">格式：PNG | 大小：2.9MB | 上传时间：2024-01-17 10:00</div>
+                                    </div>
+                                </div>
+                                <div class="resource-actions">
+                                    <a href="#">预览</a>
+                                    <a href="#">下载</a>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
