@@ -435,15 +435,28 @@
             background: #f5f5f5;
         }
         .upload-info {
-            flex: 1;
             font-size: 14px;
             color: #666;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
         }
         .upload-info.empty {
             color: #ccc;
+        }
+        .upload-info-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .btn-delete {
+            padding: 2px 6px;
+            background: transparent;
+            border: none;
+            font-size: 16px;
+            color: #999;
+            cursor: pointer;
+            line-height: 1;
+        }
+        .btn-delete:hover {
+            color: #333;
         }
         .form-checkbox-group {
             display: flex;
@@ -781,6 +794,21 @@
                                             </div>
                                         </div>
 
+                                        <!-- 上传音频 -->
+                                        <div class="form-item full-width">
+                                            <label class="form-label">
+                                                <input type="checkbox" id="audio-check-1" onchange="toggleTask('audio-1')">
+                                                上传音频<span style="color: #999; font-size: 12px; margin-left: 8px;">（仅支持上传1个音频文件）</span>
+                                            </label>
+                                            <div id="audio-1" style="margin-top: 12px; display: none;">
+                                                <div class="resource-select-group" style="margin-bottom: 8px;">
+                                                    <button class="upload-btn">从资源库选择</button>
+                                                    <button class="upload-btn">本地上传</button>
+                                                </div>
+                                                <div class="upload-info empty">未上传音频</div>
+                                            </div>
+                                        </div>
+
                                         <!-- 完成导读单 -->
                                         <div class="form-item full-width">
                                             <label class="form-label">
@@ -795,7 +823,10 @@
                                                             <button class="upload-btn">从资源库选择</button>
                                                             <button class="upload-btn">本地上传</button>
                                                         </div>
-                                                        <div class="upload-info">西游记-第1次阅读导读单.jpg</div>
+                                                        <div class="upload-info-wrapper">
+                                                            <div class="upload-info">西游记-第1次阅读导读单.jpg</div>
+                                                            <button class="btn-delete" onclick="deleteFile(this)">×</button>
+                                                        </div>
                                                         <div style="padding: 12px; background: #f9f9f9; border-radius: 4px; margin-top: 12px;">
                                                             <div style="font-size: 13px; color: #666; margin-bottom: 8px;">配置学生版解锁时机</div>
                                                             <div class="form-radio-group">
@@ -821,7 +852,10 @@
                                                             <button class="upload-btn">从资源库选择</button>
                                                             <button class="upload-btn">本地上传</button>
                                                         </div>
-                                                        <div class="upload-info">西游记-第1次阅读导读单答案.jpg</div>
+                                                        <div class="upload-info-wrapper">
+                                                            <div class="upload-info">西游记-第1次阅读导读单答案.jpg</div>
+                                                            <button class="btn-delete" onclick="deleteFile(this)">×</button>
+                                                        </div>
                                                         <div style="padding: 12px; background: #f9f9f9; border-radius: 4px; margin-top: 12px;">
                                                             <div style="font-size: 13px; color: #666; margin-bottom: 8px;">配置教师版解锁时机</div>
                                                             <div class="form-radio-group">
@@ -856,7 +890,10 @@
                                                     <button class="upload-btn">从资源库选择</button>
                                                     <button class="upload-btn">本地上传</button>
                                                 </div>
-                                                <div class="upload-info" style="margin-bottom: 12px;">西游记-第1回讲解.mp4</div>
+                                                <div class="upload-info-wrapper" style="margin-bottom: 12px;">
+                                                    <div class="upload-info">西游记-第1回讲解.mp4</div>
+                                                    <button class="btn-delete" onclick="deleteFile(this)">×</button>
+                                                </div>
                                                 <div style="padding: 12px; background: #f9f9f9; border-radius: 4px;">
                                                     <div style="font-size: 13px; color: #666; margin-bottom: 8px;">配置视频解锁时机</div>
                                                     <div class="form-radio-group">
@@ -913,6 +950,21 @@
                                             </div>
                                         </div>
 
+                                        <!-- 上传音频 -->
+                                        <div class="form-item full-width">
+                                            <label class="form-label">
+                                                <input type="checkbox" id="audio-check-2" onchange="toggleTask('audio-2')">
+                                                上传音频<span style="color: #999; font-size: 12px; margin-left: 8px;">（仅支持上传1个音频文件）</span>
+                                            </label>
+                                            <div id="audio-2" style="margin-top: 12px; display: none;">
+                                                <div class="resource-select-group" style="margin-bottom: 8px;">
+                                                    <button class="upload-btn">从资源库选择</button>
+                                                    <button class="upload-btn">本地上传</button>
+                                                </div>
+                                                <div class="upload-info empty">未上传音频</div>
+                                            </div>
+                                        </div>
+
                                         <!-- 完成导读单 -->
                                         <div class="form-item full-width">
                                             <label class="form-label">
@@ -927,7 +979,10 @@
                                                             <button class="upload-btn">从资源库选择</button>
                                                             <button class="upload-btn">本地上传</button>
                                                         </div>
-                                                        <div class="upload-info">西游记-第2次阅读导读单.jpg</div>
+                                                        <div class="upload-info-wrapper">
+                                                            <div class="upload-info">西游记-第2次阅读导读单.jpg</div>
+                                                            <button class="btn-delete" onclick="deleteFile(this)">×</button>
+                                                        </div>
                                                         <div style="padding: 12px; background: #f9f9f9; border-radius: 4px; margin-top: 12px;">
                                                             <div style="font-size: 13px; color: #666; margin-bottom: 8px;">配置学生版解锁时机</div>
                                                             <div class="form-radio-group">
@@ -953,7 +1008,10 @@
                                                             <button class="upload-btn">从资源库选择</button>
                                                             <button class="upload-btn">本地上传</button>
                                                         </div>
-                                                        <div class="upload-info">西游记-第2次阅读导读单答案.jpg</div>
+                                                        <div class="upload-info-wrapper">
+                                                            <div class="upload-info">西游记-第2次阅读导读单答案.jpg</div>
+                                                            <button class="btn-delete" onclick="deleteFile(this)">×</button>
+                                                        </div>
                                                         <div style="padding: 12px; background: #f9f9f9; border-radius: 4px; margin-top: 12px;">
                                                             <div style="font-size: 13px; color: #666; margin-bottom: 8px;">配置教师版解锁时机</div>
                                                             <div class="form-radio-group">
@@ -1045,6 +1103,21 @@
                                             </div>
                                         </div>
 
+                                        <!-- 上传音频 -->
+                                        <div class="form-item full-width">
+                                            <label class="form-label">
+                                                <input type="checkbox" id="audio-check-3" onchange="toggleTask('audio-3')">
+                                                上传音频<span style="color: #999; font-size: 12px; margin-left: 8px;">（仅支持上传1个音频文件）</span>
+                                            </label>
+                                            <div id="audio-3" style="margin-top: 12px; display: none;">
+                                                <div class="resource-select-group" style="margin-bottom: 8px;">
+                                                    <button class="upload-btn">从资源库选择</button>
+                                                    <button class="upload-btn">本地上传</button>
+                                                </div>
+                                                <div class="upload-info empty">未上传音频</div>
+                                            </div>
+                                        </div>
+
                                         <!-- 完成导读单 -->
                                         <div class="form-item full-width">
                                             <label class="form-label">
@@ -1059,7 +1132,10 @@
                                                             <button class="upload-btn">从资源库选择</button>
                                                             <button class="upload-btn">本地上传</button>
                                                         </div>
-                                                        <div class="upload-info">西游记-第3次阅读导读单.jpg</div>
+                                                        <div class="upload-info-wrapper">
+                                                            <div class="upload-info">西游记-第3次阅读导读单.jpg</div>
+                                                            <button class="btn-delete" onclick="deleteFile(this)">×</button>
+                                                        </div>
                                                         <div style="padding: 12px; background: #f9f9f9; border-radius: 4px; margin-top: 12px;">
                                                             <div style="font-size: 13px; color: #666; margin-bottom: 8px;">配置学生版解锁时机</div>
                                                             <div class="form-radio-group">
@@ -1085,7 +1161,10 @@
                                                             <button class="upload-btn">从资源库选择</button>
                                                             <button class="upload-btn">本地上传</button>
                                                         </div>
-                                                        <div class="upload-info">西游记-第3次阅读导读单答案.jpg</div>
+                                                        <div class="upload-info-wrapper">
+                                                            <div class="upload-info">西游记-第3次阅读导读单答案.jpg</div>
+                                                            <button class="btn-delete" onclick="deleteFile(this)">×</button>
+                                                        </div>
                                                         <div style="padding: 12px; background: #f9f9f9; border-radius: 4px; margin-top: 12px;">
                                                             <div style="font-size: 13px; color: #666; margin-bottom: 8px;">配置教师版解锁时机</div>
                                                             <div class="form-radio-group">
@@ -1120,7 +1199,10 @@
                                                     <button class="upload-btn">从资源库选择</button>
                                                     <button class="upload-btn">本地上传</button>
                                                 </div>
-                                                <div class="upload-info" style="margin-bottom: 12px;">西游记-第5回讲解.mp4</div>
+                                                <div class="upload-info-wrapper" style="margin-bottom: 12px;">
+                                                    <div class="upload-info">西游记-第5回讲解.mp4</div>
+                                                    <button class="btn-delete" onclick="deleteFile(this)">×</button>
+                                                </div>
                                                 <div style="padding: 12px; background: #f9f9f9; border-radius: 4px;">
                                                     <div style="font-size: 13px; color: #666; margin-bottom: 8px;">配置视频解锁时机</div>
                                                     <div class="form-radio-group">
@@ -1185,7 +1267,7 @@
 
     function toggleTask(taskId) {
         const taskContent = document.getElementById(taskId);
-        const checkbox = document.getElementById(taskId.replace(/^(page|guide|video)-/, '$1-check-'));
+        const checkbox = document.getElementById(taskId.replace(/^(page|audio|guide|video)-/, '$1-check-'));
 
         if (checkbox.checked) {
             // 启用任务
@@ -1205,6 +1287,19 @@
             taskContent.style.display = 'none';
         }
     }
-    </script>
+
+    function deleteFile(button) {
+        // 找到包含文件信息的wrapper
+        const wrapper = button.parentElement;
+        const uploadInfo = wrapper.querySelector('.upload-info');
+
+        // 将文件信息改为空状态
+        uploadInfo.textContent = '未上传';
+        uploadInfo.classList.add('empty');
+
+        // 隐藏删除按钮
+        button.style.display = 'none';
+    }
+</script>
 </body>
 </html>

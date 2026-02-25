@@ -406,7 +406,6 @@
             color: #666;
             margin: 0 8px;
         }
-    </style>
         .assessment-status-badge {
             display: inline-block;
             padding: 4px 12px;
@@ -438,7 +437,7 @@
             <div class="sidebar-header">
                 校校读吧管理平台
             </div>
-            <div class="sidebar-menu">
+                        <div class="sidebar-menu">
                 <div class="menu-item">首页</div>
 
                 <div class="menu-group">
@@ -461,7 +460,6 @@
                     <div class="menu-group-items">
                         <div class="menu-item">阅读计划</div>
                         <div class="menu-item active">书籍资源库</div>
-                        <div class="menu-item">测评管理</div>
                     </div>
                 </div>
 
@@ -569,6 +567,22 @@
                             <input type="text" class="filter-input" placeholder="请输入标签">
                         </div>
                         <div class="filter-item">
+                            <label class="filter-label">测评状态</label>
+                            <select class="filter-input">
+                                <option value="">全部</option>
+                                <option value="configured">已配置</option>
+                                <option value="unconfigured">未配置</option>
+                            </select>
+                        </div>
+                        <div class="filter-item">
+                            <label class="filter-label">AI虚拟形象</label>
+                            <select class="filter-input">
+                                <option value="">全部</option>
+                                <option value="generated">已生成</option>
+                                <option value="not-generated">未生成</option>
+                            </select>
+                        </div>
+                        <div class="filter-item">
                             <label class="filter-label">创建时间</label>
                             <input type="text" class="filter-input" placeholder="请选择日期范围">
                         </div>
@@ -589,6 +603,7 @@
                         <button class="btn btn-secondary">导入书籍</button>
                         <button class="btn btn-secondary">上传资源</button>
                         <button class="btn btn-secondary">配置测评</button>
+                        <button class="btn btn-secondary" id="generateAvatarBtn">生成AI虚拟形象</button>
                         <button class="btn btn-secondary">编辑</button>
                         <button class="btn btn-secondary">查看</button>
                         <button class="btn btn-secondary">删除</button>
@@ -611,8 +626,8 @@
                                     <th>适合年级</th>
                                     <th>标签</th>
                                     <th>测评状态</th>
+                                    <th>AI虚拟形象</th>
                                     <th>创建时间</th>
-                                    <th>操作</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -626,12 +641,8 @@
                                     <td>三年级, 四年级</td>
                                     <td>文学名著, 古典文学</td>
                                     <td><span class="assessment-status-badge configured">已配置</span></td>
+                                    <td><span class="assessment-status-badge configured">已生成</span></td>
                                     <td>2026-01-15 10:30:00</td>
-                                    <td>
-                                        <div class="action-cell">
-                                            <a class="action-link" href="22-测评题目配置.html">配置测评</a>
-                                        </div>
-                                    </td>
                                 </tr>
                                 <tr>
                                     <td><input type="checkbox"></td>
@@ -643,12 +654,8 @@
                                     <td>四年级, 五年级</td>
                                     <td>文学名著, 历史传记</td>
                                     <td><span class="assessment-status-badge configured">已配置</span></td>
+                                    <td><span class="assessment-status-badge configured">已生成</span></td>
                                     <td>2026-01-15 11:20:00</td>
-                                    <td>
-                                        <div class="action-cell">
-                                            <a class="action-link" href="22-测评题目配置.html">配置测评</a>
-                                        </div>
-                                    </td>
                                 </tr>
                                 <tr>
                                     <td><input type="checkbox"></td>
@@ -660,12 +667,8 @@
                                     <td>五年级, 六年级</td>
                                     <td>文学名著, 古典文学</td>
                                     <td><span class="assessment-status-badge configured">已配置</span></td>
+                                    <td><span class="assessment-status-badge unconfigured">未生成</span></td>
                                     <td>2026-01-16 09:15:00</td>
-                                    <td>
-                                        <div class="action-cell">
-                                            <a class="action-link" href="22-测评题目配置.html">配置测评</a>
-                                        </div>
-                                    </td>
                                 </tr>
                                 <tr>
                                     <td><input type="checkbox"></td>
@@ -677,12 +680,8 @@
                                     <td>六年级</td>
                                     <td>文学名著, 古典文学</td>
                                     <td><span class="assessment-status-badge unconfigured">未配置</span></td>
+                                    <td><span class="assessment-status-badge unconfigured">未生成</span></td>
                                     <td>2026-01-16 14:30:00</td>
-                                    <td>
-                                        <div class="action-cell">
-                                            <a class="action-link" href="22-测评题目配置.html">配置测评</a>
-                                        </div>
-                                    </td>
                                 </tr>
                                 <tr>
                                     <td><input type="checkbox"></td>
@@ -694,12 +693,8 @@
                                     <td>五年级, 六年级</td>
                                     <td>文学名著, 现代文学</td>
                                     <td><span class="assessment-status-badge configured">已配置</span></td>
+                                    <td><span class="assessment-status-badge configured">已生成</span></td>
                                     <td>2026-01-17 10:00:00</td>
-                                    <td>
-                                        <div class="action-cell">
-                                            <a class="action-link" href="22-测评题目配置.html">配置测评</a>
-                                        </div>
-                                    </td>
                                 </tr>
                                 <tr>
                                     <td><input type="checkbox"></td>
@@ -711,12 +706,8 @@
                                     <td>四年级, 五年级</td>
                                     <td>文学名著, 散文</td>
                                     <td><span class="assessment-status-badge configured">已配置</span></td>
+                                    <td><span class="assessment-status-badge configured">已生成</span></td>
                                     <td>2026-01-17 15:20:00</td>
-                                    <td>
-                                        <div class="action-cell">
-                                            <a class="action-link" href="22-测评题目配置.html">配置测评</a>
-                                        </div>
-                                    </td>
                                 </tr>
                                 <tr>
                                     <td><input type="checkbox"></td>
@@ -728,12 +719,8 @@
                                     <td>三年级, 四年级</td>
                                     <td>童话故事, 儿童文学</td>
                                     <td><span class="assessment-status-badge unconfigured">未配置</span></td>
+                                    <td><span class="assessment-status-badge unconfigured">未生成</span></td>
                                     <td>2026-01-18 09:30:00</td>
-                                    <td>
-                                        <div class="action-cell">
-                                            <a class="action-link" href="22-测评题目配置.html">配置测评</a>
-                                        </div>
-                                    </td>
                                 </tr>
                                 <tr>
                                     <td><input type="checkbox"></td>
@@ -745,12 +732,8 @@
                                     <td>四年级, 五年级</td>
                                     <td>童话故事, 儿童文学</td>
                                     <td><span class="assessment-status-badge configured">已配置</span></td>
+                                    <td><span class="assessment-status-badge unconfigured">未生成</span></td>
                                     <td>2026-01-18 14:15:00</td>
-                                    <td>
-                                        <div class="action-cell">
-                                            <a class="action-link" href="22-测评题目配置.html">配置测评</a>
-                                        </div>
-                                    </td>
                                 </tr>
                                 <tr>
                                     <td><input type="checkbox"></td>
@@ -762,12 +745,8 @@
                                     <td>三年级, 四年级, 五年级</td>
                                     <td>科普读物, 自然科学</td>
                                     <td><span class="assessment-status-badge configured">已配置</span></td>
+                                    <td><span class="assessment-status-badge configured">已生成</span></td>
                                     <td>2026-01-19 10:45:00</td>
-                                    <td>
-                                        <div class="action-cell">
-                                            <a class="action-link" href="22-测评题目配置.html">配置测评</a>
-                                        </div>
-                                    </td>
                                 </tr>
                                 <tr>
                                     <td><input type="checkbox"></td>
@@ -779,12 +758,8 @@
                                     <td>五年级, 六年级</td>
                                     <td>科普读物, 科幻小说</td>
                                     <td><span class="assessment-status-badge unconfigured">未配置</span></td>
+                                    <td><span class="assessment-status-badge unconfigured">未生成</span></td>
                                     <td>2026-01-19 16:00:00</td>
-                                    <td>
-                                        <div class="action-cell">
-                                            <a class="action-link" href="22-测评题目配置.html">配置测评</a>
-                                        </div>
-                                    </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -858,6 +833,41 @@
                 };
             }
         });
+
+        // 生成AI虚拟形象按钮
+        document.getElementById('generateAvatarBtn').onclick = function() {
+            const checkboxes = document.querySelectorAll('.table tbody input[type="checkbox"]:checked');
+
+            if (checkboxes.length === 0) {
+                alert('请选择要生成AI虚拟形象的书籍');
+                return;
+            }
+
+            if (checkboxes.length > 1) {
+                alert('只能选择一本书籍生成AI虚拟形象');
+                return;
+            }
+
+            // 获取选中行的书籍名称
+            const selectedRow = checkboxes[0].closest('tr');
+            const bookName = selectedRow.cells[3].textContent;
+
+            if (confirm('确认为' + bookName + '生成AI虚拟形象吗？')) {
+                // 模拟生成过程
+                alert('正在生成AI虚拟形象，请稍候...');
+
+                // 实际应用中这里应该调用后端API
+                // 这里模拟成功后更新状态
+                setTimeout(function() {
+                    const avatarCell = selectedRow.cells[9];
+                    const badge = avatarCell.querySelector('.assessment-status-badge');
+                    badge.textContent = '已生成';
+                    badge.classList.remove('unconfigured');
+                    badge.classList.add('configured');
+                    alert('AI虚拟形象生成成功');
+                }, 1000);
+            }
+        };
     });
     </script>
 </body>
