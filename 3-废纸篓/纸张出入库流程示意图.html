@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>纸张物料出入库流程示意图</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+            padding: 30px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: linear-gradient(135deg, #1a2a3a 0%, #2d3e50 100%);
+            border-radius: 15px;
+            padding: 50px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 40px rgba(0, 191, 255, 0.1);
+            border: 1px solid rgba(0, 191, 255, 0.3);
+        }
+
+        h1 {
+            text-align: center;
+            color: #00d4ff;
+            margin-bottom: 50px;
+            font-size: 28px;
+            font-weight: bold;
+            text-shadow: 0 0 8px rgba(0, 212, 255, 0.3);
+        }
+
+        .diagram-wrapper {
+            position: relative;
+            width: 100%;
+            height: 600px;
+        }
+
+        .node {
+            position: absolute;
+            background: linear-gradient(135deg, #3d5a73 0%, #4d6d8a 100%);
+            border: 3px solid #00d4ff;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 191, 255, 0.2);
+            min-width: 140px;
+        }
+
+        .node:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(0, 212, 255, 0.4);
+        }
+
+        .node.green {
+            border-color: #34d399;
+        }
+
+        .node.yellow {
+            border-color: #fbbf24;
+        }
+
+        .node.center {
+            border-color: #00d4ff;
+            background: linear-gradient(135deg, #2a3f54 0%, #3a5169 100%);
+            padding: 30px;
+            min-width: 200px;
+        }
+
+        .node-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #ecf0f1;
+            margin-bottom: 5px;
+        }
+
+        .node-desc {
+            font-size: 12px;
+            color: #bdc3c7;
+        }
+
+        svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .arrow {
+            stroke-width: 3;
+            fill: none;
+        }
+
+        .arrow.green {
+            stroke: #34d399;
+        }
+
+        .arrow.blue {
+            stroke: #00d4ff;
+        }
+
+        .arrow.yellow {
+            stroke: #fbbf24;
+        }
+
+        marker polygon {
+            fill: inherit;
+        }
+
+        /* 节点位置 */
+        .supplier { top: 50px; left: 50px; }
+        .receive { top: 50px; left: 250px; }
+        .inspect { top: 50px; left: 450px; }
+        .shelve { top: 50px; left: 650px; }
+
+        .warehouse { top: 250px; left: 400px; }
+
+        .request { top: 450px; left: 50px; }
+        .check { top: 450px; left: 250px; }
+        .pick { top: 450px; left: 450px; }
+        .confirm { top: 450px; left: 650px; }
+        .production { top: 450px; left: 900px; }
+
+        @media (max-width: 1200px) {
+            .diagram-wrapper {
+                height: 800px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>纸张物料出入库流程示意图</h1>
+
+        <div class="diagram-wrapper">
+            <svg>
+                <defs>
+                    <marker id="arrowGreen" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+                        <polygon points="0 0, 10 3, 0 6" fill="#34d399" />
+                    </marker>
+                    <marker id="arrowBlue" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+                        <polygon points="0 0, 10 3, 0 6" fill="#00d4ff" />
+                    </marker>
+                    <marker id="arrowYellow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+                        <polygon points="0 0, 10 3, 0 6" fill="#fbbf24" />
+                    </marker>
+                </defs>
+
+                <!-- 入库流程箭头 -->
+                <line x1="120" y1="90" x2="250" y2="90" class="arrow green" marker-end="url(#arrowGreen)" />
+                <line x1="390" y1="90" x2="450" y2="90" class="arrow green" marker-end="url(#arrowGreen)" />
+                <line x1="590" y1="90" x2="650" y2="90" class="arrow green" marker-end="url(#arrowGreen)" />
+                <line x1="720" y1="130" x2="580" y2="250" class="arrow green" marker-end="url(#arrowGreen)" />
+
+                <!-- 出库流程箭头 -->
+                <line x1="120" y1="490" x2="250" y2="490" class="arrow blue" marker-end="url(#arrowBlue)" />
+                <line x1="390" y1="490" x2="450" y2="490" class="arrow blue" marker-end="url(#arrowBlue)" />
+                <line x1="590" y1="490" x2="650" y2="490" class="arrow blue" marker-end="url(#arrowBlue)" />
+                <line x1="790" y1="490" x2="900" y2="490" class="arrow blue" marker-end="url(#arrowBlue)" />
+
+                <!-- 库存系统连接 -->
+                <line x1="320" y1="450" x2="420" y2="330" class="arrow blue" marker-end="url(#arrowBlue)" />
+                <line x1="520" y1="450" x2="520" y2="330" class="arrow blue" marker-end="url(#arrowBlue)" />
+
+                <!-- 退料箭头 -->
+                <line x1="970" y1="450" x2="970" y2="200" class="arrow yellow" marker-end="url(#arrowYellow)" />
+                <line x1="970" y1="200" x2="720" y2="130" class="arrow yellow" marker-end="url(#arrowYellow)" />
+            </svg>
+
+            <!-- 入库流程节点 -->
+            <div class="node green supplier">
+                <div class="node-title">供应商送货</div>
+                <div class="node-desc">采购到货</div>
+            </div>
+
+            <div class="node green receive">
+                <div class="node-title">扫码验收</div>
+                <div class="node-desc">核对单据</div>
+            </div>
+
+            <div class="node green inspect">
+                <div class="node-title">质量检验</div>
+                <div class="node-desc">检查规格</div>
+            </div>
+
+            <div class="node green shelve">
+                <div class="node-title">上架入库</div>
+                <div class="node-desc">分配库位</div>
+            </div>
+
+            <!-- 中心库存系统 -->
+            <div class="node center warehouse">
+                <div class="node-title">库存管理系统</div>
+                <div class="node-desc">实时库存 | 批次管理 | 库位追踪</div>
+            </div>
+
+            <!-- 出库流程节点 -->
+            <div class="node request">
+                <div class="node-title">生产领料</div>
+                <div class="node-desc">提交申请</div>
+            </div>
+
+            <div class="node check">
+                <div class="node-title">库存检查</div>
+                <div class="node-desc">确认库存</div>
+            </div>
+
+            <div class="node pick">
+                <div class="node-title">拣货出库</div>
+                <div class="node-desc">按库位拣货</div>
+            </div>
+
+            <div class="node confirm">
+                <div class="node-title">扫码确认</div>
+                <div class="node-desc">核对物料</div>
+            </div>
+
+            <div class="node production">
+                <div class="node-title">生产使用</div>
+                <div class="node-desc">投入生产</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
