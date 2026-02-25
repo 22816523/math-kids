@@ -455,56 +455,24 @@
                     </div>
                     <div class="category-list">
                         <div class="category-item active">
-                            <span class="category-name">学校类型</span>
-                            <span class="category-count">5</span>
-                        </div>
-                        <div class="category-item">
                             <span class="category-name">年级列表</span>
-                            <span class="category-count">12</span>
-                        </div>
-                        <div class="category-item">
-                            <span class="category-name">班级类型</span>
-                            <span class="category-count">3</span>
-                        </div>
-                        <div class="category-item">
-                            <span class="category-name">书籍分类</span>
-                            <span class="category-count">15</span>
-                        </div>
-                        <div class="category-item">
-                            <span class="category-name">书籍标签</span>
-                            <span class="category-count">28</span>
-                        </div>
-                        <div class="category-item">
-                            <span class="category-name">阅读难度</span>
-                            <span class="category-count">5</span>
-                        </div>
-                        <div class="category-item">
-                            <span class="category-name">测评类型</span>
                             <span class="category-count">6</span>
                         </div>
                         <div class="category-item">
-                            <span class="category-name">题目类型</span>
-                            <span class="category-count">4</span>
+                            <span class="category-name">学科</span>
+                            <span class="category-count">1</span>
+                        </div>
+                        <div class="category-item">
+                            <span class="category-name">书籍标签</span>
+                            <span class="category-count">8</span>
                         </div>
                         <div class="category-item">
                             <span class="category-name">反馈类型</span>
                             <span class="category-count">4</span>
                         </div>
                         <div class="category-item">
-                            <span class="category-name">工单优先级</span>
-                            <span class="category-count">4</span>
-                        </div>
-                        <div class="category-item">
-                            <span class="category-name">勋章等级</span>
-                            <span class="category-count">4</span>
-                        </div>
-                        <div class="category-item">
-                            <span class="category-name">用户状态</span>
-                            <span class="category-count">3</span>
-                        </div>
-                        <div class="category-item active">
-                            <span class="category-name">书籍标签</span>
-                            <span class="category-count">8</span>
+                            <span class="category-name">阅读能力</span>
+                            <span class="category-count">6</span>
                         </div>
                     </div>
                 </div>
@@ -512,8 +480,7 @@
                 <!-- 字典数据 -->
                 <div class="dict-card">
                     <div class="dict-header">
-                        <div class="dict-title">学校类型</div>
-                        <button class="btn btn-primary">+ 新增字典项</button>
+                        <div class="dict-title">年级列表</div>
                     </div>
 
                     <!-- 搜索框 -->
@@ -521,85 +488,82 @@
                         <input type="text" class="search-input" placeholder="搜索字典项名称或代码">
                     </div>
 
+                    <!-- 操作按钮 -->
+                    <div style="display: flex; gap: 8px; margin-bottom: 20px;">
+                        <button class="btn btn-primary">+ 新增字典项</button>
+                        <button class="btn btn-secondary">编辑</button>
+                        <button class="btn btn-secondary">启用/禁用</button>
+                        <button class="btn btn-secondary">删除</button>
+                    </div>
+
                     <!-- 字典数据表格 -->
                     <div class="table-container">
                         <table class="table">
                             <thead>
                                 <tr>
+                                    <th style="width: 60px;"><input type="checkbox"></th>
                                     <th style="width: 80px;">排序</th>
-                                    <th style="width: 120px;">字典代码</th>
-                                    <th>字典名称</th>
+                                    <th>字典分类</th>
                                     <th>字典值</th>
+                                    <th style="width: 120px;">字典代码</th>
                                     <th style="width: 100px;">状态</th>
                                     <th style="width: 160px;">创建时间</th>
-                                    <th style="width: 140px;">操作</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
+                                    <td><input type="checkbox"></td>
                                     <td><span class="sort-value">1</span></td>
-                                    <td><span class="code-value">primary</span></td>
-                                    <td>小学</td>
-                                    <td>小学</td>
+                                    <td>年级</td>
+                                    <td>一年级</td>
+                                    <td><span class="code-value">grade_1</span></td>
                                     <td><span class="status-badge enabled">启用</span></td>
                                     <td>2024-01-15 10:00:00</td>
-                                    <td>
-                                        <a href="#">编辑</a>
-                                        <a href="#">禁用</a>
-                                        <a href="#">删除</a>
-                                    </td>
                                 </tr>
                                 <tr>
+                                    <td><input type="checkbox"></td>
                                     <td><span class="sort-value">2</span></td>
-                                    <td><span class="code-value">middle</span></td>
-                                    <td>初中</td>
-                                    <td>初中</td>
+                                    <td>年级</td>
+                                    <td>二年级</td>
+                                    <td><span class="code-value">grade_2</span></td>
                                     <td><span class="status-badge enabled">启用</span></td>
                                     <td>2024-01-15 10:00:00</td>
-                                    <td>
-                                        <a href="#">编辑</a>
-                                        <a href="#">禁用</a>
-                                        <a href="#">删除</a>
-                                    </td>
                                 </tr>
                                 <tr>
+                                    <td><input type="checkbox"></td>
                                     <td><span class="sort-value">3</span></td>
-                                    <td><span class="code-value">high</span></td>
-                                    <td>高中</td>
-                                    <td>高中</td>
+                                    <td>年级</td>
+                                    <td>三年级</td>
+                                    <td><span class="code-value">grade_3</span></td>
                                     <td><span class="status-badge enabled">启用</span></td>
                                     <td>2024-01-15 10:00:00</td>
-                                    <td>
-                                        <a href="#">编辑</a>
-                                        <a href="#">禁用</a>
-                                        <a href="#">删除</a>
-                                    </td>
                                 </tr>
                                 <tr>
+                                    <td><input type="checkbox"></td>
                                     <td><span class="sort-value">4</span></td>
-                                    <td><span class="code-value">vocational</span></td>
-                                    <td>职业学校</td>
-                                    <td>职业学校</td>
+                                    <td>年级</td>
+                                    <td>四年级</td>
+                                    <td><span class="code-value">grade_4</span></td>
                                     <td><span class="status-badge enabled">启用</span></td>
                                     <td>2024-01-15 10:00:00</td>
-                                    <td>
-                                        <a href="#">编辑</a>
-                                        <a href="#">禁用</a>
-                                        <a href="#">删除</a>
-                                    </td>
                                 </tr>
                                 <tr>
+                                    <td><input type="checkbox"></td>
                                     <td><span class="sort-value">5</span></td>
-                                    <td><span class="code-value">special</span></td>
-                                    <td>特殊教育学校</td>
-                                    <td>特殊教育学校</td>
-                                    <td><span class="status-badge disabled">禁用</span></td>
+                                    <td>年级</td>
+                                    <td>五年级</td>
+                                    <td><span class="code-value">grade_5</span></td>
+                                    <td><span class="status-badge enabled">启用</span></td>
                                     <td>2024-01-15 10:00:00</td>
-                                    <td>
-                                        <a href="#">编辑</a>
-                                        <a href="#">启用</a>
-                                        <a href="#">删除</a>
-                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><input type="checkbox"></td>
+                                    <td><span class="sort-value">6</span></td>
+                                    <td>年级</td>
+                                    <td>六年级</td>
+                                    <td><span class="code-value">grade_6</span></td>
+                                    <td><span class="status-badge enabled">启用</span></td>
+                                    <td>2024-01-15 10:00:00</td>
                                 </tr>
                             </tbody>
                         </table>

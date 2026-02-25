@@ -205,28 +205,30 @@
 
         /* 表单 */
         .form-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
         }
         .form-item {
-            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
         }
         .form-item.full-width {
-            grid-column: 1 / -1;
+            width: 100%;
         }
         .form-label {
-            display: block;
+            width: 120px;
             font-size: 14px;
             color: #333;
-            margin-bottom: 8px;
+            flex-shrink: 0;
         }
         .form-label .required {
             color: #999;
             margin-left: 4px;
         }
         .form-input {
-            width: 100%;
+            flex: 1;
             height: 40px;
             padding: 0 12px;
             border: 1px solid #e0e0e0;
@@ -236,6 +238,21 @@
         .form-input:focus {
             outline: none;
             border-color: #999;
+        }
+        .form-input[readonly] {
+            background: transparent;
+            border: none;
+            padding-left: 0;
+            cursor: default;
+        }
+        .param-input[readonly] {
+            background: transparent;
+            border: none;
+            padding-left: 0;
+            cursor: default;
+        }
+        .param-input:focus {
+            outline: none;
         }
         .form-textarea {
             width: 100%;
@@ -355,6 +372,47 @@
             color: #999;
             font-size: 12px;
             margin-top: 12px;
+        }
+
+        /* 小型上传区域 */
+        .upload-area-small {
+            border: 2px dashed #e0e0e0;
+            border-radius: 4px;
+            padding: 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .upload-area-small:hover {
+            border-color: #999;
+            background: #f5f5f5;
+        }
+        .upload-area-small .upload-icon {
+            font-size: 24px;
+            color: #999;
+            margin-bottom: 8px;
+        }
+        .upload-area-small .upload-text {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 4px;
+        }
+        .upload-area-small .upload-hint {
+            font-size: 11px;
+            color: #999;
+        }
+        .preview-image-small {
+            width: 80px;
+            height: 80px;
+            background: #f5f5f5;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            font-size: 11px;
+            margin-top: 8px;
         }
 
         /* 参数列表 */
@@ -481,51 +539,6 @@
                 </div>
             </div>
 
-            <div class="menu-group">
-                <div class="menu-group-title" onclick="toggleMenu(this)">
-                    <span>系统配置</span>
-                    <span class="menu-group-icon">[▶]</span>
-                </div>
-                <div class="menu-group-items">
-                    <div class="menu-item">系统参数</div>
-                    <div class="menu-item">操作日志</div>
-                    <div class="menu-item">数据字典</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 内容区 -->
-                </div>
-                </div>
-            </div>
-            </div>
-
-            <div class="menu-group">
-                <div class="menu-group-title" onclick="toggleMenu(this)">
-                    <span>激励体系</span>
-                    <span class="menu-group-icon">[▶]</span>
-                </div>
-                <div class="menu-group-items">
-                    <div class="menu-item">积分规则</div>
-                    <div class="menu-item">等级体系</div>
-                    <div class="menu-item">徽章配置</div>
-                    <div class="menu-item">证书配置</div>
-                    </div>
-            </div>
-
-            <div class="menu-group">
-                <div class="menu-group-title" onclick="toggleMenu(this)">
-                    <span>用户反馈</span>
-                    <span class="menu-group-icon">[▶]</span>
-                </div>
-                <div class="menu-group-items">
-                    <div class="menu-item">意见反馈</div>
-                </div>
-                </div>
-                </div>
-                </div>
-            </div>
-
             <div class="menu-group expanded">
                 <div class="menu-group-title" onclick="toggleMenu(this)">
                     <span>系统配置</span>
@@ -553,125 +566,10 @@
             <!-- 页面标题 -->
             <div class="page-header">
                 <div class="page-title">系统参数</div>
-            </div>
-
-            <!-- 标签页 -->
-            <div class="tabs">
-                <div class="tab active">基本配置</div>
-                <div class="tab">功能开关</div>
-                <div class="tab">业务参数</div>
-                <div class="tab">通知配置</div>
-            </div>
-
-            <!-- 基本信息配置 -->
-            <div class="config-card">
-                <div class="config-header">
-                    <div class="config-title">基本信息</div>
-                </div>
-                <div class="form-grid">
-                    <div class="form-item">
-                        <label class="form-label">系统名称<span class="required">*</span></label>
-                        <input type="text" class="form-input" value="校校读吧管理平台">
-                    </div>
-                    <div class="form-item">
-                        <label class="form-label">系统版本</label>
-                        <input type="text" class="form-input" value="V1.0.0" readonly>
-                    </div>
-                    <div class="form-item">
-                        <label class="form-label">客服电话</label>
-                        <input type="text" class="form-input" value="400-888-8888">
-                    </div>
-                    <div class="form-item">
-                        <label class="form-label">客服邮箱</label>
-                        <input type="text" class="form-input" value="service@xxduba.com">
-                    </div>
-                    <div class="form-item full-width">
-                        <label class="form-label">版权信息</label>
-                        <input type="text" class="form-input" value="© 2024 校校读吧 版权所有">
-                    </div>
-                    <div class="form-item full-width">
-                        <label class="form-label">备案号</label>
-                        <input type="text" class="form-input" value="京ICP备12345678号">
-                    </div>
-                </div>
-            </div>
-
-            <!-- Logo配置 -->
-            <div class="config-card">
-                <div class="config-header">
-                    <div class="config-title">Logo配置</div>
-                </div>
-                <div class="form-grid">
-                    <div class="form-item">
-                        <label class="form-label">系统Logo</label>
-                        <div class="upload-area">
-                            <div class="upload-icon">[📁]</div>
-                            <div class="upload-text">点击上传Logo</div>
-                            <div class="upload-hint">建议尺寸：200x60px，支持PNG、JPG格式</div>
-                        </div>
-                        <div class="preview-image">[Logo预览]</div>
-                    </div>
-                    <div class="form-item">
-                        <label class="form-label">系统图标</label>
-                        <div class="upload-area">
-                            <div class="upload-icon">[📁]</div>
-                            <div class="upload-text">点击上传图标</div>
-                            <div class="upload-hint">建议尺寸：64x64px，支持PNG、ICO格式</div>
-                        </div>
-                        <div class="preview-image">[图标预览]</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 功能开关 -->
-            <div class="config-card">
-                <div class="config-header">
-                    <div class="config-title">功能开关</div>
-                </div>
-                <div class="switch-item">
-                    <div class="switch-info">
-                        <div class="switch-label">新用户注册</div>
-                        <div class="switch-desc">关闭后将不允许新用户注册</div>
-                    </div>
-                    <div class="switch on" onclick="toggleSwitch(this)">
-                        <div class="switch-handle"></div>
-                    </div>
-                </div>
-                <div class="switch-item">
-                    <div class="switch-info">
-                        <div class="switch-label">学生端注册</div>
-                        <div class="switch-desc">关闭后学生端将无法注册新账号</div>
-                    </div>
-                    <div class="switch on" onclick="toggleSwitch(this)">
-                        <div class="switch-handle"></div>
-                    </div>
-                </div>
-                <div class="switch-item">
-                    <div class="switch-info">
-                        <div class="switch-label">老师端注册</div>
-                        <div class="switch-desc">关闭后老师端将无法注册新账号</div>
-                    </div>
-                    <div class="switch on" onclick="toggleSwitch(this)">
-                        <div class="switch-handle"></div>
-                    </div>
-                </div>
-                <div class="switch-item">
-                    <div class="switch-info">
-                        <div class="switch-label">维护模式</div>
-                        <div class="switch-desc">开启后系统将进入维护模式，用户无法访问</div>
-                    </div>
-                    <div class="switch" onclick="toggleSwitch(this)">
-                        <div class="switch-handle"></div>
-                    </div>
-                </div>
-                <div class="switch-item">
-                    <div class="switch-info">
-                        <div class="switch-label">数据统计</div>
-                        <div class="switch-desc">关闭后将停止收集用户行为数据</div>
-                    </div>
-                    <div class="switch on" onclick="toggleSwitch(this)">
-                        <div class="switch-handle"></div>
-                    </div>
+                <div>
+                    <button class="btn btn-primary" id="editBtn" onclick="toggleEdit()">编辑</button>
+                    <button class="btn btn-secondary" id="cancelBtn" onclick="cancelEdit()" style="display: none; margin-right: 8px;">取消</button>
+                    <button class="btn btn-primary" id="saveBtn" onclick="saveConfig()" style="display: none;">保存</button>
                 </div>
             </div>
 
@@ -682,138 +580,54 @@
                 </div>
                 <div class="param-list">
                     <div class="param-item">
-                        <div class="param-label">单次阅读最短时长</div>
-                        <input type="number" class="param-input" value="5">
-                        <div class="param-unit">分钟</div>
-                    </div>
-                    <div class="param-item">
-                        <div class="param-label">单次阅读最长时长</div>
-                        <input type="number" class="param-input" value="120">
-                        <div class="param-unit">分钟</div>
-                    </div>
-                    <div class="param-item">
-                        <div class="param-label">测评答题时长</div>
-                        <input type="number" class="param-input" value="30">
-                        <div class="param-unit">分钟</div>
-                    </div>
-                    <div class="param-item">
-                        <div class="param-label">阅读计划最大书籍数</div>
-                        <input type="number" class="param-input" value="20">
-                        <div class="param-unit">本</div>
-                    </div>
-                    <div class="param-item">
-                        <div class="param-label">班级最大学生数</div>
-                        <input type="number" class="param-input" value="60">
-                        <div class="param-unit">人</div>
-                    </div>
-                    <div class="param-item">
-                        <div class="param-label">老师最大班级数</div>
-                        <input type="number" class="param-input" value="10">
-                        <div class="param-unit">个</div>
-                    </div>
-                    <div class="param-item">
-                        <div class="param-label">书籍上传大小限制</div>
-                        <input type="number" class="param-input" value="50">
-                        <div class="param-unit">MB</div>
-                    </div>
-                    <div class="param-item">
                         <div class="param-label">图片上传大小限制</div>
-                        <input type="number" class="param-input" value="5">
+                        <input type="number" class="param-input editable-input" value="5" readonly>
                         <div class="param-unit">MB</div>
                     </div>
                     <div class="param-item">
                         <div class="param-label">阅读计划结束后可查看天数</div>
-                        <input type="number" class="param-input" value="30">
+                        <input type="number" class="param-input editable-input" value="30" readonly>
                         <div class="param-unit">天</div>
                     </div>
                 </div>
             </div>
 
-            <!-- 通知配置 -->
+            <!-- 基本信息配置 -->
             <div class="config-card">
                 <div class="config-header">
-                    <div class="config-title">通知配置</div>
-                </div>
-                <div class="switch-item">
-                    <div class="switch-info">
-                        <div class="switch-label">邮件通知</div>
-                        <div class="switch-desc">开启后将通过邮件发送系统通知</div>
-                    </div>
-                    <div class="switch on" onclick="toggleSwitch(this)">
-                        <div class="switch-handle"></div>
-                    </div>
-                </div>
-                <div class="switch-item">
-                    <div class="switch-info">
-                        <div class="switch-label">短信通知</div>
-                        <div class="switch-desc">开启后将通过短信发送重要通知</div>
-                    </div>
-                    <div class="switch on" onclick="toggleSwitch(this)">
-                        <div class="switch-handle"></div>
-                    </div>
-                </div>
-                <div class="switch-item">
-                    <div class="switch-info">
-                        <div class="switch-label">站内消息</div>
-                        <div class="switch-desc">开启后将在系统内推送消息通知</div>
-                    </div>
-                    <div class="switch on" onclick="toggleSwitch(this)">
-                        <div class="switch-handle"></div>
-                    </div>
-                </div>
-                <div class="switch-item">
-                    <div class="switch-info">
-                        <div class="switch-label">微信通知</div>
-                        <div class="switch-desc">开启后将通过微信公众号推送通知</div>
-                    </div>
-                    <div class="switch" onclick="toggleSwitch(this)">
-                        <div class="switch-handle"></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- SMTP配置 -->
-            <div class="config-card">
-                <div class="config-header">
-                    <div class="config-title">SMTP邮件配置</div>
+                    <div class="config-title">基本信息</div>
                 </div>
                 <div class="form-grid">
                     <div class="form-item">
-                        <label class="form-label">SMTP服务器</label>
-                        <input type="text" class="form-input" value="smtp.example.com">
+                        <label class="form-label">系统名称<span class="required">*</span></label>
+                        <input type="text" class="form-input editable-input" value="校校读吧管理平台" readonly>
                     </div>
-                    <div class="form-item">
-                        <label class="form-label">SMTP端口</label>
-                        <input type="text" class="form-input" value="465">
+                    <div class="form-item full-width">
+                        <label class="form-label">版权信息</label>
+                        <input type="text" class="form-input editable-input" value="© 2024 校校读吧 版权所有" readonly>
                     </div>
-                    <div class="form-item">
-                        <label class="form-label">发件人邮箱</label>
-                        <input type="text" class="form-input" value="noreply@xxduba.com">
+                    <div class="form-item full-width">
+                        <label class="form-label">备案号</label>
+                        <input type="text" class="form-input editable-input" value="京ICP备12345678号" readonly>
                     </div>
-                    <div class="form-item">
-                        <label class="form-label">发件人名称</label>
-                        <input type="text" class="form-input" value="校校读吧">
-                    </div>
-                    <div class="form-item">
-                        <label class="form-label">邮箱账号</label>
-                        <input type="text" class="form-input" value="noreply@xxduba.com">
-                    </div>
-                    <div class="form-item">
-                        <label class="form-label">邮箱密码</label>
-                        <input type="password" class="form-input" value="********">
+                    <div class="form-item full-width">
+                        <label class="form-label">客服二维码</label>
+                        <div style="display: flex; align-items: center; gap: 16px;">
+                            <div style="width: 100px; height: 100px; border: 1px solid #e0e0e0; border-radius: 4px; display: flex; align-items: center; justify-content: center; background: #f5f5f5; color: #999; font-size: 12px;">
+                                [二维码预览]
+                            </div>
+                            <button class="btn btn-secondary editable-btn" disabled style="display: none;">上传二维码</button>
+                        </div>
+                        <div class="form-hint editable-hint" style="margin-left: 120px; display: none;">建议尺寸：200x200px，支持PNG、JPG格式</div>
                     </div>
                 </div>
-            </div>
-
-            <!-- 保存按钮 -->
-            <div class="save-section">
-                <button class="btn btn-secondary">重置</button>
-                <button class="btn btn-primary">保存配置</button>
             </div>
         </div>
     </div>
 
     <script>
+    let isEditing = false;
+
     function toggleMenu(element) {
         const menuGroup = element.parentElement;
         menuGroup.classList.toggle('expanded');
@@ -821,6 +635,49 @@
 
     function toggleSwitch(element) {
         element.classList.toggle('on');
+    }
+
+    function toggleEdit() {
+        isEditing = !isEditing;
+        const editBtn = document.getElementById('editBtn');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const saveBtn = document.getElementById('saveBtn');
+        const editableInputs = document.querySelectorAll('.editable-input');
+        const editableBtns = document.querySelectorAll('.editable-btn');
+        const editableHints = document.querySelectorAll('.editable-hint');
+
+        if (isEditing) {
+            editBtn.style.display = 'none';
+            cancelBtn.style.display = 'inline-block';
+            saveBtn.style.display = 'inline-block';
+            editableInputs.forEach(input => input.removeAttribute('readonly'));
+            editableBtns.forEach(btn => {
+                btn.removeAttribute('disabled');
+                btn.style.display = 'inline-block';
+            });
+            editableHints.forEach(hint => hint.style.display = 'block');
+        } else {
+            editBtn.style.display = 'inline-block';
+            cancelBtn.style.display = 'none';
+            saveBtn.style.display = 'none';
+            editableInputs.forEach(input => input.setAttribute('readonly', 'readonly'));
+            editableBtns.forEach(btn => {
+                btn.setAttribute('disabled', 'disabled');
+                btn.style.display = 'none';
+            });
+            editableHints.forEach(hint => hint.style.display = 'none');
+        }
+    }
+
+    function cancelEdit() {
+        toggleEdit();
+        // 这里可以添加重置表单数据的逻辑
+    }
+
+    function saveConfig() {
+        // 这里添加保存配置的逻辑
+        alert('配置已保存');
+        toggleEdit();
     }
     </script>
 </body>
