@@ -12,42 +12,13 @@
             min-height: 100vh;
         }
 
-        /* 顶部导航 */
-        .header {
-            height: 60px;
-            background: #fff;
-            border-bottom: 1px solid #e0e0e0;
-            display: flex;
-            align-items: center;
-            padding: 0 24px;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        .header .logo {
-            font-size: 18px;
-            font-weight: 600;
-            color: #333;
-        }
-        .header .user-info {
-            margin-left: auto;
-            font-size: 14px;
-            color: #666;
-        }
-
         /* 主体布局 */
-        .main {
-            display: flex;
-            min-height: calc(100vh - 60px);
-        }
-
+        .main { display: flex; min-height: 100vh; }
         /* 侧边栏 */
-        .sidebar {
-            width: 240px;
-            background: #fff;
-            border-right: 1px solid #e0e0e0;
-            overflow-y: auto;
-        }
+        .sidebar { width: 240px; background: #fff; border-right: 1px solid #e0e0e0; display: flex; flex-direction: column; }
+        /* Logo区域 */
+        .sidebar-header { height: 60px; display: flex; align-items: center; padding: 0 24px; border-bottom: 1px solid #e0e0e0; font-size: 18px; font-weight: 600; color: #333; }
+        .sidebar-menu { flex: 1; padding: 16px 0; overflow-y: auto; }
         .menu-group {
             margin-bottom: 8px;
         }
@@ -91,42 +62,22 @@
             border-left: 3px solid #333;
         }
 
-        /* 内容区 */
-        .content {
-            flex: 1;
-            padding: 24px;
-            overflow-y: auto;
-        }
-
+        /* 右侧内容区 */
+        .content { flex: 1; display: flex; flex-direction: column; }
+        /* 顶部栏 */
+        .header { height: 60px; background: #fff; border-bottom: 1px solid #e0e0e0; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; }
         /* 面包屑 */
-        .breadcrumb {
-            font-size: 14px;
-            color: #666;
-            margin-bottom: 20px;
-        }
-        .breadcrumb a {
-            color: #666;
-            text-decoration: none;
-        }
-        .breadcrumb a:hover {
-            color: #333;
-        }
-        .breadcrumb span {
-            margin: 0 8px;
-        }
+        .breadcrumb { font-size: 14px; color: #999; }
+        .breadcrumb a { color: #666; text-decoration: none; }
+        .breadcrumb a:hover { color: #333; }
+        /* 用户信息 */
+        .user-info { display: flex; align-items: center; gap: 16px; }
+        .user-name { font-size: 14px; color: #333; }
+        .logout-btn { font-size: 14px; color: #666; cursor: pointer; text-decoration: none; }
+        .logout-btn:hover { color: #333; }
+        /* 主内容区 */
+        .main-content { flex: 1; padding: 24px; overflow-y: auto; }
 
-        /* 页面标题 */
-        .page-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 20px;
-        }
-        .page-title {
-            font-size: 20px;
-            font-weight: 600;
-            color: #333;
-        }
 
         /* 按钮 */
         .btn {
@@ -157,7 +108,7 @@
         /* 两列布局 */
         .two-column {
             display: grid;
-            grid-template-columns: 300px 1fr;
+            grid-template-columns: 220px 1fr;
             gap: 20px;
         }
 
@@ -197,6 +148,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            position: relative;
         }
         .category-item:hover {
             background: #f5f5f5;
@@ -207,13 +159,46 @@
         }
         .category-name {
             font-size: 14px;
+            flex: 1;
         }
         .category-count {
             font-size: 12px;
             color: #999;
+            margin-right: 8px;
         }
         .category-item.active .category-count {
             color: rgba(255,255,255,0.7);
+        }
+        .category-actions {
+            display: none;
+            gap: 4px;
+        }
+        .category-item:hover .category-actions {
+            display: flex;
+        }
+        .category-item.active:hover .category-actions {
+            display: flex;
+        }
+        .category-action-btn {
+            padding: 2px 8px;
+            font-size: 12px;
+            border-radius: 2px;
+            border: 1px solid #e0e0e0;
+            background: #fff;
+            color: #666;
+            cursor: pointer;
+        }
+        .category-action-btn:hover {
+            background: #f5f5f5;
+            color: #333;
+        }
+        .category-item.active .category-action-btn {
+            border-color: rgba(255,255,255,0.3);
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+        }
+        .category-item.active .category-action-btn:hover {
+            background: rgba(255,255,255,0.2);
         }
 
         /* 字典数据卡片 */
@@ -222,19 +207,6 @@
             border: 1px solid #e0e0e0;
             border-radius: 4px;
             padding: 24px;
-        }
-        .dict-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 12px;
-            border-bottom: 1px solid #e0e0e0;
-        }
-        .dict-title {
-            font-size: 16px;
-            font-weight: 600;
-            color: #333;
         }
 
         /* 搜索框 */
@@ -252,6 +224,60 @@
         .search-input:focus {
             outline: none;
             border-color: #999;
+        }
+
+        /* 筛选区域 */
+        .filter-section {
+            background: #fafafa;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+        .filter-row {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        .filter-row:last-child {
+            margin-bottom: 0;
+        }
+        .filter-item {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .filter-label {
+            font-size: 13px;
+            color: #666;
+            font-weight: 600;
+        }
+        .filter-input,
+        .filter-select {
+            width: 100%;
+            height: 36px;
+            padding: 0 10px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            font-size: 14px;
+            background: #fff;
+            box-sizing: border-box;
+        }
+        .filter-input:focus,
+        .filter-select:focus {
+            outline: none;
+            border-color: #999;
+        }
+        .filter-actions {
+            display: flex;
+            gap: 8px;
+            align-items: flex-end;
+        }
+        .btn-small {
+            height: 32px;
+            padding: 0 16px;
+            font-size: 13px;
         }
 
         /* 表格 */
@@ -333,18 +359,254 @@
         .empty-text {
             font-size: 14px;
         }
+
+        /* 分页 */
+        .pagination {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+            gap: 16px;
+            font-size: 13px;
+            color: #666;
+        }
+        .pagination-total {
+            color: #666;
+            white-space: nowrap;
+        }
+        .pagination-total span {
+            color: #333;
+            font-weight: 600;
+        }
+        .pagination-sizes {
+            height: 30px;
+            padding: 0 8px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            font-size: 13px;
+            color: #666;
+            background: #fff;
+            cursor: pointer;
+            outline: none;
+        }
+        .pagination-sizes:hover {
+            border-color: #999;
+        }
+        .pagination-nav {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+        }
+        .pagination-arrow {
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            background: none;
+            font-size: 13px;
+            color: #666;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .pagination-arrow:hover {
+            color: #333;
+        }
+        .pagination-arrow:disabled {
+            color: #ccc;
+            cursor: not-allowed;
+        }
+        .page-number {
+            min-width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            background: none;
+            font-size: 13px;
+            color: #666;
+            cursor: pointer;
+            border-radius: 4px;
+            padding: 0 4px;
+        }
+        .page-number:hover {
+            color: #333;
+        }
+        .page-number.active {
+            background: #333;
+            color: #fff;
+        }
+        .page-ellipsis {
+            min-width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            color: #999;
+        }
+        .pagination-jump {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+            color: #666;
+        }
+        .pagination-jump input {
+            width: 44px;
+            height: 30px;
+            text-align: center;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            font-size: 13px;
+            color: #333;
+            outline: none;
+        }
+        .pagination-jump input:focus {
+            border-color: #999;
+        }
+
+        /* 弹窗遮罩 */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        /* 弹窗容器 */
+        .modal {
+            background: #fff;
+            border-radius: 4px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 弹窗头部 */
+        .modal-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .modal-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+        .modal-close {
+            font-size: 20px;
+            color: #999;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 0;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-close:hover {
+            color: #333;
+        }
+
+        /* 弹窗内容 */
+        .modal-body {
+            padding: 24px;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        /* 表单 */
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-label {
+            display: block;
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        .form-label .required {
+            color: #f00;
+            margin-left: 4px;
+        }
+        .form-input,
+        .form-textarea,
+        .form-select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            font-size: 14px;
+            color: #333;
+        }
+        .form-input:focus,
+        .form-textarea:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: #999;
+        }
+        .form-textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+        .form-hint {
+            font-size: 12px;
+            color: #999;
+            margin-top: 4px;
+        }
+
+        /* 弹窗底部 */
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+        }
+
+        /* 确认弹窗 */
+        .confirm-modal .modal {
+            max-width: 400px;
+        }
+        .confirm-content {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.6;
+        }
+        .confirm-content .highlight {
+            color: #333;
+            font-weight: 600;
+        }
     </style>
 </head>
 <body>
-    <!-- 顶部导航 -->
-    <div class="header">
-        <div class="logo">校校读吧管理平台</div>
-        <div class="user-info">管理员</div>
-    </div>
-
     <div class="main">
         <!-- 侧边栏 -->
         <div class="sidebar">
+            <div class="sidebar-header">校校读吧管理平台</div>
+            <div class="sidebar-menu">
             <div class="menu-group">
                 <div class="menu-group-title" onclick="toggleMenu(this)">
                     <span>用户管理</span>
@@ -423,27 +685,25 @@
                 </div>
                 <div class="menu-group-items">
                     <div class="menu-item">系统参数</div>
-                    <div class="menu-item">操作日志</div>
                     <div class="menu-item active">数据字典</div>
                 </div>
+            </div>
             </div>
         </div>
 
         <!-- 内容区 -->
         <div class="content">
-            <!-- 面包屑 -->
-            <div class="breadcrumb">
-                <a href="#">首页</a>
-                <span>></span>
-                <a href="#">系统配置</a>
-                <span>></span>
-                <span>数据字典</span>
+            <div class="header">
+                <div class="breadcrumb">
+                    <a href="#">首页</a> > <a href="#">系统配置</a> > 数据字典
+                </div>
+                <div class="user-info">
+                    <span class="user-name">管理员</span>
+                    <a href="#" class="logout-btn">退出登录</a>
+                </div>
             </div>
+            <div class="main-content">
 
-            <!-- 页面标题 -->
-            <div class="page-header">
-                <div class="page-title">数据字典</div>
-            </div>
 
             <!-- 两列布局 -->
             <div class="two-column">
@@ -451,49 +711,111 @@
                 <div class="category-card">
                     <div class="category-header">
                         <div class="category-title">字典分类</div>
-                        <button class="btn btn-primary">+ 新增</button>
+                        <button class="btn btn-primary" onclick="showAddCategoryModal()">+ 新增</button>
                     </div>
                     <div class="category-list">
                         <div class="category-item active">
+                            <span class="category-name">全部</span>
+                            <span class="category-count">25</span>
+                        </div>
+                        <div class="category-item">
                             <span class="category-name">年级列表</span>
                             <span class="category-count">6</span>
+                            <div class="category-actions">
+                                <button class="category-action-btn" onclick="event.stopPropagation(); showEditCategoryModal()">编辑</button>
+                            </div>
                         </div>
                         <div class="category-item">
                             <span class="category-name">学科</span>
                             <span class="category-count">1</span>
+                            <div class="category-actions">
+                                <button class="category-action-btn" onclick="event.stopPropagation(); showEditCategoryModal()">编辑</button>
+                            </div>
                         </div>
                         <div class="category-item">
                             <span class="category-name">书籍标签</span>
                             <span class="category-count">8</span>
+                            <div class="category-actions">
+                                <button class="category-action-btn" onclick="event.stopPropagation(); showEditCategoryModal()">编辑</button>
+                            </div>
                         </div>
                         <div class="category-item">
                             <span class="category-name">反馈类型</span>
                             <span class="category-count">4</span>
+                            <div class="category-actions">
+                                <button class="category-action-btn" onclick="event.stopPropagation(); showEditCategoryModal()">编辑</button>
+                            </div>
                         </div>
                         <div class="category-item">
                             <span class="category-name">阅读能力</span>
                             <span class="category-count">6</span>
+                            <div class="category-actions">
+                                <button class="category-action-btn" onclick="event.stopPropagation(); showEditCategoryModal()">编辑</button>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- 字典数据 -->
                 <div class="dict-card">
-                    <div class="dict-header">
-                        <div class="dict-title">年级列表</div>
-                    </div>
 
-                    <!-- 搜索框 -->
-                    <div class="search-box">
-                        <input type="text" class="search-input" placeholder="搜索字典项名称或代码">
+                    <!-- 筛选区域 -->
+                    <div class="filter-section">
+                        <div class="filter-row">
+                            <div class="filter-item">
+                                <label class="filter-label">排序</label>
+                                <input type="number" class="filter-input" placeholder="请输入排序值">
+                            </div>
+                            <div class="filter-item">
+                                <label class="filter-label">字典分类</label>
+                                <select class="filter-select">
+                                    <option value="">全部</option>
+                                    <option>年级列表</option>
+                                    <option>学科</option>
+                                    <option>书籍标签</option>
+                                    <option>反馈类型</option>
+                                    <option>阅读能力</option>
+                                </select>
+                            </div>
+                            <div class="filter-item">
+                                <label class="filter-label">分类代码</label>
+                                <input type="text" class="filter-input" placeholder="请输入分类代码">
+                            </div>
+                            <div class="filter-item">
+                                <label class="filter-label">字典值</label>
+                                <input type="text" class="filter-input" placeholder="请输入字典值">
+                            </div>
+                            <div class="filter-item">
+                                <label class="filter-label">字典代码</label>
+                                <input type="text" class="filter-input" placeholder="请输入字典代码">
+                            </div>
+                            <div class="filter-item">
+                                <label class="filter-label">状态</label>
+                                <select class="filter-select">
+                                    <option value="">全部</option>
+                                    <option value="1">启用</option>
+                                    <option value="0">禁用</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="filter-row">
+                            <div class="filter-item">
+                                <label class="filter-label">创建时间</label>
+                                <input type="text" class="filter-input" placeholder="开始时间 - 结束时间">
+                            </div>
+                            <div class="filter-actions">
+                                <button class="btn btn-secondary btn-small">重置</button>
+                                <button class="btn btn-primary btn-small">查询</button>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- 操作按钮 -->
                     <div style="display: flex; gap: 8px; margin-bottom: 20px;">
-                        <button class="btn btn-primary">+ 新增字典项</button>
-                        <button class="btn btn-secondary">编辑</button>
-                        <button class="btn btn-secondary">启用/禁用</button>
-                        <button class="btn btn-secondary">删除</button>
+                        <button class="btn btn-primary" onclick="showAddDictModal()">+ 新增字典项</button>
+                        <button class="btn btn-secondary" onclick="showEditDictModal()">编辑</button>
+                        <button class="btn btn-secondary" onclick="showToggleStatusModal()">启用/禁用</button>
+                        <button class="btn btn-secondary" onclick="showDeleteModal()">删除</button>
                     </div>
 
                     <!-- 字典数据表格 -->
@@ -504,6 +826,7 @@
                                     <th style="width: 60px;"><input type="checkbox"></th>
                                     <th style="width: 80px;">排序</th>
                                     <th>字典分类</th>
+                                    <th style="width: 120px;">分类代码</th>
                                     <th>字典值</th>
                                     <th style="width: 120px;">字典代码</th>
                                     <th style="width: 100px;">状态</th>
@@ -515,6 +838,7 @@
                                     <td><input type="checkbox"></td>
                                     <td><span class="sort-value">1</span></td>
                                     <td>年级</td>
+                                    <td><span class="code-value">grade_list</span></td>
                                     <td>一年级</td>
                                     <td><span class="code-value">grade_1</span></td>
                                     <td><span class="status-badge enabled">启用</span></td>
@@ -524,6 +848,7 @@
                                     <td><input type="checkbox"></td>
                                     <td><span class="sort-value">2</span></td>
                                     <td>年级</td>
+                                    <td><span class="code-value">grade_list</span></td>
                                     <td>二年级</td>
                                     <td><span class="code-value">grade_2</span></td>
                                     <td><span class="status-badge enabled">启用</span></td>
@@ -533,6 +858,7 @@
                                     <td><input type="checkbox"></td>
                                     <td><span class="sort-value">3</span></td>
                                     <td>年级</td>
+                                    <td><span class="code-value">grade_list</span></td>
                                     <td>三年级</td>
                                     <td><span class="code-value">grade_3</span></td>
                                     <td><span class="status-badge enabled">启用</span></td>
@@ -540,35 +866,296 @@
                                 </tr>
                                 <tr>
                                     <td><input type="checkbox"></td>
-                                    <td><span class="sort-value">4</span></td>
-                                    <td>年级</td>
-                                    <td>四年级</td>
-                                    <td><span class="code-value">grade_4</span></td>
+                                    <td><span class="sort-value">1</span></td>
+                                    <td>学科</td>
+                                    <td><span class="code-value">subject</span></td>
+                                    <td>语文</td>
+                                    <td><span class="code-value">chinese</span></td>
                                     <td><span class="status-badge enabled">启用</span></td>
                                     <td>2024-01-15 10:00:00</td>
                                 </tr>
                                 <tr>
                                     <td><input type="checkbox"></td>
-                                    <td><span class="sort-value">5</span></td>
-                                    <td>年级</td>
-                                    <td>五年级</td>
-                                    <td><span class="code-value">grade_5</span></td>
+                                    <td><span class="sort-value">1</span></td>
+                                    <td>书籍标签</td>
+                                    <td><span class="code-value">book_tag</span></td>
+                                    <td>童话</td>
+                                    <td><span class="code-value">fairy_tale</span></td>
                                     <td><span class="status-badge enabled">启用</span></td>
                                     <td>2024-01-15 10:00:00</td>
                                 </tr>
                                 <tr>
                                     <td><input type="checkbox"></td>
-                                    <td><span class="sort-value">6</span></td>
-                                    <td>年级</td>
-                                    <td>六年级</td>
-                                    <td><span class="code-value">grade_6</span></td>
+                                    <td><span class="sort-value">2</span></td>
+                                    <td>书籍标签</td>
+                                    <td><span class="code-value">book_tag</span></td>
+                                    <td>科普</td>
+                                    <td><span class="code-value">science</span></td>
+                                    <td><span class="status-badge enabled">启用</span></td>
+                                    <td>2024-01-15 10:00:00</td>
+                                </tr>
+                                <tr>
+                                    <td><input type="checkbox"></td>
+                                    <td><span class="sort-value">1</span></td>
+                                    <td>反馈类型</td>
+                                    <td><span class="code-value">feedback_type</span></td>
+                                    <td>功能建议</td>
+                                    <td><span class="code-value">feature</span></td>
+                                    <td><span class="status-badge enabled">启用</span></td>
+                                    <td>2024-01-15 10:00:00</td>
+                                </tr>
+                                <tr>
+                                    <td><input type="checkbox"></td>
+                                    <td><span class="sort-value">2</span></td>
+                                    <td>反馈类型</td>
+                                    <td><span class="code-value">feedback_type</span></td>
+                                    <td>问题反馈</td>
+                                    <td><span class="code-value">bug</span></td>
                                     <td><span class="status-badge enabled">启用</span></td>
                                     <td>2024-01-15 10:00:00</td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
+
+                    <!-- 分页 -->
+                    <div class="pagination">
+                        <span class="pagination-total">共 <span>25</span> 条</span>
+                        <select class="pagination-sizes">
+                            <option selected>10条/页</option>
+                            <option>20条/页</option>
+                            <option>50条/页</option>
+                            <option>100条/页</option>
+                        </select>
+                        <div class="pagination-nav">
+                            <button class="pagination-arrow" disabled>&lt;</button>
+                            <button class="page-number active">1</button>
+                            <button class="page-number">2</button>
+                            <button class="page-number">3</button>
+                            <button class="pagination-arrow">&gt;</button>
+                        </div>
+                        <div class="pagination-jump">
+                            前往 <input type="text" value="1"> 页
+                        </div>
+                    </div>
                 </div>
+            </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 新增字典分类弹窗 -->
+    <div class="modal-overlay" id="addCategoryModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title">新增字典分类</div>
+                <button class="modal-close" onclick="closeModal('addCategoryModal')">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">分类名称<span class="required">*</span></label>
+                    <input type="text" class="form-input" placeholder="请输入分类名称">
+                    <div class="form-hint">例如：年级列表、学科、书籍标签等</div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">分类代码<span class="required">*</span></label>
+                    <input type="text" class="form-input" placeholder="请输入分类代码">
+                    <div class="form-hint">英文字母和下划线，例如：grade_list</div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">排序</label>
+                    <input type="number" class="form-input" placeholder="请输入排序值" value="1">
+                    <div class="form-hint">数字越小越靠前</div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">备注</label>
+                    <textarea class="form-textarea" placeholder="请输入备注信息"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('addCategoryModal')">取消</button>
+                <button class="btn btn-primary">确定</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 编辑字典分类弹窗 -->
+    <div class="modal-overlay" id="editCategoryModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title">编辑字典分类</div>
+                <button class="modal-close" onclick="closeModal('editCategoryModal')">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">分类名称<span class="required">*</span></label>
+                    <input type="text" class="form-input" placeholder="请输入分类名称" value="年级列表">
+                    <div class="form-hint">例如：年级列表、学科、书籍标签等</div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">分类代码<span class="required">*</span></label>
+                    <input type="text" class="form-input" placeholder="请输入分类代码" value="grade_list">
+                    <div class="form-hint">英文字母和下划线，例如：grade_list</div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">排序</label>
+                    <input type="number" class="form-input" placeholder="请输入排序值" value="1">
+                    <div class="form-hint">数字越小越靠前</div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">备注</label>
+                    <textarea class="form-textarea" placeholder="请输入备注信息"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('editCategoryModal')">取消</button>
+                <button class="btn btn-primary">确定</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 新增字典项弹窗 -->
+    <div class="modal-overlay" id="addDictModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title">新增字典项</div>
+                <button class="modal-close" onclick="closeModal('addDictModal')">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">字典分类<span class="required">*</span></label>
+                    <select class="form-select">
+                        <option>年级列表</option>
+                        <option>学科</option>
+                        <option>书籍标签</option>
+                        <option>反馈类型</option>
+                        <option>阅读能力</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">字典值<span class="required">*</span></label>
+                    <input type="text" class="form-input" placeholder="请输入字典值">
+                    <div class="form-hint">显示给用户的名称</div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">字典代码<span class="required">*</span></label>
+                    <input type="text" class="form-input" placeholder="请输入字典代码">
+                    <div class="form-hint">英文字母和下划线，例如：grade_1</div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">排序</label>
+                    <input type="number" class="form-input" placeholder="请输入排序值" value="1">
+                    <div class="form-hint">数字越小越靠前</div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">状态</label>
+                    <select class="form-select">
+                        <option value="1">启用</option>
+                        <option value="0">禁用</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">备注</label>
+                    <textarea class="form-textarea" placeholder="请输入备注信息"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('addDictModal')">取消</button>
+                <button class="btn btn-primary">确定</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 编辑字典项弹窗 -->
+    <div class="modal-overlay" id="editDictModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title">编辑字典项</div>
+                <button class="modal-close" onclick="closeModal('editDictModal')">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">字典分类<span class="required">*</span></label>
+                    <select class="form-select">
+                        <option selected>年级列表</option>
+                        <option>学科</option>
+                        <option>书籍标签</option>
+                        <option>反馈类型</option>
+                        <option>阅读能力</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">字典值<span class="required">*</span></label>
+                    <input type="text" class="form-input" placeholder="请输入字典值" value="一年级">
+                    <div class="form-hint">显示给用户的名称</div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">字典代码<span class="required">*</span></label>
+                    <input type="text" class="form-input" placeholder="请输入字典代码" value="grade_1">
+                    <div class="form-hint">英文字母和下划线，例如：grade_1</div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">排序</label>
+                    <input type="number" class="form-input" placeholder="请输入排序值" value="1">
+                    <div class="form-hint">数字越小越靠前</div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">状态</label>
+                    <select class="form-select">
+                        <option value="1" selected>启用</option>
+                        <option value="0">禁用</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">备注</label>
+                    <textarea class="form-textarea" placeholder="请输入备注信息"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('editDictModal')">取消</button>
+                <button class="btn btn-primary">确定</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 启用/禁用确认弹窗 -->
+    <div class="modal-overlay confirm-modal" id="toggleStatusModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title">确认操作</div>
+                <button class="modal-close" onclick="closeModal('toggleStatusModal')">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="confirm-content">
+                    确定要<span class="highlight">禁用</span>选中的 <span class="highlight">2</span> 个字典项吗
+                    <br><br>
+                    禁用后，该字典项将不会在前端显示
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('toggleStatusModal')">取消</button>
+                <button class="btn btn-primary">确定</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 删除确认弹窗 -->
+    <div class="modal-overlay confirm-modal" id="deleteModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title">确认删除</div>
+                <button class="modal-close" onclick="closeModal('deleteModal')">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="confirm-content">
+                    确定要删除选中的 <span class="highlight">2</span> 个字典项吗
+                    <br><br>
+                    删除后数据将无法恢复，请谨慎操作
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('deleteModal')">取消</button>
+                <button class="btn btn-primary">确定删除</button>
             </div>
         </div>
     </div>
@@ -578,6 +1165,45 @@
         const menuGroup = element.parentElement;
         menuGroup.classList.toggle('expanded');
     }
+
+    // 显示弹窗
+    function showAddCategoryModal() {
+        document.getElementById('addCategoryModal').classList.add('active');
+    }
+
+    function showEditCategoryModal() {
+        document.getElementById('editCategoryModal').classList.add('active');
+    }
+
+    function showAddDictModal() {
+        document.getElementById('addDictModal').classList.add('active');
+    }
+
+    function showEditDictModal() {
+        document.getElementById('editDictModal').classList.add('active');
+    }
+
+    function showToggleStatusModal() {
+        document.getElementById('toggleStatusModal').classList.add('active');
+    }
+
+    function showDeleteModal() {
+        document.getElementById('deleteModal').classList.add('active');
+    }
+
+    // 关闭弹窗
+    function closeModal(modalId) {
+        document.getElementById(modalId).classList.remove('active');
+    }
+
+    // 点击遮罩关闭弹窗
+    document.querySelectorAll('.modal-overlay').forEach(overlay => {
+        overlay.addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.classList.remove('active');
+            }
+        });
+    });
     </script>
 </body>
 </html>

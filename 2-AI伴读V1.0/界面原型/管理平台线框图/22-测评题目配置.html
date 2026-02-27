@@ -12,55 +12,13 @@
             min-height: 100vh;
         }
 
-        /* 顶部导航 */
-        .header {
-            height: 60px;
-            background: #fff;
-            border-bottom: 1px solid #e0e0e0;
-            display: flex;
-            align-items: center;
-            padding: 0 24px;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        .header .logo {
-            font-size: 18px;
-            font-weight: 600;
-            color: #333;
-        }
-        .header .user-info {
-            margin-left: auto;
-            font-size: 14px;
-            color: #666;
-        }
-
         /* 主体布局 */
-        .main {
-            display: flex;
-            min-height: calc(100vh - 60px);
-        }
-
+        .main { display: flex; min-height: 100vh; }
         /* 侧边栏 */
-        .sidebar {
-            width: 240px;
-            background: #fff;
-            border-right: 1px solid #e0e0e0;
-            display: flex;
-            flex-direction: column;
-        }
-        .sidebar-header {
-            padding: 20px 24px;
-            border-bottom: 1px solid #e0e0e0;
-            font-size: 16px;
-            font-weight: 600;
-            color: #333;
-        }
-        .sidebar-menu {
-            flex: 1;
-            padding: 16px 0;
-            overflow-y: auto;
-        }
+        .sidebar { width: 240px; background: #fff; border-right: 1px solid #e0e0e0; display: flex; flex-direction: column; }
+        /* Logo区域 */
+        .sidebar-header { height: 60px; display: flex; align-items: center; padding: 0 24px; border-bottom: 1px solid #e0e0e0; font-size: 18px; font-weight: 600; color: #333; }
+        .sidebar-menu { flex: 1; padding: 16px 0; overflow-y: auto; }
         .menu-group {
             margin-bottom: 4px;
         }
@@ -114,29 +72,21 @@
             border-left: 3px solid #333;
         }
 
-        /* 内容区 */
-        .content {
-            flex: 1;
-            padding: 24px;
-            overflow-y: auto;
-        }
-
+        /* 右侧内容区 */
+        .content { flex: 1; display: flex; flex-direction: column; }
+        /* 顶部栏 */
+        .header { height: 60px; background: #fff; border-bottom: 1px solid #e0e0e0; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; }
         /* 面包屑 */
-        .breadcrumb {
-            font-size: 14px;
-            color: #666;
-            margin-bottom: 20px;
-        }
-        .breadcrumb a {
-            color: #666;
-            text-decoration: none;
-        }
-        .breadcrumb a:hover {
-            color: #333;
-        }
-        .breadcrumb span {
-            margin: 0 8px;
-        }
+        .breadcrumb { font-size: 14px; color: #999; }
+        .breadcrumb a { color: #666; text-decoration: none; }
+        .breadcrumb a:hover { color: #333; }
+        /* 用户信息 */
+        .user-info { display: flex; align-items: center; gap: 16px; }
+        .user-name { font-size: 14px; color: #333; }
+        .logout-btn { font-size: 14px; color: #666; cursor: pointer; text-decoration: none; }
+        .logout-btn:hover { color: #333; }
+        /* 主内容区 */
+        .main-content { flex: 1; padding: 24px; overflow-y: auto; }
 
         /* 页面标题 */
         .page-header {
@@ -659,25 +609,14 @@
 
         /* 底部固定按钮 */
         .bottom-actions {
-            position: sticky;
-            bottom: 0;
-            background: #fff;
-            border-top: 1px solid #e0e0e0;
-            padding: 16px 24px;
+            padding: 24px 0;
             display: flex;
-            justify-content: flex-end;
+            justify-content: center;
             gap: 12px;
-            margin: 24px -24px -24px -24px;
         }
     </style>
 </head>
 <body>
-    <!-- 顶部导航 -->
-    <div class="header">
-        <div class="logo">校校读吧管理平台</div>
-        <div class="user-info">管理员</div>
-    </div>
-
     <div class="main">
         <!-- 侧边栏 -->
         <div class="sidebar">
@@ -764,7 +703,6 @@
                     </div>
                     <div class="menu-group-items">
                         <div class="menu-item">系统参数</div>
-                        <div class="menu-item">操作日志</div>
                         <div class="menu-item">数据字典</div>
                     </div>
                 </div>
@@ -773,20 +711,21 @@
 
         <!-- 内容区 -->
         <div class="content">
-            <!-- 面包屑 -->
-            <div class="breadcrumb">
-                <a href="#">首页</a>
-                <span>></span>
-                <a href="#">内容管理</a>
-                <span>></span>
-                <a href="17-书籍资源库列表.html">书籍资源库</a>
-                <span>></span>
-                <span>测评题目配置</span>
+            <div class="header">
+                <div class="breadcrumb">
+                    <a href="#">首页</a> > <a href="#">内容管理</a> > <a href="17-书籍资源库列表.html">书籍资源库</a> > 测评题目配置
+                </div>
+                <div class="user-info">
+                    <span class="user-name">管理员</span>
+                    <a href="#" class="logout-btn">退出登录</a>
+                </div>
             </div>
+            <div class="main-content">
 
             <!-- 页面标题 -->
             <div class="page-header">
                 <div class="page-title">测评题目配置</div>
+                <button class="btn btn-secondary" onclick="window.location.href='17-书籍资源库列表.html'">返回列表</button>
             </div>
 
             <!-- 书籍信息 -->
@@ -890,6 +829,7 @@
             <div class="bottom-actions">
                 <button class="btn btn-secondary">预览测评</button>
                 <button class="btn btn-primary">保存配置</button>
+            </div>
             </div>
         </div>
     </div>

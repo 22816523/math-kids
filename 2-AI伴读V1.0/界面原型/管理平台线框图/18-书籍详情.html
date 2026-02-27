@@ -12,33 +12,10 @@
             min-height: 100vh;
         }
 
-        /* 顶部导航 */
-        .header {
-            height: 60px;
-            background: #fff;
-            border-bottom: 1px solid #e0e0e0;
-            display: flex;
-            align-items: center;
-            padding: 0 24px;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        .header .logo {
-            font-size: 18px;
-            font-weight: 600;
-            color: #333;
-        }
-        .header .user-info {
-            margin-left: auto;
-            font-size: 14px;
-            color: #666;
-        }
-
         /* 主体布局 */
         .main {
             display: flex;
-            min-height: calc(100vh - 60px);
+            min-height: 100vh;
         }
 
         /* 侧边栏 */
@@ -46,6 +23,25 @@
             width: 240px;
             background: #fff;
             border-right: 1px solid #e0e0e0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Logo区域 */
+        .sidebar-header {
+            height: 60px;
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .sidebar-menu {
+            flex: 1;
+            padding: 16px 0;
             overflow-y: auto;
         }
         .menu-group {
@@ -91,18 +87,28 @@
             border-left: 3px solid #333;
         }
 
-        /* 内容区 */
+        /* 右侧内容区 */
         .content {
             flex: 1;
-            padding: 24px;
-            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 顶部栏 */
+        .header {
+            height: 60px;
+            background: #fff;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
         }
 
         /* 面包屑 */
         .breadcrumb {
             font-size: 14px;
-            color: #666;
-            margin-bottom: 20px;
+            color: #999;
         }
         .breadcrumb a {
             color: #666;
@@ -111,17 +117,37 @@
         .breadcrumb a:hover {
             color: #333;
         }
-        .breadcrumb span {
-            margin: 0 8px;
+
+        /* 用户信息 */
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .user-name {
+            font-size: 14px;
+            color: #333;
+        }
+        .logout-btn {
+            font-size: 14px;
+            color: #666;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .logout-btn:hover {
+            color: #333;
+        }
+
+        /* 主内容区 */
+        .main-content {
+            flex: 1;
+            padding: 24px;
+            overflow-y: auto;
         }
 
         /* 页面头部 */
         .page-header {
-            background: #fff;
-            border: 1px solid #e0e0e0;
-            border-radius: 4px;
-            padding: 20px 24px;
-            margin-bottom: 20px;
+            padding: 0 0 20px 0;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -436,15 +462,13 @@
     </style>
 </head>
 <body>
-    <!-- 顶部导航 -->
-    <div class="header">
-        <div class="logo">校校读吧管理平台</div>
-        <div class="user-info">管理员</div>
-    </div>
-
     <div class="main">
         <!-- 侧边栏 -->
         <div class="sidebar">
+            <div class="sidebar-header">
+                校校读吧管理平台
+            </div>
+            <div class="sidebar-menu">
             <div class="menu-group">
                 <div class="menu-group-title" onclick="toggleMenu(this)">
                     <span>用户管理</span>
@@ -523,25 +547,27 @@
                 </div>
                 <div class="menu-group-items">
                     <div class="menu-item">系统参数</div>
-                    <div class="menu-item">操作日志</div>
                     <div class="menu-item">数据字典</div>
                 </div>
             </div>
+            </div>
         </div>
 
-        <!-- 内容区 -->
+        <!-- 右侧内容区 -->
         <div class="content">
-            <!-- 面包屑 -->
-            <div class="breadcrumb">
-                <a href="#">首页</a>
-                <span>></span>
-                <a href="#">内容管理</a>
-                <span>></span>
-                <a href="#">书籍资源库</a>
-                <span>></span>
-                <span>书籍详情</span>
+            <!-- 顶部栏 -->
+            <div class="header">
+                <div class="breadcrumb">
+                    <a href="#">首页</a> > <a href="#">内容管理</a> > <a href="#">书籍资源库</a> > 书籍详情
+                </div>
+                <div class="user-info">
+                    <span class="user-name">管理员</span>
+                    <a href="#" class="logout-btn">退出登录</a>
+                </div>
             </div>
 
+            <!-- 主内容区 -->
+            <div class="main-content">
             <!-- 页面头部 -->
             <div class="page-header">
                 <div class="page-header-left">
@@ -771,6 +797,7 @@
                         </div>
                     </div>
                 </div>
+            </div>
             </div>
         </div>
     </div>

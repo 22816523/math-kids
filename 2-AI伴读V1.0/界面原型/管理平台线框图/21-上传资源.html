@@ -75,18 +75,28 @@
             border-left: 3px solid #333;
         }
 
-        /* 内容区 */
+        /* 右侧内容区 */
         .content {
             flex: 1;
-            padding: 24px;
-            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 顶部栏 */
+        .header {
+            height: 60px;
+            background: #fff;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
         }
 
         /* 面包屑 */
         .breadcrumb {
             font-size: 14px;
-            color: #666;
-            margin-bottom: 20px;
+            color: #999;
         }
         .breadcrumb a {
             color: #666;
@@ -95,17 +105,37 @@
         .breadcrumb a:hover {
             color: #333;
         }
-        .breadcrumb span {
-            margin: 0 8px;
+
+        /* 用户信息 */
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .user-name {
+            font-size: 14px;
+            color: #333;
+        }
+        .logout-btn {
+            font-size: 14px;
+            color: #666;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .logout-btn:hover {
+            color: #333;
+        }
+
+        /* 主内容区 */
+        .main-content {
+            flex: 1;
+            padding: 24px;
+            overflow-y: auto;
         }
 
         /* 页面头部 */
         .page-header {
-            background: #fff;
-            border: 1px solid #e0e0e0;
-            border-radius: 4px;
-            padding: 20px 24px;
-            margin-bottom: 20px;
+            padding: 0 0 20px 0;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -315,19 +345,21 @@
             </div>
         </div>
 
-        <!-- 右侧内容 -->
+        <!-- 右侧内容区 -->
         <div class="content">
-            <!-- 面包屑 -->
-            <div class="breadcrumb">
-                <a href="#">首页</a>
-                <span>/</span>
-                <a href="#">内容管理</a>
-                <span>/</span>
-                <a href="17-书籍资源库列表.html">书籍资源库</a>
-                <span>/</span>
-                <span>上传资源</span>
+            <!-- 顶部栏 -->
+            <div class="header">
+                <div class="breadcrumb">
+                    <a href="#">首页</a> > <a href="#">内容管理</a> > <a href="17-书籍资源库列表.html">书籍资源库</a> > 上传资源
+                </div>
+                <div class="user-info">
+                    <span class="user-name">管理员</span>
+                    <a href="#" class="logout-btn">退出登录</a>
+                </div>
             </div>
 
+            <!-- 主内容区 -->
+            <div class="main-content">
             <!-- 页面头部 -->
             <div class="page-header">
                 <div class="page-header-left">
@@ -517,6 +549,7 @@
                         </div>
                     </div>
                 </div>
+            </div>
             </div>
         </div>
     </div>

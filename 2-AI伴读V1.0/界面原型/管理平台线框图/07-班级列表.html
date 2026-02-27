@@ -322,41 +322,110 @@
         /* 分页 */
         .pagination {
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-end;
             align-items: center;
             padding: 16px 20px;
             border-top: 1px solid #e0e0e0;
-        }
-        .pagination-info {
-            font-size: 14px;
+            gap: 16px;
+            font-size: 13px;
             color: #666;
         }
-        .pagination-controls {
-            display: flex;
-            gap: 8px;
-            align-items: center;
+        .pagination-total {
+            color: #666;
+            white-space: nowrap;
         }
-        .pagination-btn {
-            height: 32px;
-            padding: 0 12px;
+        .pagination-total span {
+            color: #333;
+            font-weight: 600;
+        }
+        .pagination-sizes {
+            height: 30px;
+            padding: 0 8px;
             border: 1px solid #e0e0e0;
             border-radius: 4px;
+            font-size: 13px;
+            color: #666;
             background: #fff;
-            font-size: 14px;
-            color: #333;
             cursor: pointer;
+            outline: none;
         }
-        .pagination-btn:hover {
-            background: #f5f5f5;
+        .pagination-sizes:hover {
+            border-color: #999;
         }
-        .pagination-btn:disabled {
+        .pagination-nav {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+        }
+        .pagination-arrow {
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            background: none;
+            font-size: 13px;
+            color: #666;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .pagination-arrow:hover {
+            color: #333;
+        }
+        .pagination-arrow:disabled {
             color: #ccc;
             cursor: not-allowed;
         }
-        .pagination-btn.active {
+        .page-number {
+            min-width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            background: none;
+            font-size: 13px;
+            color: #666;
+            cursor: pointer;
+            border-radius: 4px;
+            padding: 0 4px;
+        }
+        .page-number:hover {
+            color: #333;
+        }
+        .page-number.active {
             background: #333;
             color: #fff;
-            border-color: #333;
+        }
+        .page-ellipsis {
+            min-width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            color: #999;
+        }
+        .pagination-jump {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+            color: #666;
+        }
+        .pagination-jump input {
+            width: 44px;
+            height: 30px;
+            text-align: center;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            font-size: 13px;
+            color: #333;
+            outline: none;
+        }
+        .pagination-jump input:focus {
+            border-color: #999;
         }
     </style>
 </head>
@@ -447,7 +516,6 @@
                 </div>
                 <div class="menu-group-items">
                     <div class="menu-item">系统参数</div>
-                    <div class="menu-item">操作日志</div>
                     <div class="menu-item">数据字典</div>
                 </div>
             </div>
@@ -598,17 +666,27 @@
 
                     <!-- 分页 -->
                     <div class="pagination">
-                        <div class="pagination-info">
-                            共 156 条记录，当前第 1/16 页
+                        <span class="pagination-total">共 <span>156</span> 条</span>
+                        <select class="pagination-sizes">
+                            <option>10条/页</option>
+                            <option selected>20条/页</option>
+                            <option>50条/页</option>
+                            <option>100条/页</option>
+                        </select>
+                        <div class="pagination-nav">
+                            <button class="pagination-arrow" disabled>&lt;</button>
+                            <button class="page-number active">1</button>
+                            <button class="page-number">2</button>
+                            <button class="page-number">3</button>
+                            <button class="page-number">4</button>
+                            <button class="page-number">5</button>
+                            <button class="page-number">6</button>
+                            <span class="page-ellipsis">...</span>
+                            <button class="page-number">8</button>
+                            <button class="pagination-arrow">&gt;</button>
                         </div>
-                        <div class="pagination-controls">
-                            <button class="pagination-btn" disabled>上一页</button>
-                            <button class="pagination-btn active">1</button>
-                            <button class="pagination-btn">2</button>
-                            <button class="pagination-btn">3</button>
-                            <button class="pagination-btn">4</button>
-                            <button class="pagination-btn">5</button>
-                            <button class="pagination-btn">下一页</button>
+                        <div class="pagination-jump">
+                            前往 <input type="text" value="1"> 页
                         </div>
                     </div>
                 </div>

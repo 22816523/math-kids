@@ -12,44 +12,43 @@
             min-height: 100vh;
         }
 
-        /* 顶部导航 */
-        .header {
-            height: 60px;
-            background: #fff;
-            border-bottom: 1px solid #e0e0e0;
-            display: flex;
-            align-items: center;
-            padding: 0 24px;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        .header .logo {
-            font-size: 18px;
-            font-weight: 600;
-            color: #333;
-        }
-        .header .user-info {
-            margin-left: auto;
-            font-size: 14px;
-            color: #666;
-        }
-
         /* 主体布局 */
         .main {
             display: flex;
-            min-height: calc(100vh - 60px);
+            min-height: 100vh;
         }
 
-        /* 侧边栏 */
+        /* 左侧导航 */
         .sidebar {
             width: 240px;
             background: #fff;
             border-right: 1px solid #e0e0e0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Logo区域 */
+        .sidebar-header {
+            height: 60px;
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        /* 菜单区域 */
+        .sidebar-menu {
+            flex: 1;
+            padding: 16px 0;
             overflow-y: auto;
         }
+
+        /* 一级菜单 */
         .menu-group {
-            margin-bottom: 8px;
+            margin-bottom: 4px;
         }
         .menu-group-title {
             padding: 12px 24px;
@@ -60,6 +59,9 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+        }
+        .menu-group-title:hover {
+            background: #f5f5f5;
         }
         .menu-group-icon {
             font-size: 12px;
@@ -75,8 +77,10 @@
         .menu-group.expanded .menu-group-items {
             display: block;
         }
+
+        /* 菜单项 */
         .menu-item {
-            padding: 10px 24px 10px 48px;
+            padding: 12px 24px 12px 40px;
             font-size: 14px;
             color: #666;
             cursor: pointer;
@@ -85,24 +89,34 @@
             background: #f5f5f5;
         }
         .menu-item.active {
+            background: #e8e8e8;
             color: #333;
             font-weight: 600;
-            background: #f5f5f5;
             border-left: 3px solid #333;
         }
 
-        /* 内容区 */
+        /* 右侧内容区 */
         .content {
             flex: 1;
-            padding: 24px;
-            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 顶部栏 */
+        .header {
+            height: 60px;
+            background: #fff;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
         }
 
         /* 面包屑 */
         .breadcrumb {
             font-size: 14px;
-            color: #666;
-            margin-bottom: 20px;
+            color: #999;
         }
         .breadcrumb a {
             color: #666;
@@ -111,16 +125,32 @@
         .breadcrumb a:hover {
             color: #333;
         }
-        .breadcrumb span {
-            margin: 0 8px;
+
+        /* 用户信息 */
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .user-name {
+            font-size: 14px;
+            color: #333;
+        }
+        .logout-btn {
+            font-size: 14px;
+            color: #666;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .logout-btn:hover {
+            color: #333;
         }
 
-        /* 页面标题 */
-        .page-title {
-            font-size: 20px;
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 20px;
+        /* 主内容区 */
+        .main-content {
+            flex: 1;
+            padding: 24px;
+            overflow-y: auto;
         }
 
         /* 筛选区域 */
@@ -133,7 +163,7 @@
         }
         .filter-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(6, 1fr);
             gap: 16px;
             margin-bottom: 16px;
         }
@@ -188,6 +218,17 @@
         }
         .btn-secondary:hover {
             background: #f5f5f5;
+        }
+
+        /* 操作栏 */
+        .action-bar {
+            display: flex;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .action-left {
+            display: flex;
+            gap: 12px;
         }
 
         /* 统计卡片 */
@@ -288,46 +329,123 @@
         /* 分页 */
         .pagination {
             display: flex;
-            justify-content: center;
+            justify-content: flex-end;
             align-items: center;
-            gap: 8px;
+            gap: 16px;
             margin-top: 20px;
+            font-size: 13px;
+            color: #666;
         }
-        .pagination-btn {
-            height: 32px;
-            padding: 0 12px;
+        .pagination-total {
+            color: #666;
+            white-space: nowrap;
+        }
+        .pagination-total span {
+            color: #333;
+            font-weight: 600;
+        }
+        .pagination-sizes {
+            height: 30px;
+            padding: 0 8px;
             border: 1px solid #e0e0e0;
             border-radius: 4px;
-            background: #fff;
+            font-size: 13px;
             color: #666;
-            font-size: 14px;
+            background: #fff;
             cursor: pointer;
+            outline: none;
         }
-        .pagination-btn:hover {
-            background: #f5f5f5;
+        .pagination-sizes:hover {
+            border-color: #999;
         }
-        .pagination-btn.active {
+        .pagination-nav {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+        }
+        .pagination-arrow {
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            background: none;
+            font-size: 13px;
+            color: #666;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .pagination-arrow:hover {
+            color: #333;
+        }
+        .pagination-arrow:disabled {
+            color: #ccc;
+            cursor: not-allowed;
+        }
+        .page-number {
+            min-width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            background: none;
+            font-size: 13px;
+            color: #666;
+            cursor: pointer;
+            border-radius: 4px;
+            padding: 0 4px;
+        }
+        .page-number:hover {
+            color: #333;
+        }
+        .page-number.active {
             background: #333;
             color: #fff;
-            border-color: #333;
         }
-        .pagination-btn:disabled {
-            cursor: not-allowed;
-            opacity: 0.5;
+        .page-ellipsis {
+            min-width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            color: #999;
+        }
+        .pagination-jump {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+            color: #666;
+        }
+        .pagination-jump input {
+            width: 44px;
+            height: 30px;
+            text-align: center;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            font-size: 13px;
+            color: #333;
+            outline: none;
+        }
+        .pagination-jump input:focus {
+            border-color: #999;
         }
     </style>
 </head>
 <body>
-    <!-- 顶部导航 -->
-    <div class="header">
-        <div class="logo">校校读吧管理平台</div>
-        <div class="user-info">管理员</div>
-    </div>
-
     <div class="main">
-        <!-- 侧边栏 -->
+        <!-- 左侧导航 -->
         <div class="sidebar">
-            <div class="menu-group">
+            <div class="sidebar-header">
+                校校读吧管理平台
+            </div>
+            <div class="sidebar-menu">
+                <div class="menu-item">首页</div>
+
+                <div class="menu-group">
                 <div class="menu-group-title" onclick="toggleMenu(this)">
                     <span>用户管理</span>
                     <span class="menu-group-icon">[▶]</span>
@@ -388,13 +506,13 @@
                 </div>
             </div>
 
-            <div class="menu-group">
+            <div class="menu-group expanded">
                 <div class="menu-group-title" onclick="toggleMenu(this)">
                     <span>用户反馈</span>
                     <span class="menu-group-icon">[▶]</span>
                 </div>
                 <div class="menu-group-items">
-                    <div class="menu-item">意见反馈</div>
+                    <div class="menu-item active">意见反馈</div>
                 </div>
             </div>
 
@@ -405,27 +523,28 @@
                 </div>
                 <div class="menu-group-items">
                     <div class="menu-item">系统参数</div>
-                    <div class="menu-item">操作日志</div>
                     <div class="menu-item">数据字典</div>
                 </div>
             </div>
+            </div>
         </div>
 
-        <!-- 内容区 -->
+        <!-- 右侧内容区 -->
         <div class="content">
-            <!-- 面包屑 -->
-            <div class="breadcrumb">
-                <a href="#">首页</a>
-                <span>></span>
-                <a href="#">用户反馈</a>
-                <span>></span>
-                <span>意见反馈</span>
+            <!-- 顶部栏 -->
+            <div class="header">
+                <div class="breadcrumb">
+                    <a href="#">首页</a> > <a href="#">用户反馈</a> > 意见反馈
+                </div>
+                <div class="user-info">
+                    <span class="user-name">管理员</span>
+                    <a href="#" class="logout-btn">退出登录</a>
+                </div>
             </div>
 
-            <!-- 页面标题 -->
-            <div class="page-title">意见反馈</div>
-
-            <!-- 筛选区域 -->
+            <!-- 主内容区 -->
+            <div class="main-content">
+                <!-- 筛选区域 -->
             <div class="filter-section">
                 <div class="filter-grid">
                     <div class="filter-item">
@@ -448,17 +567,19 @@
                         </select>
                     </div>
                     <div class="filter-item">
-                        <label class="filter-label">开始日期</label>
-                        <input type="date" class="filter-input" value="2024-01-01">
-                    </div>
-                    <div class="filter-item">
-                        <label class="filter-label">结束日期</label>
-                        <input type="date" class="filter-input" value="2024-02-10">
+                        <label class="filter-label">提交时间</label>
+                        <input type="text" class="filter-input" placeholder="开始时间 - 结束时间">
                     </div>
                 </div>
                 <div class="filter-actions">
                     <button class="btn btn-primary">查询</button>
                     <button class="btn btn-secondary">重置</button>
+                </div>
+            </div>
+
+            <!-- 操作栏 -->
+            <div class="action-bar">
+                <div class="action-left">
                     <button class="btn btn-secondary">导出</button>
                 </div>
             </div>
@@ -631,14 +752,30 @@
 
                 <!-- 分页 -->
                 <div class="pagination">
-                    <button class="pagination-btn" disabled>上一页</button>
-                    <button class="pagination-btn active">1</button>
-                    <button class="pagination-btn">2</button>
-                    <button class="pagination-btn">3</button>
-                    <button class="pagination-btn">4</button>
-                    <button class="pagination-btn">5</button>
-                    <button class="pagination-btn">下一页</button>
+                    <span class="pagination-total">共 <span>856</span> 条</span>
+                    <select class="pagination-sizes">
+                        <option selected>10条/页</option>
+                        <option>20条/页</option>
+                        <option>50条/页</option>
+                        <option>100条/页</option>
+                    </select>
+                    <div class="pagination-nav">
+                        <button class="pagination-arrow" disabled>&lt;</button>
+                        <button class="page-number active">1</button>
+                        <button class="page-number">2</button>
+                        <button class="page-number">3</button>
+                        <button class="page-number">4</button>
+                        <button class="page-number">5</button>
+                        <button class="page-number">6</button>
+                        <span class="page-ellipsis">...</span>
+                        <button class="page-number">86</button>
+                        <button class="pagination-arrow">&gt;</button>
+                    </div>
+                    <div class="pagination-jump">
+                        前往 <input type="text" value="1"> 页
+                    </div>
                 </div>
+            </div>
             </div>
         </div>
     </div>
