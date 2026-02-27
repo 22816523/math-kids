@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>校校读吧-学生端</title>
+    <link rel="stylesheet" href="design-system.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            padding-bottom: 60px;
+            opacity: 0;
+        }
+
+        /* 顶部头部区域 */
+        .header {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+            color: white;
+            height: var(--navbar-height);
+            display: flex;
+            align-items: center;
+            padding: 0 var(--spacing-lg);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .header-title {
+            font-size: var(--font-size-body);
+            font-weight: 600;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: var(--radius-round);
+            background: white;
+            color: var(--color-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            line-height: 1.2;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all var(--duration-slow);
+        }
+
+        .avatar:hover {
+            transform: scale(1.05);
+        }
+
+        .user-details {
+            flex: 1;
+        }
+
+        .user-name {
+            font-size: var(--font-size-body);
+            font-weight: 600;
+            line-height: 1.4;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .user-level {
+            font-size: var(--font-size-small);
+            line-height: 1.5;
+            opacity: 0.9;
+            cursor: pointer;
+        }
+
+        .points-badge {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 6px var(--spacing-md);
+            border-radius: 20px;
+            font-size: var(--font-size-caption);
+            line-height: 1.6;
+            cursor: pointer;
+            transition: all var(--duration-slow);
+        }
+
+        .points-badge:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* 任务日历区块 */
+        .calendar-section {
+            background: var(--color-bg-primary);
+            margin: var(--spacing-md) var(--spacing-lg) var(--spacing-md);
+            padding: var(--spacing-lg);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .calendar-section .section-title {
+            font-size: 15px;
+        }
+
+        .calendar-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .calendar-title-row {
+            flex: 1;
+        }
+
+        .expand-btn {
+            background: none;
+            border: none;
+            color: var(--color-primary);
+            font-size: 16px;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 4px;
+            transition: all 0.3s;
+            display: block;
+            margin: 8px auto 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .expand-btn:hover {
+            background: var(--color-bg-secondary);
+        }
+
+        .month-nav {
+            display: none;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+
+        .month-nav.show {
+            display: flex;
+        }
+
+        .month-nav-btn {
+            background: none;
+            border: 1px solid #d9d9d9;
+            width: 28px;
+            height: 28px;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-text-secondary);
+            transition: all 0.3s;
+        }
+
+        .month-nav-btn:hover {
+            border-color: var(--color-primary);
+            color: var(--color-primary);
+        }
+
+        .current-month {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--color-text-primary);
+            min-width: 80px;
+            text-align: center;
+        }
+
+        .calendar-week {
+            display: flex;
+            gap: var(--spacing-sm);
+            margin-top: var(--spacing-md);
+        }
+
+        .calendar-month {
+            display: none;
+            margin-top: var(--spacing-md);
+        }
+
+        .calendar-month.show {
+            display: block;
+        }
+
+        .calendar-weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+            margin-bottom: 8px;
+        }
+
+        .weekday-label {
+            text-align: center;
+            font-size: 12px;
+            color: var(--color-text-tertiary);
+            padding: 4px 0;
+        }
+
+        .calendar-days {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+        }
+
+        .calendar-day {
+            flex: 1;
+            text-align: center;
+            padding: var(--spacing-sm) var(--spacing-xs);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all var(--duration-slow);
+        }
+
+        .calendar-month .calendar-day {
+            padding: 8px 4px;
+        }
+
+        .calendar-day.empty {
+            opacity: 0.3;
+            cursor: default;
+        }
+
+        .calendar-day.other-month {
+            opacity: 0.3;
+        }
+
+        .calendar-day:hover {
+            background: var(--color-bg-secondary);
+        }
+
+        .calendar-day.active {
+            background: #e6f7ff;
+        }
+
+        .day-label {
+            font-size: var(--font-size-small);
+            line-height: 1.5;
+            color: var(--color-text-tertiary);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .day-date {
+            font-size: 11px;
+            line-height: 1.5;
+            color: var(--color-text-secondary);
+            margin-bottom: 6px;
+        }
+
+        .day-status {
+            width: 24px;
+            height: 24px;
+            margin: 0 auto;
+            border-radius: var(--radius-round);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--font-size-small);
+        }
+
+        .day-status.completed {
+            background: var(--color-success);
+            color: white;
+        }
+
+        .day-status.incomplete {
+            background: #FFB800;
+            color: white;
+        }
+
+        .day-status.no-task {
+            background: #f5f5f5;
+            color: #d9d9d9;
+        }
+
+        .day-status.overdue {
+            background: #ff4d4f;
+            color: white;
+        }
+
+        /* 今日任务区块 */
+        .today-tasks {
+            background: var(--color-bg-primary);
+            margin: 0 var(--spacing-lg) var(--spacing-md);
+            padding: var(--spacing-lg);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .today-tasks .section-title {
+            font-size: 15px;
+        }
+
+        .today-tasks .task-card {
+            margin: var(--spacing-sm) 0 0 0;
+            padding: var(--spacing-md);
+        }
+
+        .task-list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .task-item {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--spacing-sm);
+        }
+
+        .task-num {
+            width: 22px;
+            height: 22px;
+            min-width: 22px;
+            border-radius: var(--radius-round);
+            background: rgba(255, 255, 255, 0.25);
+            color: white;
+            font-size: 12px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 1px;
+        }
+
+        .task-item-content {
+            flex: 1;
+        }
+
+        .task-item-title {
+            font-size: 14px;
+            font-weight: 600;
+            line-height: 1.5;
+            color: white;
+        }
+
+        .task-item.done {
+            opacity: 0.6;
+        }
+
+        .task-item.done .task-item-title {
+            opacity: 0.7;
+        }
+
+        .task-item.done .task-num {
+            background: rgba(255, 255, 255, 0.4);
+        }
+
+        .task-item + .task-item {
+            padding-top: var(--spacing-md);
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .task-description {
+            font-size: 16px;
+            font-weight: 600;
+            line-height: 1.4;
+            color: white;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .task-stats {
+            font-size: 12px;
+            line-height: 1.5;
+            color: rgba(255, 255, 255, 0.75);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .task-stats i {
+            font-size: 11px;
+            margin-right: 4px;
+        }
+
+        /* 任务卡片 */
+        .task-card {
+            background: linear-gradient(135deg, #FFB800 0%, #FF8C00 100%);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-md);
+            margin: 0 var(--spacing-lg) var(--spacing-md);
+            box-shadow: 0 4px 12px rgba(255, 184, 0, 0.3);
+        }
+
+        .task-title {
+            font-size: 14px;
+            font-weight: 600;
+            line-height: 1.4;
+            color: white;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .task-subtitle {
+            font-size: var(--font-size-small);
+            line-height: 1.5;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .task-btn {
+            background: white;
+            color: #FF8C00;
+            border: none;
+            padding: 0 var(--spacing-lg);
+            height: 36px;
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            line-height: 1.6;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all var(--duration-slow);
+        }
+
+        .task-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        /* 通用区块标题 */
+        .section-title {
+            font-size: var(--font-size-h3);
+            font-weight: 600;
+            line-height: 1.4;
+            color: var(--color-text-primary);
+            margin-bottom: var(--spacing-md);
+        }
+
+        /* 快捷入口 */
+        .quick-entry {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--spacing-md);
+            padding: var(--spacing-lg);
+            background: var(--color-bg-primary);
+            margin: 0 var(--spacing-lg) var(--spacing-md);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .entry-item {
+            text-align: center;
+            cursor: pointer;
+            transition: transform var(--duration-slow);
+        }
+
+        .entry-item:hover {
+            transform: scale(1.05);
+        }
+
+        .entry-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #e6f7ff, #f0f5ff);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            line-height: 1.2;
+            margin: 0 auto var(--spacing-sm);
+        }
+
+        .entry-label {
+            font-size: var(--font-size-small);
+            line-height: 1.5;
+            color: var(--color-text-secondary);
+        }
+
+        /* 未读红点 */
+        .unread-dot {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            width: 10px;
+            height: 10px;
+            background: #ff4d4f;
+            border-radius: 50%;
+            border: 2px solid white;
+            box-shadow: 0 2px 4px rgba(255, 77, 79, 0.4);
+            display: none;
+        }
+
+        .unread-dot.show {
+            display: block;
+        }
+
+        /* 底部Tab栏 */
+        .tabbar {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 375px;
+            height: var(--tabbar-height);
+            background: var(--color-bg-primary);
+            border-top: 1px solid var(--color-border);
+            display: flex;
+            box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .tab-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-xs);
+            cursor: pointer;
+            transition: all var(--duration-slow);
+        }
+
+        .tab-item:hover {
+            background: var(--color-bg-secondary);
+        }
+
+        .tab-icon {
+            font-size: 20px;
+            line-height: 1.2;
+        }
+
+        .tab-label {
+            font-size: 10px;
+            line-height: 1.4;
+            color: var(--color-text-tertiary);
+        }
+
+        .tab-item.active .tab-label {
+            color: var(--color-primary);
+        }
+
+        .tab-item.active .tab-icon {
+            transform: scale(1.1);
+        }
+
+        /* 右上角消息图标 */
+        .header-message {
+            position: absolute;
+            top: 50%;
+            right: 16px;
+            transform: translateY(-50%);
+            cursor: pointer;
+            font-size: 20px;
+            color: white;
+            z-index: 10;
+        }
+
+        .header-message .badge {
+            position: absolute;
+            top: -6px;
+            right: -8px;
+            background: #ff4d4f;
+            color: white;
+            font-size: 10px;
+            min-width: 16px;
+            height: 16px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 4px;
+        }
+
+        /* Font Awesome图标样式优化 */
+        .fa-solid, .fa-regular {
+            font-weight: 400;
+            color: var(--color-text-secondary);
+            opacity: 0.85;
+        }
+
+        /* 导航栏和标题中的图标保持原色 */
+        .navbar .fa-solid,
+        .section-title .fa-solid,
+        .task-title .fa-solid {
+            color: inherit;
+            opacity: 1;
+        }
+
+        /* 日历标题图标和积分图标改为白色 */
+        .calendar-section .section-title .fa-solid,
+        .points-badge .fa-solid {
+            color: white;
+            opacity: 1;
+        }
+
+        /* 日历日期状态图标继承父元素颜色 */
+        .day-status .fa-solid,
+        .day-status .fa-regular {
+            color: inherit;
+            opacity: 1;
+        }
+
+        /* 选中状态图标颜色优化 */
+        .tab-item.active .tab-icon .fa-solid,
+        .tab-item.active .fa-solid {
+            color: var(--color-primary);
+            opacity: 1;
+        }
+
+        /* 其他选中状态 */
+        .menu-item.active .menu-icon .fa-solid,
+        .nav-item.active .fa-solid,
+        .list-item.selected .fa-solid,
+        .card.active .fa-solid,
+        .btn.active .fa-solid,
+        .filter-btn.active .fa-solid {
+            color: var(--color-primary);
+            opacity: 1;
+        }
+    </style>    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="header" style="position: relative;">
+        <div class="header-title">校校读吧-学生端</div>
+        <!-- 右上角消息图标 -->
+        <div class="header-message" onclick="Router.toStudentPage('notification')">
+            <i class="fa-solid fa-bell"></i>
+            <span class="badge">3</span>
+        </div>
+    </div>
+
+    <!-- 任务日历 -->
+    <div class="calendar-section">
+        <div class="calendar-header">
+            <div class="calendar-title-row">
+                <div class="section-title" style="margin-bottom: 0;"><i class="fa-solid fa-calendar-days"></i> 本周阅读日历</div>
+            </div>
+            <div class="month-nav" id="monthNav">
+                <button class="month-nav-btn" onclick="changeMonth(-1)">
+                    <i class="fa-solid fa-chevron-left"></i>
+                </button>
+                <span class="current-month" id="currentMonth">2026年1月</span>
+                <button class="month-nav-btn" onclick="changeMonth(1)">
+                    <i class="fa-solid fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="calendar-week" id="calendarWeek">
+            <div class="calendar-day">
+                <div class="day-label">周一</div>
+                <div class="day-date">1/20</div>
+                <div class="day-status completed"><i class="fa-solid fa-star"></i></div>
+            </div>
+            <div class="calendar-day">
+                <div class="day-label">周二</div>
+                <div class="day-date">1/21</div>
+                <div class="day-status overdue"><i class="fa-regular fa-star"></i></div>
+            </div>
+            <div class="calendar-day active">
+                <div class="day-label">周三</div>
+                <div class="day-date">1/22</div>
+                <div class="day-status incomplete"><i class="fa-solid fa-book"></i></div>
+            </div>
+            <div class="calendar-day">
+                <div class="day-label">周四</div>
+                <div class="day-date">1/23</div>
+                <div class="day-status incomplete"><i class="fa-solid fa-book"></i></div>
+            </div>
+            <div class="calendar-day">
+                <div class="day-label">周五</div>
+                <div class="day-date">1/24</div>
+                <div class="day-status no-task"><i class="fa-solid fa-minus"></i></div>
+            </div>
+            <div class="calendar-day">
+                <div class="day-label">周六</div>
+                <div class="day-date">1/25</div>
+                <div class="day-status incomplete"><i class="fa-solid fa-book"></i></div>
+            </div>
+            <div class="calendar-day">
+                <div class="day-label">周日</div>
+                <div class="day-date">1/26</div>
+                <div class="day-status no-task"><i class="fa-solid fa-minus"></i></div>
+            </div>
+        </div>
+
+        <div class="calendar-month" id="calendarMonth">
+            <div class="calendar-weekdays">
+                <div class="weekday-label">日</div>
+                <div class="weekday-label">一</div>
+                <div class="weekday-label">二</div>
+                <div class="weekday-label">三</div>
+                <div class="weekday-label">四</div>
+                <div class="weekday-label">五</div>
+                <div class="weekday-label">六</div>
+            </div>
+            <div class="calendar-days" id="calendarDays">
+                <!-- 月视图日期将通过JavaScript动态生成 -->
+            </div>
+        </div>
+
+        <button class="expand-btn" onclick="toggleCalendarView()" id="expandBtn">
+            <i class="fa-solid fa-chevron-down"></i>
+        </button>
+    </div>
+
+    <!-- 今日任务列表 -->
+    <div class="today-tasks">
+        <div class="section-title"><i class="fa-solid fa-list-check"></i> 今日任务 <span style="font-size: 12px; font-weight: 400; color: var(--color-text-tertiary);" id="todayDate"></span></div>
+        <div class="task-card">
+            <div class="task-description">《三体》<span style="font-size: 12px; font-weight: 400; opacity: 0.8; margin-left: 6px;">2026年寒假阅读计划</span></div>
+            <div class="task-list">
+                <div class="task-item done">
+                    <span class="task-num"><i class="fa-solid fa-check" style="font-size: 10px;"></i></span>
+                    <div class="task-item-content">
+                        <div class="task-item-title">阅读第15-30页</div>
+                    </div>
+                </div>
+                <div class="task-item done">
+                    <span class="task-num"><i class="fa-solid fa-check" style="font-size: 10px;"></i></span>
+                    <div class="task-item-content">
+                        <div class="task-item-title">完成导读单二</div>
+                    </div>
+                </div>
+                <div class="task-item">
+                    <span class="task-num">3</span>
+                    <div class="task-item-content">
+                        <div class="task-item-title">完成AI测评</div>
+                    </div>
+                </div>
+                <div class="task-item">
+                    <span class="task-num">4</span>
+                    <div class="task-item-content">
+                        <div class="task-item-title">观看AI导读视频</div>
+                    </div>
+                </div>
+            </div>
+            <button class="task-btn" onclick="Router.toStudentPage('aiIntro', {taskId: 123, bookName: '三体'})">去完成 →</button>
+        </div>
+    </div>
+
+    <div class="quick-entry" style="grid-template-columns: repeat(4, 1fr);">
+        <div class="entry-item" onclick="onNewsClick(); Router.toStudentPage('news')">
+            <div class="entry-icon" style="background: linear-gradient(135deg, #11998e, #38ef7d); position: relative;"><i class="fa-solid fa-newspaper" style="color: white;"></i><span class="unread-dot" id="newsDot"></span></div>
+            <div class="entry-label">资讯</div>
+        </div>
+        <div class="entry-item" onclick="onSquareClick(); Router.toStudentPage('classCheckin')">
+            <div class="entry-icon" style="background: linear-gradient(135deg, #36d1dc, #5b86e5); position: relative;"><i class="fa-solid fa-compass" style="color: white;"></i><span class="unread-dot" id="squareDot"></span></div>
+            <div class="entry-label">广场</div>
+        </div>
+        <div class="entry-item" onclick="Router.toStudentPage('rank')">
+            <div class="entry-icon" style="background: linear-gradient(135deg, #ff6b6b, #ee5a24);"><i class="fa-solid fa-ranking-star" style="color: white;"></i></div>
+            <div class="entry-label">排行榜</div>
+        </div>
+        <div class="entry-item" onclick="Router.toStudentPage('certificates')">
+            <div class="entry-icon" style="background: linear-gradient(135deg, #ffd700, #ffaa00);"><i class="fa-solid fa-award" style="color: white;"></i></div>
+            <div class="entry-label">奖状</div>
+        </div>
+    </div>
+
+    <div class="tabbar">
+        <div class="tab-item active" onclick="Router.toStudentPage('home')">
+            <div class="tab-icon"><i class="fa-solid fa-house"></i></div>
+            <div class="tab-label">首页</div>
+        </div>
+        <div class="tab-item" onclick="Router.toStudentPage('bookshelf')">
+            <div class="tab-icon"><i class="fa-solid fa-book"></i></div>
+            <div class="tab-label">书架</div>
+        </div>
+        <div class="tab-item" onclick="Router.toStudentPage('profile')">
+            <div class="tab-icon"><i class="fa-solid fa-user"></i></div>
+            <div class="tab-label">我的</div>
+        </div>
+    </div>
+
+    <!-- 引入路由管理脚本 -->
+    <script src="./router.js"></script>
+    <script>
+        // 日历相关变量
+        let isMonthView = false;
+        let currentYear = 2026;
+        let currentMonth = 0; // 0-11 (1月-12月)
+
+        // 模拟任务数据：记录每个日期的任务状态
+        const taskData = {
+            '2026-1-20': { hasTask: true, completed: true },
+            '2026-1-21': { hasTask: true, completed: false }, // 过期未完成
+            '2026-1-22': { hasTask: true, completed: false }, // 今天，未完成
+            '2026-1-23': { hasTask: true, completed: false },
+            '2026-1-24': { hasTask: false, completed: false }, // 无任务
+            '2026-1-25': { hasTask: true, completed: false },
+            '2026-1-26': { hasTask: false, completed: false }, // 无任务
+            '2026-1-27': { hasTask: true, completed: false },
+            '2026-1-28': { hasTask: true, completed: false },
+            '2026-1-29': { hasTask: true, completed: false },
+            '2026-1-30': { hasTask: true, completed: false },
+            '2026-1-31': { hasTask: false, completed: false }
+        };
+
+        // 获取日期的任务状态
+        function getTaskStatus(year, month, day) {
+            const key = `${year}-${month + 1}-${day}`;
+            return taskData[key] || { hasTask: false, completed: false };
+        }
+
+        // 切换日历视图
+        function toggleCalendarView() {
+            isMonthView = !isMonthView;
+            const weekView = document.getElementById('calendarWeek');
+            const monthView = document.getElementById('calendarMonth');
+            const monthNav = document.getElementById('monthNav');
+            const expandBtn = document.getElementById('expandBtn');
+            const titleElement = document.querySelector('.calendar-title-row .section-title');
+
+            if (isMonthView) {
+                weekView.style.display = 'none';
+                monthView.classList.add('show');
+                monthNav.classList.add('show');
+                expandBtn.innerHTML = '<i class="fa-solid fa-chevron-up"></i>';
+                titleElement.innerHTML = '<i class="fa-solid fa-calendar-days"></i> 月度阅读日历';
+                renderMonthView();
+            } else {
+                weekView.style.display = 'flex';
+                monthView.classList.remove('show');
+                monthNav.classList.remove('show');
+                expandBtn.innerHTML = '<i class="fa-solid fa-chevron-down"></i>';
+                titleElement.innerHTML = '<i class="fa-solid fa-calendar-days"></i> 本周阅读日历';
+            }
+        }
+
+        // 切换月份
+        function changeMonth(delta) {
+            currentMonth += delta;
+            if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            } else if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            }
+            updateMonthDisplay();
+            renderMonthView();
+        }
+
+        // 更新月份显示
+        function updateMonthDisplay() {
+            const monthNames = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
+            document.getElementById('currentMonth').textContent = `${currentYear}年${monthNames[currentMonth]}`;
+        }
+
+        // 渲染月视图
+        function renderMonthView() {
+            const daysContainer = document.getElementById('calendarDays');
+            daysContainer.innerHTML = '';
+
+            const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+            const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+            const today = new Date();
+            const isCurrentMonth = today.getFullYear() === currentYear && today.getMonth() === currentMonth;
+            const todayDate = today.getDate();
+
+            // 添加上月末尾的空白天
+            for (let i = 0; i < firstDay; i++) {
+                const emptyDay = document.createElement('div');
+                emptyDay.className = 'calendar-day empty';
+                daysContainer.appendChild(emptyDay);
+            }
+
+            // 添加本月的天数
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day';
+
+                // 判断是否是今天
+                const isToday = isCurrentMonth && day === todayDate;
+                if (isToday) {
+                    dayElement.classList.add('active');
+                }
+
+                const dateLabel = document.createElement('div');
+                dateLabel.className = 'day-date';
+                dateLabel.textContent = `${currentMonth + 1}/${day}`;
+
+                const statusElement = document.createElement('div');
+
+                // 获取该日期的任务状态
+                const status = getTaskStatus(currentYear, currentMonth, day);
+
+                // 根据任务状态设置样式和图标（使用星星图标）
+                if (!status.hasTask) {
+                    // 无任务 - 横线图标
+                    statusElement.className = 'day-status no-task';
+                    statusElement.innerHTML = '<i class="fa-solid fa-minus"></i>';
+                } else if (status.completed) {
+                    // 有任务且已完成 - 实心星星
+                    statusElement.className = 'day-status completed';
+                    statusElement.innerHTML = '<i class="fa-solid fa-star"></i>';
+                } else {
+                    // 有任务但未完成
+                    const isPast = currentYear < today.getFullYear() ||
+                                   (currentYear === today.getFullYear() && currentMonth < today.getMonth()) ||
+                                   (currentYear === today.getFullYear() && currentMonth === today.getMonth() && day < todayDate);
+
+                    if (isPast) {
+                        // 过期未完成 - 红色背景 + 空心星星
+                        statusElement.className = 'day-status overdue';
+                        statusElement.innerHTML = '<i class="fa-regular fa-star"></i>';
+                    } else {
+                        // 未来任务（包括当日）- 黄色背景 + 书本图标
+                        statusElement.className = 'day-status incomplete';
+                        statusElement.innerHTML = '<i class="fa-solid fa-book"></i>';
+                    }
+                }
+
+                dayElement.appendChild(dateLabel);
+                dayElement.appendChild(statusElement);
+                daysContainer.appendChild(dayElement);
+            }
+        }
+
+        // 初始化
+        updateMonthDisplay();
+
+        // 显示今日日期
+        (function() {
+            const now = new Date();
+            document.getElementById('todayDate').textContent = `${now.getMonth() + 1}月${now.getDate()}日`;
+        })();
+
+        // ========== 未读红点逻辑 ==========
+        // 模拟数据：当前最新的资讯数量和打卡数量
+        const currentNewsCount = 5;  // 当前资讯总数
+        const currentCheckinCount = 18;  // 当前打卡总数
+
+        // 从localStorage获取上次查看时的数量
+        function getLastViewedCount(key) {
+            return parseInt(localStorage.getItem(key) || '0');
+        }
+
+        // 保存当前查看的数量
+        function setLastViewedCount(key, count) {
+            localStorage.setItem(key, count.toString());
+        }
+
+        // 检查并显示未读红点
+        function checkUnreadDots() {
+            const lastNewsCount = getLastViewedCount('lastNewsCount');
+            const lastCheckinCount = getLastViewedCount('lastCheckinCount');
+
+            // 资讯红点
+            const newsDot = document.getElementById('newsDot');
+            if (currentNewsCount > lastNewsCount) {
+                newsDot.classList.add('show');
+            } else {
+                newsDot.classList.remove('show');
+            }
+
+            // 广场红点
+            const squareDot = document.getElementById('squareDot');
+            if (currentCheckinCount > lastCheckinCount) {
+                squareDot.classList.add('show');
+            } else {
+                squareDot.classList.remove('show');
+            }
+        }
+
+        // 点击资讯时清除红点并记录
+        function onNewsClick() {
+            setLastViewedCount('lastNewsCount', currentNewsCount);
+            document.getElementById('newsDot').classList.remove('show');
+        }
+
+        // 点击广场时清除红点并记录
+        function onSquareClick() {
+            setLastViewedCount('lastCheckinCount', currentCheckinCount);
+            document.getElementById('squareDot').classList.remove('show');
+        }
+
+        // 页面加载时检查未读状态
+        checkUnreadDots();
+    </script>
+</body>
+</html>

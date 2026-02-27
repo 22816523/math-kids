@@ -12,44 +12,37 @@
             min-height: 100vh;
         }
 
-        /* 顶部导航 */
-        .header {
-            height: 60px;
-            background: #fff;
-            border-bottom: 1px solid #e0e0e0;
-            display: flex;
-            align-items: center;
-            padding: 0 24px;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        .header .logo {
-            font-size: 18px;
-            font-weight: 600;
-            color: #333;
-        }
-        .header .user-info {
-            margin-left: auto;
-            font-size: 14px;
-            color: #666;
-        }
-
         /* 主体布局 */
         .main {
             display: flex;
-            min-height: calc(100vh - 60px);
+            min-height: 100vh;
         }
 
-        /* 侧边栏 */
+        /* 左侧导航 */
         .sidebar {
             width: 240px;
             background: #fff;
             border-right: 1px solid #e0e0e0;
+            display: flex;
+            flex-direction: column;
+        }
+        .sidebar-header {
+            height: 60px;
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+        .sidebar-menu {
+            flex: 1;
+            padding: 16px 0;
             overflow-y: auto;
         }
         .menu-group {
-            margin-bottom: 8px;
+            margin-bottom: 4px;
         }
         .menu-group-title {
             padding: 12px 24px;
@@ -76,7 +69,7 @@
             display: block;
         }
         .menu-item {
-            padding: 10px 24px 10px 48px;
+            padding: 12px 24px 12px 40px;
             font-size: 14px;
             color: #666;
             cursor: pointer;
@@ -85,24 +78,30 @@
             background: #f5f5f5;
         }
         .menu-item.active {
+            background: #e8e8e8;
             color: #333;
             font-weight: 600;
-            background: #f5f5f5;
             border-left: 3px solid #333;
         }
 
-        /* 内容区 */
+        /* 右侧内容区 */
         .content {
             flex: 1;
-            padding: 24px;
-            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
         }
-
-        /* 面包屑 */
+        .header {
+            height: 60px;
+            background: #fff;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+        }
         .breadcrumb {
             font-size: 14px;
-            color: #666;
-            margin-bottom: 20px;
+            color: #999;
         }
         .breadcrumb a {
             color: #666;
@@ -111,8 +110,28 @@
         .breadcrumb a:hover {
             color: #333;
         }
-        .breadcrumb span {
-            margin: 0 8px;
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .user-name {
+            font-size: 14px;
+            color: #333;
+        }
+        .logout-btn {
+            font-size: 14px;
+            color: #999;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .logout-btn:hover {
+            color: #333;
+        }
+        .main-content {
+            flex: 1;
+            padding: 24px;
+            overflow-y: auto;
         }
 
         /* 页面标题 */
@@ -510,110 +529,99 @@
     </style>
 </head>
 <body>
-    <!-- 顶部导航 -->
-    <div class="header">
-        <div class="logo">校校读吧管理平台</div>
-        <div class="user-info">管理员</div>
-    </div>
-
     <div class="main">
-        <!-- 侧边栏 -->
+        <!-- 左侧导航 -->
         <div class="sidebar">
-            <div class="menu-group">
-                <div class="menu-group-title" onclick="toggleMenu(this)">
-                    <span>用户管理</span>
-                    <span class="menu-group-icon">[▶]</span>
+            <div class="sidebar-header">校校读吧管理平台</div>
+            <div class="sidebar-menu">
+                <div class="menu-item">首页</div>
+                <div class="menu-group">
+                    <div class="menu-group-title" onclick="toggleMenu(this)">
+                        <span>用户管理</span>
+                        <span class="menu-group-icon">[▶]</span>
+                    </div>
+                    <div class="menu-group-items">
+                        <div class="menu-item">学校管理</div>
+                        <div class="menu-item">班级管理</div>
+                        <div class="menu-item">小程序用户管理</div>
+                    </div>
                 </div>
-                <div class="menu-group-items">
-                    <div class="menu-item">学校管理</div>
-                    <div class="menu-item">班级管理</div>
-                    <div class="menu-item">小程序用户管理</div>
+                <div class="menu-group expanded">
+                    <div class="menu-group-title" onclick="toggleMenu(this)">
+                        <span>内容管理</span>
+                        <span class="menu-group-icon">[▶]</span>
+                    </div>
+                    <div class="menu-group-items">
+                        <div class="menu-item active">阅读计划</div>
+                        <div class="menu-item">书籍资源库</div>
+                    </div>
                 </div>
-            </div>
-
-            <div class="menu-group expanded">
-                <div class="menu-group-title" onclick="toggleMenu(this)">
-                    <span>内容管理</span>
-                    <span class="menu-group-icon">[▶]</span>
+                <div class="menu-group">
+                    <div class="menu-group-title" onclick="toggleMenu(this)">
+                        <span>激励体系</span>
+                        <span class="menu-group-icon">[▶]</span>
+                    </div>
+                    <div class="menu-group-items">
+                        <div class="menu-item">积分规则</div>
+                        <div class="menu-item">等级设置</div>
+                        <div class="menu-item">证书配置</div>
+                    </div>
                 </div>
-                <div class="menu-group-items">
-                    <div class="menu-item active">阅读计划</div>
-                    <div class="menu-item">书籍资源库</div>
-                    <div class="menu-item">测评管理</div>
+                <div class="menu-group">
+                    <div class="menu-group-title" onclick="toggleMenu(this)">
+                        <span>消息管理</span>
+                        <span class="menu-group-icon">[▶]</span>
+                    </div>
+                    <div class="menu-group-items">
+                        <div class="menu-item">消息列表</div>
+                    </div>
                 </div>
-            </div>
-
-            <div class="menu-group">
-                <div class="menu-group-title" onclick="toggleMenu(this)">
-                                        <span>数据分析</span>
-                    <span class="menu-group-icon">[▶]</span>
+                <div class="menu-group">
+                    <div class="menu-group-title" onclick="toggleMenu(this)">
+                        <span>用户反馈</span>
+                        <span class="menu-group-icon">[▶]</span>
+                    </div>
+                    <div class="menu-group-items">
+                        <div class="menu-item">意见反馈</div>
+                    </div>
                 </div>
-                <div class="menu-group-items">
-                    <div class="menu-item">阅读数据分析</div>
-                    <div class="menu-item">测评数据分析</div>
-                    <div class="menu-item">用户行为分析</div>
-                    <div class="menu-item">学校数据对比</div>
-                    <div class="menu-item">数据导出中心</div>
+                <div class="menu-group">
+                    <div class="menu-group-title" onclick="toggleMenu(this)">
+                        <span>数据分析</span>
+                        <span class="menu-group-icon">[▶]</span>
+                    </div>
+                    <div class="menu-group-items">
+                        <div class="menu-item">阅读数据分析</div>
+                        <div class="menu-item">测评数据分析</div>
+                        <div class="menu-item">用户行为分析</div>
+                        <div class="menu-item">数据导出中心</div>
+                    </div>
                 </div>
-            </div>
-
-            <div class="menu-group">
-                <div class="menu-group-title" onclick="toggleMenu(this)">
-                    <span>激励体系</span>
-                    <span class="menu-group-icon">[▶]</span>
-                </div>
-                <div class="menu-group-items">
-                    <div class="menu-item">积分规则</div>
-                    <div class="menu-item">等级体系</div>
-                    <div class="menu-item">徽章配置</div>
-                    <div class="menu-item">证书配置</div>
-                </div>
-            </div>
-
-            <div class="menu-group">
-                <div class="menu-group-title" onclick="toggleMenu(this)">
-                    <span>消息管理</span>
-                    <span class="menu-group-icon">[▶]</span>
-                </div>
-                <div class="menu-group-items">
-                    <div class="menu-item">系统消息</div>
-                </div>
-            </div>
-
-            <div class="menu-group">
-                <div class="menu-group-title" onclick="toggleMenu(this)">
-                    <span>用户反馈</span>
-                    <span class="menu-group-icon">[▶]</span>
-                </div>
-                <div class="menu-group-items">
-                    <div class="menu-item">意见反馈</div>
-                </div>
-            </div>
-
-            <div class="menu-group">
-                <div class="menu-group-title" onclick="toggleMenu(this)">
-                    <span>系统配置</span>
-                    <span class="menu-group-icon">[▶]</span>
-                </div>
-                <div class="menu-group-items">
-                    <div class="menu-item">系统参数</div>
-                    <div class="menu-item">数据字典</div>
+                <div class="menu-group">
+                    <div class="menu-group-title" onclick="toggleMenu(this)">
+                        <span>系统配置</span>
+                        <span class="menu-group-icon">[▶]</span>
+                    </div>
+                    <div class="menu-group-items">
+                        <div class="menu-item">系统参数</div>
+                        <div class="menu-item">数据字典</div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- 内容区 -->
+        <!-- 右侧内容区 -->
         <div class="content">
-            <!-- 面包屑 -->
-            <div class="breadcrumb">
-                <a href="#">首页</a>
-                <span>></span>
-                <a href="#">内容管理</a>
-                <span>></span>
-                <a href="#">阅读计划</a>
-                <span>></span>
-                <span>编辑阅读计划</span>
+            <div class="header">
+                <div class="breadcrumb">
+                    <a href="#">首页</a> &gt; <a href="#">内容管理</a> &gt; <a href="#">阅读计划</a> &gt; 编辑阅读计划
+                </div>
+                <div class="user-info">
+                    <span class="user-name">管理员</span>
+                    <a href="#" class="logout-btn">退出登录</a>
+                </div>
             </div>
+            <div class="main-content">
 
             <!-- 页面标题 -->
             <div class="page-title">编辑阅读计划</div>
@@ -841,6 +849,7 @@
                         </div>
                     </div>
                 </div>
+            </div>
             </div>
         </div>
     </div>

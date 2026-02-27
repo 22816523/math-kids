@@ -276,6 +276,7 @@
             text-align: left;
             border: 1px solid #e0e0e0;
             font-size: 14px;
+            white-space: nowrap;
         }
         .table th {
             background: #f5f5f5;
@@ -306,10 +307,6 @@
         .status-badge.pending {
             background: #f5f5f5;
             color: #999;
-        }
-        .status-badge.processing {
-            background: #666;
-            color: #fff;
         }
         .status-badge.completed {
             background: #333;
@@ -444,88 +441,78 @@
             </div>
             <div class="sidebar-menu">
                 <div class="menu-item">首页</div>
-
                 <div class="menu-group">
-                <div class="menu-group-title" onclick="toggleMenu(this)">
-                    <span>用户管理</span>
-                    <span class="menu-group-icon">[▶]</span>
+                    <div class="menu-group-title" onclick="toggleMenu(this)">
+                        <span>用户管理</span>
+                        <span class="menu-group-icon">[▶]</span>
+                    </div>
+                    <div class="menu-group-items">
+                        <div class="menu-item">学校管理</div>
+                        <div class="menu-item">班级管理</div>
+                        <div class="menu-item">小程序用户管理</div>
+                    </div>
                 </div>
-                <div class="menu-group-items">
-                    <div class="menu-item">学校管理</div>
-                    <div class="menu-item">班级管理</div>
-                    <div class="menu-item">小程序用户管理</div>
+                <div class="menu-group">
+                    <div class="menu-group-title" onclick="toggleMenu(this)">
+                        <span>内容管理</span>
+                        <span class="menu-group-icon">[▶]</span>
+                    </div>
+                    <div class="menu-group-items">
+                        <div class="menu-item">阅读计划</div>
+                        <div class="menu-item">书籍资源库</div>
+                    </div>
                 </div>
-            </div>
-
-            <div class="menu-group">
-                <div class="menu-group-title" onclick="toggleMenu(this)">
-                    <span>内容管理</span>
-                    <span class="menu-group-icon">[▶]</span>
+                <div class="menu-group">
+                    <div class="menu-group-title" onclick="toggleMenu(this)">
+                        <span>激励体系</span>
+                        <span class="menu-group-icon">[▶]</span>
+                    </div>
+                    <div class="menu-group-items">
+                        <div class="menu-item">积分规则</div>
+                        <div class="menu-item">等级设置</div>
+                        <div class="menu-item">证书配置</div>
+                    </div>
                 </div>
-                <div class="menu-group-items">
-                    <div class="menu-item">阅读计划</div>
-                    <div class="menu-item">书籍资源库</div>
-                    <div class="menu-item">测评管理</div>
+                <div class="menu-group">
+                    <div class="menu-group-title" onclick="toggleMenu(this)">
+                        <span>消息管理</span>
+                        <span class="menu-group-icon">[▶]</span>
+                    </div>
+                    <div class="menu-group-items">
+                        <div class="menu-item">消息列表</div>
+                    </div>
                 </div>
-            </div>
-
-            <div class="menu-group">
-                <div class="menu-group-title" onclick="toggleMenu(this)">
-                                        <span>数据分析</span>
-                    <span class="menu-group-icon">[▶]</span>
+                <div class="menu-group expanded">
+                    <div class="menu-group-title" onclick="toggleMenu(this)">
+                        <span>用户反馈</span>
+                        <span class="menu-group-icon">[▶]</span>
+                    </div>
+                    <div class="menu-group-items">
+                        <div class="menu-item active">意见反馈</div>
+                    </div>
                 </div>
-                <div class="menu-group-items">
-                    <div class="menu-item">阅读数据分析</div>
-                    <div class="menu-item">测评数据分析</div>
-                    <div class="menu-item">用户行为分析</div>
-                    <div class="menu-item">学校数据对比</div>
-                    <div class="menu-item">数据导出中心</div>
+                <div class="menu-group">
+                    <div class="menu-group-title" onclick="toggleMenu(this)">
+                        <span>数据分析</span>
+                        <span class="menu-group-icon">[▶]</span>
+                    </div>
+                    <div class="menu-group-items">
+                        <div class="menu-item">阅读数据分析</div>
+                        <div class="menu-item">测评数据分析</div>
+                        <div class="menu-item">用户行为分析</div>
+                        <div class="menu-item">数据导出中心</div>
+                    </div>
                 </div>
-            </div>
-
-            <div class="menu-group">
-                <div class="menu-group-title" onclick="toggleMenu(this)">
-                    <span>激励体系</span>
-                    <span class="menu-group-icon">[▶]</span>
+                <div class="menu-group">
+                    <div class="menu-group-title" onclick="toggleMenu(this)">
+                        <span>系统配置</span>
+                        <span class="menu-group-icon">[▶]</span>
+                    </div>
+                    <div class="menu-group-items">
+                        <div class="menu-item">系统参数</div>
+                        <div class="menu-item">数据字典</div>
+                    </div>
                 </div>
-                <div class="menu-group-items">
-                    <div class="menu-item">积分规则</div>
-                    <div class="menu-item">等级体系</div>
-                    <div class="menu-item">徽章配置</div>
-                    <div class="menu-item">证书配置</div>
-                </div>
-            </div>
-
-            <div class="menu-group">
-                <div class="menu-group-title" onclick="toggleMenu(this)">
-                    <span>消息管理</span>
-                    <span class="menu-group-icon">[▶]</span>
-                </div>
-                <div class="menu-group-items">
-                    <div class="menu-item">系统消息</div>
-                </div>
-            </div>
-
-            <div class="menu-group expanded">
-                <div class="menu-group-title" onclick="toggleMenu(this)">
-                    <span>用户反馈</span>
-                    <span class="menu-group-icon">[▶]</span>
-                </div>
-                <div class="menu-group-items">
-                    <div class="menu-item active">意见反馈</div>
-                </div>
-            </div>
-
-            <div class="menu-group">
-                <div class="menu-group-title" onclick="toggleMenu(this)">
-                    <span>系统配置</span>
-                    <span class="menu-group-icon">[▶]</span>
-                </div>
-                <div class="menu-group-items">
-                    <div class="menu-item">系统参数</div>
-                    <div class="menu-item">数据字典</div>
-                </div>
-            </div>
             </div>
         </div>
 
@@ -548,6 +535,10 @@
             <div class="filter-section">
                 <div class="filter-grid">
                     <div class="filter-item">
+                        <label class="filter-label">反馈编号</label>
+                        <input type="text" class="filter-input" placeholder="请输入反馈编号">
+                    </div>
+                    <div class="filter-item">
                         <label class="filter-label">反馈类型</label>
                         <select class="filter-select">
                             <option value="">全部类型</option>
@@ -558,49 +549,50 @@
                         </select>
                     </div>
                     <div class="filter-item">
-                        <label class="filter-label">处理状态</label>
-                        <select class="filter-select">
-                            <option value="">全部状态</option>
-                            <option value="pending">待处理</option>
-                            <option value="processing">处理中</option>
-                            <option value="completed">已完成</option>
-                        </select>
+                        <label class="filter-label">反馈内容</label>
+                        <input type="text" class="filter-input" placeholder="请输入关键词">
+                    </div>
+                    <div class="filter-item">
+                        <label class="filter-label">反馈人</label>
+                        <input type="text" class="filter-input" placeholder="请输入反馈人">
+                    </div>
+                    <div class="filter-item">
+                        <label class="filter-label">联系方式</label>
+                        <input type="text" class="filter-input" placeholder="请输入联系方式">
                     </div>
                     <div class="filter-item">
                         <label class="filter-label">提交时间</label>
                         <input type="text" class="filter-input" placeholder="开始时间 - 结束时间">
                     </div>
-                </div>
-                <div class="filter-actions">
-                    <button class="btn btn-primary">查询</button>
-                    <button class="btn btn-secondary">重置</button>
+                    <div class="filter-item">
+                        <label class="filter-label">状态</label>
+                        <select class="filter-select">
+                            <option value="">全部状态</option>
+                            <option value="pending">待回复</option>
+                            <option value="replied">已回复</option>
+                        </select>
+                    </div>
+                    <div class="filter-item">
+                        <label class="filter-label">回复人</label>
+                        <input type="text" class="filter-input" placeholder="请输入回复人">
+                    </div>
+                    <div class="filter-item">
+                        <label class="filter-label">回复时间</label>
+                        <input type="text" class="filter-input" placeholder="开始时间 - 结束时间">
+                    </div>
+                    <div class="filter-item" style="flex-direction: row; align-items: flex-end; gap: 12px;">
+                        <button class="btn btn-primary">查询</button>
+                        <button class="btn btn-secondary">重置</button>
+                    </div>
                 </div>
             </div>
 
             <!-- 操作栏 -->
             <div class="action-bar">
                 <div class="action-left">
+                    <button class="btn btn-secondary">查看</button>
+                    <button class="btn btn-secondary">回复</button>
                     <button class="btn btn-secondary">导出</button>
-                </div>
-            </div>
-
-            <!-- 统计卡片 -->
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-label">反馈总数</div>
-                    <div class="stat-value">856</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">待处理</div>
-                    <div class="stat-value">42</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">处理中</div>
-                    <div class="stat-value">28</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">已完成</div>
-                    <div class="stat-value">786</div>
                 </div>
             </div>
 
@@ -610,141 +602,160 @@
                     <table class="table">
                         <thead>
                             <tr>
+                                <th><input type="checkbox"></th>
+                                <th>序号</th>
                                 <th>反馈编号</th>
                                 <th>反馈类型</th>
                                 <th>反馈内容</th>
+                                <th>附件</th>
                                 <th>反馈人</th>
                                 <th>联系方式</th>
                                 <th>提交时间</th>
                                 <th>状态</th>
-                                <th>操作</th>
+                                <th>回复人</th>
+                                <th>回复时间</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td>FB20240210001</td>
+                                <td><input type="checkbox"></td>
+                                <td>1</td>
+                                <td>FB2024021014300001</td>
                                 <td><span class="type-badge">功能建议</span></td>
                                 <td>希望增加语音朗读功能，方便低年级学生使用</td>
+                                <td>2个附件</td>
                                 <td>张老师</td>
                                 <td>138****5678</td>
                                 <td>2024-02-10 14:30</td>
-                                <td><span class="status-badge pending">待处理</span></td>
-                                <td>
-                                    <a href="#">查看</a>
-                                    <a href="#">处理</a>
-                                </td>
+                                <td><span class="status-badge pending">待回复</span></td>
+                                <td>-</td>
+                                <td>-</td>
                             </tr>
                             <tr>
-                                <td>FB20240210002</td>
+                                <td><input type="checkbox"></td>
+                                <td>2</td>
+                                <td>FB2024021010150002</td>
                                 <td><span class="type-badge">问题反馈</span></td>
                                 <td>测评页面加载速度较慢，影响学生答题体验</td>
+                                <td>1个附件</td>
                                 <td>李老师</td>
                                 <td>139****1234</td>
                                 <td>2024-02-10 10:15</td>
-                                <td><span class="status-badge processing">处理中</span></td>
-                                <td>
-                                    <a href="#">查看</a>
-                                    <a href="#">跟进</a>
-                                </td>
+                                <td><span class="status-badge pending">待回复</span></td>
+                                <td>-</td>
+                                <td>-</td>
                             </tr>
                             <tr>
-                                <td>FB20240209003</td>
+                                <td><input type="checkbox"></td>
+                                <td>3</td>
+                                <td>FB2024020916450003</td>
                                 <td><span class="type-badge">内容建议</span></td>
                                 <td>建议增加更多科普类书籍，丰富阅读内容</td>
+                                <td>-</td>
                                 <td>王老师</td>
                                 <td>137****9876</td>
                                 <td>2024-02-09 16:45</td>
-                                <td><span class="status-badge completed">已完成</span></td>
-                                <td>
-                                    <a href="#">查看</a>
-                                </td>
+                                <td><span class="status-badge completed">已回复</span></td>
+                                <td>管理员</td>
+                                <td>2024-02-10 09:30</td>
                             </tr>
                             <tr>
-                                <td>FB20240209004</td>
+                                <td><input type="checkbox"></td>
+                                <td>4</td>
+                                <td>FB2024020911200004</td>
                                 <td><span class="type-badge">功能建议</span></td>
                                 <td>希望能够导出学生的阅读报告，便于家长了解</td>
+                                <td>1个附件</td>
                                 <td>赵老师</td>
                                 <td>136****5432</td>
                                 <td>2024-02-09 11:20</td>
-                                <td><span class="status-badge pending">待处理</span></td>
-                                <td>
-                                    <a href="#">查看</a>
-                                    <a href="#">处理</a>
-                                </td>
+                                <td><span class="status-badge pending">待回复</span></td>
+                                <td>-</td>
+                                <td>-</td>
                             </tr>
                             <tr>
-                                <td>FB20240208005</td>
+                                <td><input type="checkbox"></td>
+                                <td>5</td>
+                                <td>FB2024020815300005</td>
                                 <td><span class="type-badge">问题反馈</span></td>
                                 <td>部分书籍的章节顺序显示错误</td>
+                                <td>3个附件</td>
                                 <td>刘老师</td>
                                 <td>135****7890</td>
                                 <td>2024-02-08 15:30</td>
-                                <td><span class="status-badge completed">已完成</span></td>
-                                <td>
-                                    <a href="#">查看</a>
-                                </td>
+                                <td><span class="status-badge completed">已回复</span></td>
+                                <td>管理员</td>
+                                <td>2024-02-09 10:15</td>
                             </tr>
                             <tr>
-                                <td>FB20240208006</td>
+                                <td><input type="checkbox"></td>
+                                <td>6</td>
+                                <td>FB2024020809150006</td>
                                 <td><span class="type-badge">其他</span></td>
                                 <td>感谢平台提供的优质内容，学生们很喜欢</td>
+                                <td>-</td>
                                 <td>孙老师</td>
                                 <td>134****2468</td>
                                 <td>2024-02-08 09:15</td>
-                                <td><span class="status-badge completed">已完成</span></td>
-                                <td>
-                                    <a href="#">查看</a>
-                                </td>
+                                <td><span class="status-badge completed">已回复</span></td>
+                                <td>管理员</td>
+                                <td>2024-02-09 14:20</td>
                             </tr>
                             <tr>
-                                <td>FB20240207007</td>
+                                <td><input type="checkbox"></td>
+                                <td>7</td>
+                                <td>FB2024020714200007</td>
                                 <td><span class="type-badge">功能建议</span></td>
                                 <td>建议增加班级阅读排行榜，激励学生阅读</td>
+                                <td>-</td>
                                 <td>周老师</td>
                                 <td>133****1357</td>
                                 <td>2024-02-07 14:20</td>
-                                <td><span class="status-badge processing">处理中</span></td>
-                                <td>
-                                    <a href="#">查看</a>
-                                    <a href="#">跟进</a>
-                                </td>
+                                <td><span class="status-badge pending">待回复</span></td>
+                                <td>-</td>
+                                <td>-</td>
                             </tr>
                             <tr>
-                                <td>FB20240207008</td>
+                                <td><input type="checkbox"></td>
+                                <td>8</td>
+                                <td>FB2024020710450008</td>
                                 <td><span class="type-badge">内容建议</span></td>
                                 <td>希望增加古诗词相关的阅读内容</td>
+                                <td>1个附件</td>
                                 <td>吴老师</td>
                                 <td>132****9753</td>
                                 <td>2024-02-07 10:45</td>
-                                <td><span class="status-badge completed">已完成</span></td>
-                                <td>
-                                    <a href="#">查看</a>
-                                </td>
+                                <td><span class="status-badge completed">已回复</span></td>
+                                <td>管理员</td>
+                                <td>2024-02-08 11:30</td>
                             </tr>
                             <tr>
-                                <td>FB20240206009</td>
+                                <td><input type="checkbox"></td>
+                                <td>9</td>
+                                <td>FB2024020616300009</td>
                                 <td><span class="type-badge">问题反馈</span></td>
                                 <td>移动端APP偶尔会出现闪退现象</td>
+                                <td>2个附件</td>
                                 <td>郑老师</td>
                                 <td>131****8642</td>
                                 <td>2024-02-06 16:30</td>
-                                <td><span class="status-badge completed">已完成</span></td>
-                                <td>
-                                    <a href="#">查看</a>
-                                </td>
+                                <td><span class="status-badge completed">已回复</span></td>
+                                <td>管理员</td>
+                                <td>2024-02-07 09:45</td>
                             </tr>
                             <tr>
-                                <td>FB20240206010</td>
+                                <td><input type="checkbox"></td>
+                                <td>10</td>
+                                <td>FB2024020611150010</td>
                                 <td><span class="type-badge">功能建议</span></td>
                                 <td>建议增加阅读打卡功能，培养学生阅读习惯</td>
+                                <td>-</td>
                                 <td>钱老师</td>
                                 <td>130****7531</td>
                                 <td>2024-02-06 11:15</td>
-                                <td><span class="status-badge pending">待处理</span></td>
-                                <td>
-                                    <a href="#">查看</a>
-                                    <a href="#">处理</a>
-                                </td>
+                                <td><span class="status-badge pending">待回复</span></td>
+                                <td>-</td>
+                                <td>-</td>
                             </tr>
                         </tbody>
                     </table>
