@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>测评预览 - 校校读吧管理平台</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+        }
+
+        /* 主体布局 */
+        .main { display: flex; min-height: 100vh; }
+        /* 侧边栏 */
+        .sidebar { width: 240px; background: #fff; border-right: 1px solid #e0e0e0; display: flex; flex-direction: column; }
+        /* Logo区域 */
+        .sidebar-header { height: 60px; display: flex; align-items: center; padding: 0 24px; border-bottom: 1px solid #e0e0e0; font-size: 18px; font-weight: 600; color: #333; }
+        .sidebar-menu { flex: 1; padding: 16px 0; overflow-y: auto; }
+        .menu-group {
+            margin-bottom: 4px;
+        }
+        .menu-group-title {
+            padding: 12px 24px;
+            font-size: 14px;
+            color: #333;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.2s;
+        }
+        .menu-group-title:hover {
+            background: #f5f5f5;
+        }
+        .menu-group-icon {
+            font-size: 12px;
+            color: #999;
+            transition: transform 0.2s;
+        }
+        .menu-group.expanded .menu-group-icon {
+            transform: rotate(90deg);
+        }
+        .menu-group-items {
+            display: none;
+        }
+        .menu-group.expanded .menu-group-items {
+            display: block;
+        }
+        .menu-item {
+            padding: 10px 24px 10px 48px;
+            font-size: 14px;
+            color: #666;
+            cursor: pointer;
+        }
+        .menu-item:hover {
+            background: #f5f5f5;
+        }
+        .menu-item.active {
+            color: #333;
+            font-weight: 600;
+            background: #f5f5f5;
+            border-left: 3px solid #333;
+        }
+
+        /* 右侧内容区 */
+        .content { flex: 1; display: flex; flex-direction: column; }
+        /* 顶部栏 */
+        .header { height: 60px; background: #fff; border-bottom: 1px solid #e0e0e0; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; }
+        /* 面包屑 */
+        .breadcrumb { font-size: 14px; color: #999; }
+        .breadcrumb a { color: #666; text-decoration: none; }
+        .breadcrumb a:hover { color: #333; }
+        /* 用户信息 */
+        .user-info { display: flex; align-items: center; gap: 16px; }
+        .user-name { font-size: 14px; color: #333; }
+        .logout-btn { font-size: 14px; color: #666; cursor: pointer; text-decoration: none; }
+        .logout-btn:hover { color: #333; }
+        /* 主内容区 */
+        .main-content { flex: 1; padding: 24px; overflow-y: auto; }
+
+        /* 页面标题 */
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .page-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        /* 按钮 */
+        .btn {
+            height: 36px;
+            padding: 0 20px;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            border: none;
+        }
+        .btn-primary {
+            background: #333;
+            color: #fff;
+            border: 1px solid #333;
+        }
+        .btn-primary:hover {
+            background: #555;
+        }
+        .btn-secondary {
+            background: #fff;
+            color: #333;
+            border: 1px solid #999;
+        }
+        .btn-secondary:hover {
+            background: #f5f5f5;
+        }
+
+        /* 卡片 */
+        .card {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        /* 书籍信息 */
+        .book-info {
+            display: flex;
+            gap: 16px;
+            padding: 16px;
+            background: #f5f5f5;
+            border-radius: 4px;
+            margin-bottom: 24px;
+        }
+        .book-cover {
+            width: 80px;
+            height: 120px;
+            background: #e0e0e0;
+            border: 1px solid #999;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: #999;
+        }
+        .book-details {
+            flex: 1;
+        }
+        .book-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        .book-meta {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* 测评统计 */
+        .test-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .stat-item {
+            padding: 16px;
+            background: #f5f5f5;
+            border-radius: 4px;
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 24px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+        }
+
+        /* 题目列表 */
+        .question-list {
+            margin-top: 20px;
+        }
+        .question-item {
+            padding: 20px;
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            margin-bottom: 16px;
+        }
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .question-number {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+        }
+        .question-type {
+            display: inline-block;
+            padding: 4px 12px;
+            background: #f5f5f5;
+            border-radius: 4px;
+            font-size: 12px;
+            color: #666;
+        }
+        .question-content {
+            font-size: 14px;
+            color: #333;
+            line-height: 1.6;
+            margin-bottom: 12px;
+        }
+        .question-options {
+            margin-bottom: 12px;
+        }
+        .option-item {
+            padding: 8px 12px;
+            background: #f5f5f5;
+            border-radius: 4px;
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+        .option-item.correct {
+            background: #333;
+            color: #fff;
+        }
+        .question-answer {
+            padding: 12px;
+            background: #f5f5f5;
+            border-radius: 4px;
+            margin-bottom: 12px;
+        }
+        .answer-label {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 4px;
+        }
+        .answer-value {
+            font-size: 14px;
+            color: #333;
+        }
+        .question-explanation {
+            padding: 12px;
+            background: #f5f5f5;
+            border-radius: 4px;
+        }
+        .explanation-label {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 4px;
+        }
+        .explanation-value {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.6;
+        }
+        .question-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        /* 操作按钮组 */
+        .action-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 24px;
+        }
+    </style>
+</head>
+<body>
+    <div class="main">
+        <!-- 侧边栏 -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                校校读吧管理平台
+            </div>
+            <div class="sidebar-menu">
+                <div class="menu-item">首页</div>
+                <div class="menu-group">
+                    <div class="menu-group-title" onclick="toggleMenu(this)">
+                        <span>用户管理</span>
+                        <span class="menu-group-icon">[▶]</span>
+                    </div>
+                    <div class="menu-group-items">
+                        <div class="menu-item">学校管理</div>
+                        <div class="menu-item">班级管理</div>
+                        <div class="menu-item">小程序用户管理</div>
+                    </div>
+                </div>
+                <div class="menu-group expanded">
+                    <div class="menu-group-title" onclick="toggleMenu(this)">
+                        <span>内容管理</span>
+                        <span class="menu-group-icon">[▶]</span>
+                    </div>
+                    <div class="menu-group-items">
+                        <div class="menu-item">阅读计划</div>
+                        <div class="menu-item active">书籍资源库</div>
+                    </div>
+                </div>
+                <div class="menu-group">
+                    <div class="menu-group-title" onclick="toggleMenu(this)">
+                        <span>激励体系</span>
+                        <span class="menu-group-icon">[▶]</span>
+                    </div>
+                    <div class="menu-group-items">
+                        <div class="menu-item">积分规则</div>
+                        <div class="menu-item">等级设置</div>
+                        <div class="menu-item">证书配置</div>
+                    </div>
+                </div>
+                <div class="menu-group">
+                    <div class="menu-group-title" onclick="toggleMenu(this)">
+                        <span>消息管理</span>
+                        <span class="menu-group-icon">[▶]</span>
+                    </div>
+                    <div class="menu-group-items">
+                        <div class="menu-item">消息列表</div>
+                    </div>
+                </div>
+                <div class="menu-group">
+                    <div class="menu-group-title" onclick="toggleMenu(this)">
+                        <span>用户反馈</span>
+                        <span class="menu-group-icon">[▶]</span>
+                    </div>
+                    <div class="menu-group-items">
+                        <div class="menu-item">意见反馈</div>
+                    </div>
+                </div>
+                <div class="menu-group">
+                    <div class="menu-group-title" onclick="toggleMenu(this)">
+                        <span>数据分析</span>
+                        <span class="menu-group-icon">[▶]</span>
+                    </div>
+                    <div class="menu-group-items">
+                        <div class="menu-item">阅读数据分析</div>
+                        <div class="menu-item">测评数据分析</div>
+                        <div class="menu-item">用户行为分析</div>
+                        <div class="menu-item">数据导出中心</div>
+                    </div>
+                </div>
+                <div class="menu-group">
+                    <div class="menu-group-title" onclick="toggleMenu(this)">
+                        <span>系统配置</span>
+                        <span class="menu-group-icon">[▶]</span>
+                    </div>
+                    <div class="menu-group-items">
+                        <div class="menu-item">系统参数</div>
+                        <div class="menu-item">数据字典</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 内容区 -->
+        <div class="content">
+            <div class="header">
+                <div class="breadcrumb">
+                    <a href="#">首页</a> > <a href="#">内容管理</a> > <a href="17-书籍资源库列表.html">书籍资源库</a> > 测评预览
+                </div>
+                <div class="user-info">
+                    <span class="user-name">管理员</span>
+                    <a href="#" class="logout-btn">退出登录</a>
+                </div>
+            </div>
+            <div class="main-content">
+
+            <!-- 页面标题 -->
+            <div class="page-header">
+                <div class="page-title">测评预览</div>
+                <button class="btn btn-secondary" onclick="window.location.href='17-书籍资源库列表.html'">返回列表</button>
+            </div>
+
+            <!-- 书籍信息 -->
+            <div class="book-info">
+                <div class="book-cover">[封面]</div>
+                <div class="book-details">
+                    <div class="book-name">《西游记》</div>
+                    <div class="book-meta">
+                        <div>作者：吴承恩</div>
+                        <div>适用年级：三年级</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 题目列表 -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">题目列表（共 4 题）</div>
+                </div>
+
+                <div class="question-list">
+                    <!-- 单选题示例 -->
+                    <div class="question-item">
+                        <div class="question-header">
+                            <span class="question-number">第 1 题</span>
+                            <span class="question-type">单选题</span>
+                        </div>
+                        <div class="question-content">
+                            孙悟空在花果山自封为什么？
+                        </div>
+                        <div class="question-options">
+                            <div class="option-item correct">A. 齐天大圣</div>
+                            <div class="option-item">B. 美猴王</div>
+                            <div class="option-item">C. 斗战胜佛</div>
+                            <div class="option-item">D. 弼马温</div>
+                        </div>
+                        <div class="question-answer">
+                            <div class="answer-label">正确答案</div>
+                            <div class="answer-value">A</div>
+                        </div>
+                        <div class="question-explanation">
+                            <div class="explanation-label">题目解析</div>
+                            <div class="explanation-value">孙悟空在花果山自封为"齐天大圣"，这是他反抗天庭权威的表现</div>
+                        </div>
+                    </div>
+
+                    <!-- 多选题示例 -->
+                    <div class="question-item">
+                        <div class="question-header">
+                            <span class="question-number">第 2 题</span>
+                            <span class="question-type">多选题</span>
+                        </div>
+                        <div class="question-content">
+                            以下哪些是唐僧的徒弟？
+                        </div>
+                        <div class="question-options">
+                            <div class="option-item correct">A. 孙悟空</div>
+                            <div class="option-item correct">B. 猪八戒</div>
+                            <div class="option-item correct">C. 沙僧</div>
+                            <div class="option-item">D. 白龙马</div>
+                        </div>
+                        <div class="question-answer">
+                            <div class="answer-label">正确答案</div>
+                            <div class="answer-value">ABC</div>
+                        </div>
+                        <div class="question-explanation">
+                            <div class="explanation-label">题目解析</div>
+                            <div class="explanation-value">唐僧有三个徒弟：孙悟空、猪八戒、沙僧。白龙马是坐骑，不是徒弟</div>
+                        </div>
+                    </div>
+
+                    <!-- 判断题示例 -->
+                    <div class="question-item">
+                        <div class="question-header">
+                            <span class="question-number">第 3 题</span>
+                            <span class="question-type">判断题</span>
+                        </div>
+                        <div class="question-content">
+                            孙悟空是从石头里蹦出来的
+                        </div>
+                        <div class="question-answer">
+                            <div class="answer-label">正确答案</div>
+                            <div class="answer-value">对</div>
+                        </div>
+                        <div class="question-explanation">
+                            <div class="explanation-label">题目解析</div>
+                            <div class="explanation-value">孙悟空是从花果山顶的仙石中孕育而生，因此说他是从石头里蹦出来的是正确的</div>
+                        </div>
+                    </div>
+
+                    <!-- 单选题示例2 -->
+                    <div class="question-item">
+                        <div class="question-header">
+                            <span class="question-number">第 4 题</span>
+                            <span class="question-type">单选题</span>
+                        </div>
+                        <div class="question-content">
+                            猪八戒原来在天庭担任什么职务？
+                        </div>
+                        <div class="question-options">
+                            <div class="option-item">A. 齐天大圣</div>
+                            <div class="option-item correct">B. 天蓬元帅</div>
+                            <div class="option-item">C. 卷帘大将</div>
+                            <div class="option-item">D. 托塔天王</div>
+                        </div>
+                        <div class="question-answer">
+                            <div class="answer-label">正确答案</div>
+                            <div class="answer-value">B</div>
+                        </div>
+                        <div class="question-explanation">
+                            <div class="explanation-label">题目解析</div>
+                            <div class="explanation-value">猪八戒原是天庭的天蓬元帅，因调戏嫦娥被贬下凡间</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 操作按钮 -->
+            <div class="action-buttons">
+                <button class="btn btn-secondary">继续添加题目</button>
+                <button class="btn btn-primary">发布测评</button>
+            </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    function toggleMenu(element) {
+        const menuGroup = element.parentElement;
+        menuGroup.classList.toggle('expanded');
+    }
+    </script>
+</body>
+</html>

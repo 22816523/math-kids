@@ -247,6 +247,99 @@
             margin-bottom: 20px;
         }
 
+        /* 整体统计 */
+        .stats-overview {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .stat-item {
+            text-align: center;
+            padding: 16px;
+            background: #f9f9f9;
+            border-radius: 4px;
+        }
+        .stat-item .stat-label {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+        .stat-item .stat-value {
+            font-size: 28px;
+            font-weight: 600;
+            color: #333;
+        }
+        .stat-item .stat-unit {
+            font-size: 14px;
+            color: #999;
+            margin-left: 4px;
+        }
+        .stat-item .stat-desc {
+            font-size: 12px;
+            color: #999;
+            margin-top: 8px;
+        }
+        .stat-item.highlight-stat {
+            background: #f0f9f0;
+            border: 1px solid #d9f0d9;
+        }
+
+        /* 两栏布局 */
+        .two-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+        .section-box {
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 16px;
+        }
+        .section-box-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 16px;
+        }
+
+        /* 区域占比 */
+        .region-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .region-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .region-name {
+            width: 60px;
+            font-size: 14px;
+            color: #333;
+        }
+        .region-bar-bg {
+            flex: 1;
+            height: 20px;
+            background: #f5f5f5;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .region-bar {
+            height: 100%;
+            background: #333;
+            border-radius: 4px;
+        }
+        .region-percent {
+            width: 40px;
+            font-size: 14px;
+            color: #666;
+            text-align: right;
+        }
+
         /* 规模数据表格 */
         .scale-table {
             width: 100%;
@@ -409,6 +502,16 @@
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 20px;
+        }
+
+        /* 箭头指示 */
+        .arrow-up {
+            color: #52c41a;
+            font-weight: 600;
+        }
+        .arrow-down {
+            color: #ff4d4f;
+            font-weight: 600;
         }
 
         /* 激励数据 */
@@ -707,107 +810,93 @@
                 <button class="btn btn-secondary">导出报表</button>
             </div>
 
-            <!-- 一、基础规模数据 -->
+            <!-- 一、学校阅读整体情况 -->
             <div class="card">
-                <div class="section-title">基础规模数据</div>
-                <table class="scale-table">
+                <div class="section-title">学校阅读整体情况</div>
+
+                <!-- 整体统计 -->
+                <div class="stats-overview">
+                    <div class="stat-item">
+                        <div class="stat-label">参与年级</div>
+                        <div class="stat-value">6<span class="stat-unit">个</span></div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">参与班级</div>
+                        <div class="stat-value">32<span class="stat-unit">个</span></div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">参与老师</div>
+                        <div class="stat-value">38<span class="stat-unit">人</span></div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">参与学生</div>
+                        <div class="stat-value">1,156<span class="stat-unit">人</span></div>
+                    </div>
+                    <div class="stat-item highlight-stat">
+                        <div class="stat-label">区域排名（广东省）</div>
+                        <div class="stat-value"><span class="highlight-green">前8%</span></div>
+                        <div class="stat-desc">省内126所学校中排第10名</div>
+                    </div>
+                </div>
+
+                <!-- 各年级参与情况 -->
+                <div class="section-box-title">各年级参与情况</div>
+                <table class="data-table">
                     <thead>
                         <tr>
-                            <th width="120">角色</th>
-                            <th>总数</th>
-                            <th>参与数</th>
+                            <th>年级</th>
+                            <th>班级数</th>
+                            <th>学生数</th>
                             <th>参与率</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td class="role-col">老师</td>
-                            <td><span class="value-large">45</span></td>
-                            <td><span class="value-large">38</span></td>
-                            <td><span class="value-large">84.4%</span></td>
+                            <td>一年级</td>
+                            <td>6</td>
+                            <td>258</td>
+                            <td>92.3%</td>
                         </tr>
                         <tr>
-                            <td class="role-col">班级</td>
-                            <td><span class="value-large">36</span></td>
-                            <td><span class="value-large">32</span></td>
-                            <td><span class="value-large">88.9%</span></td>
+                            <td>二年级</td>
+                            <td>6</td>
+                            <td>245</td>
+                            <td>89.8%</td>
                         </tr>
                         <tr>
-                            <td class="role-col">学生</td>
-                            <td><span class="value-large">1,280</span></td>
-                            <td><span class="value-large">1,156</span></td>
-                            <td><span class="value-large">90.3%</span></td>
+                            <td>三年级</td>
+                            <td>6</td>
+                            <td>252</td>
+                            <td><span class="highlight-green">95.2%</span></td>
+                        </tr>
+                        <tr>
+                            <td>四年级</td>
+                            <td>6</td>
+                            <td>248</td>
+                            <td>88.5%</td>
+                        </tr>
+                        <tr>
+                            <td>五年级</td>
+                            <td>4</td>
+                            <td>142</td>
+                            <td>86.2%</td>
+                        </tr>
+                        <tr>
+                            <td>六年级</td>
+                            <td>4</td>
+                            <td>135</td>
+                            <td><span class="highlight-red">78.5%</span></td>
                         </tr>
                     </tbody>
                 </table>
             </div>
 
-            <!-- 二、任务完成数据 -->
+            <!-- 二、阅读成果 -->
             <div class="card">
-                <div class="section-title">任务完成数据</div>
-                <div class="task-grid">
-                    <!-- 视频任务 -->
-                    <div class="task-card">
-                        <div class="task-card-title">视频任务</div>
-                        <div class="task-stat-row">
-                            <span class="task-stat-label">任务总数</span>
-                            <span class="task-stat-value">2,450</span>
-                        </div>
-                        <div class="task-stat-row">
-                            <span class="task-stat-label">完成数</span>
-                            <span class="task-stat-value">2,128</span>
-                        </div>
-                        <div class="task-stat-row">
-                            <span class="task-stat-label">完成率</span>
-                            <span class="task-stat-value highlight">86.9%</span>
-                        </div>
-                    </div>
-                    <!-- 阅读任务 -->
-                    <div class="task-card">
-                        <div class="task-card-title">阅读任务（导读单打卡）</div>
-                        <div class="task-stat-row">
-                            <span class="task-stat-label">任务总数</span>
-                            <span class="task-stat-value">8,560</span>
-                        </div>
-                        <div class="task-stat-row">
-                            <span class="task-stat-label">打卡数</span>
-                            <span class="task-stat-value">7,124</span>
-                        </div>
-                        <div class="task-stat-row">
-                            <span class="task-stat-label">完成率</span>
-                            <span class="task-stat-value highlight">83.2%</span>
-                        </div>
-                    </div>
-                    <!-- 书籍测评 -->
-                    <div class="task-card">
-                        <div class="task-card-title">书籍测评</div>
-                        <div class="task-stat-row">
-                            <span class="task-stat-label">测评总数</span>
-                            <span class="task-stat-value">1,856</span>
-                        </div>
-                        <div class="task-stat-row">
-                            <span class="task-stat-label">参与数</span>
-                            <span class="task-stat-value">1,623</span>
-                        </div>
-                        <div class="task-stat-row">
-                            <span class="task-stat-label">通过数</span>
-                            <span class="task-stat-value">1,245</span>
-                        </div>
-                        <div class="task-stat-row">
-                            <span class="task-stat-label">通过率</span>
-                            <span class="task-stat-value highlight">76.7%</span>
-                        </div>
-                        <div class="task-stat-row">
-                            <span class="task-stat-label">平均分</span>
-                            <span class="task-stat-value highlight">78.5分</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                <div class="section-title">阅读成果</div>
 
-            <!-- 三、阅读量化数据（按年级） -->
-            <div class="card">
-                <div class="section-title">阅读量化数据（按年级）</div>
+                <!-- 各年级阅读量 -->
+                <div class="section-box-title">各年级阅读量</div>
                 <div class="table-container">
                     <table class="data-table">
                         <thead>
@@ -915,179 +1004,477 @@
                 <div style="margin-top: 12px; font-size: 12px; color: #999;">
                     说明：同年级校际排名是与平台内其他学校同年级的人均数据对比（共58所学校），前10名显示具体排名，其他显示百分位
                 </div>
-            </div>
 
-            <!-- 四、横向排名 -->
-            <div class="card">
-                <div class="section-title">全平台学校排名（共 58 所学校）</div>
-                <div class="rank-grid">
-                    <div class="rank-card">
-                        <div class="rank-card-title">阅读总量排名</div>
-                        <div class="rank-card-value">第 3 名</div>
-                        <div class="rank-card-total">/ 58所</div>
-                    </div>
-                    <div class="rank-card">
-                        <div class="rank-card-title">学生参与率排名</div>
-                        <div class="rank-card-value">第 5 名</div>
-                        <div class="rank-card-total">/ 58所</div>
-                    </div>
-                    <div class="rank-card">
-                        <div class="rank-card-title">任务完成率排名</div>
-                        <div class="rank-card-value">第 8 名</div>
-                        <div class="rank-card-total">/ 58所</div>
-                    </div>
-                    <div class="rank-card">
-                        <div class="rank-card-title">人均阅读量排名</div>
-                        <div class="rank-card-value">第 4 名</div>
-                        <div class="rank-card-total">/ 58所</div>
-                    </div>
-                    <div class="rank-card">
-                        <div class="rank-card-title">测评通过率排名</div>
-                        <div class="rank-card-value">第 12 名</div>
-                        <div class="rank-card-total">/ 58所</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 五、激励数据 & 六、热门书籍 -->
-            <div class="two-column">
-                <!-- 激励数据 -->
-                <div class="card">
-                    <div class="section-title">激励数据</div>
-                    <div class="incentive-grid">
-                        <div class="incentive-item">
-                            <div class="incentive-label">积分总数</div>
-                            <div class="incentive-value">285,600</div>
-                        </div>
-                        <div class="incentive-item">
-                            <div class="incentive-label">人均积分</div>
-                            <div class="incentive-value">223</div>
-                        </div>
-                        <div class="incentive-item">
-                            <div class="incentive-label">证书发放数</div>
-                            <div class="incentive-value">856</div>
-                        </div>
-                    </div>
-                    <div class="level-distribution">
-                        <div style="font-size: 14px; color: #333; margin-bottom: 12px; font-weight: 600;">等级分布</div>
-                        <div class="level-row">
-                            <span class="level-name">LV5 书神</span>
-                            <div class="level-bar-bg">
-                                <div class="level-bar" style="width: 8%;"></div>
-                            </div>
-                            <span class="level-percent">8%</span>
-                        </div>
-                        <div class="level-row">
-                            <span class="level-name">LV4 书霸</span>
-                            <div class="level-bar-bg">
-                                <div class="level-bar" style="width: 15%;"></div>
-                            </div>
-                            <span class="level-percent">15%</span>
-                        </div>
-                        <div class="level-row">
-                            <span class="level-name">LV3 书迷</span>
-                            <div class="level-bar-bg">
-                                <div class="level-bar" style="width: 28%;"></div>
-                            </div>
-                            <span class="level-percent">28%</span>
-                        </div>
-                        <div class="level-row">
-                            <span class="level-name">LV2 书友</span>
-                            <div class="level-bar-bg">
-                                <div class="level-bar" style="width: 32%;"></div>
-                            </div>
-                            <span class="level-percent">32%</span>
-                        </div>
-                        <div class="level-row">
-                            <span class="level-name">LV1 书童</span>
-                            <div class="level-bar-bg">
-                                <div class="level-bar" style="width: 17%;"></div>
-                            </div>
-                            <span class="level-percent">17%</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 热门书籍 -->
-                <div class="card">
-                    <div class="section-title">该校热门书籍 Top5</div>
-                    <table class="book-table">
+                <!-- 阅读能力点 -->
+                <div class="section-box-title" style="margin-top: 24px; padding-top: 20px; border-top: 1px solid #e0e0e0;">阅读能力点</div>
+                <div class="table-container">
+                    <table class="data-table">
                         <thead>
                             <tr>
-                                <th width="50">排名</th>
-                                <th>书籍名称</th>
-                                <th>阅读人次</th>
-                                <th>完成率</th>
+                                <th rowspan="2">年级</th>
+                                <th rowspan="2">考察能力点数</th>
+                                <th colspan="2" style="text-align: center; border-bottom: 1px solid #e0e0e0;">掌握能力点数（平均）</th>
+                                <th colspan="2" style="text-align: center; border-bottom: 1px solid #e0e0e0;">能力点掌握率</th>
+                            </tr>
+                            <tr>
+                                <th style="font-size: 12px;">本校</th>
+                                <th style="font-size: 12px;">区域平均</th>
+                                <th style="font-size: 12px;">本校</th>
+                                <th style="font-size: 12px;">区域平均</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td><span class="rank-badge top1">1</span></td>
-                                <td>《西游记》</td>
-                                <td>856</td>
-                                <td>
-                                    <div style="display: flex; align-items: center; gap: 8px;">
-                                        <div class="progress-bar" style="width: 80px;">
-                                            <div class="progress-fill" style="width: 92%;"></div>
-                                        </div>
-                                        <span>92%</span>
-                                    </div>
-                                </td>
+                                <td><strong>一年级</strong></td>
+                                <td>18</td>
+                                <td>14.2 <span class="arrow-up">↑</span></td>
+                                <td>12.5</td>
+                                <td>78.9% <span class="arrow-up">↑</span></td>
+                                <td>69.4%</td>
                             </tr>
                             <tr>
-                                <td><span class="rank-badge top2">2</span></td>
-                                <td>《三国演义》</td>
-                                <td>723</td>
-                                <td>
-                                    <div style="display: flex; align-items: center; gap: 8px;">
-                                        <div class="progress-bar" style="width: 80px;">
-                                            <div class="progress-fill" style="width: 85%;"></div>
-                                        </div>
-                                        <span>85%</span>
-                                    </div>
-                                </td>
+                                <td><strong>二年级</strong></td>
+                                <td>20</td>
+                                <td>16.0 <span class="arrow-up">↑</span></td>
+                                <td>14.8</td>
+                                <td>80.0% <span class="arrow-up">↑</span></td>
+                                <td>74.0%</td>
                             </tr>
                             <tr>
-                                <td><span class="rank-badge top3">3</span></td>
-                                <td>《草房子》</td>
-                                <td>645</td>
-                                <td>
-                                    <div style="display: flex; align-items: center; gap: 8px;">
-                                        <div class="progress-bar" style="width: 80px;">
-                                            <div class="progress-fill" style="width: 88%;"></div>
-                                        </div>
-                                        <span>88%</span>
-                                    </div>
-                                </td>
+                                <td><strong>三年级</strong></td>
+                                <td>24</td>
+                                <td><span class="highlight-green">21.5</span> <span class="arrow-up">↑</span></td>
+                                <td>18.6</td>
+                                <td><span class="highlight-green">89.6%</span> <span class="arrow-up">↑</span></td>
+                                <td>77.5%</td>
                             </tr>
                             <tr>
-                                <td><span class="rank-badge other">4</span></td>
-                                <td>《骆驼祥子》</td>
-                                <td>534</td>
-                                <td>
-                                    <div style="display: flex; align-items: center; gap: 8px;">
-                                        <div class="progress-bar" style="width: 80px;">
-                                            <div class="progress-fill" style="width: 76%;"></div>
-                                        </div>
-                                        <span>76%</span>
-                                    </div>
-                                </td>
+                                <td><strong>四年级</strong></td>
+                                <td>26</td>
+                                <td>21.3 <span class="arrow-up">↑</span></td>
+                                <td>19.8</td>
+                                <td>81.9% <span class="arrow-up">↑</span></td>
+                                <td>76.2%</td>
                             </tr>
                             <tr>
-                                <td><span class="rank-badge other">5</span></td>
-                                <td>《城南旧事》</td>
-                                <td>489</td>
-                                <td>
-                                    <div style="display: flex; align-items: center; gap: 8px;">
-                                        <div class="progress-bar" style="width: 80px;">
-                                            <div class="progress-fill" style="width: 81%;"></div>
-                                        </div>
-                                        <span>81%</span>
-                                    </div>
-                                </td>
+                                <td><strong>五年级</strong></td>
+                                <td>28</td>
+                                <td>21.0 <span class="arrow-down">↓</span></td>
+                                <td>22.4</td>
+                                <td>75.0% <span class="arrow-down">↓</span></td>
+                                <td>80.0%</td>
+                            </tr>
+                            <tr>
+                                <td><strong>六年级</strong></td>
+                                <td>30</td>
+                                <td><span class="highlight-red">19.5</span> <span class="arrow-down">↓</span></td>
+                                <td>23.4</td>
+                                <td><span class="highlight-red">65.0%</span> <span class="arrow-down">↓</span></td>
+                                <td>78.0%</td>
                             </tr>
                         </tbody>
                     </table>
+                </div>
+                <div style="margin-top: 12px; font-size: 12px; color: #999;">
+                    说明：<span class="arrow-up">↑</span> 表示高于区域平均，<span class="arrow-down">↓</span> 表示低于区域平均
+                </div>
+
+                <!-- 测评成绩 -->
+                <div class="section-box-title" style="margin-top: 24px; padding-top: 20px; border-top: 1px solid #e0e0e0;">测评成绩</div>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>年级</th>
+                                <th>本校平均分</th>
+                                <th>区域平均分</th>
+                                <th>对比</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>一年级</strong></td>
+                                <td>82.5分</td>
+                                <td>78.2分</td>
+                                <td>+4.3 <span class="arrow-up">↑</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>二年级</strong></td>
+                                <td>85.2分</td>
+                                <td>80.5分</td>
+                                <td>+4.7 <span class="arrow-up">↑</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>三年级</strong></td>
+                                <td><span class="highlight-green">92.8分</span></td>
+                                <td>82.1分</td>
+                                <td><span class="highlight-green">+10.7</span> <span class="arrow-up">↑</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>四年级</strong></td>
+                                <td>86.5分</td>
+                                <td>83.2分</td>
+                                <td>+3.3 <span class="arrow-up">↑</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>五年级</strong></td>
+                                <td>78.3分</td>
+                                <td>81.6分</td>
+                                <td>-3.3 <span class="arrow-down">↓</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>六年级</strong></td>
+                                <td><span class="highlight-red">68.5分</span></td>
+                                <td>79.8分</td>
+                                <td><span class="highlight-red">-11.3</span> <span class="arrow-down">↓</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div style="margin-top: 12px; font-size: 12px; color: #999;">
+                    说明：<span class="arrow-up">↑</span> 表示高于区域平均，<span class="arrow-down">↓</span> 表示低于区域平均
+                </div>
+            </div>
+
+            <!-- 三、阅读排行榜 -->
+            <div class="card">
+                <div class="section-title">阅读排行榜</div>
+                <div style="font-size: 13px; color: #999; margin-bottom: 16px;">统计范围：当前阅读计划相关积分</div>
+
+                <!-- 优秀班级 -->
+                <div class="section-box-title">优秀班级（各年级前5名）</div>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>年级</th>
+                                <th>排名</th>
+                                <th>班级</th>
+                                <th>班主任</th>
+                                <th>学生数</th>
+                                <th>班级总积分</th>
+                                <th>人均积分</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- 一年级 -->
+                            <tr>
+                                <td rowspan="5"><strong>一年级</strong></td>
+                                <td><span class="rank-badge top">1</span></td>
+                                <td>一(2)班</td>
+                                <td>张老师</td>
+                                <td>43</td>
+                                <td>12,580</td>
+                                <td>293</td>
+                            </tr>
+                            <tr>
+                                <td><span class="rank-badge">2</span></td>
+                                <td>一(5)班</td>
+                                <td>王老师</td>
+                                <td>42</td>
+                                <td>11,256</td>
+                                <td>268</td>
+                            </tr>
+                            <tr>
+                                <td><span class="rank-badge">3</span></td>
+                                <td>一(1)班</td>
+                                <td>李老师</td>
+                                <td>44</td>
+                                <td>10,824</td>
+                                <td>246</td>
+                            </tr>
+                            <tr>
+                                <td><span class="rank-badge">4</span></td>
+                                <td>一(3)班</td>
+                                <td>陈老师</td>
+                                <td>43</td>
+                                <td>9,890</td>
+                                <td>230</td>
+                            </tr>
+                            <tr>
+                                <td><span class="rank-badge">5</span></td>
+                                <td>一(4)班</td>
+                                <td>刘老师</td>
+                                <td>42</td>
+                                <td>9,156</td>
+                                <td>218</td>
+                            </tr>
+                            <!-- 二年级 -->
+                            <tr style="border-top: 2px solid #e0e0e0;">
+                                <td rowspan="5"><strong>二年级</strong></td>
+                                <td><span class="rank-badge top">1</span></td>
+                                <td>二(3)班</td>
+                                <td>赵老师</td>
+                                <td>41</td>
+                                <td>13,245</td>
+                                <td>323</td>
+                            </tr>
+                            <tr>
+                                <td><span class="rank-badge">2</span></td>
+                                <td>二(1)班</td>
+                                <td>钱老师</td>
+                                <td>40</td>
+                                <td>12,080</td>
+                                <td>302</td>
+                            </tr>
+                            <tr>
+                                <td><span class="rank-badge">3</span></td>
+                                <td>二(6)班</td>
+                                <td>孙老师</td>
+                                <td>41</td>
+                                <td>11,398</td>
+                                <td>278</td>
+                            </tr>
+                            <tr>
+                                <td><span class="rank-badge">4</span></td>
+                                <td>二(2)班</td>
+                                <td>周老师</td>
+                                <td>40</td>
+                                <td>10,560</td>
+                                <td>264</td>
+                            </tr>
+                            <tr>
+                                <td><span class="rank-badge">5</span></td>
+                                <td>二(4)班</td>
+                                <td>吴老师</td>
+                                <td>42</td>
+                                <td>10,122</td>
+                                <td>241</td>
+                            </tr>
+                            <!-- 三年级 -->
+                            <tr style="border-top: 2px solid #e0e0e0;">
+                                <td rowspan="5"><strong>三年级</strong></td>
+                                <td><span class="rank-badge top">1</span></td>
+                                <td><span class="highlight-green">三(2)班</span></td>
+                                <td>王老师</td>
+                                <td>45</td>
+                                <td><span class="highlight-green">18,560</span></td>
+                                <td><span class="highlight-green">412</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="rank-badge">2</span></td>
+                                <td>三(1)班</td>
+                                <td>王老师</td>
+                                <td>42</td>
+                                <td>15,246</td>
+                                <td>363</td>
+                            </tr>
+                            <tr>
+                                <td><span class="rank-badge">3</span></td>
+                                <td>三(4)班</td>
+                                <td>林老师</td>
+                                <td>43</td>
+                                <td>14,018</td>
+                                <td>326</td>
+                            </tr>
+                            <tr>
+                                <td><span class="rank-badge">4</span></td>
+                                <td>三(6)班</td>
+                                <td>黄老师</td>
+                                <td>44</td>
+                                <td>13,200</td>
+                                <td>300</td>
+                            </tr>
+                            <tr>
+                                <td><span class="rank-badge">5</span></td>
+                                <td>三(5)班</td>
+                                <td>王老师</td>
+                                <td>44</td>
+                                <td>12,672</td>
+                                <td>288</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div style="margin-top: 8px; text-align: center;">
+                    <a href="#" style="font-size: 13px; color: #666;">查看全部年级 ▼</a>
+                </div>
+
+                <!-- 优秀学生 -->
+                <div class="section-box-title" style="margin-top: 24px; padding-top: 20px; border-top: 1px solid #e0e0e0;">优秀学生（各年级前10名）</div>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>年级</th>
+                                <th>排名</th>
+                                <th>学生姓名</th>
+                                <th>所在班级</th>
+                                <th>获得积分</th>
+                                <th>阅读书籍</th>
+                                <th>阅读字数</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- 一年级 -->
+                            <tr>
+                                <td rowspan="10"><strong>一年级</strong></td>
+                                <td><span class="rank-badge top">1</span></td>
+                                <td>张小明</td>
+                                <td>一(2)班</td>
+                                <td>456</td>
+                                <td>8本</td>
+                                <td>1.2万字</td>
+                            </tr>
+                            <tr>
+                                <td><span class="rank-badge">2</span></td>
+                                <td>李小华</td>
+                                <td>一(2)班</td>
+                                <td>423</td>
+                                <td>7本</td>
+                                <td>1.1万字</td>
+                            </tr>
+                            <tr>
+                                <td><span class="rank-badge">3</span></td>
+                                <td>王小芳</td>
+                                <td>一(5)班</td>
+                                <td>398</td>
+                                <td>7本</td>
+                                <td>1.0万字</td>
+                            </tr>
+                            <tr>
+                                <td><span class="rank-badge">4</span></td>
+                                <td>刘小军</td>
+                                <td>一(1)班</td>
+                                <td>376</td>
+                                <td>6本</td>
+                                <td>0.9万字</td>
+                            </tr>
+                            <tr>
+                                <td><span class="rank-badge">5</span></td>
+                                <td>陈小丽</td>
+                                <td>一(5)班</td>
+                                <td>352</td>
+                                <td>6本</td>
+                                <td>0.9万字</td>
+                            </tr>
+                            <tr>
+                                <td><span class="rank-badge">6</span></td>
+                                <td>赵小强</td>
+                                <td>一(2)班</td>
+                                <td>338</td>
+                                <td>5本</td>
+                                <td>0.8万字</td>
+                            </tr>
+                            <tr>
+                                <td><span class="rank-badge">7</span></td>
+                                <td>孙小红</td>
+                                <td>一(3)班</td>
+                                <td>325</td>
+                                <td>5本</td>
+                                <td>0.8万字</td>
+                            </tr>
+                            <tr>
+                                <td><span class="rank-badge">8</span></td>
+                                <td>周小伟</td>
+                                <td>一(1)班</td>
+                                <td>312</td>
+                                <td>5本</td>
+                                <td>0.7万字</td>
+                            </tr>
+                            <tr>
+                                <td><span class="rank-badge">9</span></td>
+                                <td>吴小琳</td>
+                                <td>一(4)班</td>
+                                <td>298</td>
+                                <td>5本</td>
+                                <td>0.7万字</td>
+                            </tr>
+                            <tr>
+                                <td><span class="rank-badge">10</span></td>
+                                <td>郑小龙</td>
+                                <td>一(3)班</td>
+                                <td>285</td>
+                                <td>4本</td>
+                                <td>0.6万字</td>
+                            </tr>
+                            <!-- 三年级 -->
+                            <tr style="border-top: 2px solid #e0e0e0;">
+                                <td rowspan="10"><strong>三年级</strong></td>
+                                <td><span class="rank-badge top">1</span></td>
+                                <td><span class="highlight-green">张小明</span></td>
+                                <td>三(2)班</td>
+                                <td><span class="highlight-green">586</span></td>
+                                <td>12本</td>
+                                <td>6.5万字</td>
+                            </tr>
+                            <tr>
+                                <td><span class="rank-badge">2</span></td>
+                                <td>王小华</td>
+                                <td>三(2)班</td>
+                                <td>542</td>
+                                <td>11本</td>
+                                <td>5.8万字</td>
+                            </tr>
+                            <tr>
+                                <td><span class="rank-badge">3</span></td>
+                                <td>刘小芳</td>
+                                <td>三(1)班</td>
+                                <td>498</td>
+                                <td>10本</td>
+                                <td>5.2万字</td>
+                            </tr>
+                            <tr>
+                                <td><span class="rank-badge">4</span></td>
+                                <td>陈小军</td>
+                                <td>三(1)班</td>
+                                <td>465</td>
+                                <td>9本</td>
+                                <td>4.8万字</td>
+                            </tr>
+                            <tr>
+                                <td><span class="rank-badge">5</span></td>
+                                <td>赵小丽</td>
+                                <td>三(4)班</td>
+                                <td>438</td>
+                                <td>9本</td>
+                                <td>4.5万字</td>
+                            </tr>
+                            <tr>
+                                <td><span class="rank-badge">6</span></td>
+                                <td>钱小强</td>
+                                <td>三(2)班</td>
+                                <td>412</td>
+                                <td>8本</td>
+                                <td>4.2万字</td>
+                            </tr>
+                            <tr>
+                                <td><span class="rank-badge">7</span></td>
+                                <td>孙小红</td>
+                                <td>三(6)班</td>
+                                <td>398</td>
+                                <td>8本</td>
+                                <td>4.0万字</td>
+                            </tr>
+                            <tr>
+                                <td><span class="rank-badge">8</span></td>
+                                <td>周小伟</td>
+                                <td>三(4)班</td>
+                                <td>376</td>
+                                <td>7本</td>
+                                <td>3.8万字</td>
+                            </tr>
+                            <tr>
+                                <td><span class="rank-badge">9</span></td>
+                                <td>吴小琳</td>
+                                <td>三(1)班</td>
+                                <td>358</td>
+                                <td>7本</td>
+                                <td>3.5万字</td>
+                            </tr>
+                            <tr>
+                                <td><span class="rank-badge">10</span></td>
+                                <td>郑小龙</td>
+                                <td>三(5)班</td>
+                                <td>342</td>
+                                <td>6本</td>
+                                <td>3.2万字</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div style="margin-top: 8px; text-align: center;">
+                    <a href="#" style="font-size: 13px; color: #666;">查看全部年级 ▼</a>
                 </div>
             </div>
         </div>
