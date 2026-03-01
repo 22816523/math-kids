@@ -629,8 +629,8 @@
                 <div class="breadcrumb">
                     <a href="#">首页</a> &gt;
                     <a href="#">内容管理</a> &gt;
-                    <a href="10-阅读计划列表.html">阅读计划</a> &gt;
-                    配置年级书目
+                    <a href="#">阅读计划</a> &gt;
+                    创建阅读计划
                 </div>
                 <div class="user-info">
                     <span class="user-name">管理员</span>
@@ -642,12 +642,13 @@
             <div class="main-content">
 
             <!-- 页面标题 -->
-            <div class="page-title">配置年级书目</div>
+            <div class="page-title">创建阅读计划</div>
 
             <!-- 按钮组 -->
             <div class="form-actions">
-                <button type="button" class="btn btn-secondary" onclick="window.location.href='13-创建阅读计划-步骤2.html'">上一步</button>
-                <button type="button" class="btn btn-primary" onclick="alert('保存成功')">保存</button>
+                <button type="button" class="btn btn-secondary" onclick="window.location.href='12-创建阅读计划-步骤2.html'">上一步</button>
+                <button type="button" class="btn btn-secondary" onclick="saveDraft()">保存草稿</button>
+                <button type="button" class="btn btn-primary" onclick="showConfirmModal()">发布阅读计划</button>
             </div>
 
             <!-- 步骤条 -->
@@ -655,7 +656,7 @@
                 <div class="steps-container">
                     <div class="step completed">
                         <div class="step-number">1</div>
-                        <div class="step-label">选择年级和书籍</div>
+                        <div class="step-label">基本信息</div>
                     </div>
                     <div class="step-line"></div>
                     <div class="step completed">

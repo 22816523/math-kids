@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>配置年级书目 - 校校读吧管理平台</title>
+    <title>编辑阅读计划 - 步骤1 - 校校读吧管理平台</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -281,17 +281,6 @@
             font-size: 12px;
             color: #999;
             margin-top: 6px;
-        }
-        .form-readonly {
-            height: 40px;
-            padding: 0 12px;
-            background: #f9f9f9;
-            border: 1px solid #e0e0e0;
-            border-radius: 4px;
-            font-size: 14px;
-            color: #333;
-            display: flex;
-            align-items: center;
         }
         .form-upload {
             display: flex;
@@ -731,8 +720,8 @@
                 <div class="breadcrumb">
                     <a href="#">首页</a> &gt;
                     <a href="#">内容管理</a> &gt;
-                    <a href="10-阅读计划列表.html">阅读计划</a> &gt;
-                    配置年级书目
+                    <a href="#">阅读计划</a> &gt;
+                    编辑阅读计划
                 </div>
                 <div class="user-info">
                     <span class="user-name">管理员</span>
@@ -744,13 +733,12 @@
             <div class="main-content">
 
             <!-- 页面标题 -->
-            <div class="page-title">配置年级书目</div>
+            <div class="page-title">编辑阅读计划</div>
 
             <!-- 按钮组 -->
             <div class="form-actions">
-                <button type="button" class="btn btn-secondary" onclick="window.location.href='10-阅读计划列表.html'">返回列表</button>
-                <button type="button" class="btn btn-secondary">保存草稿</button>
-                <button type="button" class="btn btn-primary" onclick="window.location.href='13-创建阅读计划-步骤2.html'">下一步</button>
+                <button type="button" class="btn btn-secondary" onclick="window.location.href='09-阅读计划列表.html'">取消</button>
+                <button type="submit" class="btn btn-primary" onclick="window.location.href='15-编辑阅读计划-步骤2.html'">下一步</button>
             </div>
 
             <!-- 步骤条 -->
@@ -758,7 +746,7 @@
                 <div class="steps-container">
                     <div class="step active">
                         <div class="step-number">1</div>
-                        <div class="step-label">选择年级和书籍</div>
+                        <div class="step-label">基本信息</div>
                     </div>
                     <div class="step-line"></div>
                     <div class="step">
@@ -775,62 +763,91 @@
 
             <!-- 表单 -->
             <div class="form-card">
-                <div class="form-grid">
-                    <div class="form-item">
-                        <label class="form-label">阅读计划名称</label>
-                        <div class="form-readonly">2024春季阅读计划</div>
-                    </div>
-                </div>
-            </div>
+                <div class="form-section-title">基本信息</div>
+                <form>
+                    <div class="form-grid">
+                        <div class="form-item full-width">
+                            <label class="form-label">计划名称<span class="required">*</span></label>
+                            <input type="text" class="form-input" placeholder="请输入计划名称" value="课外阅读计划">
+                        </div>
 
-            <!-- 年级书目配置 -->
-            <div class="form-card">
-                <div class="form-section-title">年级书目配置</div>
+                        <div class="form-item full-width">
+                            <label class="form-label">适合年级<span class="required">*</span></label>
+                            <select class="form-input">
+                                <option value="">请选择适合年级</option>
+                                <option value="1">一年级</option>
+                                <option value="2" selected>二年级</option>
+                                <option value="3">三年级</option>
+                                <option value="4">四年级</option>
+                                <option value="5">五年级</option>
+                                <option value="6">六年级</option>
+                            </select>
+                        </div>
 
-                <!-- 年级选择 -->
-                <div style="margin-bottom: 20px;">
-                    <label class="form-label">选择年级 <span style="color: #ff4d4f;">*</span></label>
-                    <select class="form-input" style="width: 200px; margin-top: 8px;" onchange="updateGradeLabel(this)">
-                        <option value="1" selected>一年级</option>
-                        <option value="2">二年级</option>
-                        <option value="3">三年级</option>
-                        <option value="4">四年级</option>
-                        <option value="5">五年级</option>
-                        <option value="6">六年级</option>
-                    </select>
-                </div>
-
-                <!-- 书籍选择 -->
-                <div class="book-select-section">
-                    <div class="book-select-header">
-                        <div style="font-size: 14px; color: #333;">已选书籍（一年级）<span style="color: #999; margin-left: 8px;">共2本</span></div>
-                        <button type="button" class="btn-select-book" onclick="openBookModal()">+ 选择书籍</button>
-                    </div>
-
-                    <!-- 已选书籍展示 -->
-                    <div class="selected-books-grid">
-                        <div class="selected-book-card">
-                            <div class="selected-book-remove">[×]</div>
-                            <div class="selected-book-cover">[封面]</div>
-                            <div class="selected-book-title">《小王子》</div>
-                            <div class="selected-book-author">圣埃克苏佩里</div>
-                            <div class="selected-book-date">
-                                开始时间
-                                <input type="date" value="2024-03-01">
+                        <div class="form-item full-width">
+                            <label class="form-label">计划封面</label>
+                            <div class="form-upload">
+                                <div class="upload-preview">[封面预览]</div>
+                                <div class="upload-controls">
+                                    <button type="button" class="upload-btn">选择图片</button>
+                                    <div class="upload-info">
+                                        建议尺寸：750×1000px<br>
+                                        支持格式：JPG、PNG<br>
+                                        文件大小：不超过2MB
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div class="selected-book-card">
-                            <div class="selected-book-remove">[×]</div>
-                            <div class="selected-book-cover">[封面]</div>
-                            <div class="selected-book-title">《安徒生童话》</div>
-                            <div class="selected-book-author">安徒生</div>
-                            <div class="selected-book-date">
-                                开始时间
-                                <input type="date" value="2024-04-01">
+
+                        <div class="form-item">
+                            <label class="form-label">开始时间<span class="required">*</span></label>
+                            <input type="date" class="form-input" value="2024-04-01">
+                        </div>
+
+                        <div class="form-item">
+                            <label class="form-label">结束时间<span class="required">*</span></label>
+                            <input type="date" class="form-input" value="2024-06-30">
+                        </div>
+
+                        <div class="form-item full-width">
+                            <label class="form-label">计划描述</label>
+                            <textarea class="form-textarea" placeholder="请输入计划描述（选填）">这是一个针对二年级学生的课外阅读计划，旨在培养学生的阅读兴趣和阅读能力</textarea>
+                        </div>
+                    </div>
+
+                    <!-- 书籍选择 -->
+                    <div class="book-select-section">
+                        <div class="book-select-header">
+                            <div class="form-section-title" style="margin: 0;">选择书籍</div>
+                            <button type="button" class="btn-select-book" onclick="openBookModal()">+ 选择书籍</button>
+                        </div>
+
+                        <!-- 已选书籍展示 -->
+                        <div class="selected-books-grid">
+                            <div class="selected-book-card">
+                                <div class="selected-book-remove">[×]</div>
+                                <div class="selected-book-cover">[封面]</div>
+                                <div class="selected-book-title">《西游记》</div>
+                                <div class="selected-book-author">吴承恩</div>
+                                <div class="selected-book-date">
+                                    开始时间
+                                    <input type="date" value="2024-03-01">
+                                </div>
+                            </div>
+                            <div class="selected-book-card">
+                                <div class="selected-book-remove">[×]</div>
+                                <div class="selected-book-cover">[封面]</div>
+                                <div class="selected-book-title">《三国演义》</div>
+                                <div class="selected-book-author">罗贯中</div>
+                                <div class="selected-book-date">
+                                    开始时间
+                                    <input type="date" value="2024-04-01">
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+
+                </form>
             </div>
             </div>
         </div>

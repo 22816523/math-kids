@@ -238,6 +238,126 @@
         .btn-secondary:hover {
             background: #f5f5f5;
         }
+        .btn-danger {
+            background: #ff4d4f;
+            color: #fff;
+            border: 1px solid #ff4d4f;
+        }
+        .btn-danger:hover {
+            background: #ff7875;
+        }
+
+        /* 弹窗 */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+        .modal {
+            background: #fff;
+            border-radius: 8px;
+            width: 480px;
+            max-width: 90%;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+        .modal-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .modal-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+        .modal-close {
+            width: 24px;
+            height: 24px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-size: 18px;
+            color: #999;
+        }
+        .modal-close:hover {
+            color: #333;
+        }
+        .modal-body {
+            padding: 24px;
+        }
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+        .modal-info {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.6;
+        }
+        .modal-info strong {
+            color: #333;
+        }
+        .modal-warning {
+            color: #ff4d4f;
+            font-size: 14px;
+            margin-top: 12px;
+        }
+        .modal-form-item {
+            margin-bottom: 16px;
+        }
+        .modal-form-item:last-child {
+            margin-bottom: 0;
+        }
+        .modal-form-label {
+            display: block;
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        .modal-form-input {
+            width: 100%;
+            height: 36px;
+            padding: 0 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .modal-form-select {
+            width: 100%;
+            height: 36px;
+            padding: 0 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            font-size: 14px;
+            background: #fff;
+        }
+        .modal-checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .modal-checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: #333;
+        }
 
         /* 操作栏 */
         .action-bar {
@@ -256,7 +376,8 @@
             background: #fff;
             border: 1px solid #e0e0e0;
             border-radius: 4px;
-            overflow: hidden;
+            max-height: 320px;
+            overflow-y: auto;
         }
         .table {
             width: 100%;
@@ -264,6 +385,9 @@
         }
         .table thead {
             background: #f5f5f5;
+            position: sticky;
+            top: 0;
+            z-index: 1;
         }
         .table th {
             padding: 12px 16px;
@@ -284,6 +408,51 @@
         }
         .table tbody tr:last-child td {
             border-bottom: none;
+        }
+        .table tbody tr.selected {
+            background: #e6f4ff;
+        }
+        .table tbody tr.selected:hover {
+            background: #d0e8ff;
+        }
+
+        /* 封面图 */
+        .cover-img {
+            width: 120px;
+            height: 40px;
+            background: #f0f0f0;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: #999;
+        }
+
+        /* 从表区域 */
+        .sub-table-section {
+            margin-top: 20px;
+        }
+        .sub-table-container {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .config-status {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        .config-status.done {
+            background: #e8f5e9;
+            color: #4caf50;
+        }
+        .config-status.pending {
+            background: #fff3e0;
+            color: #ff9800;
         }
 
         /* 状态标签 */
@@ -550,18 +719,6 @@
                             <input type="text" class="filter-input" placeholder="请输入计划名称">
                         </div>
                         <div class="filter-item">
-                            <label class="filter-label">适合年级</label>
-                            <select class="filter-select">
-                                <option value="">全部年级</option>
-                                <option value="1">一年级</option>
-                                <option value="2">二年级</option>
-                                <option value="3">三年级</option>
-                                <option value="4">四年级</option>
-                                <option value="5">五年级</option>
-                                <option value="6">六年级</option>
-                            </select>
-                        </div>
-                        <div class="filter-item">
                             <label class="filter-label">状态</label>
                             <select class="filter-select">
                                 <option value="">全部状态</option>
@@ -597,26 +754,26 @@
                 <!-- 操作栏 -->
                 <div class="action-bar">
                     <div class="action-left">
-                        <button class="btn btn-primary">创建阅读计划</button>
-                        <button class="btn btn-secondary">查看</button>
+                        <button class="btn btn-primary" onclick="handleCreate()">创建阅读计划</button>
+                        <button class="btn btn-secondary" onclick="handleView()">查看</button>
                         <button class="btn btn-secondary" onclick="handleEdit()">编辑</button>
-                        <button class="btn btn-secondary">发布</button>
-                        <button class="btn btn-secondary">撤回发布</button>
-                        <button class="btn btn-secondary">删除</button>
-                        <button class="btn btn-secondary">导出</button>
+                        <button class="btn btn-secondary" onclick="handleConfigGrade()">配置年级书目</button>
+                        <button class="btn btn-secondary" onclick="handlePublish()">发布</button>
+                        <button class="btn btn-secondary" onclick="handleWithdraw()">撤回发布</button>
+                        <button class="btn btn-secondary" onclick="handleDelete()">删除</button>
+                        <button class="btn btn-secondary" onclick="handleExport()">导出</button>
                     </div>
                 </div>
 
                 <!-- 数据表格 -->
                 <div class="table-container">
-                    <table class="table">
+                    <table class="table" id="planTable">
                         <thead>
                             <tr>
-                                <th><input type="checkbox"></th>
+                                <th width="40"><input type="checkbox" id="checkAll"></th>
                                 <th>计划ID</th>
+                                <th>封面</th>
                                 <th>计划名称</th>
-                                <th>适合年级</th>
-                                <th>书籍数量</th>
                                 <th>开始时间</th>
                                 <th>结束时间</th>
                                 <th>状态</th>
@@ -625,72 +782,66 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td><input type="checkbox"></td>
+                            <tr class="selected" data-plan-id="PL202402200001" onclick="selectRow(this)">
+                                <td><input type="checkbox" checked></td>
                                 <td>PL202402200001</td>
+                                <td><div class="cover-img">[封面]</div></td>
                                 <td>2024春季阅读计划</td>
-                                <td>三年级</td>
-                                <td>2</td>
                                 <td>2024-03-01</td>
                                 <td>2024-06-30</td>
                                 <td><span class="status-badge status-active">进行中</span></td>
                                 <td>2024-02-20 10:30</td>
                                 <td>2024-02-25 14:20</td>
                             </tr>
-                            <tr>
+                            <tr data-plan-id="PL202401100001" onclick="selectRow(this)">
                                 <td><input type="checkbox"></td>
                                 <td>PL202401100001</td>
+                                <td><div class="cover-img">[封面]</div></td>
                                 <td>寒假阅读计划</td>
-                                <td>四年级</td>
-                                <td>3</td>
                                 <td>2024-01-15</td>
                                 <td>2024-02-15</td>
                                 <td><span class="status-badge status-ended">已结束</span></td>
                                 <td>2024-01-10 14:20</td>
                                 <td>2024-01-12 09:30</td>
                             </tr>
-                            <tr>
+                            <tr data-plan-id="PL202403010001" onclick="selectRow(this)">
                                 <td><input type="checkbox"></td>
                                 <td>PL202403010001</td>
+                                <td><div class="cover-img">[封面]</div></td>
                                 <td>名著阅读计划</td>
-                                <td>五年级</td>
-                                <td>4</td>
                                 <td>2024-03-10</td>
                                 <td>2024-07-10</td>
                                 <td><span class="status-badge status-active">进行中</span></td>
                                 <td>2024-03-01 09:15</td>
                                 <td>2024-03-05 16:45</td>
                             </tr>
-                            <tr>
+                            <tr data-plan-id="PL202402080001" onclick="selectRow(this)">
                                 <td><input type="checkbox"></td>
                                 <td>PL202402080001</td>
+                                <td><div class="cover-img">[封面]</div></td>
                                 <td>课外阅读计划</td>
-                                <td>二年级</td>
-                                <td>6</td>
                                 <td>2024-04-01</td>
                                 <td>2024-06-30</td>
                                 <td><span class="status-badge status-draft">未发布</span></td>
                                 <td>2024-02-08 16:45</td>
                                 <td>-</td>
                             </tr>
-                            <tr>
+                            <tr data-plan-id="PL202402150001" onclick="selectRow(this)">
                                 <td><input type="checkbox"></td>
                                 <td>PL202402150001</td>
+                                <td><div class="cover-img">[封面]</div></td>
                                 <td>经典诵读计划</td>
-                                <td>一年级</td>
-                                <td>8</td>
                                 <td>2024-02-20</td>
                                 <td>2024-06-20</td>
                                 <td><span class="status-badge status-active">进行中</span></td>
                                 <td>2024-02-15 11:00</td>
                                 <td>2024-02-18 10:15</td>
                             </tr>
-                            <tr>
+                            <tr data-plan-id="PL202402180001" onclick="selectRow(this)">
                                 <td><input type="checkbox"></td>
                                 <td>PL202402180001</td>
+                                <td><div class="cover-img">[封面]</div></td>
                                 <td>暑期阅读计划</td>
-                                <td>三年级</td>
-                                <td>5</td>
                                 <td>2024-07-01</td>
                                 <td>2024-08-31</td>
                                 <td><span class="status-badge status-pending">待开始</span></td>
@@ -699,6 +850,33 @@
                             </tr>
                         </tbody>
                     </table>
+                </div>
+
+                <!-- 从表：年级书目配置 -->
+                <div class="sub-table-section" id="subTableSection">
+                    <div style="margin-bottom: 12px;">
+                        <button class="btn btn-secondary" onclick="handleEditGradeBook()">编辑年级书目</button>
+                    </div>
+                    <div class="sub-table-container">
+                        <table class="table" id="gradeBookTable">
+                            <thead>
+                                <tr>
+                                    <th width="40"><input type="checkbox" id="checkAllGrade"></th>
+                                    <th width="80">年级</th>
+                                    <th>书籍数量</th>
+                                    <th>书籍列表</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="selected">
+                                    <td><input type="checkbox" checked></td>
+                                    <td>三年级</td>
+                                    <td>2本</td>
+                                    <td>《小王子》、《夏洛的网》</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
 
                 <!-- 分页 -->
@@ -725,14 +903,296 @@
         </div>
     </div>
 
+    <!-- 查看弹窗 -->
+    <div class="modal-overlay" id="viewModal">
+        <div class="modal">
+            <div class="modal-header">
+                <span class="modal-title">查看阅读计划</span>
+                <button class="modal-close" onclick="closeModal('viewModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div style="margin-bottom: 16px;">
+                    <div style="width: 100%; height: 100px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 14px;">[计划封面图]</div>
+                </div>
+                <div class="modal-info">
+                    <p><strong>计划名称：</strong><span id="viewPlanName">2024春季阅读计划</span></p>
+                    <p style="margin-top: 8px;"><strong>计划ID：</strong><span id="viewPlanId">PL202402200001</span></p>
+                    <p style="margin-top: 8px;"><strong>开始时间：</strong><span id="viewStartTime">2024-03-01</span></p>
+                    <p style="margin-top: 8px;"><strong>结束时间：</strong><span id="viewEndTime">2024-06-30</span></p>
+                    <p style="margin-top: 8px;"><strong>状态：</strong><span id="viewStatus">进行中</span></p>
+                    <p style="margin-top: 8px;"><strong>创建时间：</strong><span id="viewCreateTime">2024-02-20 10:30</span></p>
+                    <p style="margin-top: 8px;"><strong>发布时间：</strong><span id="viewPublishTime">2024-02-25 14:20</span></p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('viewModal')">关闭</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 发布弹窗 -->
+    <div class="modal-overlay" id="publishModal">
+        <div class="modal">
+            <div class="modal-header">
+                <span class="modal-title">发布阅读计划</span>
+                <button class="modal-close" onclick="closeModal('publishModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-info">
+                    <p>确认发布以下阅读计划？</p>
+                    <p style="margin-top: 12px;"><strong>计划名称：</strong><span id="publishPlanName">课外阅读计划</span></p>
+                    <p style="margin-top: 8px;"><strong>计划ID：</strong><span id="publishPlanId">PL202402080001</span></p>
+                </div>
+                <p class="modal-warning">注意：发布后计划将对学生可见，请确认配置无误。</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('publishModal')">取消</button>
+                <button class="btn btn-primary" onclick="confirmPublish()">确认发布</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 撤回发布弹窗 -->
+    <div class="modal-overlay" id="withdrawModal">
+        <div class="modal">
+            <div class="modal-header">
+                <span class="modal-title">撤回发布</span>
+                <button class="modal-close" onclick="closeModal('withdrawModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-info">
+                    <p>确认撤回以下阅读计划的发布？</p>
+                    <p style="margin-top: 12px;"><strong>计划名称：</strong><span id="withdrawPlanName">2024春季阅读计划</span></p>
+                    <p style="margin-top: 8px;"><strong>计划ID：</strong><span id="withdrawPlanId">PL202402200001</span></p>
+                </div>
+                <p class="modal-warning">注意：撤回后学生将无法看到此计划，已有的阅读记录不受影响。</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('withdrawModal')">取消</button>
+                <button class="btn btn-primary" onclick="confirmWithdraw()">确认撤回</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 删除弹窗 -->
+    <div class="modal-overlay" id="deleteModal">
+        <div class="modal">
+            <div class="modal-header">
+                <span class="modal-title">删除阅读计划</span>
+                <button class="modal-close" onclick="closeModal('deleteModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-info">
+                    <p>确认删除以下阅读计划？</p>
+                    <p style="margin-top: 12px;"><strong>计划名称：</strong><span id="deletePlanName">课外阅读计划</span></p>
+                    <p style="margin-top: 8px;"><strong>计划ID：</strong><span id="deletePlanId">PL202402080001</span></p>
+                </div>
+                <p class="modal-warning">警告：此操作不可恢复，删除后相关数据将永久丢失！</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('deleteModal')">取消</button>
+                <button class="btn btn-danger" onclick="confirmDelete()">确认删除</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 导出弹窗 -->
+    <div class="modal-overlay" id="exportModal">
+        <div class="modal">
+            <div class="modal-header">
+                <span class="modal-title">导出阅读计划</span>
+                <button class="modal-close" onclick="closeModal('exportModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-form-item">
+                    <label class="modal-form-label">导出格式</label>
+                    <select class="modal-form-select">
+                        <option value="excel">Excel (.xlsx)</option>
+                        <option value="csv">CSV (.csv)</option>
+                        <option value="pdf">PDF (.pdf)</option>
+                    </select>
+                </div>
+                <div class="modal-form-item">
+                    <label class="modal-form-label">导出内容</label>
+                    <div class="modal-checkbox-group">
+                        <label class="modal-checkbox-item">
+                            <input type="checkbox" checked> 计划基本信息
+                        </label>
+                        <label class="modal-checkbox-item">
+                            <input type="checkbox" checked> 年级书目配置
+                        </label>
+                        <label class="modal-checkbox-item">
+                            <input type="checkbox"> 学生阅读数据
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('exportModal')">取消</button>
+                <button class="btn btn-primary" onclick="confirmExport()">导出</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 创建阅读计划弹窗 -->
+    <div class="modal-overlay" id="createModal">
+        <div class="modal" style="width: 560px;">
+            <div class="modal-header">
+                <span class="modal-title">创建阅读计划</span>
+                <button class="modal-close" onclick="closeModal('createModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-form-item">
+                    <label class="modal-form-label">计划名称 <span style="color: #ff4d4f;">*</span></label>
+                    <input type="text" class="modal-form-input" id="createPlanName" placeholder="请输入计划名称">
+                </div>
+                <div class="modal-form-item">
+                    <label class="modal-form-label">计划封面</label>
+                    <div style="width: 200px; height: 68px; background: #f5f5f5; border: 1px dashed #d9d9d9; border-radius: 4px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #999; font-size: 13px;">
+                        [+] 上传封面图片
+                    </div>
+                    <div style="font-size: 12px; color: #999; margin-top: 4px;">建议尺寸 600×200，支持 JPG、PNG 格式</div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                    <div class="modal-form-item">
+                        <label class="modal-form-label">开始时间 <span style="color: #ff4d4f;">*</span></label>
+                        <input type="date" class="modal-form-input" id="createStartTime">
+                    </div>
+                    <div class="modal-form-item">
+                        <label class="modal-form-label">结束时间 <span style="color: #ff4d4f;">*</span></label>
+                        <input type="date" class="modal-form-input" id="createEndTime">
+                    </div>
+                </div>
+                <div class="modal-form-item">
+                    <label class="modal-form-label">计划描述</label>
+                    <textarea class="modal-form-input" id="createDesc" style="height: 80px; padding: 8px 12px; resize: none;" placeholder="请输入计划描述"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('createModal')">取消</button>
+                <button class="btn btn-primary" onclick="confirmCreate()">创建</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 编辑阅读计划弹窗 -->
+    <div class="modal-overlay" id="editModal">
+        <div class="modal" style="width: 560px;">
+            <div class="modal-header">
+                <span class="modal-title">编辑阅读计划</span>
+                <button class="modal-close" onclick="closeModal('editModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-form-item">
+                    <label class="modal-form-label">计划ID</label>
+                    <input type="text" class="modal-form-input" id="editPlanId" disabled style="background: #f5f5f5;">
+                </div>
+                <div class="modal-form-item">
+                    <label class="modal-form-label">计划名称 <span style="color: #ff4d4f;">*</span></label>
+                    <input type="text" class="modal-form-input" id="editPlanName" placeholder="请输入计划名称">
+                </div>
+                <div class="modal-form-item">
+                    <label class="modal-form-label">计划封面</label>
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <div style="width: 120px; height: 40px; background: #f0f0f0; border: 1px solid #e0e0e0; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #999;">[当前封面]</div>
+                        <button class="btn btn-secondary" style="height: 32px; padding: 0 12px;">更换封面</button>
+                    </div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                    <div class="modal-form-item">
+                        <label class="modal-form-label">开始时间 <span style="color: #ff4d4f;">*</span></label>
+                        <input type="date" class="modal-form-input" id="editStartTime">
+                    </div>
+                    <div class="modal-form-item">
+                        <label class="modal-form-label">结束时间 <span style="color: #ff4d4f;">*</span></label>
+                        <input type="date" class="modal-form-input" id="editEndTime">
+                    </div>
+                </div>
+                <div class="modal-form-item">
+                    <label class="modal-form-label">计划描述</label>
+                    <textarea class="modal-form-input" id="editDesc" style="height: 80px; padding: 8px 12px; resize: none;" placeholder="请输入计划描述"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('editModal')">取消</button>
+                <button class="btn btn-primary" onclick="confirmEdit()">保存</button>
+            </div>
+        </div>
+    </div>
+
     <script>
     function toggleMenu(element) {
         const menuGroup = element.parentElement;
         menuGroup.classList.toggle('expanded');
     }
 
+    // 年级书目模拟数据
+    const gradeBookData = {
+        'PL202402200001': [
+            { grade: '三年级', count: '2本', books: '《小王子》、《夏洛的网》', status: 'done' }
+        ],
+        'PL202401100001': [
+            { grade: '四年级', count: '3本', books: '《草房子》、《青铜葵花》、《山羊不吃天堂草》', status: 'done' }
+        ],
+        'PL202403010001': [
+            { grade: '五年级', count: '4本', books: '《西游记》、《水浒传》、《三国演义》、《红楼梦》', status: 'done' }
+        ],
+        'PL202402080001': [
+            { grade: '二年级', count: '6本', books: '《安徒生童话》、《格林童话》等', status: 'done' }
+        ],
+        'PL202402150001': [
+            { grade: '一年级', count: '8本', books: '《三字经》、《弟子规》等', status: 'done' }
+        ],
+        'PL202402180001': [
+            { grade: '三年级', count: '5本', books: '《假如给我三天光明》等', status: 'pending' }
+        ]
+    };
+
+    // 选中行
+    function selectRow(row) {
+        // 移除其他行的选中状态
+        const allRows = document.querySelectorAll('#planTable tbody tr');
+        allRows.forEach(r => {
+            r.classList.remove('selected');
+            r.querySelector('input[type="checkbox"]').checked = false;
+        });
+
+        // 选中当前行
+        row.classList.add('selected');
+        row.querySelector('input[type="checkbox"]').checked = true;
+
+        // 更新从表数据
+        const planId = row.getAttribute('data-plan-id');
+        updateSubTable(planId);
+    }
+
+    // 更新从表数据
+    function updateSubTable(planId) {
+        const data = gradeBookData[planId] || [];
+        const tbody = document.querySelector('#gradeBookTable tbody');
+
+        if (data.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: #999;">暂无年级书目配置</td></tr>';
+            return;
+        }
+
+        let html = '';
+        data.forEach((item, index) => {
+            const checked = index === 0 ? 'checked' : '';
+            const selected = index === 0 ? 'class="selected"' : '';
+            html += `
+                <tr ${selected}>
+                    <td><input type="checkbox" ${checked}></td>
+                    <td>${item.grade}</td>
+                    <td>${item.count}</td>
+                    <td>${item.books}</td>
+                </tr>
+            `;
+        });
+        tbody.innerHTML = html;
+    }
+
     function handleEdit() {
-        // 获取所有选中的复选框
         const checkboxes = document.querySelectorAll('.table tbody input[type="checkbox"]:checked');
 
         if (checkboxes.length === 0) {
@@ -745,20 +1205,246 @@
             return;
         }
 
-        // 获取选中行的状态
         const row = checkboxes[0].closest('tr');
         const statusBadge = row.querySelector('.status-badge');
         const statusText = statusBadge.textContent.trim();
 
-        // 只有未发布状态可以编辑
         if (statusText !== '未发布') {
             alert('只能编辑未发布状态的计划，其他状态不可修改');
             return;
         }
 
-        // 跳转到编辑页面
-        window.location.href = '14-编辑阅读计划-步骤1.html';
+        const data = getSelectedRowData();
+        document.getElementById('editPlanId').value = data.planId;
+        document.getElementById('editPlanName').value = data.planName;
+        document.getElementById('editStartTime').value = data.startTime;
+        document.getElementById('editEndTime').value = data.endTime;
+        openModal('editModal');
     }
+
+    function confirmEdit() {
+        const name = document.getElementById('editPlanName').value;
+        const startTime = document.getElementById('editStartTime').value;
+        const endTime = document.getElementById('editEndTime').value;
+
+        if (!name) {
+            alert('请输入计划名称');
+            return;
+        }
+        if (!startTime || !endTime) {
+            alert('请选择开始和结束时间');
+            return;
+        }
+
+        alert('保存成功！');
+        closeModal('editModal');
+    }
+
+    function handleConfigGrade() {
+        const checkboxes = document.querySelectorAll('.table tbody input[type="checkbox"]:checked');
+
+        if (checkboxes.length === 0) {
+            alert('请选择要配置年级书目的阅读计划');
+            return;
+        }
+
+        if (checkboxes.length > 1) {
+            alert('只能选择一个阅读计划进行配置');
+            return;
+        }
+
+        const row = checkboxes[0].closest('tr');
+        const planId = row.cells[1].textContent;
+        const planName = row.cells[3].textContent;
+
+        // 跳转到年级书目配置页面
+        window.location.href = '12-创建阅读计划-步骤1.html?planId=' + planId + '&planName=' + encodeURIComponent(planName);
+    }
+
+    // 弹窗操作
+    function openModal(modalId) {
+        document.getElementById(modalId).classList.add('active');
+    }
+
+    function closeModal(modalId) {
+        document.getElementById(modalId).classList.remove('active');
+    }
+
+    // 获取选中行的数据
+    function getSelectedRowData() {
+        const checkboxes = document.querySelectorAll('.table tbody input[type="checkbox"]:checked');
+        if (checkboxes.length === 0) return null;
+        const row = checkboxes[0].closest('tr');
+        return {
+            planId: row.cells[1].textContent,
+            planName: row.cells[3].textContent,
+            startTime: row.cells[4].textContent,
+            endTime: row.cells[5].textContent,
+            status: row.querySelector('.status-badge').textContent.trim(),
+            createTime: row.cells[7].textContent,
+            publishTime: row.cells[8].textContent
+        };
+    }
+
+    // 创建阅读计划
+    function handleCreate() {
+        openModal('createModal');
+    }
+
+    function confirmCreate() {
+        const name = document.getElementById('createPlanName').value;
+        const startTime = document.getElementById('createStartTime').value;
+        const endTime = document.getElementById('createEndTime').value;
+
+        if (!name) {
+            alert('请输入计划名称');
+            return;
+        }
+        if (!startTime || !endTime) {
+            alert('请选择开始和结束时间');
+            return;
+        }
+
+        alert('创建成功！');
+        closeModal('createModal');
+    }
+
+    // 查看
+    function handleView() {
+        const checkboxes = document.querySelectorAll('.table tbody input[type="checkbox"]:checked');
+        if (checkboxes.length === 0) {
+            alert('请选择要查看的阅读计划');
+            return;
+        }
+        if (checkboxes.length > 1) {
+            alert('只能选择一个阅读计划进行查看');
+            return;
+        }
+        const data = getSelectedRowData();
+        document.getElementById('viewPlanName').textContent = data.planName;
+        document.getElementById('viewPlanId').textContent = data.planId;
+        document.getElementById('viewStartTime').textContent = data.startTime;
+        document.getElementById('viewEndTime').textContent = data.endTime;
+        document.getElementById('viewStatus').textContent = data.status;
+        document.getElementById('viewCreateTime').textContent = data.createTime;
+        document.getElementById('viewPublishTime').textContent = data.publishTime;
+        openModal('viewModal');
+    }
+
+    // 发布
+    function handlePublish() {
+        const checkboxes = document.querySelectorAll('.table tbody input[type="checkbox"]:checked');
+        if (checkboxes.length === 0) {
+            alert('请选择要发布的阅读计划');
+            return;
+        }
+        if (checkboxes.length > 1) {
+            alert('只能选择一个阅读计划进行发布');
+            return;
+        }
+        const data = getSelectedRowData();
+        if (data.status !== '未发布') {
+            alert('只能发布未发布状态的计划');
+            return;
+        }
+        document.getElementById('publishPlanName').textContent = data.planName;
+        document.getElementById('publishPlanId').textContent = data.planId;
+        openModal('publishModal');
+    }
+
+    function confirmPublish() {
+        alert('发布成功！');
+        closeModal('publishModal');
+    }
+
+    // 撤回发布
+    function handleWithdraw() {
+        const checkboxes = document.querySelectorAll('.table tbody input[type="checkbox"]:checked');
+        if (checkboxes.length === 0) {
+            alert('请选择要撤回的阅读计划');
+            return;
+        }
+        if (checkboxes.length > 1) {
+            alert('只能选择一个阅读计划进行撤回');
+            return;
+        }
+        const data = getSelectedRowData();
+        if (data.status === '未发布') {
+            alert('未发布状态的计划无需撤回');
+            return;
+        }
+        document.getElementById('withdrawPlanName').textContent = data.planName;
+        document.getElementById('withdrawPlanId').textContent = data.planId;
+        openModal('withdrawModal');
+    }
+
+    function confirmWithdraw() {
+        alert('撤回成功！');
+        closeModal('withdrawModal');
+    }
+
+    // 删除
+    function handleDelete() {
+        const checkboxes = document.querySelectorAll('.table tbody input[type="checkbox"]:checked');
+        if (checkboxes.length === 0) {
+            alert('请选择要删除的阅读计划');
+            return;
+        }
+        if (checkboxes.length > 1) {
+            alert('只能选择一个阅读计划进行删除');
+            return;
+        }
+        const data = getSelectedRowData();
+        if (data.status !== '未发布') {
+            alert('只能删除未发布状态的计划');
+            return;
+        }
+        document.getElementById('deletePlanName').textContent = data.planName;
+        document.getElementById('deletePlanId').textContent = data.planId;
+        openModal('deleteModal');
+    }
+
+    function confirmDelete() {
+        alert('删除成功！');
+        closeModal('deleteModal');
+    }
+
+    // 导出
+    function handleExport() {
+        const checkboxes = document.querySelectorAll('.table tbody input[type="checkbox"]:checked');
+        if (checkboxes.length === 0) {
+            alert('请选择要导出的阅读计划');
+            return;
+        }
+        openModal('exportModal');
+    }
+
+    function confirmExport() {
+        alert('导出成功！文件已开始下载。');
+        closeModal('exportModal');
+    }
+
+    // 编辑年级书目
+    function handleEditGradeBook() {
+        const checkboxes = document.querySelectorAll('#gradeBookTable tbody input[type="checkbox"]:checked');
+        if (checkboxes.length === 0) {
+            alert('请选择要编辑的年级书目');
+            return;
+        }
+        if (checkboxes.length > 1) {
+            alert('只能选择一条年级书目进行编辑');
+            return;
+        }
+        window.location.href = '15-编辑阅读计划-步骤1.html';
+    }
+
+    // 页面加载时默认选中第一行
+    document.addEventListener('DOMContentLoaded', function() {
+        const firstRow = document.querySelector('#planTable tbody tr');
+        if (firstRow) {
+            selectRow(firstRow);
+        }
+    });
     </script>
 </body>
 </html>
