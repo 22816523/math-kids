@@ -1,0 +1,1090 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>平台数据分析 - 校校读吧管理平台</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+        }
+
+        /* 主体布局 */
+        .main {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* 侧边栏 */
+        .sidebar {
+            width: 240px;
+            background: #fff;
+            border-right: 1px solid #e0e0e0;
+            display: flex;
+            flex-direction: column;
+        }
+        .sidebar-header {
+            height: 60px;
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+        .sidebar-menu {
+            flex: 1;
+            padding: 16px 0;
+            overflow-y: auto;
+        }
+        .menu-group {
+            margin-bottom: 4px;
+        }
+        .menu-group-title {
+            padding: 12px 24px;
+            font-size: 14px;
+            color: #333;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .menu-group-icon {
+            font-size: 12px;
+            color: #999;
+            transition: transform 0.2s;
+        }
+        .menu-group.expanded .menu-group-icon {
+            transform: rotate(90deg);
+        }
+        .menu-group-items {
+            display: none;
+        }
+        .menu-group.expanded .menu-group-items {
+            display: block;
+        }
+        .menu-item {
+            padding: 12px 24px 12px 40px;
+            font-size: 14px;
+            color: #666;
+            cursor: pointer;
+        }
+        .menu-item:hover {
+            background: #f5f5f5;
+        }
+        .menu-item.active {
+            background: #e8e8e8;
+            color: #333;
+            font-weight: 600;
+            border-left: 3px solid #333;
+        }
+
+        /* 右侧内容区 */
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .header {
+            height: 60px;
+            background: #fff;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+        }
+        .breadcrumb {
+            font-size: 14px;
+            color: #999;
+        }
+        .breadcrumb a {
+            color: #666;
+            text-decoration: none;
+        }
+        .breadcrumb a:hover {
+            color: #333;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .user-name {
+            font-size: 14px;
+            color: #333;
+        }
+        .logout-btn {
+            font-size: 14px;
+            color: #666;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .logout-btn:hover {
+            color: #333;
+        }
+        .main-content {
+            flex: 1;
+            padding: 24px;
+            overflow-y: auto;
+        }
+        .page-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        /* 筛选区域 */
+        .filter-section {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 20px 24px;
+            margin-bottom: 20px;
+        }
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 16px;
+        }
+        .filter-item {
+            display: flex;
+            flex-direction: column;
+        }
+        .filter-label {
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        .filter-input,
+        .filter-select {
+            height: 40px;
+            padding: 0 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .filter-input:focus,
+        .filter-select:focus {
+            outline: none;
+            border-color: #999;
+        }
+        .export-actions {
+            margin-bottom: 20px;
+        }
+
+        /* 按钮 */
+        .btn {
+            height: 40px;
+            padding: 0 24px;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            border: none;
+        }
+        .btn-primary {
+            background: #333;
+            color: #fff;
+            border: 1px solid #333;
+        }
+        .btn-primary:hover {
+            background: #555;
+        }
+        .btn-secondary {
+            background: #fff;
+            color: #333;
+            border: 1px solid #999;
+        }
+        .btn-secondary:hover {
+            background: #f5f5f5;
+        }
+
+        /* 卡片 */
+        .card {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .sub-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin: 20px 0 12px 0;
+        }
+
+        /* 统计卡片 */
+        .stats-grid-5 {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        .stats-grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        .stat-card {
+            background: #f9f9f9;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 20px;
+            text-align: center;
+        }
+        .stat-card.highlight {
+            background: #f0f9f0;
+            border-color: #d9f0d9;
+        }
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+        .stat-value {
+            font-size: 28px;
+            font-weight: 600;
+            color: #333;
+        }
+        .stat-unit {
+            font-size: 14px;
+            color: #999;
+            margin-left: 4px;
+        }
+        .stat-desc {
+            font-size: 12px;
+            color: #999;
+            margin-top: 8px;
+        }
+
+        /* 两栏布局 */
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        /* 表格 */
+        .table-container {
+            overflow-x: auto;
+        }
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .data-table th,
+        .data-table td {
+            padding: 12px 16px;
+            text-align: center;
+            border: 1px solid #e0e0e0;
+            font-size: 14px;
+        }
+        .data-table th {
+            background: #f5f5f5;
+            font-weight: 600;
+            color: #333;
+        }
+        .data-table td {
+            color: #666;
+        }
+        .data-table tbody tr:hover {
+            background: #fafafa;
+        }
+        .data-table a {
+            color: #333;
+            text-decoration: underline;
+        }
+
+        /* 高亮 */
+        .highlight-green {
+            color: #52c41a;
+            font-weight: 600;
+        }
+        .highlight-red {
+            color: #ff4d4f;
+            font-weight: 600;
+        }
+
+        /* 排名徽章 */
+        .rank-badge {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            line-height: 24px;
+            text-align: center;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .rank-badge.top1 {
+            background: #333;
+            color: #fff;
+        }
+        .rank-badge.top2 {
+            background: #666;
+            color: #fff;
+        }
+        .rank-badge.top3 {
+            background: #999;
+            color: #fff;
+        }
+        .rank-badge.other {
+            background: #f5f5f5;
+            color: #666;
+        }
+        .rank-badge.warning {
+            background: #fff2f0;
+            color: #ff4d4f;
+        }
+
+        /* 进度条 */
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #f5f5f5;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: #333;
+            border-radius: 4px;
+        }
+        .progress-cell {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .progress-cell .progress-bar {
+            width: 80px;
+        }
+
+        /* 图表占位 */
+        .chart-placeholder {
+            height: 260px;
+            background: #fafafa;
+            border: 1px dashed #e0e0e0;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: #999;
+        }
+
+        /* 分数段分布 */
+        .score-dist {
+            display: flex;
+            gap: 16px;
+        }
+        .score-dist-item {
+            flex: 1;
+            text-align: center;
+            padding: 16px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+        }
+        .score-dist-label {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 8px;
+        }
+        .score-dist-value {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+        }
+        .score-dist-bar {
+            height: 6px;
+            background: #e0e0e0;
+            border-radius: 3px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+        .score-dist-bar .fill {
+            height: 100%;
+            border-radius: 3px;
+        }
+        .score-dist-bar .fill.excellent { background: #333; }
+        .score-dist-bar .fill.good { background: #666; }
+        .score-dist-bar .fill.pass { background: #999; }
+        .score-dist-bar .fill.fail { background: #ff4d4f; }
+
+        /* 能力雷达 */
+        .ability-panel {
+            background: #fafafa;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 20px;
+        }
+        .ability-item {
+            margin-bottom: 16px;
+        }
+        .ability-item:last-child {
+            margin-bottom: 0;
+        }
+        .ability-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        .ability-name {
+            font-size: 13px;
+            color: #333;
+        }
+        .ability-value {
+            font-size: 13px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="main">
+        <!-- 侧边栏 -->
+        <div class="sidebar">
+            <div class="sidebar-header">校校读吧管理平台</div>
+            <div class="sidebar-menu">
+                <div class="menu-item">首页</div>
+                <div class="menu-group">
+                    <div class="menu-group-title" onclick="toggleMenu(this)">
+                        <span>用户管理</span>
+                        <span class="menu-group-icon">[▶]</span>
+                    </div>
+                    <div class="menu-group-items">
+                        <div class="menu-item">学校管理</div>
+                        <div class="menu-item">班级管理</div>
+                        <div class="menu-item">小程序用户管理</div>
+                    </div>
+                </div>
+                <div class="menu-group">
+                    <div class="menu-group-title" onclick="toggleMenu(this)">
+                        <span>内容管理</span>
+                        <span class="menu-group-icon">[▶]</span>
+                    </div>
+                    <div class="menu-group-items">
+                        <div class="menu-item">阅读计划</div>
+                        <div class="menu-item">书籍资源库</div>
+                    </div>
+                </div>
+                <div class="menu-group">
+                    <div class="menu-group-title" onclick="toggleMenu(this)">
+                        <span>激励体系</span>
+                        <span class="menu-group-icon">[▶]</span>
+                    </div>
+                    <div class="menu-group-items">
+                        <div class="menu-item">积分规则</div>
+                        <div class="menu-item">等级设置</div>
+                        <div class="menu-item">证书配置</div>
+                    </div>
+                </div>
+                <div class="menu-group">
+                    <div class="menu-group-title" onclick="toggleMenu(this)">
+                        <span>消息管理</span>
+                        <span class="menu-group-icon">[▶]</span>
+                    </div>
+                    <div class="menu-group-items">
+                        <div class="menu-item">消息列表</div>
+                    </div>
+                </div>
+                <div class="menu-group">
+                    <div class="menu-group-title" onclick="toggleMenu(this)">
+                        <span>用户反馈</span>
+                        <span class="menu-group-icon">[▶]</span>
+                    </div>
+                    <div class="menu-group-items">
+                        <div class="menu-item">意见反馈</div>
+                    </div>
+                </div>
+                <div class="menu-group expanded">
+                    <div class="menu-group-title" onclick="toggleMenu(this)">
+                        <span>数据分析</span>
+                        <span class="menu-group-icon">[▶]</span>
+                    </div>
+                    <div class="menu-group-items">
+                        <div class="menu-item active">平台数据分析</div>
+                        <div class="menu-item">学校数据分析</div>
+                        <div class="menu-item">年级数据分析</div>
+                        <div class="menu-item">学生数据分析</div>
+                    </div>
+                </div>
+                <div class="menu-group">
+                    <div class="menu-group-title" onclick="toggleMenu(this)">
+                        <span>系统配置</span>
+                        <span class="menu-group-icon">[▶]</span>
+                    </div>
+                    <div class="menu-group-items">
+                        <div class="menu-item">系统参数</div>
+                        <div class="menu-item">数据字典</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 右侧内容区 -->
+        <div class="content">
+            <!-- 顶部栏 -->
+            <div class="header">
+                <div class="breadcrumb">
+                    <a href="#">首页</a> &gt;
+                    <a href="#">数据分析</a> &gt;
+                    平台数据分析
+                </div>
+                <div class="user-info">
+                    <span class="user-name">管理员</span>
+                    <a href="#" class="logout-btn">退出登录</a>
+                </div>
+            </div>
+
+            <!-- 主内容区 -->
+            <div class="main-content">
+                <!-- 页面标题 -->
+                <div class="page-title">平台数据分析</div>
+
+                <!-- 筛选区域 -->
+                <div class="filter-section">
+                    <div class="filter-grid">
+                        <div class="filter-item">
+                            <label class="filter-label">阅读计划</label>
+                            <select class="filter-select">
+                                <option value="" selected>全部计划</option>
+                                <option value="1">2024春季阅读计划</option>
+                                <option value="2">寒假阅读计划</option>
+                            </select>
+                        </div>
+                        <div class="filter-item" style="display: flex; flex-direction: row; align-items: flex-end; gap: 12px;">
+                            <button class="btn btn-primary">查询</button>
+                            <button class="btn btn-secondary">重置</button>
+                        </div>
+                        <div class="filter-item"></div>
+                        <div class="filter-item"></div>
+                        <div class="filter-item"></div>
+                        <div class="filter-item"></div>
+                    </div>
+                </div>
+                <div class="export-actions">
+                    <button class="btn btn-secondary">导出报表</button>
+                </div>
+
+                <!-- 一、平台整体规模 -->
+                <div class="card">
+                    <div class="section-title">一、平台整体规模</div>
+                    <div class="stats-grid-5">
+                        <div class="stat-card">
+                            <div class="stat-label">入驻学校</div>
+                            <div class="stat-value">156<span class="stat-unit">所</span></div>
+                            <div class="stat-desc">参与活动：142所</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">参与班级</div>
+                            <div class="stat-value">2,856<span class="stat-unit">个</span></div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">参与老师</div>
+                            <div class="stat-value">3,428<span class="stat-unit">人</span></div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">参与学生</div>
+                            <div class="stat-value">68,542<span class="stat-unit">人</span></div>
+                        </div>
+                        <div class="stat-card highlight">
+                            <div class="stat-label">活动覆盖率</div>
+                            <div class="stat-value"><span class="highlight-green">91.0%</span></div>
+                            <div class="stat-desc">142/156所学校参与</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 二、阅读参与情况 -->
+                <div class="card">
+                    <div class="section-title">二、阅读参与情况</div>
+                    <div class="stats-grid-4" style="grid-template-columns: repeat(2, 1fr); max-width: 400px; margin-bottom: 20px;">
+                        <div class="stat-card">
+                            <div class="stat-label">平台整体参与率</div>
+                            <div class="stat-value">86.5%</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">参与学生数</div>
+                            <div class="stat-value">59,289<span class="stat-unit">人</span></div>
+                        </div>
+                    </div>
+                    <div class="two-column">
+                        <!-- 左侧：学校参与率排行 -->
+                        <div>
+                            <div class="sub-title">学校参与率排行</div>
+                            <div class="table-container">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th width="50">排名</th>
+                                            <th>学校</th>
+                                            <th>参与学生</th>
+                                            <th>参与率</th>
+                                            <th>操作</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><span class="rank-badge top1">1</span></td>
+                                            <td>育才小学</td>
+                                            <td>1,256</td>
+                                            <td><span class="highlight-green">98.5%</span></td>
+                                            <td><a href="39-1-学校阅读数据分析.html">详情</a></td>
+                                        </tr>
+                                        <tr>
+                                            <td><span class="rank-badge top2">2</span></td>
+                                            <td>实验小学</td>
+                                            <td>1,156</td>
+                                            <td><span class="highlight-green">96.2%</span></td>
+                                            <td><a href="39-1-学校阅读数据分析.html">详情</a></td>
+                                        </tr>
+                                        <tr>
+                                            <td><span class="rank-badge top3">3</span></td>
+                                            <td>明德小学</td>
+                                            <td>986</td>
+                                            <td><span class="highlight-green">95.8%</span></td>
+                                            <td><a href="39-1-学校阅读数据分析.html">详情</a></td>
+                                        </tr>
+                                        <tr>
+                                            <td><span class="rank-badge other">4</span></td>
+                                            <td>文华小学</td>
+                                            <td>856</td>
+                                            <td>94.2%</td>
+                                            <td><a href="39-1-学校阅读数据分析.html">详情</a></td>
+                                        </tr>
+                                        <tr>
+                                            <td><span class="rank-badge other">5</span></td>
+                                            <td>新华小学</td>
+                                            <td>768</td>
+                                            <td>92.6%</td>
+                                            <td><a href="39-1-学校阅读数据分析.html">详情</a></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <!-- 右侧：参与率预警 + 各年级参与率 -->
+                        <div>
+                            <div class="sub-title" style="color: #ff4d4f;">⚠ 参与率预警（低于70%）</div>
+                            <div class="table-container">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>学校</th>
+                                            <th>参与学生</th>
+                                            <th>参与率</th>
+                                            <th>操作</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>阳光小学</td>
+                                            <td>325</td>
+                                            <td><span class="highlight-red">58.6%</span></td>
+                                            <td><a href="39-1-学校阅读数据分析.html">详情</a></td>
+                                        </tr>
+                                        <tr>
+                                            <td>希望小学</td>
+                                            <td>286</td>
+                                            <td><span class="highlight-red">62.3%</span></td>
+                                            <td><a href="39-1-学校阅读数据分析.html">详情</a></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- 各年级参与率 -->
+                            <div class="sub-title" style="margin-top: 20px;">各年级参与率</div>
+                            <div class="chart-placeholder" style="height: 200px;">[柱状图：各年级参与率分布]</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 三、阅读量汇总 -->
+                <div class="card">
+                    <div class="section-title">三、阅读量汇总</div>
+                    <div class="stats-grid-4">
+                        <div class="stat-card">
+                            <div class="stat-label">总阅读书籍</div>
+                            <div class="stat-value">285,680<span class="stat-unit">本</span></div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">人均阅读书籍</div>
+                            <div class="stat-value">4.2<span class="stat-unit">本</span></div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">总阅读字数</div>
+                            <div class="stat-value">18.6<span class="stat-unit">亿字</span></div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">人均阅读字数</div>
+                            <div class="stat-value">2.7<span class="stat-unit">万字</span></div>
+                        </div>
+                    </div>
+                    <div class="two-column">
+                        <!-- 左侧：学校阅读量排行 -->
+                        <div>
+                            <div class="sub-title">学校阅读量排行（人均）</div>
+                            <div class="table-container">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th width="50">排名</th>
+                                            <th>学校</th>
+                                            <th>人均书籍</th>
+                                            <th>人均字数</th>
+                                            <th>操作</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><span class="rank-badge top1">1</span></td>
+                                            <td>实验小学</td>
+                                            <td>5.8本</td>
+                                            <td>3.6万字</td>
+                                            <td><a href="39-1-学校阅读数据分析.html">详情</a></td>
+                                        </tr>
+                                        <tr>
+                                            <td><span class="rank-badge top2">2</span></td>
+                                            <td>育才小学</td>
+                                            <td>5.5本</td>
+                                            <td>3.4万字</td>
+                                            <td><a href="39-1-学校阅读数据分析.html">详情</a></td>
+                                        </tr>
+                                        <tr>
+                                            <td><span class="rank-badge top3">3</span></td>
+                                            <td>文华小学</td>
+                                            <td>5.2本</td>
+                                            <td>3.2万字</td>
+                                            <td><a href="39-1-学校阅读数据分析.html">详情</a></td>
+                                        </tr>
+                                        <tr>
+                                            <td><span class="rank-badge other">4</span></td>
+                                            <td>明德小学</td>
+                                            <td>4.8本</td>
+                                            <td>3.0万字</td>
+                                            <td><a href="39-1-学校阅读数据分析.html">详情</a></td>
+                                        </tr>
+                                        <tr>
+                                            <td><span class="rank-badge other">5</span></td>
+                                            <td>新华小学</td>
+                                            <td>4.5本</td>
+                                            <td>2.8万字</td>
+                                            <td><a href="39-1-学校阅读数据分析.html">详情</a></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <!-- 右侧：各年级阅读量对比 -->
+                        <div>
+                            <div class="sub-title">各年级阅读量对比</div>
+                            <div class="chart-placeholder">[柱状图：各年级人均阅读书籍/字数]</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 四、测评情况 -->
+                <div class="card">
+                    <div class="section-title">四、测评情况</div>
+                    <div class="stats-grid-4">
+                        <div class="stat-card">
+                            <div class="stat-label">测评总人次</div>
+                            <div class="stat-value">186,420</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">平台平均分</div>
+                            <div class="stat-value">78.5<span class="stat-unit">分</span></div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">测评书籍数</div>
+                            <div class="stat-value">32<span class="stat-unit">本</span></div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">人均测评次数</div>
+                            <div class="stat-value">2.7<span class="stat-unit">次</span></div>
+                        </div>
+                    </div>
+                    <div class="two-column">
+                        <!-- 左侧：学校平均分排行 -->
+                        <div>
+                            <div class="sub-title">学校平均分排行</div>
+                            <div class="table-container">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th width="50">排名</th>
+                                            <th>学校</th>
+                                            <th>平均分</th>
+                                            <th>测评人次</th>
+                                            <th>操作</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><span class="rank-badge top1">1</span></td>
+                                            <td>实验小学</td>
+                                            <td><span class="highlight-green">85.6分</span></td>
+                                            <td>3,856</td>
+                                            <td><a href="39-1-学校阅读数据分析.html">详情</a></td>
+                                        </tr>
+                                        <tr>
+                                            <td><span class="rank-badge top2">2</span></td>
+                                            <td>明德小学</td>
+                                            <td><span class="highlight-green">84.2分</span></td>
+                                            <td>3,245</td>
+                                            <td><a href="39-1-学校阅读数据分析.html">详情</a></td>
+                                        </tr>
+                                        <tr>
+                                            <td><span class="rank-badge top3">3</span></td>
+                                            <td>育才小学</td>
+                                            <td><span class="highlight-green">83.8分</span></td>
+                                            <td>4,128</td>
+                                            <td><a href="39-1-学校阅读数据分析.html">详情</a></td>
+                                        </tr>
+                                        <tr>
+                                            <td><span class="rank-badge other">4</span></td>
+                                            <td>文华小学</td>
+                                            <td>82.1分</td>
+                                            <td>2,856</td>
+                                            <td><a href="39-1-学校阅读数据分析.html">详情</a></td>
+                                        </tr>
+                                        <tr>
+                                            <td><span class="rank-badge other">5</span></td>
+                                            <td>新华小学</td>
+                                            <td>80.5分</td>
+                                            <td>2,568</td>
+                                            <td><a href="39-1-学校阅读数据分析.html">详情</a></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <!-- 右侧：分数段分布 -->
+                        <div>
+                            <div class="sub-title">分数段分布</div>
+                            <div class="score-dist">
+                                <div class="score-dist-item">
+                                    <div class="score-dist-label">优秀（≥90）</div>
+                                    <div class="score-dist-value">28.5%</div>
+                                    <div class="score-dist-bar"><div class="fill excellent" style="width: 28.5%;"></div></div>
+                                </div>
+                                <div class="score-dist-item">
+                                    <div class="score-dist-label">良好（80-89）</div>
+                                    <div class="score-dist-value">35.2%</div>
+                                    <div class="score-dist-bar"><div class="fill good" style="width: 35.2%;"></div></div>
+                                </div>
+                                <div class="score-dist-item">
+                                    <div class="score-dist-label">及格（60-79）</div>
+                                    <div class="score-dist-value">28.8%</div>
+                                    <div class="score-dist-bar"><div class="fill pass" style="width: 28.8%;"></div></div>
+                                </div>
+                                <div class="score-dist-item">
+                                    <div class="score-dist-label">不及格（<60）</div>
+                                    <div class="score-dist-value">7.5%</div>
+                                    <div class="score-dist-bar"><div class="fill fail" style="width: 7.5%;"></div></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 各年级平均分对比 -->
+                    <div class="sub-title" style="margin-top: 20px;">各年级平均分对比</div>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>年级</th>
+                                    <th>一年级</th>
+                                    <th>二年级</th>
+                                    <th>三年级</th>
+                                    <th>四年级</th>
+                                    <th>五年级</th>
+                                    <th>六年级</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>平均分</strong></td>
+                                    <td>82.5</td>
+                                    <td>80.8</td>
+                                    <td><span class="highlight-green">85.2</span></td>
+                                    <td>79.6</td>
+                                    <td>76.8</td>
+                                    <td><span class="highlight-red">72.5</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>测评人次</strong></td>
+                                    <td>28,560</td>
+                                    <td>32,450</td>
+                                    <td>35,680</td>
+                                    <td>33,250</td>
+                                    <td>30,120</td>
+                                    <td>26,360</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 五、阅读能力分析 -->
+                <div class="card">
+                    <div class="section-title">五、阅读能力分析</div>
+                    <div style="font-size: 13px; color: #999; margin-bottom: 16px;">基于测评题目考查的能力维度进行分析</div>
+                    <div class="two-column">
+                        <!-- 左侧：各学校能力对比 -->
+                        <div>
+                            <div class="sub-title">各学校能力对比（综合得分）</div>
+                            <div class="table-container">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th width="50">排名</th>
+                                            <th>学校</th>
+                                            <th>信息提取</th>
+                                            <th>理解分析</th>
+                                            <th>推理判断</th>
+                                            <th>评价鉴赏</th>
+                                            <th>创意运用</th>
+                                            <th>综合</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><span class="rank-badge top1">1</span></td>
+                                            <td>实验小学</td>
+                                            <td>88%</td>
+                                            <td>82%</td>
+                                            <td>78%</td>
+                                            <td>72%</td>
+                                            <td>75%</td>
+                                            <td><strong>79.0</strong></td>
+                                        </tr>
+                                        <tr>
+                                            <td><span class="rank-badge top2">2</span></td>
+                                            <td>明德小学</td>
+                                            <td>86%</td>
+                                            <td>80%</td>
+                                            <td>76%</td>
+                                            <td>70%</td>
+                                            <td>74%</td>
+                                            <td><strong>77.2</strong></td>
+                                        </tr>
+                                        <tr>
+                                            <td><span class="rank-badge top3">3</span></td>
+                                            <td>育才小学</td>
+                                            <td>85%</td>
+                                            <td>79%</td>
+                                            <td>74%</td>
+                                            <td>68%</td>
+                                            <td>72%</td>
+                                            <td><strong>75.6</strong></td>
+                                        </tr>
+                                        <tr>
+                                            <td><span class="rank-badge other">4</span></td>
+                                            <td>文华小学</td>
+                                            <td>82%</td>
+                                            <td>76%</td>
+                                            <td>70%</td>
+                                            <td>64%</td>
+                                            <td>68%</td>
+                                            <td><strong>72.0</strong></td>
+                                        </tr>
+                                        <tr>
+                                            <td><span class="rank-badge other">5</span></td>
+                                            <td>新华小学</td>
+                                            <td>80%</td>
+                                            <td>74%</td>
+                                            <td>68%</td>
+                                            <td>62%</td>
+                                            <td>66%</td>
+                                            <td><strong>70.0</strong></td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr style="background: #f9f9f9;">
+                                            <td colspan="2"><strong>平台平均</strong></td>
+                                            <td>82.5%</td>
+                                            <td>76.8%</td>
+                                            <td>71.2%</td>
+                                            <td>65.3%</td>
+                                            <td>68.6%</td>
+                                            <td><strong>72.9</strong></td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                        <!-- 右侧：平台整体能力达标率 -->
+                        <div>
+                            <div class="sub-title">平台整体能力达标率</div>
+                            <div class="ability-panel">
+                                <div class="ability-item">
+                                    <div class="ability-header">
+                                        <span class="ability-name">信息提取能力</span>
+                                        <span class="ability-value highlight-green">82.5%</span>
+                                    </div>
+                                    <div class="progress-bar"><div class="progress-fill" style="width: 82.5%;"></div></div>
+                                </div>
+                                <div class="ability-item">
+                                    <div class="ability-header">
+                                        <span class="ability-name">理解分析能力</span>
+                                        <span class="ability-value">76.8%</span>
+                                    </div>
+                                    <div class="progress-bar"><div class="progress-fill" style="width: 76.8%;"></div></div>
+                                </div>
+                                <div class="ability-item">
+                                    <div class="ability-header">
+                                        <span class="ability-name">推理判断能力</span>
+                                        <span class="ability-value">71.2%</span>
+                                    </div>
+                                    <div class="progress-bar"><div class="progress-fill" style="width: 71.2%;"></div></div>
+                                </div>
+                                <div class="ability-item">
+                                    <div class="ability-header">
+                                        <span class="ability-name">评价鉴赏能力</span>
+                                        <span class="ability-value highlight-red">65.3%</span>
+                                    </div>
+                                    <div class="progress-bar"><div class="progress-fill" style="width: 65.3%; background: #ff4d4f;"></div></div>
+                                </div>
+                                <div class="ability-item">
+                                    <div class="ability-header">
+                                        <span class="ability-name">创意运用能力</span>
+                                        <span class="ability-value">68.6%</span>
+                                    </div>
+                                    <div class="progress-bar"><div class="progress-fill" style="width: 68.6%;"></div></div>
+                                </div>
+                            </div>
+                            <div style="margin-top: 12px; padding: 12px; background: #fff2f0; border-radius: 4px; border: 1px solid #ffccc7;">
+                                <div style="font-size: 13px; color: #ff4d4f; font-weight: 600;">⚠ 能力短板提示</div>
+                                <div style="font-size: 12px; color: #666; margin-top: 4px;">"评价鉴赏能力"达标率最低（65.3%），建议加强相关题目的训练</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+    function toggleMenu(element) {
+        const menuGroup = element.parentElement;
+        menuGroup.classList.toggle('expanded');
+    }
+    </script>
+</body>
+</html>
