@@ -783,7 +783,7 @@
 
             <!-- 底部操作按钮 -->
             <div class="bottom-actions">
-                <button class="btn btn-secondary">预览测评</button>
+                <button class="btn btn-secondary" onclick="window.location.href='24-测评预览.html'">预览测评</button>
                 <button class="btn btn-primary">保存配置</button>
             </div>
             </div>
@@ -794,24 +794,33 @@
     <div class="modal" id="importModal">
         <div class="modal-content">
             <div class="modal-header">
-                <div class="modal-title">AI智能导入题目</div>
+                <div class="modal-title">批量导入题目</div>
                 <button class="modal-close" onclick="closeImportModal()">&times;</button>
             </div>
             <div class="modal-body">
-                <!-- 功能说明 -->
-                <div style="padding: 16px; background: #f9f9f9; border-radius: 4px; margin-bottom: 20px;">
-                    <div style="font-size: 14px; color: #333; font-weight: 600; margin-bottom: 8px;">AI智能拆题功能</div>
-                    <div style="font-size: 13px; color: #666; line-height: 1.6;">
-                        上传包含测评题目的Word文档，系统将通过AI技术自动识别并拆分题目，包括题目类型、题干、选项、答案等信息，大幅提升题目录入效率
+                <!-- 导入说明 -->
+                <div style="padding: 12px 16px; background: #f9f9f9; border-radius: 4px; margin-bottom: 16px; font-size: 13px; color: #666; line-height: 1.8;">
+                    <div style="font-weight: 600; color: #333; margin-bottom: 6px;">导入说明</div>
+                    <p style="margin-bottom: 4px;">• <strong>Excel文件：</strong>按模板格式填写，包含题目、选项A-D、正确答案、分值</p>
+                    <p>• <strong>Word/PDF文件：</strong>系统将智能解析题目内容，选项建议使用A、B、C、D标识</p>
+                </div>
+
+                <!-- 模板下载 -->
+                <div class="template-download">
+                    <div class="template-icon">[📄]</div>
+                    <div class="template-info">
+                        <div class="template-title">单选题导入模板.xlsx</div>
+                        <div class="template-desc">包含题目、选项A-D、正确答案、分值、能力标签等字段</div>
                     </div>
+                    <button class="btn btn-secondary" style="height: 32px; padding: 0 16px;">下载模板</button>
                 </div>
 
                 <!-- 上传区域 -->
-                <div class="upload-area" onclick="document.getElementById('fileInput').click()">
-                    <div class="upload-icon">[📤]</div>
-                    <div class="upload-text">点击或拖拽Word文档到此区域上传</div>
-                    <div class="upload-hint">支持.doc、.docx格式，文件大小不超过20MB</div>
-                    <input type="file" id="fileInput" style="display: none;" accept=".doc,.docx">
+                <div class="upload-area" style="padding: 24px;" onclick="document.getElementById('fileInput').click()">
+                    <div class="upload-icon" style="font-size: 32px; margin-bottom: 8px;">[📤]</div>
+                    <div class="upload-text" style="font-size: 13px;">点击或拖拽文件到此区域上传</div>
+                    <div class="upload-hint" style="font-size: 12px;">支持Excel、Word、PDF格式</div>
+                    <input type="file" id="fileInput" style="display: none;" accept=".xls,.xlsx,.doc,.docx,.pdf">
                 </div>
 
                 <!-- 已上传文件显示 -->
@@ -826,13 +835,12 @@
                     </div>
                 </div>
 
-                <!-- AI解析进度 -->
+                <!-- 解析进度（Word/PDF时显示） -->
                 <div id="parseProgress" style="display: none; margin-top: 20px;">
-                    <div style="font-size: 14px; color: #333; font-weight: 600; margin-bottom: 12px;">AI正在解析文档...</div>
+                    <div style="font-size: 14px; color: #333; font-weight: 600; margin-bottom: 12px;">正在解析文档...</div>
                     <div style="background: #f5f5f5; height: 8px; border-radius: 4px; overflow: hidden;">
-                        <div id="progressBar" style="width: 0%; height: 100%; background: #333; transition: width 0.3s;"></div>
+                        <div id="progressBar" style="width: 0%; height: 100%; background: #333; transition: width 0.2s;"></div>
                     </div>
-                    <div id="parseStatus" style="font-size: 13px; color: #666; margin-top: 8px;">正在读取文档内容...</div>
                 </div>
 
                 <!-- 解析结果预览 -->
@@ -849,18 +857,6 @@
                                 <span style="font-size: 13px; color: #666;">单选题：</span>
                                 <span id="singleCount" style="font-size: 14px; color: #333;">0</span>
                             </div>
-                            <div>
-                                <span style="font-size: 13px; color: #666;">多选题：</span>
-                                <span id="multipleCount" style="font-size: 14px; color: #333;">0</span>
-                            </div>
-                            <div>
-                                <span style="font-size: 13px; color: #666;">判断题：</span>
-                                <span id="judgeCount" style="font-size: 14px; color: #333;">0</span>
-                            </div>
-                            <div>
-                                <span style="font-size: 13px; color: #666;">问答题：</span>
-                                <span id="essayCount" style="font-size: 14px; color: #333;">0</span>
-                            </div>
                         </div>
                     </div>
 
@@ -870,26 +866,16 @@
                             <div style="font-size: 14px; color: #333; font-weight: 600;">题目详情</div>
                             <div style="font-size: 12px; color: #999;">请仔细检查题目内容，确认无误后导入</div>
                         </div>
-                        <div id="questionPreviewList" style="max-height: 400px; overflow-y: auto; border: 1px solid #e0e0e0; border-radius: 4px; background: #fff;">
+                        <div id="questionPreviewList" style="max-height: 300px; overflow-y: auto; border: 1px solid #e0e0e0; border-radius: 4px; background: #fff;">
                             <!-- 题目预览列表将通过JavaScript动态生成 -->
                         </div>
                     </div>
                 </div>
-
-                <!-- 格式说明 -->
-                <div style="padding: 16px; background: #f5f5f5; border-radius: 4px; font-size: 13px; color: #666; line-height: 1.8; margin-top: 20px;">
-                    <p style="margin-bottom: 12px; font-weight: 600; color: #333;">Word文档格式建议</p>
-                    <p style="margin-bottom: 8px;">• 每道题目之间建议空一行，便于AI识别题目边界</p>
-                    <p style="margin-bottom: 8px;">• 题目类型可标注为：单选题、多选题、判断题、问答题等</p>
-                    <p style="margin-bottom: 8px;">• 选择题选项建议使用A、B、C、D标识</p>
-                    <p style="margin-bottom: 8px;">• 答案和解析建议明确标注，如"答案："、"解析："</p>
-                    <p>• AI会自动识别题目结构，无需严格遵循固定格式</p>
-                </div>
             </div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" onclick="closeImportModal()">取消</button>
-                <button class="btn btn-primary" id="startParseBtn" disabled onclick="startParse()">开始解析</button>
-                <button class="btn btn-primary" id="confirmImportBtn" style="display: none;" onclick="confirmImport()">确认导入</button>
+                <button class="btn btn-primary" id="startParseBtn" style="display: none;" onclick="startParse()">开始解析</button>
+                <button class="btn btn-primary" id="confirmImportBtn" onclick="confirmImport()">确认导入</button>
             </div>
         </div>
     </div>
@@ -1451,8 +1437,10 @@
             // 检查文件类型
             const fileName = file.name;
             const fileExt = fileName.substring(fileName.lastIndexOf('.')).toLowerCase();
-            if (fileExt !== '.doc' && fileExt !== '.docx') {
-                alert('请上传Word文档（.doc或.docx格式）');
+            const allowedExts = ['.xls', '.xlsx', '.doc', '.docx', '.pdf'];
+
+            if (!allowedExts.includes(fileExt)) {
+                alert('请上传Excel、Word或PDF文件');
                 return;
             }
 
@@ -1466,7 +1454,22 @@
             document.getElementById('fileName').textContent = fileName;
             document.getElementById('fileSize').textContent = formatFileSize(file.size);
             document.getElementById('uploadedFile').style.display = 'block';
-            document.getElementById('startParseBtn').disabled = false;
+
+            // 根据文件类型显示不同按钮
+            const isExcel = fileExt === '.xls' || fileExt === '.xlsx';
+            if (isExcel) {
+                // Excel文件直接显示确认导入按钮
+                document.getElementById('startParseBtn').style.display = 'none';
+                document.getElementById('confirmImportBtn').style.display = 'inline-block';
+                // 模拟解析Excel并显示预览
+                showExcelParseResult();
+            } else {
+                // Word/PDF文件显示开始解析按钮
+                document.getElementById('startParseBtn').style.display = 'inline-block';
+                document.getElementById('startParseBtn').disabled = false;
+                document.getElementById('confirmImportBtn').style.display = 'none';
+                document.getElementById('parseResult').style.display = 'none';
+            }
         }
     });
 
@@ -1494,54 +1497,35 @@
         document.getElementById('parseResult').style.display = 'none';
         document.getElementById('startParseBtn').disabled = true;
 
-        // 模拟AI解析过程
+        // 模拟解析过程
         let progress = 0;
-        const statuses = [
-            '正在读取文档内容...',
-            '正在识别题目结构...',
-            '正在提取题目信息...',
-            '正在分析题目类型...',
-            '正在整理题目数据...'
-        ];
-        let statusIndex = 0;
 
         const interval = setInterval(() => {
-            progress += 20;
+            progress += 10;
             document.getElementById('progressBar').style.width = progress + '%';
-
-            if (statusIndex < statuses.length) {
-                document.getElementById('parseStatus').textContent = statuses[statusIndex];
-                statusIndex++;
-            }
 
             if (progress >= 100) {
                 clearInterval(interval);
                 setTimeout(() => {
                     showParseResult();
-                }, 500);
+                }, 300);
             }
-        }, 800);
+        }, 200);
     }
 
-    // 显示解析结果
+    // 显示解析结果（Word/PDF）
     function showParseResult() {
         document.getElementById('parseProgress').style.display = 'none';
         document.getElementById('parseResult').style.display = 'block';
 
-        // 模拟解析结果数据
+        // 模拟解析结果数据（只有单选题）
         const mockResult = {
-            total: 12,
-            single: 5,
-            multiple: 3,
-            judge: 2,
-            essay: 2
+            total: 5,
+            single: 5
         };
 
         document.getElementById('totalQuestions').textContent = mockResult.total;
         document.getElementById('singleCount').textContent = mockResult.single;
-        document.getElementById('multipleCount').textContent = mockResult.multiple;
-        document.getElementById('judgeCount').textContent = mockResult.judge;
-        document.getElementById('essayCount').textContent = mockResult.essay;
 
         // 生成题目详细预览
         generateQuestionPreview();
@@ -1550,12 +1534,73 @@
         document.getElementById('confirmImportBtn').style.display = 'inline-block';
     }
 
-    // 生成题目详细预览
+    // 显示Excel解析结果
+    function showExcelParseResult() {
+        document.getElementById('parseResult').style.display = 'block';
+
+        // 模拟解析结果数据（只有单选题）
+        const mockResult = {
+            total: 8,
+            single: 8
+        };
+
+        document.getElementById('totalQuestions').textContent = mockResult.total;
+        document.getElementById('singleCount').textContent = mockResult.single;
+
+        // 生成题目详细预览
+        generateExcelQuestionPreview();
+    }
+
+    // 生成Excel题目预览
+    function generateExcelQuestionPreview() {
+        const mockQuestions = [
+            { content: '孙悟空在花果山自封为什么？', options: ['A. 美猴王', 'B. 齐天大圣', 'C. 斗战胜佛', 'D. 弼马温'], answer: 'A', score: 5 },
+            { content: '唐僧师徒四人中，谁最先成为唐僧的徒弟？', options: ['A. 孙悟空', 'B. 猪八戒', 'C. 沙僧', 'D. 白龙马'], answer: 'A', score: 5 },
+            { content: '猪八戒原本在天庭担任什么职位？', options: ['A. 天蓬元帅', 'B. 卷帘大将', 'C. 托塔天王', 'D. 二郎神'], answer: 'A', score: 5 },
+            { content: '沙僧原本在天庭担任什么职位？', options: ['A. 卷帘大将', 'B. 天蓬元帅', 'C. 托塔天王', 'D. 二郎神'], answer: 'A', score: 5 },
+            { content: '《西游记》的作者是谁？', options: ['A. 吴承恩', 'B. 罗贯中', 'C. 施耐庵', 'D. 曹雪芹'], answer: 'A', score: 5 },
+            { content: '孙悟空的金箍棒原本是什么？', options: ['A. 定海神针', 'B. 擎天柱', 'C. 如意金钩', 'D. 降魔杵'], answer: 'A', score: 5 },
+            { content: '唐僧取经的目的地是哪里？', options: ['A. 西天灵山', 'B. 东海龙宫', 'C. 天庭', 'D. 花果山'], answer: 'A', score: 5 },
+            { content: '观音菩萨的道场在哪里？', options: ['A. 南海普陀山', 'B. 西天灵山', 'C. 五台山', 'D. 峨眉山'], answer: 'A', score: 5 }
+        ];
+
+        const previewList = document.getElementById('questionPreviewList');
+        let html = '';
+
+        mockQuestions.forEach((q, index) => {
+            html += `
+                <div style="padding: 16px; border-bottom: 1px solid #f0f0f0;">
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+                        <span style="font-size: 14px; color: #333; font-weight: 600;">第 ${index + 1} 题</span>
+                        <span style="padding: 2px 8px; background: #f5f5f5; border-radius: 3px; font-size: 12px; color: #666;">单选题</span>
+                        <span style="font-size: 13px; color: #666;">（${q.score}分）</span>
+                    </div>
+                    <div style="font-size: 14px; color: #333; margin-bottom: 12px; line-height: 1.6;">${q.content}</div>
+                    <div style="margin-bottom: 12px;">
+            `;
+            q.options.forEach(option => {
+                html += `<div style="font-size: 13px; color: #666; margin-bottom: 6px;">${option}</div>`;
+            });
+            html += `
+                    </div>
+                    <div style="display: flex; gap: 16px; font-size: 13px;">
+                        <div>
+                            <span style="color: #999;">答案：</span>
+                            <span style="color: #333; font-weight: 600;">${q.answer}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+
+        previewList.innerHTML = html;
+    }
+
+    // 生成题目详细预览（Word/PDF解析）
     function generateQuestionPreview() {
-        // 模拟解析出的题目数据
+        // 模拟解析出的题目数据（只有单选题）
         const mockQuestions = [
             {
-                type: 'single',
                 typeName: '单选题',
                 content: '孙悟空在花果山自封为什么？',
                 options: ['A. 美猴王', 'B. 齐天大圣', 'C. 斗战胜佛', 'D. 弼马温'],
@@ -1563,7 +1608,6 @@
                 score: 5
             },
             {
-                type: 'single',
                 typeName: '单选题',
                 content: '唐僧师徒四人中，谁最先成为唐僧的徒弟？',
                 options: ['A. 孙悟空', 'B. 猪八戒', 'C. 沙僧', 'D. 白龙马'],
@@ -1571,7 +1615,6 @@
                 score: 5
             },
             {
-                type: 'single',
                 typeName: '单选题',
                 content: '猪八戒原本在天庭担任什么职位？',
                 options: ['A. 天蓬元帅', 'B. 卷帘大将', 'C. 托塔天王', 'D. 二郎神'],
@@ -1579,41 +1622,18 @@
                 score: 5
             },
             {
-                type: 'multiple',
-                typeName: '多选题',
-                content: '以下哪些是《西游记》中的妖怪？',
-                options: ['A. 白骨精', 'B. 牛魔王', 'C. 观音菩萨', 'D. 红孩儿'],
-                answer: 'ABD',
-                score: 8
+                typeName: '单选题',
+                content: '沙僧原本在天庭担任什么职位？',
+                options: ['A. 卷帘大将', 'B. 天蓬元帅', 'C. 托塔天王', 'D. 二郎神'],
+                answer: 'A',
+                score: 5
             },
             {
-                type: 'multiple',
-                typeName: '多选题',
-                content: '孙悟空曾拜过哪些师父？',
-                options: ['A. 菩提祖师', 'B. 唐僧', 'C. 如来佛祖', 'D. 观音菩萨'],
-                answer: 'AB',
-                score: 8
-            },
-            {
-                type: 'judge',
-                typeName: '判断题',
-                content: '孙悟空是从石头里蹦出来的',
-                answer: '正确',
-                score: 3
-            },
-            {
-                type: 'judge',
-                typeName: '判断题',
-                content: '唐僧师徒一共经历了八十一难',
-                answer: '正确',
-                score: 3
-            },
-            {
-                type: 'essay',
-                typeName: '问答题',
-                content: '请简述孙悟空大闹天宫的主要经过',
-                answer: '孙悟空因不满天庭给他的官职太小，大闹天宫，打败天兵天将，最后被如来佛祖压在五行山下五百年',
-                score: 10
+                typeName: '单选题',
+                content: '《西游记》的作者是谁？',
+                options: ['A. 吴承恩', 'B. 罗贯中', 'C. 施耐庵', 'D. 曹雪芹'],
+                answer: 'A',
+                score: 5
             }
         ];
 
@@ -1633,14 +1653,12 @@
                     </div>
             `;
 
-            // 如果有选项，显示选项
-            if (q.options) {
-                html += '<div style="margin-bottom: 12px;">';
-                q.options.forEach(option => {
-                    html += `<div style="font-size: 13px; color: #666; margin-bottom: 6px;">${option}</div>`;
-                });
-                html += '</div>';
-            }
+            // 显示选项
+            html += '<div style="margin-bottom: 12px;">';
+            q.options.forEach(option => {
+                html += `<div style="font-size: 13px; color: #666; margin-bottom: 6px;">${option}</div>`;
+            });
+            html += '</div>';
 
             // 显示答案
             html += `
@@ -1659,7 +1677,8 @@
 
     // 确认导入
     function confirmImport() {
-        alert('题目导入成功！共导入12道题目');
+        const total = document.getElementById('totalQuestions').textContent;
+        alert('题目导入成功！共导入' + total + '道单选题');
         closeImportModal();
         // 实际应用中这里应该刷新题目列表
     }
