@@ -424,9 +424,9 @@
                             </div>
                         </div>
                         <div class="resource-actions">
-                            <a href="#">预览</a>
-                            <a href="#">下载</a>
-                            <a href="#">删除</a>
+                            <a href="#" onclick="alert('打开预览');return false;">预览</a>
+                            <a href="#" onclick="alert('开始下载');return false;">下载</a>
+                            <a href="#" onclick="if(confirm('确定删除？'))alert('已删除');return false;">删除</a>
                         </div>
                     </div>
                     <div class="resource-item">
@@ -476,7 +476,7 @@
                             </div>
                         </div>
                         <div class="resource-actions">
-                            <a href="#">播放</a>
+                            <a href="#" onclick="alert('开始播放');return false;">播放</a>
                             <a href="#">下载</a>
                             <a href="#">删除</a>
                         </div>

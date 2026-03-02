@@ -926,7 +926,7 @@
                 <div class="form-group">
                     <label class="form-label">图片模板<span class="required">*</span></label>
                     <div class="form-upload">
-                        <button class="upload-btn">选择文件</button>
+                        <button class="upload-btn" onclick="alert('请选择文件')">选择文件</button>
                         <div class="upload-preview">[预览]</div>
                     </div>
                 </div>
@@ -956,7 +956,7 @@
             </div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" onclick="closeAddModal()">取消</button>
-                <button class="btn btn-primary">确定</button>
+                <button class="btn btn-primary" onclick="closeAddModal()">确定</button>
             </div>
         </div>
     </div>
@@ -1006,7 +1006,7 @@
             </div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" onclick="closeEditModal()">取消</button>
-                <button class="btn btn-primary">确定</button>
+                <button class="btn btn-primary" onclick="closeEditModal()">确定</button>
             </div>
         </div>
     </div>
@@ -1027,7 +1027,7 @@
             </div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" onclick="closeModal('disableModal')">取消</button>
-                <button class="btn btn-primary">确定</button>
+                <button class="btn btn-primary" onclick="closeModal('disableModal')">确定</button>
             </div>
         </div>
     </div>
@@ -1048,7 +1048,7 @@
             </div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" onclick="closeModal('enableModal')">取消</button>
-                <button class="btn btn-primary">确定</button>
+                <button class="btn btn-primary" onclick="closeModal('enableModal')">确定</button>
             </div>
         </div>
     </div>
@@ -1069,7 +1069,7 @@
             </div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" onclick="closeDeleteModal()">取消</button>
-                <button class="btn btn-primary">确定</button>
+                <button class="btn btn-primary" onclick="closeDeleteModal()">确定</button>
             </div>
         </div>
     </div>
