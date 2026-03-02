@@ -783,7 +783,7 @@
                                     <div class="task-title">阅读任务列表</div>
                                     <div class="task-stats">共 3 次阅读，8 个任务</div>
                                 </div>
-                                <button class="btn-add">+ 添加阅读次数</button>
+                                <button class="btn-add" onclick="addReadingTask()">+ 添加阅读次数</button>
                             </div>
 
                             <div class="task-list">
@@ -797,7 +797,7 @@
                                             <button class="edit-icon" id="save-btn-1" onclick="saveTitle(1)" style="display: none;">[保存]</button>
                                         </div>
                                         <div class="task-item-actions">
-                                            <button class="btn-icon">删除</button>
+                                            <button class="btn-icon" onclick="deleteReadingTask(this)">删除</button>
                                         </div>
                                     </div>
                                     <div class="form-grid">
@@ -812,7 +812,7 @@
                                                 <span style="color: #999;">-</span>
                                                 <input type="number" class="form-input" placeholder="结束页" value="50" style="flex: 1;">
                                                 <span style="color: #666; white-space: nowrap;">页</span>
-                                                <button class="upload-btn" style="margin-left: 8px; white-space: nowrap;">上传音频</button>
+                                                <button class="upload-btn" style="margin-left: 8px; white-space: nowrap;" onclick="uploadAudio()">上传音频</button>
                                             </div>
                                         </div>
 
@@ -826,8 +826,8 @@
                                                 <div style="margin-bottom: 16px;">
                                                     <div style="margin-bottom: 8px; font-size: 13px; color: #666;">导读单（学生版）</div>
                                                     <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-                                                        <button class="upload-btn">从资源库选择</button>
-                                                        <button class="upload-btn">本地上传</button>
+                                                        <button class="upload-btn" onclick="selectFromLibrary()">从资源库选择</button>
+                                                        <button class="upload-btn" onclick="uploadLocal()">本地上传</button>
                                                     </div>
                                                     <div class="upload-info-wrapper" style="margin-bottom: 8px;">
                                                         <div class="upload-info">西游记-第1次阅读导读单.jpg</div>
@@ -849,8 +849,8 @@
                                                 <div style="margin-bottom: 16px;">
                                                     <div style="margin-bottom: 8px; font-size: 13px; color: #666;">导读单答案（教师版）</div>
                                                     <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-                                                        <button class="upload-btn">从资源库选择</button>
-                                                        <button class="upload-btn">本地上传</button>
+                                                        <button class="upload-btn" onclick="alert('从资源库选择')">从资源库选择</button>
+                                                        <button class="upload-btn" onclick="alert('本地上传')">本地上传</button>
                                                     </div>
                                                     <div class="upload-info-wrapper" style="margin-bottom: 8px;">
                                                         <div class="upload-info">西游记-第1次阅读导读单答案.jpg</div>
@@ -914,7 +914,7 @@
                                             <button class="edit-icon" id="save-btn-2" onclick="saveTitle(2)" style="display: none;">[保存]</button>
                                         </div>
                                         <div class="task-item-actions">
-                                            <button class="btn-icon">删除</button>
+                                            <button class="btn-icon" onclick="deleteReadingTask(this)">删除</button>
                                         </div>
                                     </div>
                                     <div class="form-grid">
@@ -929,7 +929,7 @@
                                                 <span style="color: #999;">-</span>
                                                 <input type="number" class="form-input" placeholder="结束页" value="100" style="flex: 1;">
                                                 <span style="color: #666; white-space: nowrap;">页</span>
-                                                <button class="upload-btn" style="margin-left: 8px; white-space: nowrap;">上传音频</button>
+                                                <button class="upload-btn" style="margin-left: 8px; white-space: nowrap;" onclick="uploadAudio()">上传音频</button>
                                             </div>
                                         </div>
 
@@ -943,8 +943,8 @@
                                                 <div style="margin-bottom: 16px;">
                                                     <div style="margin-bottom: 8px; font-size: 13px; color: #666;">导读单（学生版）</div>
                                                     <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-                                                        <button class="upload-btn">从资源库选择</button>
-                                                        <button class="upload-btn">本地上传</button>
+                                                        <button class="upload-btn" onclick="alert('从资源库选择')">从资源库选择</button>
+                                                        <button class="upload-btn" onclick="alert('本地上传')">本地上传</button>
                                                     </div>
                                                     <div class="upload-info-wrapper" style="margin-bottom: 8px;">
                                                         <div class="upload-info">西游记-第2次阅读导读单.jpg</div>
@@ -966,8 +966,8 @@
                                                 <div style="margin-bottom: 16px;">
                                                     <div style="margin-bottom: 8px; font-size: 13px; color: #666;">导读单答案（教师版）</div>
                                                     <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-                                                        <button class="upload-btn">从资源库选择</button>
-                                                        <button class="upload-btn">本地上传</button>
+                                                        <button class="upload-btn" onclick="alert('从资源库选择')">从资源库选择</button>
+                                                        <button class="upload-btn" onclick="alert('本地上传')">本地上传</button>
                                                     </div>
                                                     <div class="upload-info-wrapper" style="margin-bottom: 8px;">
                                                         <div class="upload-info">西游记-第2次阅读导读单答案.jpg</div>
@@ -1043,7 +1043,7 @@
                                                 <span style="color: #999;">-</span>
                                                 <input type="number" class="form-input" placeholder="结束页" value="150" style="flex: 1;">
                                                 <span style="color: #666; white-space: nowrap;">页</span>
-                                                <button class="upload-btn" style="margin-left: 8px; white-space: nowrap;">上传音频</button>
+                                                <button class="upload-btn" style="margin-left: 8px; white-space: nowrap;" onclick="uploadAudio()">上传音频</button>
                                             </div>
                                         </div>
 
@@ -1057,8 +1057,8 @@
                                                 <div style="margin-bottom: 16px;">
                                                     <div style="margin-bottom: 8px; font-size: 13px; color: #666;">导读单（学生版）</div>
                                                     <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-                                                        <button class="upload-btn">从资源库选择</button>
-                                                        <button class="upload-btn">本地上传</button>
+                                                        <button class="upload-btn" onclick="alert('从资源库选择')">从资源库选择</button>
+                                                        <button class="upload-btn" onclick="alert('本地上传')">本地上传</button>
                                                     </div>
                                                     <div class="upload-info-wrapper" style="margin-bottom: 8px;">
                                                         <div class="upload-info">西游记-第3次阅读导读单.jpg</div>
@@ -1080,8 +1080,8 @@
                                                 <div style="margin-bottom: 16px;">
                                                     <div style="margin-bottom: 8px; font-size: 13px; color: #666;">导读单答案（教师版）</div>
                                                     <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-                                                        <button class="upload-btn">从资源库选择</button>
-                                                        <button class="upload-btn">本地上传</button>
+                                                        <button class="upload-btn" onclick="alert('从资源库选择')">从资源库选择</button>
+                                                        <button class="upload-btn" onclick="alert('本地上传')">本地上传</button>
                                                     </div>
                                                     <div class="upload-info-wrapper" style="margin-bottom: 8px;">
                                                         <div class="upload-info">西游记-第3次阅读导读单答案.jpg</div>
@@ -1209,6 +1209,29 @@
 
         // 隐藏删除按钮
         button.style.display = 'none';
+    }
+
+    function addReadingTask() {
+        alert('已添加新的阅读次数');
+    }
+
+    function deleteReadingTask(btn) {
+        if(confirm('确定要删除此阅读次数吗？')) {
+            const taskItem = btn.closest('.task-item');
+            if(taskItem) taskItem.remove();
+        }
+    }
+
+    function uploadAudio() {
+        alert('请选择要上传的音频文件');
+    }
+
+    function selectFromLibrary() {
+        alert('打开资源库选择弹窗');
+    }
+
+    function uploadLocal() {
+        alert('请选择要上传的本地文件');
     }
 </script>
 </body>

@@ -661,14 +661,14 @@
                 <!-- 操作栏 -->
                 <div class="action-bar">
                     <div class="action-left">
-                        <button class="btn btn-primary">新增书籍</button>
-                        <button class="btn btn-secondary">导入书籍</button>
+                        <button class="btn btn-primary" onclick="window.location.href='20-新增书籍.html'">新增书籍</button>
+                        <button class="btn btn-secondary" onclick="alert('打开导入弹窗')">导入书籍</button>
                         <button class="btn btn-secondary">上传资源</button>
                         <button class="btn btn-secondary">配置测评</button>
                         <button class="btn btn-secondary" id="generateAvatarBtn">生成AI虚拟形象</button>
-                        <button class="btn btn-secondary">编辑</button>
-                        <button class="btn btn-secondary">查看</button>
-                        <button class="btn btn-secondary">删除</button>
+                        <button class="btn btn-secondary" onclick="window.location.href='21-编辑书籍.html'">编辑</button>
+                        <button class="btn btn-secondary" onclick="window.location.href='19-书籍详情.html'">查看</button>
+                        <button class="btn btn-secondary" onclick="if(confirm('确定删除？'))alert('已删除')">删除</button>
                         <button class="btn btn-secondary">导出</button>
                     </div>
                 </div>
@@ -881,7 +881,7 @@
         buttons.forEach(btn => {
             if (btn.textContent.trim() === '上传资源') {
                 btn.onclick = function() {
-                    window.location.href = '21-上传资源.html';
+                    window.location.href = '22-上传资源.html';
                 };
             }
             if (btn.textContent.trim() === '配置测评') {
