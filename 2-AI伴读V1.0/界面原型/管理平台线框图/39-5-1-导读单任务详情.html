@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>导读单任务详情 - 校校读吧管理平台</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+        }
+
+        .main {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 240px;
+            background: #fff;
+            border-right: 1px solid #e0e0e0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-header {
+            height: 60px;
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .sidebar-menu {
+            flex: 1;
+            padding: 16px 0;
+            overflow-y: auto;
+        }
+
+        .menu-group {
+            margin-bottom: 4px;
+        }
+
+        .menu-group-title {
+            padding: 12px 24px;
+            font-size: 14px;
+            color: #333;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .menu-group-icon {
+            font-size: 12px;
+            color: #999;
+            transition: transform 0.2s;
+        }
+
+        .menu-group.expanded .menu-group-icon {
+            transform: rotate(90deg);
+        }
+
+        .menu-group-items {
+            display: none;
+        }
+
+        .menu-group.expanded .menu-group-items {
+            display: block;
+        }
+
+        .menu-item {
+            padding: 12px 24px 12px 40px;
+            font-size: 14px;
+            color: #666;
+            cursor: pointer;
+        }
+
+        .menu-item:hover {
+            background: #f5f5f5;
+        }
+
+        .menu-item.active {
+            background: #e8e8e8;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            height: 60px;
+            background: #fff;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+        }
+
+        .breadcrumb {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .breadcrumb span {
+            margin: 0 8px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .logout-link {
+            color: #333;
+            text-decoration: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .logout-link:hover {
+            text-decoration: underline;
+        }
+
+        .page-content {
+            flex: 1;
+            padding: 24px;
+            overflow-y: auto;
+        }
+
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+        }
+
+        .btn-back {
+            height: 36px;
+            padding: 0 16px;
+            border: 1px solid #d0d0d0;
+            border-radius: 4px;
+            background: #fff;
+            font-size: 14px;
+            color: #333;
+            cursor: pointer;
+        }
+
+        .page-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .info-card {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .info-label {
+            font-size: 14px;
+            color: #999;
+        }
+
+        .info-value {
+            font-size: 16px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        /* 互动数据展示 */
+        .interaction-card {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            margin-bottom: 24px;
+        }
+
+        .likes-section {
+            padding: 16px 24px;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .btn-liked {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 6px 16px;
+            border: 1px solid #ff4d4f;
+            border-radius: 20px;
+            color: #ff4d4f;
+            font-size: 14px;
+            background: #fff0f6;
+        }
+
+        .likes-text {
+            font-size: 14px;
+            color: #666;
+            flex: 1;
+        }
+
+        .comments-section {
+            padding: 20px 24px;
+        }
+
+        .comments-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .comments-count {
+            font-size: 14px;
+            color: #999;
+            font-weight: normal;
+        }
+
+        .comment-item {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .comment-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .comment-user {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .comment-content-box {
+            flex: 1;
+            background: #f8f9fa;
+            padding: 12px 16px;
+            border-radius: 8px;
+        }
+
+        .user-tag {
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: normal;
+        }
+
+        .tag-teacher {
+            background: #e6f7ff;
+            color: #1890ff;
+        }
+
+        .tag-student {
+            background: #f9f0ff;
+            color: #722ed1;
+        }
+
+        .comment-text {
+            font-size: 14px;
+            color: #333;
+            line-height: 1.5;
+            margin-bottom: 8px;
+        }
+
+        .comment-time {
+            font-size: 12px;
+            color: #999;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="main">
+        <!-- 侧边栏 -->
+        <div class="sidebar">
+            <div class="sidebar-header">校校读吧管理平台</div>
+            <div class="sidebar-menu">
+                <div class="menu-group">
+                    <div class="menu-group-title">首页</div>
+                </div>
+                <div class="menu-group">
+                    <div class="menu-group-title">用户管理</div>
+                </div>
+                <div class="menu-group">
+                    <div class="menu-group-title">阅读计划管理</div>
+                </div>
+                <div class="menu-group">
+                    <div class="menu-group-title">书籍资源库</div>
+                </div>
+                <div class="menu-group">
+                    <div class="menu-group-title">激励体系</div>
+                </div>
+                <div class="menu-group">
+                    <div class="menu-group-title">消息管理</div>
+                </div>
+                <div class="menu-group">
+                    <div class="menu-group-title">用户反馈</div>
+                </div>
+                <div class="menu-group expanded">
+                    <div class="menu-group-title">数据分析 <span class="menu-group-icon">▶</span></div>
+                    <div class="menu-group-items">
+                        <div class="menu-item" onclick="window.location.href='39-平台数据分析.html'">平台数据分析</div>
+                        <div class="menu-item" onclick="window.location.href='39-1-学校数据分析.html'">学校数据分析</div>
+                        <div class="menu-item" onclick="window.location.href='39-3-学生数据分析.html'">学生数据分析</div>
+                        <div class="menu-item" onclick="window.location.href='39-4-书籍测评记录.html'">书籍测评记录</div>
+                        <div class="menu-item" onclick="window.location.href='39-5-阅读任务记录.html'">阅读任务记录</div>
+                        <div class="menu-item" onclick="window.location.href='39-4-书籍测评记录.html'">书籍测评记录</div>
+                        <div class="menu-item active" onclick="window.location.href='39-5-阅读任务记录.html'">阅读任务记录</div>
+                    </div>
+                </div>
+                <div class="menu-group">
+                    <div class="menu-group-title">系统配置</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 内容区域 -->
+        <div class="content">
+            <!-- 顶部栏 -->
+            <div class="header">
+                <div class="breadcrumb">
+                    数据分析 <span>/</span> 阅读任务记录 <span>/</span> 任务详情
+                </div>
+                <div class="user-info">
+                    <span>管理员</span>
+                    <a class="logout-link" onclick="history.back()">退出登录</a>
+                </div>
+            </div>
+
+            <!-- 页面内容 -->
+            <div class="page-content">
+                <div class="page-header">
+                    <div class="page-title">任务详情</div>
+                    <button class="btn-back" onclick="window.location.href='39-5-阅读任务记录.html'">返回列表</button>
+                </div>
+
+                <!-- 基本信息 -->
+                <div class="info-card">
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <div class="info-label">学生名称</div>
+                            <div class="info-value">张小明</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">班级</div>
+                            <div class="info-value">一年级1班</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">学校</div>
+                            <div class="info-value">实验小学</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">书籍</div>
+                            <div class="info-value">《三体》</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">阅读次数</div>
+                            <div class="info-value">第1次阅读</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">任务内容</div>
+                            <div class="info-value">完成导读单二</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">打卡时间</div>
+                            <div class="info-value">2026-02-15 14:30</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">状态</div>
+                            <div class="info-value"><span style="color: #34a853;">按时完成</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 打卡详情 -->
+                <div class="info-card">
+                    <div style="font-size: 16px; font-weight: 600; color: #333; margin-bottom: 20px;">打卡详情</div>
+
+                    <div style="margin-bottom: 24px;">
+                        <div class="info-label" style="margin-bottom: 12px; color: #666;">打卡内容</div>
+                        <div style="display: flex; gap: 16px;">
+                            <div
+                                style="width: 120px; height: 120px; background: #f0f0f0; border: 1px dashed #d0d0d0; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #999; font-size: 14px;">
+                                图片缩略图 1
+                            </div>
+                            <div
+                                style="width: 120px; height: 120px; background: #f0f0f0; border: 1px dashed #d0d0d0; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #999; font-size: 14px;">
+                                图片缩略图 2
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="info-label" style="margin-bottom: 8px; color: #666;">打卡感想</div>
+                        <div
+                            style="font-size: 14px; color: #333; line-height: 1.6; background: #f9f9f9; padding: 16px; border-radius: 4px;">
+                            这本书非常有意思，我在阅读的过程中学到了很多知识。特别是书中的主人公遇到困难时不放弃的精神，让我深受启发。我觉得大家都应该读一读这本经典科幻著作，对理解宇宙有极大的帮助。
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 互动数据展示 -->
+                <div class="interaction-card">
+                    <div class="likes-section">
+                        <div class="likes-text">李老师、王小明、刘芳 等3人点赞</div>
+                        <div style="color: #999; cursor: pointer;">&gt;</div>
+                    </div>
+
+                    <div class="comments-section">
+                        <div class="comments-header">
+                            <div>评论</div>
+                            <div class="comments-count">3条</div>
+                        </div>
+
+                        <!-- 评论 1 -->
+                        <div class="comment-item">
+                            <div class="comment-content-box">
+                                <div class="comment-user">
+                                    李老师
+                                    <span class="user-tag tag-teacher">老师</span>
+                                </div>
+                                <div class="comment-text">阅读很认真，继续保持！</div>
+                                <div class="comment-time">2026-01-17 21:30</div>
+                            </div>
+                        </div>
+
+                        <!-- 评论 2 -->
+                        <div class="comment-item">
+                            <div class="comment-content-box">
+                                <div class="comment-user">
+                                    王小明
+                                    <span class="user-tag tag-student">同学</span>
+                                </div>
+                                <div class="comment-text">写得真好，向你学习</div>
+                                <div class="comment-time">2026-01-18 08:20</div>
+                            </div>
+                        </div>
+
+                        <!-- 评论 3 -->
+                        <div class="comment-item">
+                            <div class="comment-content-box">
+                                <div class="comment-user">
+                                    刘芳
+                                    <span class="user-tag tag-student">同学</span>
+                                </div>
+                                <div class="comment-text">字迹工整，笔记做得很详细</div>
+                                <div class="comment-time">2026-01-18 09:15</div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

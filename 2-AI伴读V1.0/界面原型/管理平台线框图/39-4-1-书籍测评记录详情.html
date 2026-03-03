@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>书籍测评记录详情 - 校校读吧管理平台</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+        }
+
+        .main {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 240px;
+            background: #fff;
+            border-right: 1px solid #e0e0e0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-header {
+            height: 60px;
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .sidebar-menu {
+            flex: 1;
+            padding: 16px 0;
+            overflow-y: auto;
+        }
+
+        .menu-group {
+            margin-bottom: 4px;
+        }
+
+        .menu-group-title {
+            padding: 12px 24px;
+            font-size: 14px;
+            color: #333;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .menu-group-icon {
+            font-size: 12px;
+            color: #999;
+            transition: transform 0.2s;
+        }
+
+        .menu-group.expanded .menu-group-icon {
+            transform: rotate(90deg);
+        }
+
+        .menu-group-items {
+            display: none;
+        }
+
+        .menu-group.expanded .menu-group-items {
+            display: block;
+        }
+
+        .menu-item {
+            padding: 12px 24px 12px 40px;
+            font-size: 14px;
+            color: #666;
+            cursor: pointer;
+        }
+
+        .menu-item:hover {
+            background: #f5f5f5;
+        }
+
+        .menu-item.active {
+            background: #e8e8e8;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            height: 60px;
+            background: #fff;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+        }
+
+        .breadcrumb {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .breadcrumb span {
+            margin: 0 8px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .logout-link {
+            color: #333;
+            text-decoration: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .logout-link:hover {
+            text-decoration: underline;
+        }
+
+        .page-content {
+            flex: 1;
+            padding: 24px;
+            overflow-y: auto;
+        }
+
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+        }
+
+        .btn-back {
+            height: 36px;
+            padding: 0 16px;
+            border: 1px solid #d0d0d0;
+            border-radius: 4px;
+            background: #fff;
+            font-size: 14px;
+            color: #333;
+            cursor: pointer;
+        }
+
+        .page-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        /* 基本信息卡片 */
+        .info-card {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 24px;
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .info-label {
+            font-size: 14px;
+            color: #999;
+        }
+
+        .info-value {
+            font-size: 16px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        /* 评价卡片 */
+        .eval-card {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .eval-card-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .eval-card-title .icon {
+            font-size: 20px;
+        }
+
+        .eval-text {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.8;
+        }
+
+        .eval-two-col {
+            display: flex;
+            gap: 40px;
+        }
+
+        .eval-col-left {
+            flex: 1;
+        }
+
+        .eval-col-right {
+            flex: 1;
+        }
+
+        .radar-chart {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px 0;
+        }
+
+        .suggestion-list {
+            list-style: none;
+        }
+
+        .suggestion-item {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .suggestion-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .suggestion-content {
+            flex: 1;
+            font-size: 14px;
+            color: #666;
+            line-height: 1.8;
+        }
+
+        .suggestion-content strong {
+            color: #333;
+        }
+
+        /* 编辑功能 */
+        .eval-title-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .btn-edit {
+            height: 32px;
+            padding: 0 16px;
+            border: 1px solid #d0d0d0;
+            border-radius: 4px;
+            background: #fff;
+            font-size: 13px;
+            color: #333;
+            cursor: pointer;
+        }
+
+        .btn-edit:hover {
+            background: #f5f5f5;
+        }
+
+        .btn-save {
+            height: 32px;
+            padding: 0 16px;
+            border: none;
+            border-radius: 4px;
+            background: #333;
+            color: #fff;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .btn-cancel {
+            height: 32px;
+            padding: 0 16px;
+            border: 1px solid #d0d0d0;
+            border-radius: 4px;
+            background: #fff;
+            font-size: 13px;
+            color: #333;
+            cursor: pointer;
+        }
+
+        .edit-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .eval-textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 12px;
+            border: 1px solid #d0d0d0;
+            border-radius: 4px;
+            font-size: 14px;
+            color: #333;
+            line-height: 1.8;
+            resize: vertical;
+            font-family: inherit;
+            display: none;
+        }
+
+        /* 答题详情 */
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 16px;
+        }
+
+        .question-card {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 20px 24px;
+            margin-bottom: 16px;
+        }
+
+        .question-card.correct {
+            border-left: 4px solid #34a853;
+        }
+
+        .question-card.wrong {
+            border-left: 4px solid #ea4335;
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .question-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            flex: 1;
+        }
+
+        .question-badge {
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .question-badge.correct {
+            background: #e6f4ea;
+            color: #34a853;
+        }
+
+        .question-badge.wrong {
+            background: #fce8e6;
+            color: #ea4335;
+        }
+
+        .option-list {
+            list-style: none;
+            margin-bottom: 12px;
+        }
+
+        .option-item {
+            padding: 8px 12px;
+            margin-bottom: 6px;
+            border-radius: 4px;
+            font-size: 14px;
+            color: #666;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .option-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .option-item.selected-correct {
+            background: #e6f4ea;
+            color: #34a853;
+            font-weight: 500;
+        }
+
+        .option-item.selected-wrong {
+            background: #fce8e6;
+            color: #ea4335;
+            font-weight: 500;
+        }
+
+        .option-item.correct-answer {
+            background: #e6f4ea;
+            color: #34a853;
+            font-weight: 500;
+        }
+
+        .answer-info {
+            font-size: 13px;
+            color: #999;
+            display: flex;
+            gap: 24px;
+        }
+
+        .answer-info span strong {
+            color: #333;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="main">
+        <!-- 侧边栏 -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                校校读吧管理平台
+            </div>
+            <div class="sidebar-menu">
+                <div class="menu-group">
+                    <div class="menu-group-title">首页</div>
+                </div>
+                <div class="menu-group">
+                    <div class="menu-group-title">用户管理</div>
+                </div>
+                <div class="menu-group">
+                    <div class="menu-group-title">阅读计划管理</div>
+                </div>
+                <div class="menu-group">
+                    <div class="menu-group-title">书籍资源库</div>
+                </div>
+                <div class="menu-group">
+                    <div class="menu-group-title">激励体系</div>
+                </div>
+                <div class="menu-group">
+                    <div class="menu-group-title">消息管理</div>
+                </div>
+                <div class="menu-group">
+                    <div class="menu-group-title">用户反馈</div>
+                </div>
+                <div class="menu-group expanded">
+                    <div class="menu-group-title">
+                        数据分析
+                        <span class="menu-group-icon">▶</span>
+                    </div>
+                    <div class="menu-group-items">
+                        <div class="menu-item" onclick="window.location.href='39-平台数据分析.html'">平台数据分析</div>
+                        <div class="menu-item" onclick="window.location.href='39-1-学校数据分析.html'">学校数据分析</div>
+                        <div class="menu-item" onclick="window.location.href='39-3-学生数据分析.html'">学生数据分析</div>
+                        <div class="menu-item" onclick="window.location.href='39-4-书籍测评记录.html'">书籍测评记录</div>
+                        <div class="menu-item" onclick="window.location.href='39-5-阅读任务记录.html'">阅读任务记录</div>
+                        <div class="menu-item active" onclick="window.location.href='39-4-书籍测评记录.html'">书籍测评记录</div>
+                        <div class="menu-item" onclick="window.location.href='39-5-阅读任务记录.html'">阅读任务记录</div>
+                    </div>
+                </div>
+                <div class="menu-group">
+                    <div class="menu-group-title">系统配置</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 内容区域 -->
+        <div class="content">
+            <!-- 顶部栏 -->
+            <div class="header">
+                <div class="breadcrumb">
+                    数据分析 <span>/</span> 书籍测评记录 <span>/</span> 测评详情
+                </div>
+                <div class="user-info">
+                    <span>管理员</span>
+                    <a class="logout-link" onclick="history.back()">退出登录</a>
+                </div>
+            </div>
+
+            <!-- 页面内容 -->
+            <div class="page-content">
+                <div class="page-header">
+                    <div class="page-title">测评详情</div>
+                    <button class="btn-back" onclick="window.location.href='39-4-书籍测评记录.html'">返回列表</button>
+                </div>
+
+                <!-- 基本信息 -->
+                <div class="info-card">
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <div class="info-label">学生名称</div>
+                            <div class="info-value">张小明</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">班级</div>
+                            <div class="info-value">一年级1班</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">学校</div>
+                            <div class="info-value">实验小学</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">提交时间</div>
+                            <div class="info-value">2026-02-15 14:30</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">分数</div>
+                            <div class="info-value">90/100</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 综合评价 + 阅读能力分析 -->
+                <div class="eval-card">
+                    <div class="eval-two-col">
+                        <div class="eval-col-left">
+                            <div class="eval-title-row">
+                                <div class="eval-card-title" style="margin-bottom:0;">综合评价</div>
+                                <div id="editBtns">
+                                    <button class="btn-edit" id="btnEdit" onclick="startEdit()">编辑</button>
+                                </div>
+                                <div id="saveBtns" class="edit-actions" style="display:none;">
+                                    <button class="btn-cancel" onclick="cancelEdit()">取消</button>
+                                    <button class="btn-save" onclick="saveEdit()">保存</button>
+                                </div>
+                            </div>
+                            <div class="eval-text" id="evalText">
+                                张三同学在本次《三体》整本书测评中表现优秀，得分92分。你对小说的主要情节和核心概念掌握扎实，特别是对黑暗森林法则、面壁计划等关键内容理解深入。在简答题的表达上还有提升空间，建议加强对科幻作品深层主题的思考和表达能力。
+                            </div>
+                            <textarea class="eval-textarea"
+                                id="evalTextarea">张三同学在本次《三体》整本书测评中表现优秀，得分92分。你对小说的主要情节和核心概念掌握扎实，特别是对黑暗森林法则、面壁计划等关键内容理解深入。在简答题的表达上还有提升空间，建议加强对科幻作品深层主题的思考和表达能力。</textarea>
+                        </div>
+                        <div class="eval-col-right">
+                            <div class="eval-card-title">阅读能力分析</div>
+                            <div class="radar-chart">
+                                <svg width="300" height="280" viewBox="0 0 300 280">
+                                    <polygon points="150,30 270,100 230,230 70,230 30,100" fill="none" stroke="#e0e0e0"
+                                        stroke-width="1" />
+                                    <polygon points="150,62 238,112 210,198 90,198 62,112" fill="none" stroke="#e0e0e0"
+                                        stroke-width="1" />
+                                    <polygon points="150,94 206,124 190,166 110,166 94,124" fill="none" stroke="#e0e0e0"
+                                        stroke-width="1" />
+                                    <line x1="150" y1="130" x2="150" y2="30" stroke="#e0e0e0" stroke-width="1" />
+                                    <line x1="150" y1="130" x2="270" y2="100" stroke="#e0e0e0" stroke-width="1" />
+                                    <line x1="150" y1="130" x2="230" y2="230" stroke="#e0e0e0" stroke-width="1" />
+                                    <line x1="150" y1="130" x2="70" y2="230" stroke="#e0e0e0" stroke-width="1" />
+                                    <line x1="150" y1="130" x2="30" y2="100" stroke="#e0e0e0" stroke-width="1" />
+                                    <polygon points="150,50 255,108 215,210 85,195 55,108" fill="rgba(66,133,244,0.15)"
+                                        stroke="#4285f4" stroke-width="2" />
+                                    <circle cx="150" cy="50" r="4" fill="#4285f4" />
+                                    <circle cx="255" cy="108" r="4" fill="#4285f4" />
+                                    <circle cx="215" cy="210" r="4" fill="#4285f4" />
+                                    <circle cx="85" cy="195" r="4" fill="#4285f4" />
+                                    <circle cx="55" cy="108" r="4" fill="#4285f4" />
+                                    <text x="150" y="18" text-anchor="middle" font-size="13" fill="#666">信息提取能力</text>
+                                    <text x="285" y="105" text-anchor="start" font-size="13" fill="#666">推理</text>
+                                    <text x="235" y="248" text-anchor="middle" font-size="13" fill="#666">主题理解能力</text>
+                                    <text x="65" y="248" text-anchor="middle" font-size="13" fill="#666">人物分析能力</text>
+                                    <text x="15" y="105" text-anchor="end" font-size="13" fill="#666">思维</text>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 阅读建议 -->
+                <div class="eval-card">
+                    <div class="eval-title-row">
+                        <div class="eval-card-title" style="margin-bottom:0;">阅读建议</div>
+                        <div id="sugEditBtns">
+                            <button class="btn-edit" onclick="startSugEdit()">编辑</button>
+                        </div>
+                        <div id="sugSaveBtns" class="edit-actions" style="display:none;">
+                            <button class="btn-cancel" onclick="cancelSugEdit()">取消</button>
+                            <button class="btn-save" onclick="saveSugEdit()">保存</button>
+                        </div>
+                    </div>
+                    <ul class="suggestion-list" id="sugList">
+                        <li class="suggestion-item">
+                            <div class="suggestion-content">
+                                <strong>加强深度思考：</strong>建议在阅读时多思考"为什么"，不仅要知道情节发展，更要理解背后的原因和意义
+                            </div>
+                        </li>
+                        <li class="suggestion-item">
+                            <div class="suggestion-content">
+                                <strong>提升表达能力：</strong>在回答简答题时，可以尝试用更清晰的逻辑结构组织答案，先总后分，层次分明
+                            </div>
+                        </li>
+                        <li class="suggestion-item">
+                            <div class="suggestion-content">
+                                <strong>拓展阅读视野：</strong>可以阅读一些科幻文学评论或相关科学知识，这将帮助你更深入地理解科幻作品的内涵
+                            </div>
+                        </li>
+                    </ul>
+                    <textarea class="eval-textarea" id="sugTextarea">1. 加强深度思考：建议在阅读时多思考"为什么"，不仅要知道情节发展，更要理解背后的原因和意义
+2. 提升表达能力：在回答简答题时，可以尝试用更清晰的逻辑结构组织答案，先总后分，层次分明
+3. 拓展阅读视野：可以阅读一些科幻文学评论或相关科学知识，这将帮助你更深入地理解科幻作品的内涵</textarea>
+                </div>
+
+                <!-- 答题详情 -->
+                <div class="section-title">答题详情</div>
+
+                <!-- 第1题 - 正确 -->
+                <div class="question-card correct">
+                    <div class="question-header">
+                        <div class="question-title">1. 《三体》中，叶文洁第一次向宇宙发出信号的地点是？</div>
+                        <span class="question-badge correct">&#10003; 正确</span>
+                    </div>
+                    <ul class="option-list">
+                        <li class="option-item">A. 北京天文台</li>
+                        <li class="option-item selected-correct">B. 红岸基地 &#10003;</li>
+                        <li class="option-item">C. 大兴安岭林场</li>
+                        <li class="option-item">D. 清华大学</li>
+                    </ul>
+                    <div class="answer-info">
+                        <span>学生答案：<strong>B</strong></span>
+                        <span>正确答案：<strong>B</strong></span>
+                    </div>
+                </div>
+
+                <!-- 第2题 - 正确 -->
+                <div class="question-card correct">
+                    <div class="question-header">
+                        <div class="question-title">2. "黑暗森林法则"的核心观点是什么？</div>
+                        <span class="question-badge correct">&#10003; 正确</span>
+                    </div>
+                    <ul class="option-list">
+                        <li class="option-item">A. 宇宙中的文明会互相帮助</li>
+                        <li class="option-item">B. 宇宙资源是无限的</li>
+                        <li class="option-item selected-correct">C. 宇宙文明之间存在猜疑链，暴露即危险 &#10003;</li>
+                        <li class="option-item">D. 宇宙中只有地球存在生命</li>
+                    </ul>
+                    <div class="answer-info">
+                        <span>学生答案：<strong>C</strong></span>
+                        <span>正确答案：<strong>C</strong></span>
+                    </div>
+                </div>
+
+                <!-- 第3题 - 错误 -->
+                <div class="question-card wrong">
+                    <div class="question-header">
+                        <div class="question-title">3. 面壁计划中，罗辑最终使用了什么方法来威慑三体文明？</div>
+                        <span class="question-badge wrong">&#10007; 错误</span>
+                    </div>
+                    <ul class="option-list">
+                        <li class="option-item selected-wrong">A. 制造核武器攻击三体舰队 &#10007;</li>
+                        <li class="option-item">B. 与三体文明谈判</li>
+                        <li class="option-item correct-answer">C. 向宇宙广播三体星系的坐标 &#10003;</li>
+                        <li class="option-item">D. 建造光速飞船逃离地球</li>
+                    </ul>
+                    <div class="answer-info">
+                        <span>学生答案：<strong style="color:#ea4335;">A</strong></span>
+                        <span>正确答案：<strong style="color:#34a853;">C</strong></span>
+                    </div>
+                </div>
+
+                <!-- 第4题 - 正确 -->
+                <div class="question-card correct">
+                    <div class="question-header">
+                        <div class="question-title">4. 三体人用来封锁地球科技发展的手段是？</div>
+                        <span class="question-badge correct">&#10003; 正确</span>
+                    </div>
+                    <ul class="option-list">
+                        <li class="option-item">A. 派遣间谍潜入地球</li>
+                        <li class="option-item selected-correct">B. 发射智子干扰粒子加速器实验 &#10003;</li>
+                        <li class="option-item">C. 破坏地球的卫星通信</li>
+                        <li class="option-item">D. 控制地球的气候变化</li>
+                    </ul>
+                    <div class="answer-info">
+                        <span>学生答案：<strong>B</strong></span>
+                        <span>正确答案：<strong>B</strong></span>
+                    </div>
+                </div>
+
+                <!-- 第5题 - 错误 -->
+                <div class="question-card wrong">
+                    <div class="question-header">
+                        <div class="question-title">5. 《三体》中"三体问题"指的是什么？</div>
+                        <span class="question-badge wrong">&#10007; 错误</span>
+                    </div>
+                    <ul class="option-list">
+                        <li class="option-item">A. 三个文明之间的冲突</li>
+                        <li class="option-item selected-wrong">B. 三个科学家的研究课题 &#10007;</li>
+                        <li class="option-item">C. 三个宇宙的平行存在</li>
+                        <li class="option-item correct-answer">D. 三颗恒星的不规则运动导致的引力问题 &#10003;</li>
+                    </ul>
+                    <div class="answer-info">
+                        <span>学生答案：<strong style="color:#ea4335;">B</strong></span>
+                        <span>正确答案：<strong style="color:#34a853;">D</strong></span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <script>
+        function startEdit() {
+            document.getElementById('evalText').style.display = 'none';
+            document.getElementById('evalTextarea').style.display = 'block';
+            document.getElementById('editBtns').style.display = 'none';
+            document.getElementById('saveBtns').style.display = 'flex';
+        }
+
+        function cancelEdit() {
+            document.getElementById('evalTextarea').value = document.getElementById('evalText').innerText.trim();
+            document.getElementById('evalText').style.display = 'block';
+            document.getElementById('evalTextarea').style.display = 'none';
+            document.getElementById('editBtns').style.display = 'block';
+            document.getElementById('saveBtns').style.display = 'none';
+        }
+
+        function saveEdit() {
+            document.getElementById('evalText').innerText = document.getElementById('evalTextarea').value;
+            document.getElementById('evalText').style.display = 'block';
+            document.getElementById('evalTextarea').style.display = 'none';
+            document.getElementById('editBtns').style.display = 'block';
+            document.getElementById('saveBtns').style.display = 'none';
+            alert('保存成功');
+        }
+
+        function startSugEdit() {
+            document.getElementById('sugList').style.display = 'none';
+            document.getElementById('sugTextarea').style.display = 'block';
+            document.getElementById('sugEditBtns').style.display = 'none';
+            document.getElementById('sugSaveBtns').style.display = 'flex';
+        }
+
+        function cancelSugEdit() {
+            document.getElementById('sugList').style.display = 'block';
+            document.getElementById('sugTextarea').style.display = 'none';
+            document.getElementById('sugEditBtns').style.display = 'block';
+            document.getElementById('sugSaveBtns').style.display = 'none';
+        }
+
+        function saveSugEdit() {
+            document.getElementById('sugList').style.display = 'block';
+            document.getElementById('sugTextarea').style.display = 'none';
+            document.getElementById('sugEditBtns').style.display = 'block';
+            document.getElementById('sugSaveBtns').style.display = 'none';
+            alert('保存成功');
+        }
+    </script>
+</body>
+
+</html>

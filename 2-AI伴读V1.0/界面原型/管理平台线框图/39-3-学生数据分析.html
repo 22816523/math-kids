@@ -190,6 +190,53 @@
             background: #f5f5f5;
         }
 
+        /* 筛选区域 */
+        .filter-section {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 20px 24px;
+            margin-bottom: 20px;
+        }
+
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 16px;
+        }
+
+        .filter-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .filter-actions {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .filter-label {
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .filter-input,
+        .filter-select {
+            height: 40px;
+            padding: 0 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .filter-input:focus,
+        .filter-select:focus {
+            outline: none;
+            border-color: #999;
+        }
+
         /* 按钮 */
         .btn {
             height: 40px;
@@ -259,7 +306,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 32px;
+            font-size: 16px;
             color: #999;
         }
 
@@ -347,12 +394,16 @@
             font-size: 28px;
             font-weight: 600;
             color: #333;
+            display: flex;
+            align-items: baseline;
+            justify-content: center;
+            gap: 4px;
         }
 
         .stat-sub {
-            font-size: 12px;
-            color: #666;
-            margin-top: 4px;
+            font-size: 14px;
+            color: #999;
+            font-weight: normal;
         }
 
         /* 任务完成数据 */
@@ -632,16 +683,16 @@
         <div class="sidebar">
             <div class="sidebar-header">校校读吧管理平台</div>
             <div class="sidebar-menu">
-                <div class="menu-item">首页</div>
+                <div class="menu-item" onclick="window.location.href='02-首页.html'">首页</div>
                 <div class="menu-group">
                     <div class="menu-group-title" onclick="toggleMenu(this)">
                         <span>用户管理</span>
                         <span class="menu-group-icon">[▶]</span>
                     </div>
                     <div class="menu-group-items">
-                        <div class="menu-item">学校管理</div>
-                        <div class="menu-item">班级管理</div>
-                        <div class="menu-item">小程序用户管理</div>
+                        <div class="menu-item" onclick="window.location.href='03-学校列表.html'">学校管理</div>
+                        <div class="menu-item" onclick="window.location.href='08-班级列表.html'">班级管理</div>
+                        <div class="menu-item" onclick="window.location.href='05-用户列表.html'">小程序用户管理</div>
                     </div>
                 </div>
                 <div class="menu-group">
@@ -650,8 +701,8 @@
                         <span class="menu-group-icon">[▶]</span>
                     </div>
                     <div class="menu-group-items">
-                        <div class="menu-item">阅读计划</div>
-                        <div class="menu-item">书籍资源库</div>
+                        <div class="menu-item" onclick="window.location.href='10-阅读计划列表.html'">阅读计划</div>
+                        <div class="menu-item" onclick="window.location.href='18-书籍资源库列表.html'">书籍资源库</div>
                     </div>
                 </div>
                 <div class="menu-group">
@@ -660,9 +711,9 @@
                         <span class="menu-group-icon">[▶]</span>
                     </div>
                     <div class="menu-group-items">
-                        <div class="menu-item">积分规则</div>
-                        <div class="menu-item">等级设置</div>
-                        <div class="menu-item">证书配置</div>
+                        <div class="menu-item" onclick="window.location.href='27-积分规则.html'">积分规则</div>
+                        <div class="menu-item" onclick="window.location.href='28-等级体系.html'">等级设置</div>
+                        <div class="menu-item" onclick="window.location.href='29-证书配置.html'">证书配置</div>
                     </div>
                 </div>
                 <div class="menu-group">
@@ -671,7 +722,7 @@
                         <span class="menu-group-icon">[▶]</span>
                     </div>
                     <div class="menu-group-items">
-                        <div class="menu-item">消息列表</div>
+                        <div class="menu-item" onclick="window.location.href='30-消息列表.html'">消息列表</div>
                     </div>
                 </div>
                 <div class="menu-group">
@@ -680,7 +731,7 @@
                         <span class="menu-group-icon">[▶]</span>
                     </div>
                     <div class="menu-group-items">
-                        <div class="menu-item">意见反馈</div>
+                        <div class="menu-item" onclick="window.location.href='36-意见反馈.html'">意见反馈</div>
                     </div>
                 </div>
                 <div class="menu-group expanded">
@@ -689,10 +740,12 @@
                         <span class="menu-group-icon">[▶]</span>
                     </div>
                     <div class="menu-group-items">
-                        <div class="menu-item">平台数据分析</div>
-                        <div class="menu-item">学校数据分析</div>
-                        <div class="menu-item">年级数据分析</div>
-                        <div class="menu-item active">学生数据分析</div>
+                        <div class="menu-item" onclick="window.location.href='39-平台数据分析.html'">平台数据分析</div>
+                        <div class="menu-item" onclick="window.location.href='39-1-学校数据分析.html'">学校数据分析</div>
+                        <div class="menu-item" onclick="window.location.href='39-2-年级数据分析.html'">年级数据分析</div>
+                        <div class="menu-item active" onclick="window.location.href='39-3-学生数据分析.html'">学生数据分析</div>
+                        <div class="menu-item" onclick="window.location.href='39-4-书籍测评记录.html'">书籍测评记录</div>
+                        <div class="menu-item" onclick="window.location.href='39-5-阅读任务记录.html'">阅读任务记录</div>
                     </div>
                 </div>
                 <div class="menu-group">
@@ -701,8 +754,8 @@
                         <span class="menu-group-icon">[▶]</span>
                     </div>
                     <div class="menu-group-items">
-                        <div class="menu-item">系统参数</div>
-                        <div class="menu-item">数据字典</div>
+                        <div class="menu-item" onclick="window.location.href='31-系统参数.html'">系统参数</div>
+                        <div class="menu-item" onclick="window.location.href='32-数据字典.html'">数据字典</div>
                     </div>
                 </div>
             </div>
@@ -726,10 +779,12 @@
             <!-- 主内容区 -->
             <div class="main-content">
                 <!-- 页面标题 -->
-                <div class="page-title">
-                    <a href="#" class="back-btn" onclick="history.back();return false;">← 返回</a>
+                <div class="page-title" style="display: flex; justify-content: space-between; align-items: center;">
                     学生数据分析
+                    <a href="#" class="back-btn" onclick="history.back();return false;">返回列表</a>
                 </div>
+
+
 
                 <!-- 学生基本信息 -->
                 <div class="student-profile">
@@ -766,92 +821,107 @@
                     </div>
                 </div>
 
-                <!-- 导出按钮 -->
-                <div class="export-actions">
-                    <button class="btn btn-secondary">导出学生报告</button>
+                <!-- 筛选与导出区域 -->
+                <div class="filter-section"
+                    style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 20px;">
+                    <div style="display: flex; gap: 16px;">
+                        <div class="filter-item">
+                            <div class="filter-label">阅读计划</div>
+                            <select class="filter-select">
+                                <option value="">全部计划</option>
+                                <option value="1">三年级经典阅读计划</option>
+                                <option value="2">寒假阅读挑战书</option>
+                            </select>
+                        </div>
+                        <div class="filter-item">
+                            <div class="filter-label">书籍</div>
+                            <select class="filter-select">
+                                <option value="">全部书籍</option>
+                                <option value="1">《小王子》</option>
+                                <option value="2">《安徒生童话》</option>
+                            </select>
+                        </div>
+                        <div class="filter-item"
+                            style="display: flex; flex-direction: row; align-items: flex-end; gap: 12px;">
+                            <button class="btn btn-primary">查询</button>
+                            <button class="btn btn-secondary">重置</button>
+                        </div>
+                    </div>
+                    <div class="export-actions" style="margin-bottom: 0;">
+                        <button class="btn btn-secondary">导出学生报告</button>
+                    </div>
                 </div>
 
                 <!-- 核心指标 -->
                 <div class="stats-grid-4">
                     <div class="stat-card">
                         <div class="stat-label">阅读书籍数</div>
-                        <div class="stat-value">8</div>
-                        <div class="stat-sub">本</div>
+                        <div class="stat-value">8<span class="stat-sub">本</span></div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-label">阅读字数</div>
-                        <div class="stat-value">6.5万</div>
-                        <div class="stat-sub">字</div>
+                        <div class="stat-value">6.5万<span class="stat-sub">字</span></div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-label">连续打卡</div>
-                        <div class="stat-value">28</div>
-                        <div class="stat-sub">天</div>
+                        <div class="stat-label">累计打卡</div>
+                        <div class="stat-value">28<span class="stat-sub">天</span></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">累计测评</div>
+                        <div class="stat-value">5<span class="stat-sub">次</span></div>
                     </div>
                 </div>
 
                 <!-- 任务完成数据 -->
                 <div class="card">
                     <div class="section-title">任务完成情况</div>
-                    <div class="task-grid">
-                        <!-- 视频任务 -->
-                        <div class="task-card">
-                            <div class="task-card-title">视频任务</div>
-                            <div class="task-stat-row">
-                                <span class="task-stat-label">已分配</span>
-                                <span class="task-stat-value">4</span>
-                            </div>
-                            <div class="task-stat-row">
-                                <span class="task-stat-label">已完成</span>
-                                <span class="task-stat-value">4</span>
-                            </div>
-                            <div class="task-stat-row">
-                                <span class="task-stat-label">完成率</span>
-                                <span class="task-stat-value highlight">100%</span>
-                            </div>
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: 100%;"></div>
-                            </div>
-                        </div>
-                        <!-- 阅读任务 -->
-                        <div class="task-card">
-                            <div class="task-card-title">阅读任务（导读单打卡）</div>
-                            <div class="task-stat-row">
-                                <span class="task-stat-label">已分配</span>
-                                <span class="task-stat-value">12</span>
-                            </div>
-                            <div class="task-stat-row">
-                                <span class="task-stat-label">已完成</span>
-                                <span class="task-stat-value">12</span>
-                            </div>
-                            <div class="task-stat-row">
-                                <span class="task-stat-label">完成率</span>
-                                <span class="task-stat-value highlight">100%</span>
-                            </div>
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: 100%;"></div>
-                            </div>
-                        </div>
-                        <!-- 书籍测评 -->
-                        <div class="task-card">
-                            <div class="task-card-title">书籍测评</div>
-                            <div class="task-stat-row">
-                                <span class="task-stat-label">应测评</span>
-                                <span class="task-stat-value">3</span>
-                            </div>
-                            <div class="task-stat-row">
-                                <span class="task-stat-label">已完成</span>
-                                <span class="task-stat-value">3</span>
-                            </div>
-                            <div class="task-stat-row">
-                                <span class="task-stat-label">通过数</span>
-                                <span class="task-stat-value">3</span>
-                            </div>
-                            <div class="task-stat-row">
-                                <span class="task-stat-label">平均分</span>
-                                <span class="task-stat-value highlight">95分</span>
-                            </div>
-                        </div>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>任务类型</th>
+                                    <th>应完成数</th>
+                                    <th>已完成数</th>
+                                    <th>完成率</th>
+                                    <th>班级平均完成率</th>
+                                    <th>年级平均完成率</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>视频任务</td>
+                                    <td>4</td>
+                                    <td>4</td>
+                                    <td><span class="highlight-green">100%</span></td>
+                                    <td>94%</td>
+                                    <td>92%</td>
+                                </tr>
+                                <tr>
+                                    <td>阅读任务</td>
+                                    <td>8</td>
+                                    <td>8</td>
+                                    <td><span class="highlight-green">100%</span></td>
+                                    <td>92%</td>
+                                    <td>90%</td>
+                                </tr>
+                                <tr>
+                                    <td>导读单任务</td>
+                                    <td>4</td>
+                                    <td>4</td>
+                                    <td><span class="highlight-green">100%</span></td>
+                                    <td>88%</td>
+                                    <td>86%</td>
+                                </tr>
+                                <tr>
+                                    <td>书籍测评</td>
+                                    <td>3</td>
+                                    <td>3</td>
+                                    <td><span class="highlight-green">100%</span></td>
+                                    <td>85%</td>
+                                    <td>84%</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
 
@@ -862,7 +932,7 @@
                         <table class="data-table">
                             <thead>
                                 <tr>
-                                    <th width="50">序号</th>
+                                    <th width="50" style="white-space: nowrap;">序号</th>
                                     <th>书籍名称</th>
                                     <th>阅读计划名称</th>
                                     <th>字数</th>

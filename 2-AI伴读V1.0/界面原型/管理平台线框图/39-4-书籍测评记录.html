@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>书籍测评记录 - 校校读吧管理平台</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+        }
+
+        /* 主体布局 */
+        .main {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* 侧边栏 */
+        .sidebar {
+            width: 240px;
+            background: #fff;
+            border-right: 1px solid #e0e0e0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Logo区域 */
+        .sidebar-header {
+            height: 60px;
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        /* 菜单区域 */
+        .sidebar-menu {
+            flex: 1;
+            padding: 16px 0;
+            overflow-y: auto;
+        }
+
+        .menu-group {
+            margin-bottom: 4px;
+        }
+
+        .menu-group-title {
+            padding: 12px 24px;
+            font-size: 14px;
+            color: #333;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .menu-group-icon {
+            font-size: 12px;
+            color: #999;
+            transition: transform 0.2s;
+        }
+
+        .menu-group.expanded .menu-group-icon {
+            transform: rotate(90deg);
+        }
+
+        .menu-group-items {
+            display: none;
+        }
+
+        .menu-group.expanded .menu-group-items {
+            display: block;
+        }
+
+        .menu-item {
+            padding: 12px 24px 12px 40px;
+            font-size: 14px;
+            color: #666;
+            cursor: pointer;
+        }
+
+        .menu-item:hover {
+            background: #f5f5f5;
+        }
+
+        .menu-item.active {
+            background: #e8e8e8;
+            color: #333;
+            font-weight: 500;
+        }
+
+        /* 内容区域 */
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 顶部栏 */
+        .header {
+            height: 60px;
+            background: #fff;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+        }
+
+        .breadcrumb {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .breadcrumb span {
+            margin: 0 8px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .logout-link {
+            color: #333;
+            text-decoration: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .logout-link:hover {
+            text-decoration: underline;
+        }
+
+        /* 页面内容 */
+        .page-content {
+            flex: 1;
+            padding: 24px;
+            overflow-y: auto;
+        }
+
+        .page-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 24px;
+        }
+
+        /* 统计卡片 */
+        .stats-cards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 20px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .stat-unit {
+            font-size: 14px;
+            color: #999;
+            margin-left: 4px;
+        }
+
+        /* 筛选区域 */
+        .filter-section {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 20px;
+            margin-bottom: 24px;
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 16px;
+        }
+
+        .filter-item {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .filter-label {
+            font-size: 14px;
+            color: #333;
+        }
+
+        .filter-input,
+        .filter-select {
+            height: 36px;
+            padding: 0 12px;
+            border: 1px solid #d0d0d0;
+            border-radius: 4px;
+            font-size: 14px;
+            background: #fff;
+        }
+
+        .filter-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+
+        .btn {
+            height: 36px;
+            padding: 0 20px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: #333;
+            color: #fff;
+        }
+
+        .btn-default {
+            background: #fff;
+            color: #333;
+            border: 1px solid #d0d0d0;
+        }
+
+        .btn-link {
+            background: none;
+            color: #666;
+            text-decoration: underline;
+        }
+
+        /* 数据表格 */
+        .table-section {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+        }
+
+        .table-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .table-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .table-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: #f5f5f5;
+        }
+
+        th {
+            padding: 12px 16px;
+            text-align: left;
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        td {
+            padding: 16px;
+            font-size: 14px;
+            color: #666;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        tr:hover {
+            background: #fafafa;
+        }
+
+        .action-link {
+            color: #333;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        /* 分页 */
+        .pagination {
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .pagination-info {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .pagination-controls {
+            display: flex;
+            gap: 8px;
+        }
+
+        .page-btn {
+            width: 32px;
+            height: 32px;
+            border: 1px solid #d0d0d0;
+            border-radius: 4px;
+            background: #fff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .page-btn.active {
+            background: #333;
+            color: #fff;
+            border-color: #333;
+        }
+
+        .page-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="main">
+        <!-- 侧边栏 -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                校校读吧管理平台
+            </div>
+            <div class="sidebar-menu">
+                <div class="menu-group">
+                    <div class="menu-group-title">首页</div>
+                </div>
+                <div class="menu-group">
+                    <div class="menu-group-title">用户管理</div>
+                </div>
+                <div class="menu-group">
+                    <div class="menu-group-title">阅读计划管理</div>
+                </div>
+                <div class="menu-group">
+                    <div class="menu-group-title">书籍资源库</div>
+                </div>
+                <div class="menu-group">
+                    <div class="menu-group-title">激励体系</div>
+                </div>
+                <div class="menu-group">
+                    <div class="menu-group-title">消息管理</div>
+                </div>
+                <div class="menu-group">
+                    <div class="menu-group-title">用户反馈</div>
+                </div>
+                <div class="menu-group expanded">
+                    <div class="menu-group-title">
+                        数据分析
+                        <span class="menu-group-icon">▶</span>
+                    </div>
+                    <div class="menu-group-items">
+                        <div class="menu-item" onclick="window.location.href='39-平台数据分析.html'">平台数据分析</div>
+                        <div class="menu-item" onclick="window.location.href='39-1-学校数据分析.html'">学校数据分析</div>
+                        <div class="menu-item" onclick="window.location.href='39-3-学生数据分析.html'">学生数据分析</div>
+                        <div class="menu-item" onclick="window.location.href='39-4-书籍测评记录.html'">书籍测评记录</div>
+                        <div class="menu-item" onclick="window.location.href='39-5-阅读任务记录.html'">阅读任务记录</div>
+                        <div class="menu-item active" onclick="window.location.href='39-4-书籍测评记录.html'">书籍测评记录</div>
+                        <div class="menu-item" onclick="window.location.href='39-5-阅读任务记录.html'">阅读任务记录</div>
+                    </div>
+                </div>
+                <div class="menu-group">
+                    <div class="menu-group-title">系统配置</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 内容区域 -->
+        <div class="content">
+            <!-- 顶部栏 -->
+            <div class="header">
+                <div class="breadcrumb">
+                    数据分析 <span>/</span> 书籍测评记录
+                </div>
+                <div class="user-info">
+                    <span>管理员</span>
+                    <a class="logout-link">退出登录</a>
+                </div>
+            </div>
+
+            <!-- 页面内容 -->
+            <div class="page-content">
+                <div class="page-title">书籍测评记录</div>
+
+                <!-- 筛选区域 -->
+                <div class="filter-section">
+                    <div class="filter-item">
+                        <label class="filter-label">阅读计划</label>
+                        <select class="filter-select">
+                            <option>全部</option>
+                            <option>2026春季阅读计划</option>
+                            <option>2025秋季阅读计划</option>
+                        </select>
+                    </div>
+                    <div class="filter-item">
+                        <label class="filter-label">学校</label>
+                        <select class="filter-select">
+                            <option>全部</option>
+                            <option>实验小学</option>
+                            <option>第一中学</option>
+                        </select>
+                    </div>
+                    <div class="filter-item">
+                        <label class="filter-label">年级</label>
+                        <select class="filter-select">
+                            <option>全部</option>
+                            <option>一年级</option>
+                            <option>二年级</option>
+                        </select>
+                    </div>
+                    <div class="filter-item">
+                        <label class="filter-label">班级</label>
+                        <select class="filter-select">
+                            <option>全部</option>
+                            <option>一年级1班</option>
+                            <option>一年级2班</option>
+                        </select>
+                    </div>
+                    <div class="filter-item">
+                        <label class="filter-label">书籍</label>
+                        <select class="filter-select">
+                            <option>全部</option>
+                            <option>《小王子》</option>
+                            <option>《夏洛的网》</option>
+                        </select>
+                    </div>
+                    <div class="filter-item">
+                        <label class="filter-label">学生姓名</label>
+                        <input type="text" class="filter-input" placeholder="请输入学生姓名">
+                    </div>
+                    <div class="filter-item">
+                        <label class="filter-label">提交时间</label>
+                        <input type="text" class="filter-input" placeholder="选择日期范围">
+                    </div>
+                    <div class="filter-item" style="justify-content: flex-end;">
+                        <label class="filter-label" style="opacity: 0;">占位</label>
+                        <div class="filter-actions">
+                            <button class="btn btn-default">重置</button>
+                            <button class="btn btn-primary">查询</button>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <!-- 数据表格 -->
+                <div class="table-section">
+                    <div class="table-header" style="justify-content: flex-start;">
+                        <div class="table-actions">
+                            <button class="btn btn-default" id="btnViewDetail">查看详情</button>
+                            <button class="btn btn-default">导出</button>
+                        </div>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 48px; text-align: center;">
+                                    <input type="checkbox" id="selectAll">
+                                </th>
+                                <th style="width: 48px; text-align: center; white-space: nowrap;">序号</th>
+                                <th>学生姓名</th>
+                                <th>学校</th>
+                                <th>年级班级</th>
+                                <th>阅读计划</th>
+                                <th>书籍名称</th>
+                                <th>提交时间</th>
+                                <th>得分</th>
+                                <th>用时</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="text-align: center;"><input type="checkbox" class="row-checkbox"></td>
+                                <td style="text-align: center;">1</td>
+                                <td>张小明</td>
+                                <td>实验小学</td>
+                                <td>一年级1班</td>
+                                <td>2026春季阅读计划</td>
+                                <td>《小王子》</td>
+                                <td>2026-02-15 14:30</td>
+                                <td>90/100</td>
+                                <td>15分钟</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: center;"><input type="checkbox" class="row-checkbox"></td>
+                                <td style="text-align: center;">2</td>
+                                <td>李小红</td>
+                                <td>实验小学</td>
+                                <td>一年级1班</td>
+                                <td>2026春季阅读计划</td>
+                                <td>《小王子》</td>
+                                <td>2026-02-15 14:25</td>
+                                <td>85/100</td>
+                                <td>18分钟</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: center;"><input type="checkbox" class="row-checkbox"></td>
+                                <td style="text-align: center;">3</td>
+                                <td>王小刚</td>
+                                <td>第一中学</td>
+                                <td>二年级3班</td>
+                                <td>2026春季阅读计划</td>
+                                <td>《夏洛的网》</td>
+                                <td>2026-02-15 14:20</td>
+                                <td>78/100</td>
+                                <td>20分钟</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: center;"><input type="checkbox" class="row-checkbox"></td>
+                                <td style="text-align: center;">4</td>
+                                <td>赵小丽</td>
+                                <td>实验小学</td>
+                                <td>一年级2班</td>
+                                <td>2026春季阅读计划</td>
+                                <td>《小王子》</td>
+                                <td>2026-02-15 14:15</td>
+                                <td>92/100</td>
+                                <td>12分钟</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: center;"><input type="checkbox" class="row-checkbox"></td>
+                                <td style="text-align: center;">5</td>
+                                <td>刘小强</td>
+                                <td>第一中学</td>
+                                <td>二年级3班</td>
+                                <td>2026春季阅读计划</td>
+                                <td>《夏洛的网》</td>
+                                <td>2026-02-15 14:10</td>
+                                <td>88/100</td>
+                                <td>16分钟</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="pagination">
+                        <div class="pagination-info">共 1,234 条记录，每页 20 条</div>
+                        <div class="pagination-controls">
+                            <button class="page-btn" disabled>«</button>
+                            <button class="page-btn active">1</button>
+                            <button class="page-btn">2</button>
+                            <button class="page-btn">3</button>
+                            <button class="page-btn">4</button>
+                            <button class="page-btn">5</button>
+                            <button class="page-btn">»</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        // 全选功能
+        const selectAllCheckbox = document.getElementById('selectAll');
+        const rowCheckboxes = document.querySelectorAll('.row-checkbox');
+
+        if (selectAllCheckbox) {
+            selectAllCheckbox.addEventListener('change', function () {
+                rowCheckboxes.forEach(checkbox => {
+                    checkbox.checked = selectAllCheckbox.checked;
+                });
+            });
+        }
+
+        // 行复选框状态改变时，更新全选框状态
+        rowCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function () {
+                const allChecked = Array.from(rowCheckboxes).every(cb => cb.checked);
+                const someChecked = Array.from(rowCheckboxes).some(cb => cb.checked);
+                selectAllCheckbox.checked = allChecked;
+                selectAllCheckbox.indeterminate = someChecked && !allChecked;
+            });
+        });
+
+        // 查看详情逻辑
+        const btnViewDetail = document.getElementById('btnViewDetail');
+        if (btnViewDetail) {
+            btnViewDetail.addEventListener('click', function () {
+                const checkedCount = document.querySelectorAll('.row-checkbox:checked').length;
+                if (checkedCount === 0) {
+                    alert('请先选择一条记录');
+                } else if (checkedCount > 1) {
+                    alert('只能选择一条记录查看详情');
+                } else {
+                    window.location.href = '39-4-1-书籍测评记录详情.html';
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>
