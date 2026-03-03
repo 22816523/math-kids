@@ -1,11 +1,17 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>学生数据分析 - 校校读吧管理平台</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background: #f5f5f5;
@@ -45,9 +51,11 @@
             padding: 16px 0;
             overflow-y: auto;
         }
+
         .menu-group {
             margin-bottom: 4px;
         }
+
         .menu-group-title {
             padding: 12px 24px;
             font-size: 14px;
@@ -58,29 +66,36 @@
             align-items: center;
             justify-content: space-between;
         }
+
         .menu-group-icon {
             font-size: 12px;
             color: #999;
             transition: transform 0.2s;
         }
+
         .menu-group.expanded .menu-group-icon {
             transform: rotate(90deg);
         }
+
         .menu-group-items {
             display: none;
         }
+
         .menu-group.expanded .menu-group-items {
             display: block;
         }
+
         .menu-item {
             padding: 12px 24px 12px 40px;
             font-size: 14px;
             color: #666;
             cursor: pointer;
         }
+
         .menu-item:hover {
             background: #f5f5f5;
         }
+
         .menu-item.active {
             background: #e8e8e8;
             color: #333;
@@ -111,10 +126,12 @@
             font-size: 14px;
             color: #999;
         }
+
         .breadcrumb a {
             color: #666;
             text-decoration: none;
         }
+
         .breadcrumb a:hover {
             color: #333;
         }
@@ -125,16 +142,19 @@
             align-items: center;
             gap: 16px;
         }
+
         .user-name {
             font-size: 14px;
             color: #333;
         }
+
         .logout-btn {
             font-size: 14px;
             color: #666;
             cursor: pointer;
             text-decoration: none;
         }
+
         .logout-btn:hover {
             color: #333;
         }
@@ -156,6 +176,7 @@
             align-items: center;
             gap: 12px;
         }
+
         .back-btn {
             font-size: 14px;
             color: #666;
@@ -164,6 +185,7 @@
             border: 1px solid #e0e0e0;
             border-radius: 4px;
         }
+
         .back-btn:hover {
             background: #f5f5f5;
         }
@@ -177,19 +199,23 @@
             cursor: pointer;
             border: none;
         }
+
         .btn-primary {
             background: #333;
             color: #fff;
             border: 1px solid #333;
         }
+
         .btn-primary:hover {
             background: #555;
         }
+
         .btn-secondary {
             background: #fff;
             color: #333;
             border: 1px solid #999;
         }
+
         .btn-secondary:hover {
             background: #f5f5f5;
         }
@@ -224,6 +250,7 @@
             border-radius: 4px;
             margin-bottom: 20px;
         }
+
         .student-avatar {
             width: 80px;
             height: 80px;
@@ -235,49 +262,59 @@
             font-size: 32px;
             color: #999;
         }
+
         .student-info {
             flex: 1;
         }
+
         .student-name {
             font-size: 20px;
             font-weight: 600;
             color: #333;
             margin-bottom: 8px;
         }
+
         .student-meta {
             display: flex;
             flex-wrap: wrap;
             gap: 24px;
         }
+
         .student-meta-item {
             display: flex;
             align-items: center;
             gap: 8px;
         }
+
         .student-meta-label {
             font-size: 14px;
             color: #999;
         }
+
         .student-meta-value {
             font-size: 14px;
             color: #333;
             font-weight: 500;
         }
+
         .student-badges {
             display: flex;
             gap: 8px;
             margin-top: 12px;
         }
+
         .badge {
             padding: 4px 12px;
             border-radius: 4px;
             font-size: 12px;
             font-weight: 500;
         }
+
         .badge-level {
             background: #333;
             color: #fff;
         }
+
         .badge-rank {
             background: #f5f5f5;
             color: #333;
@@ -291,6 +328,7 @@
             gap: 16px;
             margin-bottom: 20px;
         }
+
         .stat-card {
             background: #fff;
             border: 1px solid #e0e0e0;
@@ -298,16 +336,19 @@
             padding: 20px;
             text-align: center;
         }
+
         .stat-label {
             font-size: 14px;
             color: #999;
             margin-bottom: 8px;
         }
+
         .stat-value {
             font-size: 28px;
             font-weight: 600;
             color: #333;
         }
+
         .stat-sub {
             font-size: 12px;
             color: #666;
@@ -320,11 +361,13 @@
             grid-template-columns: repeat(3, 1fr);
             gap: 16px;
         }
+
         .task-card {
             border: 1px solid #e0e0e0;
             border-radius: 4px;
             padding: 20px;
         }
+
         .task-card-title {
             font-size: 14px;
             font-weight: 600;
@@ -333,6 +376,7 @@
             padding-bottom: 12px;
             border-bottom: 1px solid #e0e0e0;
         }
+
         .task-stat-row {
             display: flex;
             justify-content: space-between;
@@ -340,18 +384,22 @@
             padding: 8px 0;
             border-bottom: 1px dashed #e0e0e0;
         }
+
         .task-stat-row:last-child {
             border-bottom: none;
         }
+
         .task-stat-label {
             font-size: 14px;
             color: #666;
         }
+
         .task-stat-value {
             font-size: 16px;
             font-weight: 600;
             color: #333;
         }
+
         .task-stat-value.highlight {
             color: #333;
             font-size: 20px;
@@ -366,6 +414,7 @@
             overflow: hidden;
             margin-top: 8px;
         }
+
         .progress-fill {
             height: 100%;
             background: #333;
@@ -385,12 +434,14 @@
             border: 1px solid #e0e0e0;
             border-radius: 4px;
         }
+
         .time-chart-title {
             font-size: 14px;
             font-weight: 600;
             color: #333;
             margin-bottom: 16px;
         }
+
         .time-bars {
             display: flex;
             align-items: flex-end;
@@ -398,23 +449,27 @@
             height: 120px;
             padding-top: 20px;
         }
+
         .time-bar-item {
             flex: 1;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
+
         .time-bar {
             width: 100%;
             background: #333;
             border-radius: 2px 2px 0 0;
             min-height: 4px;
         }
+
         .time-bar-label {
             font-size: 11px;
             color: #999;
             margin-top: 8px;
         }
+
         .time-bar-value {
             font-size: 10px;
             color: #666;
@@ -427,12 +482,14 @@
             border: 1px solid #e0e0e0;
             border-radius: 4px;
         }
+
         .preference-title {
             font-size: 14px;
             font-weight: 600;
             color: #333;
             margin-bottom: 16px;
         }
+
         .preference-item {
             display: flex;
             align-items: center;
@@ -440,13 +497,16 @@
             padding: 10px 0;
             border-bottom: 1px dashed #e0e0e0;
         }
+
         .preference-item:last-child {
             border-bottom: none;
         }
+
         .preference-label {
             font-size: 14px;
             color: #666;
         }
+
         .preference-value {
             font-size: 14px;
             font-weight: 600;
@@ -457,10 +517,12 @@
         .table-container {
             overflow-x: auto;
         }
+
         .data-table {
             width: 100%;
             border-collapse: collapse;
         }
+
         .data-table th,
         .data-table td {
             padding: 12px 16px;
@@ -468,22 +530,27 @@
             border: 1px solid #e0e0e0;
             font-size: 14px;
         }
+
         .data-table th {
             background: #f5f5f5;
             font-weight: 600;
             color: #333;
         }
+
         .data-table td {
             color: #666;
         }
+
         .data-table td.name-col {
             text-align: left;
             font-weight: 600;
             color: #333;
         }
+
         .data-table tr:hover {
             background: #fafafa;
         }
+
         .data-table a {
             color: #333;
             text-decoration: underline;
@@ -496,15 +563,18 @@
             border-radius: 4px;
             font-size: 12px;
         }
+
         .status-tag.completed {
             background: #333;
             color: #fff;
         }
+
         .status-tag.in-progress {
             background: #f5f5f5;
             color: #666;
             border: 1px solid #e0e0e0;
         }
+
         .status-tag.not-started {
             background: #fff;
             color: #999;
@@ -516,6 +586,7 @@
             color: #52c41a;
             font-weight: 600;
         }
+
         .highlight-red {
             color: #ff4d4f;
             font-weight: 600;
@@ -528,17 +599,20 @@
             gap: 16px;
             margin-bottom: 20px;
         }
+
         .points-item {
             text-align: center;
             padding: 16px;
             background: #fafafa;
             border-radius: 4px;
         }
+
         .points-item-label {
             font-size: 12px;
             color: #999;
             margin-bottom: 8px;
         }
+
         .points-item-value {
             font-size: 20px;
             font-weight: 600;
@@ -551,6 +625,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="main">
         <!-- 侧边栏 -->
@@ -591,45 +666,45 @@
                     </div>
                 </div>
                 <div class="menu-group">
-                <div class="menu-group-title" onclick="toggleMenu(this)">
-                    <span>消息管理</span>
-                    <span class="menu-group-icon">[▶]</span>
+                    <div class="menu-group-title" onclick="toggleMenu(this)">
+                        <span>消息管理</span>
+                        <span class="menu-group-icon">[▶]</span>
+                    </div>
+                    <div class="menu-group-items">
+                        <div class="menu-item">消息列表</div>
+                    </div>
                 </div>
-                <div class="menu-group-items">
-                    <div class="menu-item">消息列表</div>
+                <div class="menu-group">
+                    <div class="menu-group-title" onclick="toggleMenu(this)">
+                        <span>用户反馈</span>
+                        <span class="menu-group-icon">[▶]</span>
+                    </div>
+                    <div class="menu-group-items">
+                        <div class="menu-item">意见反馈</div>
+                    </div>
                 </div>
-            </div>
-            <div class="menu-group">
-                <div class="menu-group-title" onclick="toggleMenu(this)">
-                    <span>用户反馈</span>
-                    <span class="menu-group-icon">[▶]</span>
+                <div class="menu-group expanded">
+                    <div class="menu-group-title" onclick="toggleMenu(this)">
+                        <span>数据分析</span>
+                        <span class="menu-group-icon">[▶]</span>
+                    </div>
+                    <div class="menu-group-items">
+                        <div class="menu-item">平台数据分析</div>
+                        <div class="menu-item">学校数据分析</div>
+                        <div class="menu-item">年级数据分析</div>
+                        <div class="menu-item active">学生数据分析</div>
+                    </div>
                 </div>
-                <div class="menu-group-items">
-                    <div class="menu-item">意见反馈</div>
+                <div class="menu-group">
+                    <div class="menu-group-title" onclick="toggleMenu(this)">
+                        <span>系统配置</span>
+                        <span class="menu-group-icon">[▶]</span>
+                    </div>
+                    <div class="menu-group-items">
+                        <div class="menu-item">系统参数</div>
+                        <div class="menu-item">数据字典</div>
+                    </div>
                 </div>
-            </div>
-            <div class="menu-group expanded">
-                <div class="menu-group-title" onclick="toggleMenu(this)">
-                    <span>数据分析</span>
-                    <span class="menu-group-icon">[▶]</span>
-                </div>
-                <div class="menu-group-items">
-                    <div class="menu-item">平台数据分析</div>
-                    <div class="menu-item">学校数据分析</div>
-                    <div class="menu-item">年级数据分析</div>
-                    <div class="menu-item active">学生数据分析</div>
-                </div>
-            </div>
-            <div class="menu-group">
-                <div class="menu-group-title" onclick="toggleMenu(this)">
-                    <span>系统配置</span>
-                    <span class="menu-group-icon">[▶]</span>
-                </div>
-                <div class="menu-group-items">
-                    <div class="menu-item">系统参数</div>
-                    <div class="menu-item">数据字典</div>
-                </div>
-            </div>
             </div>
         </div>
 
@@ -709,11 +784,6 @@
                         <div class="stat-sub">字</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-label">阅读时长</div>
-                        <div class="stat-value">42.5</div>
-                        <div class="stat-sub">小时</div>
-                    </div>
-                    <div class="stat-card">
                         <div class="stat-label">连续打卡</div>
                         <div class="stat-value">28</div>
                         <div class="stat-sub">天</div>
@@ -785,101 +855,6 @@
                     </div>
                 </div>
 
-                <!-- 阅读行为分析 -->
-                <div class="card">
-                    <div class="section-title">阅读行为分析</div>
-                    <div class="two-column">
-                        <!-- 阅读时间分布 -->
-                        <div class="time-chart">
-                            <div class="time-chart-title">每日阅读时段分布</div>
-                            <div class="time-bars">
-                                <div class="time-bar-item">
-                                    <div class="time-bar-value">5%</div>
-                                    <div class="time-bar" style="height: 10px;"></div>
-                                    <div class="time-bar-label">6-9</div>
-                                </div>
-                                <div class="time-bar-item">
-                                    <div class="time-bar-value">8%</div>
-                                    <div class="time-bar" style="height: 16px;"></div>
-                                    <div class="time-bar-label">9-12</div>
-                                </div>
-                                <div class="time-bar-item">
-                                    <div class="time-bar-value">12%</div>
-                                    <div class="time-bar" style="height: 24px;"></div>
-                                    <div class="time-bar-label">12-14</div>
-                                </div>
-                                <div class="time-bar-item">
-                                    <div class="time-bar-value">15%</div>
-                                    <div class="time-bar" style="height: 30px;"></div>
-                                    <div class="time-bar-label">14-17</div>
-                                </div>
-                                <div class="time-bar-item">
-                                    <div class="time-bar-value">35%</div>
-                                    <div class="time-bar" style="height: 70px;"></div>
-                                    <div class="time-bar-label">17-19</div>
-                                </div>
-                                <div class="time-bar-item">
-                                    <div class="time-bar-value">20%</div>
-                                    <div class="time-bar" style="height: 40px;"></div>
-                                    <div class="time-bar-label">19-21</div>
-                                </div>
-                                <div class="time-bar-item">
-                                    <div class="time-bar-value">5%</div>
-                                    <div class="time-bar" style="height: 10px;"></div>
-                                    <div class="time-bar-label">21-23</div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- 阅读偏好 -->
-                        <div class="preference-list">
-                            <div class="preference-title">阅读偏好统计</div>
-                            <div class="preference-item">
-                                <span class="preference-label">最常阅读时段</span>
-                                <span class="preference-value">17:00 - 19:00</span>
-                            </div>
-                            <div class="preference-item">
-                                <span class="preference-label">平均每次阅读时长</span>
-                                <span class="preference-value">25分钟</span>
-                            </div>
-                            <div class="preference-item">
-                                <span class="preference-label">最喜欢的书籍类型</span>
-                                <span class="preference-value">科普百科</span>
-                            </div>
-                            <div class="preference-item">
-                                <span class="preference-label">本周阅读天数</span>
-                                <span class="preference-value">6天</span>
-                            </div>
-                            <div class="preference-item">
-                                <span class="preference-label">阅读稳定性</span>
-                                <span class="preference-value">优秀</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 积分明细 -->
-                <div class="card">
-                    <div class="section-title">积分获取明细</div>
-                    <div class="points-summary">
-                        <div class="points-item">
-                            <div class="points-item-label">视频任务积分</div>
-                            <div class="points-item-value">40</div>
-                        </div>
-                        <div class="points-item">
-                            <div class="points-item-label">阅读打卡积分</div>
-                            <div class="points-item-value">156</div>
-                        </div>
-                        <div class="points-item">
-                            <div class="points-item-label">测评积分</div>
-                            <div class="points-item-value">120</div>
-                        </div>
-                        <div class="points-item">
-                            <div class="points-item-label">连续打卡奖励</div>
-                            <div class="points-item-value">40</div>
-                        </div>
-                    </div>
-                </div>
-
                 <!-- 阅读书籍明细 -->
                 <div class="card">
                     <div class="section-title">阅读书籍明细</div>
@@ -889,12 +864,10 @@
                                 <tr>
                                     <th width="50">序号</th>
                                     <th>书籍名称</th>
-                                    <th>作者</th>
+                                    <th>阅读计划名称</th>
                                     <th>字数</th>
-                                    <th>阅读进度</th>
-                                    <th>阅读时长</th>
+                                    <th>阅读进度（已完成/总次数）</th>
                                     <th>测评成绩</th>
-                                    <th>获得积分</th>
                                     <th>状态</th>
                                 </tr>
                             </thead>
@@ -902,89 +875,73 @@
                                 <tr>
                                     <td>1</td>
                                     <td class="name-col">《小王子》</td>
-                                    <td>安托万·德·圣-埃克苏佩里</td>
+                                    <td>三年级经典阅读计划</td>
                                     <td>2.8万</td>
-                                    <td>100%</td>
-                                    <td>5.2小时</td>
+                                    <td>4/4次</td>
                                     <td><span class="highlight-green">98分</span></td>
-                                    <td>56</td>
                                     <td><span class="status-tag completed">已完成</span></td>
                                 </tr>
                                 <tr>
                                     <td>2</td>
                                     <td class="name-col">《夏洛的网》</td>
-                                    <td>E.B.怀特</td>
+                                    <td>三年级经典阅读计划</td>
                                     <td>3.5万</td>
-                                    <td>100%</td>
-                                    <td>6.8小时</td>
+                                    <td>4/4次</td>
                                     <td><span class="highlight-green">95分</span></td>
-                                    <td>62</td>
                                     <td><span class="status-tag completed">已完成</span></td>
                                 </tr>
                                 <tr>
                                     <td>3</td>
                                     <td class="name-col">《窗边的小豆豆》</td>
-                                    <td>黑柳彻子</td>
+                                    <td>三年级经典阅读计划</td>
                                     <td>4.2万</td>
-                                    <td>100%</td>
-                                    <td>8.5小时</td>
+                                    <td>4/4次</td>
                                     <td><span class="highlight-green">92分</span></td>
-                                    <td>68</td>
                                     <td><span class="status-tag completed">已完成</span></td>
                                 </tr>
                                 <tr>
                                     <td>4</td>
                                     <td class="name-col">《昆虫记》</td>
-                                    <td>法布尔</td>
+                                    <td>科普百科阅读计划</td>
                                     <td>5.6万</td>
-                                    <td>75%</td>
-                                    <td>9.2小时</td>
+                                    <td>3/4次</td>
                                     <td>-</td>
-                                    <td>45</td>
                                     <td><span class="status-tag in-progress">阅读中</span></td>
                                 </tr>
                                 <tr>
                                     <td>5</td>
                                     <td class="name-col">《草房子》</td>
-                                    <td>曹文轩</td>
+                                    <td>三年级经典阅读计划</td>
                                     <td>6.8万</td>
-                                    <td>45%</td>
-                                    <td>6.5小时</td>
+                                    <td>2/5次</td>
                                     <td>-</td>
-                                    <td>32</td>
                                     <td><span class="status-tag in-progress">阅读中</span></td>
                                 </tr>
                                 <tr>
                                     <td>6</td>
                                     <td class="name-col">《绿野仙踪》</td>
-                                    <td>莱曼·弗兰克·鲍姆</td>
+                                    <td>三年级经典阅读计划</td>
                                     <td>3.2万</td>
-                                    <td>100%</td>
-                                    <td>4.8小时</td>
+                                    <td>3/3次</td>
                                     <td>-</td>
-                                    <td>48</td>
                                     <td><span class="status-tag completed">已完成</span></td>
                                 </tr>
                                 <tr>
                                     <td>7</td>
                                     <td class="name-col">《爱的教育》</td>
-                                    <td>亚米契斯</td>
+                                    <td>三年级经典阅读计划</td>
                                     <td>4.5万</td>
-                                    <td>20%</td>
-                                    <td>1.5小时</td>
+                                    <td>1/5次</td>
                                     <td>-</td>
-                                    <td>15</td>
                                     <td><span class="status-tag in-progress">阅读中</span></td>
                                 </tr>
                                 <tr>
                                     <td>8</td>
                                     <td class="name-col">《海底两万里》</td>
-                                    <td>儒勒·凡尔纳</td>
+                                    <td>科普百科阅读计划</td>
                                     <td>8.2万</td>
-                                    <td>0%</td>
-                                    <td>0</td>
+                                    <td>0/4次</td>
                                     <td>-</td>
-                                    <td>0</td>
                                     <td><span class="status-tag not-started">未开始</span></td>
                                 </tr>
                             </tbody>
@@ -1000,10 +957,11 @@
     </div>
 
     <script>
-    function toggleMenu(element) {
-        const menuGroup = element.parentElement;
-        menuGroup.classList.toggle('expanded');
-    }
+        function toggleMenu(element) {
+            const menuGroup = element.parentElement;
+            menuGroup.classList.toggle('expanded');
+        }
     </script>
 </body>
+
 </html>

@@ -293,7 +293,7 @@
                 <span class="filter-tag">《三体》阅读计划</span>
                 <span class="filter-tag">一年级(1)班</span>
                 <span class="filter-tag">《三体》</span>
-                <span class="filter-tag">本月</span>
+                <span class="filter-tag">全部</span>
             </div>
             <button class="filter-btn" onclick="openFilterModal()">
                 <i class="fa-solid fa-filter"></i>
@@ -339,9 +339,11 @@
             <div class="filter-group">
                 <div class="filter-group-label">时间范围</div>
                 <select class="filter-group-select" id="filterTime">
+                    <option selected>全部</option>
                     <option>本周</option>
-                    <option selected>本月</option>
-                    <option>本学期</option>
+                    <option>本月</option>
+                    <option>上月</option>
+                    <option>自定义</option>
                 </select>
             </div>
             <div class="filter-modal-actions">
@@ -652,7 +654,7 @@
             document.getElementById('filterPlan').selectedIndex = 0;
             document.getElementById('filterClass').selectedIndex = 0;
             document.getElementById('filterBook').selectedIndex = 0;
-            document.getElementById('filterTime').selectedIndex = 1;
+            document.getElementById('filterTime').selectedIndex = 0;
         }
 
         // 确认筛选
