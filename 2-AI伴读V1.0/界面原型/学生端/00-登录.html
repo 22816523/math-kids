@@ -1,67 +1,315 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>登录 - 校校读吧-学生端</title>
     <link rel="stylesheet" href="design-system.css">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: "Source Han Sans CN", "Noto Sans CJK SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background: #F5F7FA; width: 375px; margin: 0 auto; min-height: 100vh; display: flex; flex-direction: column; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-        .login-header { padding: 48px 24px 24px; text-align: center; }
-        .logo { width: 64px; height: 64px; background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%); border-radius: 16px; margin: 0 auto 12px; display: flex; align-items: center; justify-content: center; font-size: 28px; box-shadow: 0 4px 12px rgba(0, 200, 167, 0.3); }
-        .app-title { font-size: 20px; font-weight: 600; color: #333333; margin-bottom: 4px; }
-        .app-subtitle { font-size: 13px; color: #999999; }
+        body {
+            font-family: "Source Han Sans CN", "Noto Sans CJK SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: #F5F7FA;
+            width: 375px;
+            margin: 0 auto;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
 
-        .login-content { flex: 1; padding: 20px; }
+        .login-header {
+            padding: 48px 24px 24px;
+            text-align: center;
+        }
 
-        .tab-bar { display: flex; background: white; border-radius: 10px; padding: 4px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
-        .tab-item { flex: 1; padding: 10px 0; text-align: center; font-size: 14px; color: #666666; cursor: pointer; border-radius: 6px; transition: all 0.3s; }
-        .tab-item.active { background: var(--color-primary); color: white; font-weight: 500; }
+        .logo {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+            border-radius: 16px;
+            margin: 0 auto 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            box-shadow: 0 4px 12px rgba(0, 200, 167, 0.3);
+        }
 
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
+        .app-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333333;
+            margin-bottom: 4px;
+        }
 
-        .wechat-section { background: white; border-radius: 12px; padding: 28px 20px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
-        .wechat-icon { width: 56px; height: 56px; background: #07C160; border-radius: 50%; margin: 0 auto 14px; display: flex; align-items: center; justify-content: center; }
-        .wechat-icon i { font-size: 28px; color: white; }
-        .wechat-title { font-size: 15px; color: #333333; margin-bottom: 6px; font-weight: 500; }
-        .wechat-desc { font-size: 12px; color: #999999; margin-bottom: 20px; }
-        .wechat-btn { width: 100%; padding: 13px; background: #07C160; color: white; border: none; border-radius: 8px; font-size: 15px; font-weight: 500; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.3s; }
-        .wechat-btn:active { background: #06AD56; transform: scale(0.98); }
-        .wechat-btn i { font-size: 18px; }
+        .app-subtitle {
+            font-size: 13px;
+            color: #999999;
+        }
 
-        .phone-section { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
-        .form-group { margin-bottom: 14px; }
-        .input-wrapper { position: relative; }
-        .input-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #999999; font-size: 15px; }
-        .form-input { width: 100%; padding: 12px 12px 12px 38px; border: 1px solid #e8e8e8; border-radius: 8px; font-size: 14px; color: #333333; background: #fafafa; transition: all 0.3s; }
-        .form-input:focus { outline: none; border-color: var(--color-primary); background: white; box-shadow: 0 0 0 3px rgba(0, 200, 167, 0.1); }
-        .form-input::placeholder { color: #bfbfbf; }
-        .form-input.error { border-color: #ff4d4f; }
+        .login-content {
+            flex: 1;
+            padding: 20px;
+        }
 
-        .error-tip { font-size: 12px; color: #ff4d4f; margin-top: 4px; display: none; }
-        .error-tip.show { display: block; }
+        .tab-bar {
+            display: flex;
+            background: white;
+            border-radius: 10px;
+            padding: 4px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
 
-        .code-input-group { display: flex; gap: 10px; }
-        .code-input-group .input-wrapper { flex: 1; }
-        .get-code-btn { padding: 12px 14px; background: var(--color-primary); color: white; border: none; border-radius: 8px; font-size: 13px; cursor: pointer; white-space: nowrap; transition: all 0.3s; }
-        .get-code-btn:active { background: var(--color-secondary); }
-        .get-code-btn:disabled { background: #d9d9d9; cursor: not-allowed; }
+        .tab-item {
+            flex: 1;
+            padding: 10px 0;
+            text-align: center;
+            font-size: 14px;
+            color: #666666;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
 
-        .login-btn { width: 100%; padding: 13px; background: linear-gradient(135deg, var(--color-primary), var(--color-secondary)); color: white; border: none; border-radius: 8px; font-size: 15px; font-weight: 500; cursor: pointer; transition: all 0.3s; margin-top: 6px; }
-        .login-btn:active { transform: scale(0.98); }
-        .login-btn:disabled { background: #d9d9d9; cursor: not-allowed; }
+        .tab-item.active {
+            background: var(--color-primary);
+            color: white;
+            font-weight: 500;
+        }
 
-        .footer-tip { text-align: center; padding: 16px; font-size: 13px; color: #999999; }
-        .footer-link { color: var(--color-primary); text-decoration: none; }
+        .tab-content {
+            display: none;
+        }
 
-        .agreement { text-align: center; padding: 16px 20px 32px; font-size: 12px; color: #bfbfbf; line-height: 1.6; margin-top: auto; }
-        .agreement a { color: #999999; text-decoration: none; }
+        .tab-content.active {
+            display: block;
+        }
+
+        .wechat-section {
+            background: white;
+            border-radius: 12px;
+            padding: 28px 20px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .wechat-icon {
+            width: 56px;
+            height: 56px;
+            background: #07C160;
+            border-radius: 50%;
+            margin: 0 auto 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .wechat-icon i {
+            font-size: 28px;
+            color: white;
+        }
+
+        .wechat-title {
+            font-size: 15px;
+            color: #333333;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+
+        .wechat-desc {
+            font-size: 12px;
+            color: #999999;
+            margin-bottom: 20px;
+        }
+
+        .wechat-btn {
+            width: 100%;
+            padding: 13px;
+            background: #07C160;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+
+        .wechat-btn:active {
+            background: #06AD56;
+            transform: scale(0.98);
+        }
+
+        .wechat-btn i {
+            font-size: 18px;
+        }
+
+        .phone-section {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .form-group {
+            margin-bottom: 14px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999999;
+            font-size: 15px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 12px 12px 38px;
+            border: 1px solid #e8e8e8;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #333333;
+            background: #fafafa;
+            transition: all 0.3s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(0, 200, 167, 0.1);
+        }
+
+        .form-input::placeholder {
+            color: #bfbfbf;
+        }
+
+        .form-input.error {
+            border-color: #ff4d4f;
+        }
+
+        .error-tip {
+            font-size: 12px;
+            color: #ff4d4f;
+            margin-top: 4px;
+            display: none;
+        }
+
+        .error-tip.show {
+            display: block;
+        }
+
+        .code-input-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .code-input-group .input-wrapper {
+            flex: 1;
+        }
+
+        .get-code-btn {
+            padding: 12px 14px;
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 13px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.3s;
+        }
+
+        .get-code-btn:active {
+            background: var(--color-secondary);
+        }
+
+        .get-code-btn:disabled {
+            background: #d9d9d9;
+            cursor: not-allowed;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 13px;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 6px;
+        }
+
+        .login-btn:active {
+            transform: scale(0.98);
+        }
+
+        .login-btn:disabled {
+            background: #d9d9d9;
+            cursor: not-allowed;
+        }
+
+        .footer-tip {
+            text-align: center;
+            padding: 16px;
+            font-size: 13px;
+            color: #999999;
+        }
+
+        .footer-link {
+            color: var(--color-primary);
+            text-decoration: none;
+        }
+
+        .agreement {
+            text-align: center;
+            padding: 16px 20px 32px;
+            font-size: 12px;
+            color: #bfbfbf;
+            line-height: 1.6;
+            margin-top: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .agreement a {
+            color: #999999;
+            text-decoration: none;
+        }
+
+        .agreement-checkbox {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--color-primary);
+            cursor: pointer;
+            flex-shrink: 0;
+        }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
+
 <body>
     <div class="login-header">
         <div class="logo">📚</div>
@@ -108,7 +356,8 @@
                                 <input type="text" class="form-input" id="codeInput" placeholder="请输入验证码" maxlength="6">
                                 <div class="error-tip" id="codeError">请输入6位验证码</div>
                             </div>
-                            <button type="button" class="get-code-btn" id="getCodeBtn" onclick="getVerificationCode()">获取验证码</button>
+                            <button type="button" class="get-code-btn" id="getCodeBtn"
+                                onclick="getVerificationCode()">获取验证码</button>
                         </div>
                     </div>
 
@@ -117,13 +366,12 @@
             </div>
         </div>
 
-        <div class="footer-tip">
-            首次使用？<a href="javascript:void(0)" class="footer-link" onclick="alert('请联系管理员开通账号')">联系管理员</a>
-        </div>
+
     </div>
 
     <div class="agreement">
-        登录即表示同意 <a href="#">用户协议</a> 和 <a href="#">隐私政策</a>
+        <input type="checkbox" class="agreement-checkbox" id="agreementCheck">
+        <span>我已阅读并同意 <a href="#">用户协议</a> 和 <a href="#">隐私政策</a></span>
     </div>
 
     <script src="./router.js"></script>
@@ -157,6 +405,12 @@
 
         // 微信授权登录
         function wechatLogin() {
+            // 检查协议勾选
+            if (!document.getElementById('agreementCheck').checked) {
+                alert('请先阅读并同意用户协议和隐私政策')
+                return
+            }
+
             // 模拟微信授权登录
             console.log('微信授权登录')
 
@@ -177,6 +431,12 @@
         // 验证码登录
         function handleCodeLogin(event) {
             event.preventDefault()
+
+            // 检查协议勾选
+            if (!document.getElementById('agreementCheck').checked) {
+                alert('请先阅读并同意用户协议和隐私政策')
+                return false
+            }
 
             const phone = document.getElementById('phoneInput').value.trim()
             const code = document.getElementById('codeInput').value.trim()
@@ -280,4 +540,5 @@
         }
     </script>
 </body>
+
 </html>

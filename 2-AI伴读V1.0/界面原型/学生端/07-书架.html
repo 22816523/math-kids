@@ -1,18 +1,63 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>我的书架 - 校校读吧-学生端</title>
     <link rel="stylesheet" href="design-system.css">
     <style>
-        body { padding-bottom: 60px; }
-        .navbar { background: linear-gradient(135deg, var(--color-primary), var(--color-secondary)); color: white; height: var(--navbar-height); display: flex; align-items: center; justify-content: space-between; padding: 0 var(--spacing-lg); }
-        .navbar-title { font-size: var(--font-size-body); line-height: 1.4; font-weight: 600; }
-        .navbar-btn { background: rgba(255,255,255,0.2); border: none; color: white; padding: 6px var(--spacing-md); border-radius: var(--radius-sm); cursor: pointer; }
-        .tabs { background: var(--color-bg-primary); display: flex; padding: 0 var(--spacing-lg); }
-        .tab { flex: 1; padding: var(--spacing-md) 0; text-align: center; font-size: var(--font-size-caption); line-height: 1.6; color: var(--color-text-tertiary); cursor: pointer; border-bottom: 2px solid transparent; }
-        .tab.active { color: var(--color-primary); font-weight: 600; border-bottom-color: var(--color-primary); }
+        body {
+            padding-bottom: 60px;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+            color: white;
+            height: var(--navbar-height);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 var(--spacing-lg);
+        }
+
+        .navbar-title {
+            font-size: var(--font-size-body);
+            line-height: 1.4;
+            font-weight: 600;
+        }
+
+        .navbar-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 6px var(--spacing-md);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+        }
+
+        .tabs {
+            background: var(--color-bg-primary);
+            display: flex;
+            padding: 0 var(--spacing-lg);
+        }
+
+        .tab {
+            flex: 1;
+            padding: var(--spacing-md) 0;
+            text-align: center;
+            font-size: var(--font-size-caption);
+            line-height: 1.6;
+            color: var(--color-text-tertiary);
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+        }
+
+        .tab.active {
+            color: var(--color-primary);
+            font-weight: 600;
+            border-bottom-color: var(--color-primary);
+        }
 
         /* 筛选栏 */
         .filter-bar {
@@ -242,12 +287,20 @@
         }
 
         @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
         }
 
         /* Font Awesome图标样式优化 */
-        .fa-solid, .fa-regular {
+        .fa-solid,
+        .fa-regular {
             font-weight: 400;
             color: #595959;
             opacity: 0.85;
@@ -272,7 +325,7 @@
         .achievement-section .badge-icon .fa-solid {
             font-size: 32px;
         }
-    
+
         /* 选中状态图标颜色优化 */
         .tab-item.active .tab-icon .fa-solid,
         .tab-item.active .fa-solid {
@@ -339,8 +392,10 @@
         .tab-item.active .tab-icon {
             transform: scale(1.1);
         }
-    </style>    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
+
 <body>
     <div class="navbar">
         <div class="navbar-title">我的书架</div>
@@ -363,7 +418,6 @@
                 <div class="book-info">
                     <div class="book-title">三体</div>
                     <div class="book-author">刘慈欣 著</div>
-                    <div class="book-publisher">重庆出版社</div>
                 </div>
             </div>
             <div class="book-card" onclick="Router.toStudentPage('bookDetail', {bookId: 6})">
@@ -374,7 +428,6 @@
                 <div class="book-info">
                     <div class="book-title">百年孤独</div>
                     <div class="book-author">加西亚·马尔克斯 著</div>
-                    <div class="book-publisher">南海出版公司</div>
                 </div>
             </div>
             <div class="book-card" onclick="Router.toStudentPage('bookDetail', {bookId: 5})">
@@ -385,7 +438,6 @@
                 <div class="book-info">
                     <div class="book-title">平凡的世界</div>
                     <div class="book-author">路遥 著</div>
-                    <div class="book-publisher">北京十月文艺出版社</div>
                 </div>
             </div>
         </div>
@@ -401,7 +453,6 @@
                 <div class="book-info">
                     <div class="book-title">三体</div>
                     <div class="book-author">刘慈欣 著</div>
-                    <div class="book-publisher">重庆出版社</div>
                 </div>
             </div>
         </div>
@@ -417,7 +468,6 @@
                 <div class="book-info">
                     <div class="book-title">百年孤独</div>
                     <div class="book-author">加西亚·马尔克斯 著</div>
-                    <div class="book-publisher">南海出版公司</div>
                 </div>
             </div>
         </div>
@@ -433,7 +483,6 @@
                 <div class="book-info">
                     <div class="book-title">平凡的世界</div>
                     <div class="book-author">路遥 著</div>
-                    <div class="book-publisher">北京十月文艺出版社</div>
                 </div>
             </div>
         </div>
@@ -456,7 +505,7 @@
     <script>
         // Tab切换功能
         document.querySelectorAll('.tab').forEach(tab => {
-            tab.addEventListener('click', function() {
+            tab.addEventListener('click', function () {
                 document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
                 document.querySelectorAll('.book-list').forEach(list => list.style.display = 'none');
 
@@ -469,4 +518,5 @@
 
     <script src="./router.js"></script>
 </body>
+
 </html>

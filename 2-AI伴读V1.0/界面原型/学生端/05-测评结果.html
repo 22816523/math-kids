@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -40,7 +41,7 @@
             margin-right: 12px;
             width: 36px;
             height: 36px;
-            background: rgba(255,255,255,0.2);
+            background: rgba(255, 255, 255, 0.2);
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -162,7 +163,7 @@
             left: -50%;
             width: 200%;
             height: 200%;
-            background: radial-gradient(circle, rgba(255,215,0,0.1) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.1) 0%, transparent 70%);
             pointer-events: none;
         }
 
@@ -347,7 +348,8 @@
         }
 
         /* Font Awesome图标样式优化 */
-        .fa-solid, .fa-regular {
+        .fa-solid,
+        .fa-regular {
             font-weight: 400;
             color: #595959;
             opacity: 0.85;
@@ -360,6 +362,7 @@
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
+
 <body>
     <div class="navbar">
         <div class="back-btn" onclick="Router.toStudentPage('home')"><i class="fa-solid fa-chevron-left"></i></div>
@@ -383,8 +386,8 @@
 
         <div class="stats-grid">
             <div class="stat-item">
-                <div class="stat-value">17/20</div>
-                <div class="stat-label">正确</div>
+                <div class="stat-value">78</div>
+                <div class="stat-label">班级均分</div>
             </div>
             <div class="stat-item">
                 <div class="stat-value">12分</div>
@@ -407,7 +410,7 @@
         <div class="certificate-title">《三体》阅读奖状</div>
         <div class="certificate-date">2024年1月15日</div>
         <button class="certificate-btn" onclick="Router.toStudentPage('certificates')">
-            <i class="fa-solid fa-eye"></i> 查看奖状
+            <i class="fa-solid fa-eye"></i> 查看我的奖状
         </button>
     </div>
 
@@ -529,4 +532,5 @@
         }
     </script>
 </body>
+
 </html>

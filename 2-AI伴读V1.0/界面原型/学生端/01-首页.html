@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -354,7 +355,7 @@
             background: rgba(255, 255, 255, 0.4);
         }
 
-        .task-item + .task-item {
+        .task-item+.task-item {
             padding-top: var(--spacing-md);
             border-top: 1px solid rgba(255, 255, 255, 0.15);
         }
@@ -568,7 +569,8 @@
         }
 
         /* Font Awesome图标样式优化 */
-        .fa-solid, .fa-regular {
+        .fa-solid,
+        .fa-regular {
             font-weight: 400;
             color: var(--color-text-secondary);
             opacity: 0.85;
@@ -613,8 +615,10 @@
             color: var(--color-primary);
             opacity: 1;
         }
-    </style>    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
+
 <body>
     <div class="header" style="position: relative;">
         <div class="header-title">校校读吧-学生端</div>
@@ -629,7 +633,8 @@
     <div class="calendar-section">
         <div class="calendar-header">
             <div class="calendar-title-row">
-                <div class="section-title" style="margin-bottom: 0;"><i class="fa-solid fa-calendar-days"></i> 本周阅读日历</div>
+                <div class="section-title" style="margin-bottom: 0;"><i class="fa-solid fa-calendar-days"></i> 本周阅读日历
+                </div>
             </div>
             <div class="month-nav" id="monthNav">
                 <button class="month-nav-btn" onclick="changeMonth(-1)">
@@ -702,9 +707,12 @@
 
     <!-- 今日任务列表 -->
     <div class="today-tasks">
-        <div class="section-title"><i class="fa-solid fa-list-check"></i> 今日任务 <span style="font-size: 12px; font-weight: 400; color: var(--color-text-tertiary);" id="todayDate"></span></div>
+        <div class="section-title"><i class="fa-solid fa-list-check"></i> 今日任务 <span
+                style="font-size: 12px; font-weight: 400; color: var(--color-text-tertiary);" id="todayDate"></span>
+        </div>
         <div class="task-card">
-            <div class="task-description">《三体》<span style="font-size: 12px; font-weight: 400; opacity: 0.8; margin-left: 6px;">2026年寒假阅读计划</span></div>
+            <div class="task-description">《三体》<span
+                    style="font-size: 12px; font-weight: 400; opacity: 0.8; margin-left: 6px;">2026年寒假阅读计划</span></div>
             <div class="task-list">
                 <div class="task-item done">
                     <span class="task-num"><i class="fa-solid fa-check" style="font-size: 10px;"></i></span>
@@ -731,25 +739,31 @@
                     </div>
                 </div>
             </div>
-            <button class="task-btn" onclick="location.href='07-AI导语2.html'">去完成 →</button>
+            <button class="task-btn" onclick="location.href='07-AI导语.html'">去完成 →</button>
         </div>
     </div>
 
     <div class="quick-entry" style="grid-template-columns: repeat(4, 1fr);">
         <div class="entry-item" onclick="onNewsClick(); Router.toStudentPage('news')">
-            <div class="entry-icon" style="background: linear-gradient(135deg, #11998e, #38ef7d); position: relative;"><i class="fa-solid fa-newspaper" style="color: white;"></i><span class="unread-dot" id="newsDot"></span></div>
+            <div class="entry-icon" style="background: linear-gradient(135deg, #11998e, #38ef7d); position: relative;">
+                <i class="fa-solid fa-newspaper" style="color: white;"></i><span class="unread-dot" id="newsDot"></span>
+            </div>
             <div class="entry-label">资讯</div>
         </div>
         <div class="entry-item" onclick="onSquareClick(); Router.toStudentPage('classCheckin')">
-            <div class="entry-icon" style="background: linear-gradient(135deg, #36d1dc, #5b86e5); position: relative;"><i class="fa-solid fa-compass" style="color: white;"></i><span class="unread-dot" id="squareDot"></span></div>
+            <div class="entry-icon" style="background: linear-gradient(135deg, #36d1dc, #5b86e5); position: relative;">
+                <i class="fa-solid fa-compass" style="color: white;"></i><span class="unread-dot" id="squareDot"></span>
+            </div>
             <div class="entry-label">广场</div>
         </div>
         <div class="entry-item" onclick="Router.toStudentPage('rank')">
-            <div class="entry-icon" style="background: linear-gradient(135deg, #ff6b6b, #ee5a24);"><i class="fa-solid fa-ranking-star" style="color: white;"></i></div>
+            <div class="entry-icon" style="background: linear-gradient(135deg, #ff6b6b, #ee5a24);"><i
+                    class="fa-solid fa-ranking-star" style="color: white;"></i></div>
             <div class="entry-label">排行榜</div>
         </div>
         <div class="entry-item" onclick="Router.toStudentPage('certificates')">
-            <div class="entry-icon" style="background: linear-gradient(135deg, #ffd700, #ffaa00);"><i class="fa-solid fa-award" style="color: white;"></i></div>
+            <div class="entry-icon" style="background: linear-gradient(135deg, #ffd700, #ffaa00);"><i
+                    class="fa-solid fa-award" style="color: white;"></i></div>
             <div class="entry-label">奖状</div>
         </div>
     </div>
@@ -894,8 +908,8 @@
                 } else {
                     // 有任务但未完成
                     const isPast = currentYear < today.getFullYear() ||
-                                   (currentYear === today.getFullYear() && currentMonth < today.getMonth()) ||
-                                   (currentYear === today.getFullYear() && currentMonth === today.getMonth() && day < todayDate);
+                        (currentYear === today.getFullYear() && currentMonth < today.getMonth()) ||
+                        (currentYear === today.getFullYear() && currentMonth === today.getMonth() && day < todayDate);
 
                     if (isPast) {
                         // 过期未完成 - 红色背景 + 空心星星
@@ -918,7 +932,7 @@
         updateMonthDisplay();
 
         // 显示今日日期
-        (function() {
+        (function () {
             const now = new Date();
             document.getElementById('todayDate').textContent = `${now.getMonth() + 1}月${now.getDate()}日`;
         })();
@@ -976,4 +990,5 @@
         checkUnreadDots();
     </script>
 </body>
+
 </html>

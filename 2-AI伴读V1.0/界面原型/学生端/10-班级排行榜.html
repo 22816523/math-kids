@@ -1,67 +1,300 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>班级排行榜 - 校校读吧-学生端</title>
     <link rel="stylesheet" href="design-system.css">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background: #f5f5f5; width: 375px; margin: 0 auto; padding-bottom: 120px; }
-        .header { background: linear-gradient(135deg, var(--color-primary), var(--color-secondary)); color: white; padding: 24px 16px; text-align: center; }
-        .header-nav { display: flex; align-items: center; margin-bottom: 12px; }
-        .back-btn { font-size: 20px; cursor: pointer; }
-        .header-nav-title { flex: 1; text-align: center; font-size: 14px; opacity: 0.9; margin-right: 20px; }
-        .header-title { font-size: 24px;
-            line-height: 1.2; font-weight: 700; margin-bottom: 8px; }
-        .header-subtitle { font-size: 14px;
-            line-height: 1.6; opacity: 0.9; }
-        .tabs { background: white; display: flex; padding: 0 16px; }
-        .tab { flex: 1; padding: 12px 0; text-align: center; font-size: 14px;
-            line-height: 1.6; color: #8c8c8c; cursor: pointer; border-bottom: 2px solid transparent; }
-        .tab.active { color: var(--color-primary); font-weight: 600; border-bottom-color: var(--color-primary); }
-        .top3 { padding: 16px; display: flex; align-items: flex-end; justify-content: center; gap: 12px; }
-        .top-item { text-align: center; }
-        .top-item.rank2, .top-item.rank3 { opacity: 0.9; }
-        .top-avatar { width: 64px; height: 64px; border-radius: 50%; margin: 0 auto 8px; display: flex; align-items: center; justify-content: center; font-size: 24px;
-            line-height: 1.2; font-weight: 700; color: white; position: relative; }
-        .top-item.rank1 .top-avatar { width: 80px; height: 80px; background: linear-gradient(135deg, #FFD700, #FFA500); }
-        .top-item.rank2 .top-avatar { background: linear-gradient(135deg, #C0C0C0, #A8A8A8); }
-        .top-item.rank3 .top-avatar { background: linear-gradient(135deg, #CD7F32, #B8860B); }
-        .crown { position: absolute; top: -14px; font-size: 32px;
-            line-height: 1; }
-        .crown-number { position: absolute; top: 8px; left: 50%; transform: translateX(-50%); font-size: 11px; font-weight: 700; color: white; text-shadow: 0 1px 2px rgba(0,0,0,0.5); }
-        .rank-badge { position: absolute; top: -8px; width: 22px; height: 22px; border-radius: 50%; color: white; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
-        .top-name { font-size: 14px;
-            line-height: 1.6; font-weight: 600; margin-bottom: 4px; }
-        .top-score { font-size: 18px;
-            line-height: 1.4; font-weight: 700; color: var(--color-primary); }
-        .ranking-list { padding: 0 16px; }
-        .rank-item { background: white; border-radius: 8px; padding: 16px; margin-bottom: 8px; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: all 0.3s; }
-        .rank-item:hover { background: #f5f5f5; transform: translateX(2px); }
-        .rank-item.me { background: linear-gradient(135deg, #fff7e6, #fffbe6); border: 2px solid var(--color-secondary); }
-        .rank-number { width: 32px; height: 36px; border-radius: 50%; background: #f0f0f0; color: #595959; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;
-            line-height: 1.6; }
-        .rank-avatar { width: 40px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, var(--color-primary), var(--color-secondary)); color: white; display: flex; align-items: center; justify-content: center; font-size: 16px;
-            line-height: 1.4; font-weight: 600; }
-        .rank-info { flex: 1; }
-        .rank-name { font-size: 14px;
-            line-height: 1.6; font-weight: 600; margin-bottom: 2px; }
-        .rank-meta { font-size: 12px;
-            line-height: 1.5; color: #8c8c8c; }
-        .rank-value { font-size: 20px;
-            line-height: 1.2; font-weight: 700; color: var(--color-primary); }
-        .rank-change { font-size: 12px;
-            line-height: 1.5; margin-left: 4px; }
-        .change-up { color: #52c41a; }
-        .change-down { color: #ff4d4f; }
-        .my-rank-bar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 375px; background: white; padding: 16px; box-shadow: 0 -2px 8px rgba(0,0,0,0.06); }
-        .my-rank-title { font-size: 12px;
-            line-height: 1.5; color: #8c8c8c; margin-bottom: 8px; }
-        .my-rank-content { display: flex; align-items: center; gap: 12px; }
-    
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: #f5f5f5;
+            width: 375px;
+            margin: 0 auto;
+            padding-bottom: 120px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+            color: white;
+            padding: 24px 16px;
+            text-align: center;
+        }
+
+        .header-nav {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .back-btn {
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .header-nav-title {
+            flex: 1;
+            text-align: center;
+            font-size: 14px;
+            opacity: 0.9;
+            margin-right: 20px;
+        }
+
+        .header-title {
+            font-size: 24px;
+            line-height: 1.2;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .header-subtitle {
+            font-size: 14px;
+            line-height: 1.6;
+            opacity: 0.9;
+        }
+
+        .tabs {
+            background: white;
+            display: flex;
+            padding: 0 16px;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 12px 0;
+            text-align: center;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #8c8c8c;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+        }
+
+        .tab.active {
+            color: var(--color-primary);
+            font-weight: 600;
+            border-bottom-color: var(--color-primary);
+        }
+
+        .top3 {
+            padding: 16px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .top-item {
+            text-align: center;
+        }
+
+        .top-item.rank2,
+        .top-item.rank3 {
+            opacity: 0.9;
+        }
+
+        .top-avatar {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            margin: 0 auto 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            line-height: 1.2;
+            font-weight: 700;
+            color: white;
+            position: relative;
+        }
+
+        .top-item.rank1 .top-avatar {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+        }
+
+        .top-item.rank2 .top-avatar {
+            background: linear-gradient(135deg, #C0C0C0, #A8A8A8);
+        }
+
+        .top-item.rank3 .top-avatar {
+            background: linear-gradient(135deg, #CD7F32, #B8860B);
+        }
+
+        .crown {
+            position: absolute;
+            top: -14px;
+            font-size: 32px;
+            line-height: 1;
+        }
+
+        .crown-number {
+            position: absolute;
+            top: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 11px;
+            font-weight: 700;
+            color: white;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        .rank-badge {
+            position: absolute;
+            top: -8px;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            color: white;
+            font-size: 12px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .top-name {
+            font-size: 14px;
+            line-height: 1.6;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .top-score {
+            font-size: 18px;
+            line-height: 1.4;
+            font-weight: 700;
+            color: var(--color-primary);
+        }
+
+        .ranking-list {
+            padding: 0 16px;
+        }
+
+        .rank-item {
+            background: white;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .rank-item:hover {
+            background: #f5f5f5;
+            transform: translateX(2px);
+        }
+
+        .rank-item.me {
+            background: linear-gradient(135deg, #fff7e6, #fffbe6);
+            border: 2px solid var(--color-secondary);
+        }
+
+        .rank-number {
+            width: 32px;
+            height: 36px;
+            border-radius: 50%;
+            background: #f0f0f0;
+            color: #595959;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .rank-avatar {
+            width: 40px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            line-height: 1.4;
+            font-weight: 600;
+        }
+
+        .rank-info {
+            flex: 1;
+        }
+
+        .rank-name {
+            font-size: 14px;
+            line-height: 1.6;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .rank-meta {
+            font-size: 12px;
+            line-height: 1.5;
+            color: #8c8c8c;
+        }
+
+        .rank-value {
+            font-size: 20px;
+            line-height: 1.2;
+            font-weight: 700;
+            color: var(--color-primary);
+        }
+
+        .rank-change {
+            font-size: 12px;
+            line-height: 1.5;
+            margin-left: 4px;
+        }
+
+        .change-up {
+            color: #52c41a;
+        }
+
+        .change-down {
+            color: #ff4d4f;
+        }
+
+        .my-rank-bar {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 375px;
+            background: white;
+            padding: 16px;
+            box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .my-rank-title {
+            font-size: 12px;
+            line-height: 1.5;
+            color: #8c8c8c;
+            margin-bottom: 8px;
+        }
+
+        .my-rank-content {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
         /* Font Awesome图标样式优化 */
-        .fa-solid, .fa-regular {
+        .fa-solid,
+        .fa-regular {
             font-weight: 400;
             color: #595959;
             opacity: 0.85;
@@ -86,7 +319,7 @@
         .achievement-section .badge-icon .fa-solid {
             font-size: 32px;
         }
-    
+
         /* 选中状态图标颜色优化 */
         .tab-item.active .tab-icon .fa-solid,
         .tab-item.active .fa-solid {
@@ -104,28 +337,18 @@
             color: var(--color-primary);
             opacity: 1;
         }
-        /* 班级切换开关 */
-        .filter-switch { background: white; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; }
-        .filter-label { font-size: 14px; color: #333; }
-        .switch { position: relative; width: 44px; height: 24px; background: #d9d9d9; border-radius: 12px; cursor: pointer; transition: all 0.3s; }
-        .switch.active { background: var(--color-primary); }
-        .switch::after { content: ''; position: absolute; top: 2px; left: 2px; width: 20px; height: 20px; background: white; border-radius: 50%; transition: all 0.3s; }
-        .switch.active::after { left: 22px; }
-        .top-school { font-size: 11px; color: #999; margin-top: 2px; }
-    </style>    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
+
 <body>
     <div class="header">
         <div class="header-nav">
-            <div class="back-btn" onclick="location.href='01-首页2.html'"><i class="fa-solid fa-chevron-left" style="color: white;"></i></div>
+            <div class="back-btn" onclick="location.href='01-首页.html'"><i class="fa-solid fa-chevron-left"
+                    style="color: white;"></i></div>
             <div class="header-nav-title"></div>
         </div>
         <div class="header-title"><i class="fa-solid fa-trophy" style="color: white;"></i> 阅读排行榜</div>
-    </div>
-
-    <div class="filter-switch">
-        <span class="filter-label">仅看班级排名</span>
-        <div class="switch active" id="classSwitch" onclick="toggleClassFilter()"></div>
     </div>
 
     <div class="top3" id="top3Area"></div>
@@ -148,37 +371,6 @@
 
     <script src="./router.js"></script>
     <script>
-        let isClassOnly = true;
-
-        // 全部排名数据（姓名加密，学校加密）
-        const allRankData = {
-            top3: [
-                { name: '*三', school: '北京**中学', score: '52次', avatar: '*三' },
-                { name: '*四', school: '上海**小学', score: '45次', avatar: '*四' },
-                { name: '*五', school: '广州**学校', score: '38次', avatar: '*五' }
-            ],
-            list: [
-                { rank: 4, name: '*六', school: '深圳**小学', score: '32次' },
-                { rank: 5, name: '*七', school: '杭州**中学', score: '28次' },
-                { rank: 6, name: '*八', school: '成都**七中', score: '25次' },
-                { rank: 7, name: '*十', school: '武汉**学校', score: '22次' },
-                { rank: 8, name: '小明（我）', school: '北京**小学', score: '18次', isMe: true },
-                { rank: 9, name: '*九', school: '南京**中学', score: '15次' },
-                { rank: 10, name: '*一', school: '天津**中学', score: '14次' },
-                { rank: 11, name: '*二', school: '重庆**中学', score: '12次' },
-                { rank: 12, name: '*三', school: '西安**一中', score: '11次' },
-                { rank: 13, name: '*四', school: '苏州**小学', score: '10次' },
-                { rank: 14, name: '*五', school: '青岛**中学', score: '9次' },
-                { rank: 15, name: '*六', school: '大连**高中', score: '8次' },
-                { rank: 16, name: '*七', school: '厦门**中学', score: '7次' },
-                { rank: 17, name: '*八', school: '长沙**中学', score: '6次' },
-                { rank: 18, name: '*九', school: '郑州**学校', score: '5次' },
-                { rank: 19, name: '*十', school: '济南**二中', score: '4次' },
-                { rank: 20, name: '*一', school: '合肥**中学', score: '3次' }
-            ],
-            myRank: { rank: 8, percent: 'TOP 40%' }
-        };
-
         // 班级排名数据（显示完整姓名）
         const classRankData = {
             top3: [
@@ -208,70 +400,41 @@
             myRank: { rank: 8 }
         };
 
-        function toggleClassFilter() {
-            isClassOnly = !isClassOnly;
-            document.getElementById('classSwitch').classList.toggle('active', isClassOnly);
-            renderRankList();
-            updateMyRankBar();
-        }
-
-        function updateMyRankBar() {
-            const data = isClassOnly ? classRankData : allRankData;
-            let rankDisplay;
-            if (isClassOnly) {
-                // 班级排名显示具体名次
-                rankDisplay = `第${data.myRank.rank}名`;
-            } else {
-                // 全部排名：前100名显示具体名次，否则显示百分比
-                if (data.myRank.rank <= 100) {
-                    rankDisplay = `第${data.myRank.rank}名`;
-                } else {
-                    rankDisplay = data.myRank.percent;
-                }
-            }
-            document.querySelector('#myRankContent .rank-value').textContent = rankDisplay;
-        }
-
         function renderRankList() {
-            const data = isClassOnly ? classRankData : allRankData;
-
             // 渲染Top3
             const top3Html = `
                 <div class="top-item rank2">
                     <div class="top-avatar">
                         <span class="rank-badge" style="background: linear-gradient(135deg, #C0C0C0, #A8A8A8);">2</span>
-                        <span>${data.top3[1].avatar}</span>
+                        <span>${classRankData.top3[1].avatar}</span>
                     </div>
-                    <div class="top-name">${data.top3[1].name}</div>
-                    ${!isClassOnly ? `<div class="top-school">${data.top3[1].school}</div>` : ''}
-                    <div class="top-score">${data.top3[1].score}</div>
+                    <div class="top-name">${classRankData.top3[1].name}</div>
+                    <div class="top-score">${classRankData.top3[1].score}</div>
                 </div>
                 <div class="top-item rank1">
                     <div class="top-avatar">
                         <span class="rank-badge" style="background: linear-gradient(135deg, #FFD700, #FFA500); width: 26px; height: 26px; font-size: 14px;">
                             <i class="fa-solid fa-crown" style="color: white; font-size: 14px;"></i>
                         </span>
-                        <span>${data.top3[0].avatar}</span>
+                        <span>${classRankData.top3[0].avatar}</span>
                     </div>
-                    <div class="top-name">${data.top3[0].name}</div>
-                    ${!isClassOnly ? `<div class="top-school">${data.top3[0].school}</div>` : ''}
-                    <div class="top-score">${data.top3[0].score}</div>
+                    <div class="top-name">${classRankData.top3[0].name}</div>
+                    <div class="top-score">${classRankData.top3[0].score}</div>
                 </div>
                 <div class="top-item rank3">
                     <div class="top-avatar">
                         <span class="rank-badge" style="background: linear-gradient(135deg, #CD7F32, #B8860B);">3</span>
-                        <span>${data.top3[2].avatar}</span>
+                        <span>${classRankData.top3[2].avatar}</span>
                     </div>
-                    <div class="top-name">${data.top3[2].name}</div>
-                    ${!isClassOnly ? `<div class="top-school">${data.top3[2].school}</div>` : ''}
-                    <div class="top-score">${data.top3[2].score}</div>
+                    <div class="top-name">${classRankData.top3[2].name}</div>
+                    <div class="top-score">${classRankData.top3[2].score}</div>
                 </div>
             `;
             document.getElementById('top3Area').innerHTML = top3Html;
 
             // 渲染列表
             let listHtml = '';
-            data.list.forEach(item => {
+            classRankData.list.forEach(item => {
                 const meClass = item.isMe ? ' me' : '';
                 const clickHandler = item.isMe ? '' : ` onclick="Router.toStudentPage('classmateDetail', {studentId: ${item.rank}})"`;
                 listHtml += `
@@ -280,7 +443,6 @@
                         <div class="rank-avatar">${item.isMe ? '我' : item.name.slice(-1)}</div>
                         <div class="rank-info">
                             <div class="rank-name">${item.name}</div>
-                            <div class="rank-meta">${!isClassOnly && item.school ? item.school : ''}</div>
                         </div>
                         <div class="rank-value">${item.score}</div>
                     </div>
@@ -293,4 +455,5 @@
         renderRankList();
     </script>
 </body>
+
 </html>

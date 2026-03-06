@@ -89,20 +89,21 @@
         /* 音频播放器样式 */
         .audio-player-bar { position: fixed; bottom: 60px; left: 50%; transform: translateX(-50%); width: 375px; background: linear-gradient(135deg, #667eea, #764ba2); padding: 12px 16px; z-index: 100; box-shadow: 0 -4px 16px rgba(102, 126, 234, 0.3); display: none; }
         .audio-player-bar.show { display: block; }
-        .audio-player-content { display: flex; align-items: center; gap: 12px; }
-        .audio-play-btn { width: 40px; height: 40px; background: rgba(255,255,255,0.2); border: none; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: white; font-size: 16px; transition: all 0.3s; flex-shrink: 0; }
-        .audio-play-btn:hover { background: rgba(255,255,255,0.3); }
-        .audio-info { flex: 1; color: white; }
-        .audio-title { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+        .audio-player-content { color: white; }
+        .audio-top-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+        .audio-title { font-size: 13px; font-weight: 600; white-space: nowrap; }
+        .audio-progress-wrap { flex: 1; }
         .audio-progress-bar { height: 4px; background: rgba(255,255,255,0.3); border-radius: 2px; overflow: hidden; }
         .audio-progress-fill { height: 100%; background: white; width: 0%; transition: width 0.3s; }
-        .audio-time { display: flex; justify-content: space-between; font-size: 11px; margin-top: 4px; opacity: 0.8; }
-        .audio-close-btn { width: 28px; height: 28px; background: rgba(255,255,255,0.2); border: none; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: white; font-size: 12px; flex-shrink: 0; }
-        .audio-close-btn:hover { background: rgba(255,255,255,0.3); }
+        .audio-time { font-size: 11px; opacity: 0.8; white-space: nowrap; }
+        .audio-bottom-row { display: flex; align-items: center; justify-content: center; gap: 12px; }
+        .audio-play-btn { width: 36px; height: 36px; background: rgba(255,255,255,0.2); border: none; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: white; font-size: 15px; transition: all 0.3s; flex-shrink: 0; }
+        .audio-play-btn:hover { background: rgba(255,255,255,0.3); }
         .audio-ctrl-btn { width: 32px; height: 32px; background: rgba(255,255,255,0.2); border: none; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: white; font-size: 12px; flex-shrink: 0; transition: all 0.3s; }
         .audio-ctrl-btn:hover { background: rgba(255,255,255,0.3); }
         .audio-speed-btn { width: auto; padding: 0 10px; border-radius: 14px; font-size: 11px; font-weight: 600; }
-        .audio-controls { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+        .audio-close-btn { width: 28px; height: 28px; background: rgba(255,255,255,0.2); border: none; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: white; font-size: 12px; flex-shrink: 0; }
+        .audio-close-btn:hover { background: rgba(255,255,255,0.3); }
 
         /* 有音频播放器时调整底部间距 */
         .reader-footer.with-audio { bottom: 72px; }
@@ -157,7 +158,7 @@
     <div class="reader-header" id="readerHeader">
         <div class="header-left">
             <button class="back-btn" onclick="Router.back()">←</button>
-            <div class="chapter-title">第一部分：地球往事</div>
+            <div class="chapter-title">《三体》15-30页</div>
         </div>
         <div class="header-right">
             <span class="header-icon" id="audioToggleBtn" onclick="openAudioPlayer()" title="听书"><i class="fa-solid fa-headphones"></i></span>
@@ -192,26 +193,24 @@
     <!-- 音频播放器 -->
     <div class="audio-player-bar" id="audioPlayerBar">
         <div class="audio-player-content">
-            <button class="audio-play-btn" id="audioPlayBtn" onclick="toggleAudio()">
-                <i class="fa-solid fa-play" id="audioPlayIcon"></i>
-            </button>
-            <div class="audio-info">
-                <div class="audio-title" id="audioTitle">三体_第15-30页.mp3</div>
-                <div class="audio-progress-bar">
-                    <div class="audio-progress-fill" id="audioProgressFill"></div>
+            <div class="audio-top-row">
+                <div class="audio-progress-wrap">
+                    <div class="audio-progress-bar">
+                        <div class="audio-progress-fill" id="audioProgressFill"></div>
+                    </div>
                 </div>
-                <div class="audio-time">
-                    <span id="audioCurrentTime">00:00</span>
-                    <span id="audioTotalTime">15:30</span>
-                </div>
+                <div class="audio-time"><span id="audioCurrentTime">00:00</span> / <span id="audioTotalTime">15:30</span></div>
             </div>
-            <div class="audio-controls">
+            <div class="audio-bottom-row">
                 <button class="audio-ctrl-btn" onclick="resetAudio()" title="重置">
                     <i class="fa-solid fa-rotate-left"></i>
                 </button>
+                <button class="audio-play-btn" id="audioPlayBtn" onclick="toggleAudio()">
+                    <i class="fa-solid fa-play" id="audioPlayIcon"></i>
+                </button>
                 <button class="audio-ctrl-btn audio-speed-btn" id="speedBtn" onclick="toggleSpeed()">1.0x</button>
-                <button class="audio-close-btn" onclick="closeAudioPlayer()">
-                    <i class="fa-solid fa-xmark"></i>
+                <button class="audio-close-btn" onclick="closeAudioPlayer()" title="收起">
+                    <i class="fa-solid fa-chevron-down"></i>
                 </button>
             </div>
         </div>
@@ -303,13 +302,8 @@
                 audioBar.classList.add('show')
                 footer.classList.add('with-audio')
                 toggleBtn.style.display = 'none'
-
-                // 设置音频标题
-                const bookName = urlParams.get('bookName') || '三体'
-                const pages = urlParams.get('pages') || '15-30'
-                document.getElementById('audioTitle').textContent = bookName + '_第' + pages + '页.mp3'
             } else {
-                toggleBtn.style.display = 'none' // 没有audio参数时也隐藏耳机按钮
+                toggleBtn.style.display = 'block' // 默认显示耳机按钮，可手动开启听书
             }
         }
 
@@ -354,11 +348,7 @@
             audioBar.classList.remove('show')
             footer.classList.remove('with-audio')
             toggleBtn.style.display = 'block'
-            // 停止播放
-            if (audioPlaying) {
-                audioPlaying = false
-                clearInterval(audioInterval)
-            }
+            // 隐藏播放器，不停止播放
         }
 
         function openAudioPlayer() {

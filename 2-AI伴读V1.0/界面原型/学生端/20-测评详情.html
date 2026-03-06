@@ -1,145 +1,662 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>测评详情 - 校校读吧-学生端</title>
     <link rel="stylesheet" href="design-system.css">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background-color: #f5f5f5; width: 375px; margin: 0 auto; min-height: 100vh; padding-bottom: 80px; opacity: 0; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-        .navbar { background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary) 100%); color: white; height: 44px; display: flex; align-items: center; padding: 0 16px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0, 201, 167, 0.15); }
-        .back-btn { background: none; border: none; color: white; font-size: 18px;
-            line-height: 1.4; cursor: pointer; padding: 0; margin-right: 12px; }
-        .navbar-title { font-size: 18px;
-            line-height: 1.4; font-weight: 600; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f5f5f5;
+            width: 375px;
+            margin: 0 auto;
+            min-height: 100vh;
+            padding-bottom: 80px;
+            opacity: 0;
+        }
 
-        .exam-header { background: white; padding: 20px 16px; margin-bottom: 12px; }
-        .exam-title { font-size: 20px;
-            line-height: 1.2; font-weight: 700; color: #262626; margin-bottom: 12px; }
-        .exam-meta { display: flex; gap: 16px; margin-bottom: 16px; }
-        .meta-item { display: flex; align-items: center; gap: 6px; font-size: 13px;
-            line-height: 1.5; color: #595959; }
-        .meta-icon { font-size: 16px;
-            line-height: 1.4; }
-        .exam-status { display: inline-block; padding: 6px 16px; background: #e6f7ff; color: var(--color-primary); border-radius: 16px; font-size: 13px;
-            line-height: 1.5; font-weight: 600; }
-        .exam-status.completed { background: #f6ffed; color: #52c41a; }
-        .exam-status.expired { background: #fff1f0; color: #ff4d4f; }
+        .navbar {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary) 100%);
+            color: white;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 8px rgba(0, 201, 167, 0.15);
+        }
 
-        .section { background: white; margin: 0 16px 12px; padding: 16px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
-        .section-title { font-size: 16px;
-            line-height: 1.4; font-weight: 600; color: #262626; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
-        .section-content { font-size: 14px; color: #595959; line-height: 1.8; }
+        .back-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 18px;
+            line-height: 1.4;
+            cursor: pointer;
+            padding: 0;
+            margin-right: 12px;
+        }
 
-        .info-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
-        .info-card { background: #fafafa; padding: 12px; border-radius: 8px; text-align: center; }
-        .info-value { font-size: 20px;
-            line-height: 1.2; font-weight: 700; color: var(--color-primary); margin-bottom: 4px; }
-        .info-label { font-size: 12px;
-            line-height: 1.5; color: #8c8c8c; }
+        .navbar-title {
+            font-size: 18px;
+            line-height: 1.4;
+            font-weight: 600;
+        }
 
-        .score-card { background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary) 100%); padding: 20px; border-radius: 12px; text-align: center; color: white; margin-bottom: 16px; }
-        .score-value { font-size: 48px; font-weight: 700; margin-bottom: 8px; }
-        .score-label { font-size: 14px;
-            line-height: 1.6; opacity: 0.9; }
-        .score-detail { display: flex; justify-content: space-around; margin-top: 16px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.3); }
-        .score-item { text-align: center; }
-        .score-item-value { font-size: 18px;
-            line-height: 1.4; font-weight: 600; margin-bottom: 4px; }
-        .score-item-label { font-size: 12px;
-            line-height: 1.5; opacity: 0.8; }
+        .exam-header {
+            background: white;
+            padding: 20px 16px;
+            margin-bottom: 12px;
+        }
 
-        .history-list { }
-        .history-item { display: flex; align-items: center; justify-content: space-between; padding: 12px; background: #fafafa; border-radius: 8px; margin-bottom: 8px; }
-        .history-item:last-child { margin-bottom: 0; }
-        .history-left { flex: 1; }
-        .history-date { font-size: 13px;
-            line-height: 1.5; color: #262626; margin-bottom: 4px; font-weight: 500; }
-        .history-time { font-size: 12px;
-            line-height: 1.5; color: #8c8c8c; }
-        .history-score { font-size: 20px;
-            line-height: 1.2; font-weight: 700; color: var(--color-primary); }
+        .exam-title {
+            font-size: 20px;
+            line-height: 1.2;
+            font-weight: 700;
+            color: #262626;
+            margin-bottom: 12px;
+        }
 
-        .requirement-list { }
-        .requirement-item { display: flex; gap: 8px; margin-bottom: 12px; font-size: 14px; color: #595959; line-height: 1.6; }
-        .requirement-item:last-child { margin-bottom: 0; }
-        .requirement-icon { color: var(--color-primary); font-weight: 600; }
+        .exam-meta {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
 
-        .question-preview { }
-        .question-item { padding: 12px; background: #fafafa; border-radius: 8px; margin-bottom: 8px; }
-        .question-item:last-child { margin-bottom: 0; }
-        .question-type { display: inline-block; padding: 2px 8px; background: #e6f7ff; color: var(--color-primary); border-radius: 4px; font-size: 11px;
-            line-height: 1.4; margin-bottom: 6px; }
-        .question-text { font-size: 13px; color: #262626; line-height: 1.6; }
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            line-height: 1.5;
+            color: #595959;
+        }
 
-        .tip-box { background: #fff7e6; border-left: 3px solid #ffa940; padding: 12px; border-radius: 4px; font-size: 12px; color: #595959; line-height: 1.6; }
+        .meta-icon {
+            font-size: 16px;
+            line-height: 1.4;
+        }
+
+        .exam-status {
+            display: inline-block;
+            padding: 6px 16px;
+            background: #e6f7ff;
+            color: var(--color-primary);
+            border-radius: 16px;
+            font-size: 13px;
+            line-height: 1.5;
+            font-weight: 600;
+        }
+
+        .exam-status.completed {
+            background: #f6ffed;
+            color: #52c41a;
+        }
+
+        .exam-status.expired {
+            background: #fff1f0;
+            color: #ff4d4f;
+        }
+
+        .section {
+            background: white;
+            margin: 0 16px 12px;
+            padding: 16px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .section-title {
+            font-size: 16px;
+            line-height: 1.4;
+            font-weight: 600;
+            color: #262626;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-content {
+            font-size: 14px;
+            color: #595959;
+            line-height: 1.8;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .info-card {
+            background: #fafafa;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .info-value {
+            font-size: 20px;
+            line-height: 1.2;
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 4px;
+        }
+
+        .info-label {
+            font-size: 12px;
+            line-height: 1.5;
+            color: #8c8c8c;
+        }
+
+        .score-card {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary) 100%);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            color: white;
+            margin-bottom: 16px;
+        }
+
+        .score-value {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .score-label {
+            font-size: 14px;
+            line-height: 1.6;
+            opacity: 0.9;
+        }
+
+        .score-detail {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .score-item {
+            text-align: center;
+        }
+
+        .score-item-value {
+            font-size: 18px;
+            line-height: 1.4;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .score-item-label {
+            font-size: 12px;
+            line-height: 1.5;
+            opacity: 0.8;
+        }
+
+        .history-list {}
+
+        .history-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px;
+            background: #fafafa;
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+
+        .history-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .history-left {
+            flex: 1;
+        }
+
+        .history-date {
+            font-size: 13px;
+            line-height: 1.5;
+            color: #262626;
+            margin-bottom: 4px;
+            font-weight: 500;
+        }
+
+        .history-time {
+            font-size: 12px;
+            line-height: 1.5;
+            color: #8c8c8c;
+        }
+
+        .history-score {
+            font-size: 20px;
+            line-height: 1.2;
+            font-weight: 700;
+            color: var(--color-primary);
+        }
+
+        .requirement-list {}
+
+        .requirement-item {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+            font-size: 14px;
+            color: #595959;
+            line-height: 1.6;
+        }
+
+        .requirement-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .requirement-icon {
+            color: var(--color-primary);
+            font-weight: 600;
+        }
+
+        .question-preview {}
+
+        .question-item {
+            padding: 12px;
+            background: #fafafa;
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+
+        .question-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .question-type {
+            display: inline-block;
+            padding: 2px 8px;
+            background: #e6f7ff;
+            color: var(--color-primary);
+            border-radius: 4px;
+            font-size: 11px;
+            line-height: 1.4;
+            margin-bottom: 6px;
+        }
+
+        .question-text {
+            font-size: 13px;
+            color: #262626;
+            line-height: 1.6;
+        }
+
+        .tip-box {
+            background: #fff7e6;
+            border-left: 3px solid #ffa940;
+            padding: 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            color: #595959;
+            line-height: 1.6;
+        }
 
         /* 题目卡片样式 */
-        .questions-container { padding: 0 16px 16px; }
-        .question-type-section { margin-bottom: 16px; }
-        .type-header { font-size: 15px; font-weight: 600; color: #262626; margin-bottom: 12px; padding-left: 8px; border-left: 3px solid var(--color-primary); }
-        .question-card { background: white; border-radius: 12px; padding: 16px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06); }
-        .question-number { display: inline-block; width: 24px; height: 24px; border-radius: 50%; background: linear-gradient(135deg, var(--color-primary), var(--color-secondary)); color: white; text-align: center; line-height: 24px; font-size: 12px; font-weight: 600; margin-right: 8px; }
-        .question-content { font-size: 14px; color: #262626; line-height: 1.8; margin-bottom: 8px; }
-        .question-options { margin-left: 32px; margin-top: 12px; }
-        .option-item { padding: 8px 12px; margin-bottom: 8px; background: #f5f5f5; border-radius: 8px; font-size: 13px; color: #595959; line-height: 1.6; }
-        .option-item.correct { background: rgba(0, 201, 167, 0.1); border: 1px solid var(--color-primary); }
-        .option-item.wrong { background: rgba(255, 77, 79, 0.1); border: 1px solid #ff4d4f; }
-        .option-label { font-weight: 600; color: #262626; margin-right: 6px; }
+        .questions-container {
+            padding: 0 16px 16px;
+        }
+
+        .question-type-section {
+            margin-bottom: 16px;
+        }
+
+        .type-header {
+            font-size: 15px;
+            font-weight: 600;
+            color: #262626;
+            margin-bottom: 12px;
+            padding-left: 8px;
+            border-left: 3px solid var(--color-primary);
+        }
+
+        .question-card {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .question-number {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+            color: white;
+            text-align: center;
+            line-height: 24px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-right: 8px;
+        }
+
+        .question-content {
+            font-size: 14px;
+            color: #262626;
+            line-height: 1.8;
+            margin-bottom: 8px;
+        }
+
+        .question-options {
+            margin-left: 32px;
+            margin-top: 12px;
+        }
+
+        .option-item {
+            padding: 8px 12px;
+            margin-bottom: 8px;
+            background: #f5f5f5;
+            border-radius: 8px;
+            font-size: 13px;
+            color: #595959;
+            line-height: 1.6;
+        }
+
+        .option-item.correct {
+            background: rgba(0, 201, 167, 0.1);
+            border: 1px solid var(--color-primary);
+        }
+
+        .option-item.wrong {
+            background: rgba(255, 77, 79, 0.1);
+            border: 1px solid #ff4d4f;
+        }
+
+        .option-label {
+            font-weight: 600;
+            color: #262626;
+            margin-right: 6px;
+        }
 
         /* 学生答案区域 */
-        .student-answer-section { margin-top: 12px; padding: 12px; background: rgba(24, 144, 255, 0.08); border-left: 3px solid #1890ff; border-radius: 8px; }
-        .student-answer-label { font-size: 13px; font-weight: 600; color: #1890ff; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
-        .student-answer-content { font-size: 13px; color: #262626; line-height: 1.8; }
+        .student-answer-section {
+            margin-top: 12px;
+            padding: 12px;
+            background: rgba(24, 144, 255, 0.08);
+            border-left: 3px solid #1890ff;
+            border-radius: 8px;
+        }
+
+        .student-answer-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #1890ff;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .student-answer-content {
+            font-size: 13px;
+            color: #262626;
+            line-height: 1.8;
+        }
 
         /* 正确答案区域 */
-        .answer-section { margin-top: 12px; padding: 12px; background: rgba(0, 201, 167, 0.08); border-left: 3px solid var(--color-primary); border-radius: 8px; }
-        .answer-label { font-size: 13px; font-weight: 600; color: var(--color-primary); margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
-        .answer-content { font-size: 13px; color: #262626; line-height: 1.8; }
+        .answer-section {
+            margin-top: 12px;
+            padding: 12px;
+            background: rgba(0, 201, 167, 0.08);
+            border-left: 3px solid var(--color-primary);
+            border-radius: 8px;
+        }
+
+        .answer-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--color-primary);
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .answer-content {
+            font-size: 13px;
+            color: #262626;
+            line-height: 1.8;
+        }
 
         /* 解析区域 */
-        .analysis-section { margin-top: 12px; padding: 12px; background: rgba(250, 173, 20, 0.08); border-left: 3px solid #faad14; border-radius: 8px; }
-        .analysis-label { font-size: 13px; font-weight: 600; color: #faad14; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
-        .analysis-content { font-size: 13px; color: #595959; line-height: 1.8; }
+        .analysis-section {
+            margin-top: 12px;
+            padding: 12px;
+            background: rgba(250, 173, 20, 0.08);
+            border-left: 3px solid #faad14;
+            border-radius: 8px;
+        }
+
+        .analysis-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #faad14;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .analysis-content {
+            font-size: 13px;
+            color: #595959;
+            line-height: 1.8;
+        }
 
         /* 答题状态标记 */
-        .answer-status { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; margin-left: 8px; }
-        .answer-status.correct { background: rgba(0, 201, 167, 0.1); color: var(--color-primary); }
-        .answer-status.wrong { background: rgba(255, 77, 79, 0.1); color: #ff4d4f; }
+        .answer-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+
+        .answer-status.correct {
+            background: rgba(0, 201, 167, 0.1);
+            color: var(--color-primary);
+        }
+
+        .answer-status.wrong {
+            background: rgba(255, 77, 79, 0.1);
+            color: #ff4d4f;
+        }
 
         /* AI评价卡片样式 */
-        .ai-evaluation-card { background: white; margin: 0 16px 12px; padding: 16px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
-        .ai-header { display: flex; align-items: center; justify-content: space-between; cursor: pointer; }
-        .ai-header .section-title { margin-bottom: 0; }
-        .collapse-btn { background: none; border: none; color: #8c8c8c; font-size: 14px; cursor: pointer; display: flex; align-items: center; gap: 4px; padding: 4px 8px; }
-        .collapse-btn:hover { color: var(--color-primary); }
-        .collapse-btn i { transition: transform 0.3s; }
-        .collapse-btn.collapsed i { transform: rotate(-90deg); }
-        .ai-content { overflow: hidden; transition: max-height 0.3s ease-out; }
-        .ai-content.collapsed { max-height: 0 !important; }
-        .evaluation-text { font-size: 14px; line-height: 1.8; color: #595959; margin-bottom: 16px; margin-top: 16px; text-indent: 2em; }
-        .ability-analysis { margin-bottom: 16px; }
-        .ability-title { font-size: 14px; font-weight: 600; color: #262626; margin-bottom: 12px; }
-        .radar-chart-container { display: flex; justify-content: center; align-items: center; padding: 16px 0; }
-        .radar-chart { width: 240px; height: 240px; }
-        .suggestions { margin-top: 16px; }
-        .suggestion-item { display: flex; gap: 8px; margin-bottom: 12px; font-size: 14px; line-height: 1.6; color: #595959; }
-        .suggestion-item:last-child { margin-bottom: 0; }
-        .suggestion-number { flex-shrink: 0; width: 20px; height: 20px; background: var(--color-primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; }
+        .ai-evaluation-card {
+            background: white;
+            margin: 0 16px 12px;
+            padding: 16px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
 
-        .bottom-bar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 375px; background: white; padding: 12px 16px; box-shadow: 0 -2px 8px rgba(0,0,0,0.06); display: flex; gap: 12px; }
-        .btn-secondary { flex: 1; height: 44px; background: white; border: 1px solid var(--color-primary); color: var(--color-primary); border-radius: 22px; font-size: 16px;
-            line-height: 1.4; cursor: pointer; transition: all 0.3s; }
-        .btn-secondary:hover { background: #e6f7ff; }
-        .btn-primary { flex: 2; height: 44px; background: linear-gradient(135deg, var(--color-primary), var(--color-secondary)); color: white; border: none; border-radius: 22px; font-size: 16px;
-            line-height: 1.4; font-weight: 600; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 12px rgba(0, 201, 167, 0.3); }
-        .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
-        .btn-primary:disabled { background: #d9d9d9; box-shadow: none; cursor: not-allowed; }
-    
+        .ai-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+        }
+
+        .ai-header .section-title {
+            margin-bottom: 0;
+        }
+
+        .collapse-btn {
+            background: none;
+            border: none;
+            color: #8c8c8c;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 8px;
+        }
+
+        .collapse-btn:hover {
+            color: var(--color-primary);
+        }
+
+        .collapse-btn i {
+            transition: transform 0.3s;
+        }
+
+        .collapse-btn.collapsed i {
+            transform: rotate(-90deg);
+        }
+
+        .ai-content {
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+
+        .ai-content.collapsed {
+            max-height: 0 !important;
+        }
+
+        .evaluation-text {
+            font-size: 14px;
+            line-height: 1.8;
+            color: #595959;
+            margin-bottom: 16px;
+            margin-top: 16px;
+            text-indent: 2em;
+        }
+
+        .ability-analysis {
+            margin-bottom: 16px;
+        }
+
+        .ability-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #262626;
+            margin-bottom: 12px;
+        }
+
+        .radar-chart-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 16px 0;
+        }
+
+        .radar-chart {
+            width: 240px;
+            height: 240px;
+        }
+
+        .suggestions {
+            margin-top: 16px;
+        }
+
+        .suggestion-item {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #595959;
+        }
+
+        .suggestion-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .suggestion-number {
+            flex-shrink: 0;
+            width: 20px;
+            height: 20px;
+            background: var(--color-primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .bottom-bar {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 375px;
+            background: white;
+            padding: 12px 16px;
+            box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.06);
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-secondary {
+            flex: 1;
+            height: 44px;
+            background: white;
+            border: 1px solid var(--color-primary);
+            color: var(--color-primary);
+            border-radius: 22px;
+            font-size: 16px;
+            line-height: 1.4;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-secondary:hover {
+            background: #e6f7ff;
+        }
+
+        .btn-primary {
+            flex: 2;
+            height: 44px;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+            color: white;
+            border: none;
+            border-radius: 22px;
+            font-size: 16px;
+            line-height: 1.4;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(0, 201, 167, 0.3);
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        .btn-primary:disabled {
+            background: #d9d9d9;
+            box-shadow: none;
+            cursor: not-allowed;
+        }
+
         /* Font Awesome图标样式优化 */
-        .fa-solid, .fa-regular {
+        .fa-solid,
+        .fa-regular {
             font-weight: 400;
             color: #595959;
             opacity: 0.85;
@@ -164,7 +681,7 @@
         .achievement-section .badge-icon .fa-solid {
             font-size: 32px;
         }
-    
+
         /* 选中状态图标颜色优化 */
         .tab-item.active .tab-icon .fa-solid,
         .tab-item.active .fa-solid {
@@ -182,8 +699,10 @@
             color: var(--color-primary);
             opacity: 1;
         }
-    </style>    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
+
 <body>
     <div class="navbar">
         <button class="back-btn" onclick="Router.back()">←</button>
@@ -488,72 +1007,117 @@
                     studentAnswer: 'C',
                     analysis: '三体舰队以约1%光速航行，从4光年外到达地球需要约400年时间'
                 },
-                // 判断题 (5道)
                 {
                     id: 13,
-                    type: 'judge',
-                    question: '三体文明的科技水平远超地球文明',
-                    answer: true,
-                    studentAnswer: true,
-                    analysis: '三体文明能够制造智子、进行星际航行，其科技水平确实远超当时的地球文明'
+                    type: 'choice',
+                    question: '以下哪种物质被汪淼用来切割"审判日"号轮船',
+                    options: [
+                        { label: 'A', text: '激光' },
+                        { label: 'B', text: '飞刃（纳米材料）' },
+                        { label: 'C', text: '超强钢丝' },
+                        { label: 'D', text: '等离子体' }
+                    ],
+                    answer: 'B',
+                    studentAnswer: 'B',
+                    analysis: '汪淼研发的"飞刃"是一种超强纳米材料，由于其极细却极其坚韧，在"古筝行动"中被用来切割由于伊文斯控制的"审判日"号轮船。'
                 },
                 {
                     id: 14,
-                    type: 'judge',
-                    question: '叶文洁最终后悔向三体文明发送了地球坐标',
-                    answer: true,
-                    studentAnswer: true,
-                    analysis: '在小说结尾，叶文洁表达了对自己行为的反思和悔恨，认识到自己的决定给人类带来了灾难'
+                    type: 'choice',
+                    question: '青年时期的叶文洁在雷达峰上阅读的哪本书对她的思想产生了深刻影响',
+                    options: [
+                        { label: 'A', text: '《寂静的春天》' },
+                        { label: 'B', text: '《时间简史》' },
+                        { label: 'C', text: '《相对论》' },
+                        { label: 'D', text: '《物种起源》' }
+                    ],
+                    answer: 'A',
+                    studentAnswer: 'C',
+                    analysis: '《寂静的春天》一书使叶文洁开始反思人类对自然的破坏，这成为了她后来对人类文明失去希望的早期思想根源。'
                 },
                 {
                     id: 15,
-                    type: 'judge',
-                    question: '三体世界的恒纪元和乱纪元是可以预测的',
-                    answer: false,
-                    studentAnswer: true,
-                    analysis: '三体问题在数学上是不可解的，三颗恒星的运动轨迹无法精确预测，因此恒纪元和乱纪元的出现是随机的'
+                    type: 'choice',
+                    question: '联合国在面壁计划中选出了几位面壁者',
+                    options: [
+                        { label: 'A', text: '3位' },
+                        { label: 'B', text: '4位' },
+                        { label: 'C', text: '5位' },
+                        { label: 'D', text: '6位' }
+                    ],
+                    answer: 'B',
+                    studentAnswer: 'B',
+                    analysis: '联合国共选出了4位面壁者：弗里德里克·泰勒、曼努尔·雷迪亚兹、比尔·希恩斯和罗辑。'
                 },
                 {
                     id: 16,
-                    type: 'judge',
-                    question: '智子可以锁死地球的基础科学研究',
-                    answer: true,
-                    studentAnswer: true,
-                    analysis: '智子通过干扰粒子加速器的实验结果，使地球科学家无法获得正确的实验数据，从而锁死基础物理学的发展'
+                    type: 'choice',
+                    question: '三体人脱水的原因是什么',
+                    options: [
+                        { label: 'A', text: '延长寿命' },
+                        { label: 'B', text: '宇宙航行的需要' },
+                        { label: 'C', text: '进化过程的一部分' },
+                        { label: 'D', text: '应对乱纪元的极端气候' }
+                    ],
+                    answer: 'D',
+                    studentAnswer: 'D',
+                    analysis: '在三体世界，为了在无法预测的极速变化或极端恶劣的"乱纪元"气候中生存，三体进化出了脱水的能力。'
                 },
                 {
                     id: 17,
-                    type: 'judge',
-                    question: '地球三体组织的所有成员都希望三体文明毁灭人类',
-                    answer: false,
-                    studentAnswer: false,
-                    analysis: '地球三体组织内部分为不同派系，有的希望三体文明帮助改造人类社会，有的则希望彻底毁灭人类'
+                    type: 'choice',
+                    question: '发明“思想钢印”的面壁者是谁',
+                    options: [
+                        { label: 'A', text: '弗里德里克·泰勒' },
+                        { label: 'B', text: '曼努尔·雷迪亚兹' },
+                        { label: 'C', text: '比尔·希恩斯' },
+                        { label: 'D', text: '罗辑' }
+                    ],
+                    answer: 'C',
+                    studentAnswer: 'C',
+                    analysis: '比尔·希恩斯是"思想钢印"的发明者，它是一种通过神经学技术强制将某种信念写入人脑的设备。'
                 },
-                // 填空题 (2道)
                 {
                     id: 18,
-                    type: 'fill',
-                    question: '叶文洁在红岸基地向宇宙发送的第一条信息内容是："_____"',
-                    answer: '不要回答！不要回答！不要回答！',
-                    studentAnswer: '不要回答',
-                    analysis: '这是三体文明中的和平主义者发给地球的警告，提醒地球不要回复，否则会暴露位置'
+                    type: 'choice',
+                    question: '以下哪一个是三体世界发射到太阳系的探测器',
+                    options: [
+                        { label: 'A', text: '智子' },
+                        { label: 'B', text: '水滴' },
+                        { label: 'C', text: '二向箔' },
+                        { label: 'D', text: '光粒' }
+                    ],
+                    answer: 'B',
+                    studentAnswer: 'B',
+                    analysis: '"水滴"是三体世界发射到太阳系的强相互作用力宇宙探测器，表面绝对光滑，无坚不摧。'
                 },
                 {
                     id: 19,
-                    type: 'fill',
-                    question: '三体游戏中，玩家需要帮助三体文明预测_____和_____的出现规律',
-                    answer: '恒纪元、乱纪元',
-                    studentAnswer: '恒纪元、乱纪元',
-                    analysis: '恒纪元是三体世界气候稳定的时期，乱纪元则是极端气候时期，三体文明的生存取决于对这两种时期的预测'
+                    type: 'choice',
+                    question: '罗辑用来威胁三体世界的坐标广播方法是利用了什么',
+                    options: [
+                        { label: 'A', text: '木星的引力弹弓' },
+                        { label: 'B', text: '太阳的电磁波放大功能' },
+                        { label: 'C', text: '地球的磁场' },
+                        { label: 'D', text: '智子的量子纠缠' }
+                    ],
+                    answer: 'B',
+                    studentAnswer: 'B',
+                    analysis: '太阳可以将特定频率的电磁波放大上亿倍，罗辑通过这种"恒星级功率"广播了坐标咒语，以此作为威慑。'
                 },
-                // 问答题 (1道)
                 {
                     id: 20,
-                    type: 'essay',
-                    question: '请简述"黑暗森林法则"的核心内容，并分析它在小说中的意义',
-                    answer: '黑暗森林法则认为宇宙就像一座黑暗森林，每个文明都是带枪的猎人，潜行在林间。由于宇宙资源有限、文明之间存在猜疑链和技术爆炸的可能性，任何暴露自己位置的文明都可能被其他文明视为威胁而消灭。这一法则揭示了宇宙文明之间残酷的生存竞争关系，解释了费米悖论（为什么人类至今未发现外星文明），是《三体》系列的核心理论基础，也是人类与三体文明博弈的关键所在',
-                    studentAnswer: '黑暗森林法则是指宇宙中的文明就像黑暗森林中的猎人，为了自身安全会消灭任何暴露位置的文明。这个法则解释了为什么宇宙中看起来很安静，也是罗辑用来威慑三体文明的关键',
-                    analysis: '黑暗森林法则是《三体》系列最核心的理论，它基于两个公理（生存是文明的第一需要、文明不断增长和扩张）和两个概念（猜疑链、技术爆炸）推导而出'
+                    type: 'choice',
+                    question: '“不要回答！不要回答！不要回答！”是谁发给地球的警告',
+                    options: [
+                        { label: 'A', text: '三体元首' },
+                        { label: 'B', text: '1379号监听员' },
+                        { label: 'C', text: '地球叛军' },
+                        { label: 'D', text: '科学边界' }
+                    ],
+                    answer: 'B',
+                    studentAnswer: 'B',
+                    analysis: '三体世界中一个同样渴望和平的1379号监听员截获了地球发出的信息，并回复警告。但叶文洁最终无视了它。'
                 }
             ]
         };
@@ -562,190 +1126,51 @@
         function renderQuestions() {
             const container = document.getElementById('questionsContainer');
 
-            // 按题型分组
-            const choiceQuestions = examData.questions.filter(q => q.type === 'choice');
-            const judgeQuestions = examData.questions.filter(q => q.type === 'judge');
-            const fillQuestions = examData.questions.filter(q => q.type === 'fill');
-            const essayQuestions = examData.questions.filter(q => q.type === 'essay');
-
             let html = '';
 
-            // 选择题
-            if (choiceQuestions.length > 0) {
-                html += `
-                    <div class="question-type-section">
-                        <div class="type-header">一、选择题（共${choiceQuestions.length}题）</div>
-                        ${choiceQuestions.map(q => {
-                            const isCorrect = q.studentAnswer === q.answer;
-                            return `
-                            <div class="question-card">
-                                <div class="question-content">
-                                    <span class="question-number">${q.id}</span>
-                                    ${q.question}
-                                    ${isCompleted ? `
-                                    <span class="answer-status ${isCorrect ? 'correct' : 'wrong'}">
-                                        <i class="fa-solid ${isCorrect ? 'fa-check' : 'fa-xmark'}"></i>
-                                        ${isCorrect ? '正确' : '错误'}
-                                    </span>` : ''}
-                                </div>
-                                <div class="question-options">
-                                    ${q.options.map(opt => {
-                                        let optClass = '';
-                                        if (isCompleted) {
-                                            if (opt.label === q.answer) optClass = 'correct';
-                                            else if (opt.label === q.studentAnswer && q.studentAnswer !== q.answer) optClass = 'wrong';
-                                        }
-                                        return `
-                                        <div class="option-item ${optClass}">
-                                            <span class="option-label">${opt.label}.</span>${opt.text}
-                                        </div>
-                                    `;}).join('')}
-                                </div>
+            // 单选题
+            html += `
+                <div class="question-type-section">
+                    ${examData.questions.map(q => {
+                const isCorrect = q.studentAnswer === q.answer;
+                return `
+                        <div class="question-card">
+                            <div class="question-content">
+                                <span class="question-number">${q.id}</span>
+                                ${q.question}
                                 ${isCompleted ? `
-                                <div class="analysis-section">
-                                    <div class="analysis-label">
-                                        <i class="fa-solid fa-lightbulb"></i>
-                                        解析
-                                    </div>
-                                    <div class="analysis-content">${q.analysis}</div>
-                                </div>` : ''}
+                                <span class="answer-status ${isCorrect ? 'correct' : 'wrong'}">
+                                    <i class="fa-solid ${isCorrect ? 'fa-check' : 'fa-xmark'}"></i>
+                                    ${isCorrect ? '正确' : '错误'}
+                                </span>` : ''}
                             </div>
-                        `;}).join('')}
-                    </div>
-                `;
-            }
-
-            // 判断题
-            if (judgeQuestions.length > 0) {
-                html += `
-                    <div class="question-type-section">
-                        <div class="type-header">二、判断题（共${judgeQuestions.length}题）</div>
-                        ${judgeQuestions.map(q => {
-                            const isCorrect = q.studentAnswer === q.answer;
-                            return `
-                            <div class="question-card">
-                                <div class="question-content">
-                                    <span class="question-number">${q.id}</span>
-                                    ${q.question}
-                                    ${isCompleted ? `
-                                    <span class="answer-status ${isCorrect ? 'correct' : 'wrong'}">
-                                        <i class="fa-solid ${isCorrect ? 'fa-check' : 'fa-xmark'}"></i>
-                                        ${isCorrect ? '正确' : '错误'}
-                                    </span>` : ''}
-                                </div>
-                                ${isCompleted ? `
-                                <div class="student-answer-section">
-                                    <div class="student-answer-label">
-                                        <i class="fa-solid fa-user"></i>
-                                        学生答案
+                            <div class="question-options">
+                                ${q.options.map(opt => {
+                    let optClass = '';
+                    if (isCompleted) {
+                        if (opt.label === q.answer) optClass = 'correct';
+                        else if (opt.label === q.studentAnswer && q.studentAnswer !== q.answer) optClass = 'wrong';
+                    }
+                    return `
+                                    <div class="option-item ${optClass}">
+                                        <span class="option-label">${opt.label}.</span>${opt.text}
                                     </div>
-                                    <div class="student-answer-content">${q.studentAnswer ? '正确 ✓' : '错误 ✗'}</div>
-                                </div>
-                                <div class="answer-section">
-                                    <div class="answer-label">
-                                        <i class="fa-solid fa-circle-check"></i>
-                                        正确答案
-                                    </div>
-                                    <div class="answer-content">${q.answer ? '正确 ✓' : '错误 ✗'}</div>
-                                </div>
-                                <div class="analysis-section">
-                                    <div class="analysis-label">
-                                        <i class="fa-solid fa-lightbulb"></i>
-                                        解析
-                                    </div>
-                                    <div class="analysis-content">${q.analysis}</div>
-                                </div>` : ''}
+                                `;
+                }).join('')}
                             </div>
-                        `;}).join('')}
-                    </div>
-                `;
-            }
-
-            // 填空题
-            if (fillQuestions.length > 0) {
-                html += `
-                    <div class="question-type-section">
-                        <div class="type-header">三、填空题（共${fillQuestions.length}题）</div>
-                        ${fillQuestions.map(q => {
-                            const isCorrect = q.studentAnswer === q.answer;
-                            return `
-                            <div class="question-card">
-                                <div class="question-content">
-                                    <span class="question-number">${q.id}</span>
-                                    ${q.question}
-                                    ${isCompleted ? `
-                                    <span class="answer-status ${isCorrect ? 'correct' : 'wrong'}">
-                                        <i class="fa-solid ${isCorrect ? 'fa-check' : 'fa-xmark'}"></i>
-                                        ${isCorrect ? '正确' : '错误'}
-                                    </span>` : ''}
+                            ${isCompleted ? `
+                            <div class="analysis-section">
+                                <div class="analysis-label">
+                                    <i class="fa-solid fa-lightbulb"></i>
+                                    解析
                                 </div>
-                                ${isCompleted ? `
-                                <div class="student-answer-section">
-                                    <div class="student-answer-label">
-                                        <i class="fa-solid fa-user"></i>
-                                        学生答案
-                                    </div>
-                                    <div class="student-answer-content">${q.studentAnswer}</div>
-                                </div>
-                                <div class="answer-section">
-                                    <div class="answer-label">
-                                        <i class="fa-solid fa-circle-check"></i>
-                                        正确答案
-                                    </div>
-                                    <div class="answer-content">${q.answer}</div>
-                                </div>
-                                <div class="analysis-section">
-                                    <div class="analysis-label">
-                                        <i class="fa-solid fa-lightbulb"></i>
-                                        解析
-                                    </div>
-                                    <div class="analysis-content">${q.analysis}</div>
-                                </div>` : ''}
-                            </div>
-                        `;}).join('')}
-                    </div>
-                `;
-            }
-
-            // 问答题
-            if (essayQuestions.length > 0) {
-                html += `
-                    <div class="question-type-section">
-                        <div class="type-header">四、问答题（共${essayQuestions.length}题）</div>
-                        ${essayQuestions.map(q => {
-                            return `
-                            <div class="question-card">
-                                <div class="question-content">
-                                    <span class="question-number">${q.id}</span>
-                                    ${q.question}
-                                </div>
-                                ${isCompleted ? `
-                                <div class="student-answer-section">
-                                    <div class="student-answer-label">
-                                        <i class="fa-solid fa-user"></i>
-                                        学生答案
-                                    </div>
-                                    <div class="student-answer-content">${q.studentAnswer}</div>
-                                </div>
-                                <div class="answer-section">
-                                    <div class="answer-label">
-                                        <i class="fa-solid fa-circle-check"></i>
-                                        参考答案
-                                    </div>
-                                    <div class="answer-content">${q.answer}</div>
-                                </div>
-                                <div class="analysis-section">
-                                    <div class="analysis-label">
-                                        <i class="fa-solid fa-lightbulb"></i>
-                                        解析
-                                    </div>
-                                    <div class="analysis-content">${q.analysis}</div>
-                                </div>` : ''}
-                            </div>
-                        `;}).join('')}
-                    </div>
-                `;
-            }
+                                <div class="analysis-content">${q.analysis}</div>
+                            </div>` : ''}
+                        </div>
+                    `;
+            }).join('')}
+                </div>
+            `;
 
             container.innerHTML = html;
         }
@@ -863,4 +1288,5 @@
         }
     </script>
 </body>
+
 </html>
