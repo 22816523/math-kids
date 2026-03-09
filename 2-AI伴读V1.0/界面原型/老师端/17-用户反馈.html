@@ -65,9 +65,9 @@
 
     <!-- 反馈类型 -->
     <div class="form-section">
-        <div class="section-title">反馈类型</div>
+        <div class="section-title">反馈类型 <span style="color: #ff4d4f;">*</span></div>
         <div class="type-selector">
-            <div class="type-tag active" onclick="selectType(this)">功能建议</div>
+            <div class="type-tag" onclick="selectType(this)">功能建议</div>
             <div class="type-tag" onclick="selectType(this)">问题反馈</div>
             <div class="type-tag" onclick="selectType(this)">使用疑问</div>
             <div class="type-tag" onclick="selectType(this)">其他</div>
@@ -76,7 +76,7 @@
 
     <!-- 反馈内容 -->
     <div class="form-section">
-        <div class="section-title">反馈内容</div>
+        <div class="section-title">反馈内容 <span style="color: #ff4d4f;">*</span></div>
         <textarea class="feedback-textarea" id="feedbackContent" placeholder="请详细描述您的问题或建议，以便我们更好地为您服务..." maxlength="500" oninput="updateCharCount()"></textarea>
         <div class="char-count"><span id="charCount">0</span>/500</div>
 
@@ -106,7 +106,7 @@
 
     <script src="./router.js"></script>
     <script>
-        let selectedType = '功能建议';
+        let selectedType = null;
         let uploadedImages = [];
         const maxImages = 3;
 
@@ -191,6 +191,11 @@
         function submitFeedback() {
             const content = document.getElementById('feedbackContent').value.trim();
             const contact = document.getElementById('contactInfo').value.trim();
+
+            if (!selectedType) {
+                alert('请选择反馈类型');
+                return;
+            }
 
             if (!content) {
                 alert('请输入反馈内容');

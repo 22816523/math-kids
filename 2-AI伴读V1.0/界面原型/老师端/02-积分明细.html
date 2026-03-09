@@ -6,7 +6,7 @@
     <title>积分明细 - 校校读吧小管家（老师端）</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: "Source Han Sans CN", "Noto Sans CJK SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background: #F5F7FA; width: 375px; margin: 0 auto; padding-bottom: 60px; }
+        body { font-family: "Source Han Sans CN", "Noto Sans CJK SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background: #F5F7FA; width: 375px; margin: 0 auto; padding-bottom: 20px; }
 
         .navbar { background: linear-gradient(135deg, #2E5BFF 0%, #1E4BEF 100%); color: white; height: 44px; display: flex; align-items: center; padding: 0 16px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(24, 144, 255, 0.15); }
         .back-btn { background: none; border: none; color: white; font-size: 18px; line-height: 1.4; cursor: pointer; padding: 0; margin-right: 12px; }
@@ -35,14 +35,6 @@
         .empty-icon { font-size: 64px; margin-bottom: 16px; opacity: 0.5; }
         .empty-text { font-size: 14px; line-height: 1.6; }
 
-        .tabbar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 375px; height: 50px; background: white; border-top: 1px solid #f0f0f0; display: flex; box-shadow: 0 -2px 8px rgba(0,0,0,0.06); }
-        .tab-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; cursor: pointer; transition: all 0.3s; }
-        .tab-item:hover { background: #F5F7FA; }
-        .tab-icon { font-size: 20px; line-height: 1.2; }
-        .tab-label { font-size: 10px; line-height: 1.4; color: #999999; }
-        .tab-item.active .tab-label { color: #2E5BFF; }
-        .tab-item.active .tab-icon { color: #2E5BFF; }
-
         /* Font Awesome图标样式优化 */
         .fa-solid, .fa-regular {
             font-weight: 400;
@@ -55,13 +47,6 @@
         .section-title .fa-solid,
         .task-title .fa-solid {
             color: inherit;
-            opacity: 1;
-        }
-
-        /* 选中状态图标颜色优化 */
-        .tab-item.active .tab-icon .fa-solid,
-        .tab-item.active .fa-solid {
-            color: #2E5BFF;
             opacity: 1;
         }
     </style>
@@ -121,21 +106,6 @@
                 <div class="record-amount income">+20</div>
             </div>
             <div class="record-time">2024-12-20 14:00</div>
-        </div>
-    </div>
-
-    <div class="tabbar">
-        <div class="tab-item" onclick="Router.toTeacherPage('planList')">
-            <div class="tab-icon"><i class="fa-solid fa-book-open"></i></div>
-            <div class="tab-label">计划</div>
-        </div>
-        <div class="tab-item" onclick="Router.toTeacherPage('monitor')">
-            <div class="tab-icon"><i class="fa-solid fa-chart-column"></i></div>
-            <div class="tab-label">进度</div>
-        </div>
-        <div class="tab-item active" onclick="window.location.href='26-老师个人中心.html'">
-            <div class="tab-icon"><i class="fa-solid fa-user"></i></div>
-            <div class="tab-label">我的</div>
         </div>
     </div>
 
