@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+    <title>Learning</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body class="learn-bg">
+    <div id="app">
+        <div class="topbar">
+            <button class="nav-btn" onclick="location.href='index.html'">🏠</button>
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+        <div class="scene" id="learnScene" style="flex-direction:column;gap:20px;"></div>
+        <div class="overlay hidden" id="passOverlay">
+            <h1>🎉 Awesome!</h1>
+            <p style="font-size:24px;color:#5C4A4A;">+3 ⭐</p>
+            <button class="big-btn" onclick="location.href='index.html'">回到地图</button>
+        </div>
+    </div>
+
+    <script src="js/store.js"></script>
+    <script>
+        Store.load();
+        const params = new URLSearchParams(location.search);
+        const lessonId = parseInt(params.get('lesson')) || 1;
+        let clickCount = 0;
+        let lessonData = null;
+        const starsNeeded = 3;
+
+        // 初始化星星进度条
+        const bar = document.getElementById('progressBar');
+        for (let i = 1; i <= starsNeeded; i++) {
+            const s = document.createElement('span');
+            s.className = 'star'; s.id = 'star' + i; s.textContent = '☆';
+            bar.appendChild(s);
+        }
+
+        // 加载课程数据
+        fetch('data/curriculum.json').then(r => r.json()).then(data => {
+            // 在所有 lessons 中查找当前课
+            for (const unit of data.units) {
+                for (const lesson of unit.lessons) {
+                    if (lesson.lesson_id === lessonId) {
+                        lessonData = lesson;
+                        // 找到对应短句
+                        lessonData.sentence_text = '';
+                        const sid = lesson.sentence;
+                        const s = data.sentences.find(x => x.id === sid);
+                        if (s) lessonData.sentence_text = s.en;
+                        break;
+                    }
+                }
+                if (lessonData) break;
+            }
+            if (lessonData) renderLesson();
+        });
+
+        function renderLesson() {
+            const scene = document.getElementById('learnScene');
+            const w = lessonData.new_words[0];
+
+            // 可点击的学习物件
+            const obj = document.createElement('div');
+            obj.className = 'learn-object';
+            obj.id = 'mainObject';
+            obj.innerHTML = `<img src="${w.image}" alt="${w.word}" onerror="this.outerHTML='${w.emoji}'" style="width:120px;height:120px;object-fit:contain;">`;
+            obj.onclick = handleClick;
+            scene.appendChild(obj);
+
+            // 提示
+            const hint = document.createElement('div');
+            hint.className = 'hint-bubble';
+            hint.id = 'hint';
+            hint.textContent = '点我试试！';
+            scene.appendChild(hint);
+
+            // 句子（初始隐藏）
+            const sbox = document.createElement('div');
+            sbox.className = 'sentence-box';
+            sbox.id = 'sentenceBox';
+            sbox.style.opacity = '0';
+            sbox.style.transform = 'translateY(20px)';
+            const words = lessonData.sentence_text.split(' ');
+            const last = words.pop();
+            sbox.innerHTML = `<span class="hi">${words.join(' ')}</span><span class="target">${last}</span>`;
+            scene.appendChild(sbox);
+        }
+
+        function handleClick() {
+            clickCount++;
+            const obj = document.getElementById('mainObject');
+            const hint = document.getElementById('hint');
+            const sbox = document.getElementById('sentenceBox');
+            const w = lessonData.new_words[0];
+
+            // 点击动效
+            obj.style.transform = 'scale(1.3)';
+            obj.style.filter = 'drop-shadow(0 0 25px #FFD166)';
+            setTimeout(() => { obj.style.transform = ''; obj.style.filter = ''; }, 300);
+
+            // 填星
+            if (clickCount <= starsNeeded) {
+                const star = document.getElementById('star' + clickCount);
+                star.textContent = '⭐'; star.classList.add('filled');
+            }
+
+            // 播放音频
+            if (clickCount === 1) {
+                hint.textContent = w.word.charAt(0).toUpperCase() + w.word.slice(1) + '!';
+                playAudio('audio/' + w.word + '.mp3');
+            } else if (clickCount === 2) {
+                hint.classList.add('hidden');
+                sbox.style.opacity = '1'; sbox.style.transform = 'translateY(0)';
+                const sid = lessonData.sentence;
+                playAudio('audio/' + sid + '.mp3');
+            } else if (clickCount >= 3) {
+                // 通关
+                Store.earnStars(starsNeeded);
+                Store.completeLesson(lessonId, starsNeeded);
+                playAudio('audio/' + lessonData.new_words[0].word + '.mp3');
+                setTimeout(() => {
+                    document.getElementById('passOverlay').classList.remove('hidden');
+                }, 600);
+            }
+        }
+
+        function playAudio(src) {
+            try { const a = new Audio(src); a.play().catch(() => { }); } catch (e) { }
+        }
+
+        document.body.addEventListener('touchmove', e => e.preventDefault(), { passive: false });
+    </script>
+</body>
+
+</html>

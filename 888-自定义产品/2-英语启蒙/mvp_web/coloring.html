@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+    <title>Coloring</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <div id="app">
+        <div class="topbar">
+            <button class="nav-btn" onclick="location.href='collection.html'">🔙 返回</button>
+            <span id="pageTitle" style="font-size:20px;font-weight:bold;color:var(--text);"></span>
+            <button class="reset-btn" onclick="resetColoring()">🔄 重新涂</button>
+        </div>
+        <div class="scene" style="flex-direction:column;gap:24px;">
+            <div class="color-canvas">
+                <div class="color-zones" id="zones"></div>
+            </div>
+            <div class="palette" id="palette"></div>
+        </div>
+    </div>
+    <script src="js/store.js"></script>
+    <script>
+        Store.load();
+        const params = new URLSearchParams(location.search);
+        const itemId = params.get('id') || 'color_fruit';
+        const item = Store.state.shop.find(i => i.id === itemId);
+
+        document.getElementById('pageTitle').textContent = item ? item.title : '涂色卡';
+
+        // 涂色区域的emoji列表
+        const zoneData = {
+            'color_fruit': ['🍎', '🍌', '🍊', '🍇', '🍉', '🍓'],
+            'color_animal': ['🐱', '🐶', '🐰', '🦆', '🐻', '🐵']
+        };
+        const emojis = zoneData[itemId] || ['🍎', '🍌', '🍊', '🍇', '🍉', '🍓'];
+
+        // 调色板颜色
+        const colors = ['#FF595E', '#FFCA3A', '#8AC926', '#1982C4', '#6A4C93', '#FF924C'];
+        let currentColor = colors[0];
+
+        // 初始化调色板
+        const palette = document.getElementById('palette');
+        colors.forEach((c, i) => {
+            const s = document.createElement('div');
+            s.className = 'swatch' + (i === 0 ? ' selected' : '');
+            s.style.backgroundColor = c;
+            s.onclick = () => {
+                document.querySelectorAll('.swatch').forEach(x => x.classList.remove('selected'));
+                s.classList.add('selected');
+                currentColor = c;
+            };
+            palette.appendChild(s);
+        });
+
+        // 初始化涂色区域
+        const zonesEl = document.getElementById('zones');
+        const saved = Store.getColoring(itemId);
+        emojis.forEach((em, i) => {
+            const z = document.createElement('div');
+            z.className = 'color-zone';
+            z.textContent = em;
+            z.dataset.index = i;
+            // 恢复上次保存的颜色
+            if (saved && saved[i]) z.style.backgroundColor = saved[i];
+            z.onclick = () => {
+                z.style.backgroundColor = currentColor;
+                z.style.transform = 'scale(1.1)';
+                setTimeout(() => z.style.transform = '', 200);
+                saveState();
+            };
+            zonesEl.appendChild(z);
+        });
+
+        function saveState() {
+            const data = {};
+            document.querySelectorAll('.color-zone').forEach(z => {
+                data[z.dataset.index] = z.style.backgroundColor || '';
+            });
+            Store.saveColoring(itemId, data);
+        }
+
+        function resetColoring() {
+            if (confirm('确定要重新涂吗？')) {
+                document.querySelectorAll('.color-zone').forEach(z => z.style.backgroundColor = 'transparent');
+                Store.resetColoring(itemId);
+            }
+        }
+    </script>
+</body>
+
+</html>

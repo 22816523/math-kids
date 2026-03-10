@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+    <title>Star Shop</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <div id="app">
+        <div class="topbar">
+            <div class="stars-display"><span>⭐</span><span id="starCount">0</span></div>
+            <span style="font-size:22px;font-weight:bold;color:var(--text);">星星商店</span>
+            <div></div>
+        </div>
+        <div class="scene">
+            <div class="shop-grid" id="shopGrid"></div>
+        </div>
+        <nav class="bottom-nav">
+            <button class="tab" onclick="location.href='index.html'">🗺️ 学习</button>
+            <button class="tab active-tab" onclick="location.href='shop.html'">🏪 商店</button>
+            <button class="tab" onclick="location.href='collection.html'">💎 我的宝贝</button>
+        </nav>
+    </div>
+    <script src="js/store.js"></script>
+    <script>
+        Store.load();
+        document.getElementById('starCount').textContent = Store.starsBalance;
+
+        const grid = document.getElementById('shopGrid');
+        Store.state.shop.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'shop-card';
+            const owned = Store.ownsItem(item.id);
+            const canBuy = Store.starsBalance >= item.cost;
+            let btnClass = 'no-afford', btnText = `${item.cost} ⭐ 兑换`;
+            if (owned) { btnClass = 'owned'; btnText = '已拥有 ✓'; }
+            else if (canBuy) { btnClass = 'can-buy'; btnText = `${item.cost} ⭐ 兑换`; }
+            card.innerHTML = `
+        <div class="card-emoji">${item.emoji}</div>
+        <div class="card-title">${item.title}</div>
+        <div class="card-cost">${item.type === 'coloring' ? '涂色卡' : '互动绘本'}</div>
+        <button class="buy-btn ${btnClass}" data-id="${item.id}">${btnText}</button>`;
+            grid.appendChild(card);
+        });
+
+        grid.addEventListener('click', e => {
+            const btn = e.target.closest('.buy-btn');
+            if (!btn || btn.classList.contains('owned') || btn.classList.contains('no-afford')) return;
+            const id = btn.dataset.id;
+            if (Store.buyItem(id)) {
+                btn.className = 'buy-btn owned'; btn.textContent = '已拥有 ✓';
+                document.getElementById('starCount').textContent = Store.starsBalance;
+            }
+        });
+    </script>
+</body>
+
+</html>

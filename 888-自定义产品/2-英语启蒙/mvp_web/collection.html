@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+    <title>My Collection</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <div id="app">
+        <div class="topbar">
+            <div class="stars-display"><span>⭐</span><span id="starCount">0</span></div>
+            <span style="font-size:22px;font-weight:bold;color:var(--text);">我的宝贝</span>
+            <div></div>
+        </div>
+        <div class="scene">
+            <div class="collection-grid" id="collGrid"></div>
+        </div>
+        <nav class="bottom-nav">
+            <button class="tab" onclick="location.href='index.html'">🗺️ 学习</button>
+            <button class="tab" onclick="location.href='shop.html'">🏪 商店</button>
+            <button class="tab active-tab" onclick="location.href='collection.html'">💎 我的宝贝</button>
+        </nav>
+    </div>
+    <script src="js/store.js"></script>
+    <script>
+        Store.load();
+        document.getElementById('starCount').textContent = Store.starsBalance;
+        const grid = document.getElementById('collGrid');
+
+        if (Store.state.my_collection.length === 0) {
+            grid.innerHTML = '<div class="empty-msg" style="grid-column:1/-1;">还没有宝贝哦～<br>去商店用星星兑换吧！🌟</div>';
+        } else {
+            Store.state.my_collection.forEach(id => {
+                const item = Store.state.shop.find(i => i.id === id);
+                if (!item) return;
+                const card = document.createElement('div');
+                card.className = 'coll-card';
+                card.innerHTML = `<div class="card-emoji">${item.emoji}</div><div class="card-title">${item.title}</div>`;
+                card.onclick = () => {
+                    if (item.type === 'coloring') location.href = 'coloring.html?id=' + id;
+                    else location.href = 'book.html?id=' + id;
+                };
+                grid.appendChild(card);
+            });
+        }
+    </script>
+</body>
+
+</html>

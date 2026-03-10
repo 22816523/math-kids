@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+    <title>English Learning MVP</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <div id="app">
+        <div class="topbar">
+            <div class="stars-display"><span>⭐</span><span id="starCount">0</span></div>
+            <button class="nav-btn" id="parentBtn">⚙️</button>
+        </div>
+        <div class="scene" id="mapScene"></div>
+        <nav class="bottom-nav">
+            <button class="tab active-tab" onclick="location.href='index.html'">🗺️ 学习</button>
+            <button class="tab" onclick="location.href='shop.html'">🏪 商店</button>
+            <button class="tab" onclick="location.href='collection.html'">💎 我的宝贝</button>
+        </nav>
+    </div>
+    <div class="lockscreen hidden" id="lockScreen">
+        <h1>😴 今天学习时间到啦！</h1>
+        <p>明天再来继续冒险吧～</p>
+        <button class="nav-btn" onclick="parentUnlock()">家长解锁</button>
+    </div>
+
+    <script src="js/store.js"></script>
+    <script>
+        Store.load();
+
+        // 防沉迷
+        const aa = Store.checkAntiAddiction();
+        if (aa.is_locked) document.getElementById('lockScreen').classList.remove('hidden');
+        setInterval(() => { const r = Store.tickMinute(); if (r.is_locked) document.getElementById('lockScreen').classList.remove('hidden'); }, 60000);
+
+        function parentUnlock() {
+            const a = prompt('家长验证：3 × 4 = ?');
+            if (a === '12') { Store.state.anti_addiction.is_locked = false; Store.state.anti_addiction.today_minutes = 0; Store.save(); document.getElementById('lockScreen').classList.add('hidden'); }
+            else alert('验证失败');
+        }
+
+        // 家长中心
+        document.getElementById('parentBtn').onclick = () => {
+            const a = prompt('家长验证：3 × 4 = ?');
+            if (a === '12') location.href = 'parents.html';
+        };
+
+        // 星星
+        document.getElementById('starCount').textContent = Store.starsBalance;
+
+        // 加载课程数据并渲染地图
+        fetch('data/curriculum.json').then(r => r.json()).then(data => {
+            const map = document.getElementById('mapScene');
+            const grid = document.createElement('div');
+            grid.className = 'map-grid';
+
+            data.units.forEach(unit => {
+                unit.lessons.forEach(lesson => {
+                    const id = lesson.lesson_id;
+                    const b = document.createElement('div');
+                    b.className = 'bubble';
+                    const w = lesson.new_words[0];
+
+                    if (Store.state.lessons[id] && Store.state.lessons[id].completed) {
+                        b.classList.add('done');
+                    } else if (Store.isLessonUnlocked(id)) {
+                        b.classList.add('active');
+                    } else {
+                        b.classList.add('locked');
+                    }
+
+                    b.innerHTML = `<span class="emoji"><img src="${w.image}" alt="${w.word}" onerror="this.outerHTML='${w.emoji}'" style="width:48px;height:48px;object-fit:contain;"></span><span class="label">${w.word}</span>`;
+                    b.onclick = () => { if (!b.classList.contains('locked')) location.href = 'learning.html?lesson=' + id; };
+                    grid.appendChild(b);
+                });
+            });
+            map.appendChild(grid);
+        });
+
+        // 防止触摸滚动
+        document.body.addEventListener('touchmove', e => e.preventDefault(), { passive: false });
+    </script>
+</body>
+
+</html>

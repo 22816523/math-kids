@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Reward: Coloring Book</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body class="reward-bg">
+    <div id="app-container">
+        <!-- 头部 -->
+        <header class="top-bar">
+            <div class="back-btn" onclick="window.location.href='index.html'">
+                <span class="icon">🏠 回主页</span>
+            </div>
+            <div class="title-text">涂色奖励！🎨</div>
+        </header>
+
+        <!-- 涂色互动区 -->
+        <main class="main-scene" style="flex-direction: column;">
+
+            <div class="canvas-container">
+                <!-- MVP 阶段用纯色块点击填色模拟复杂的边界涂色 -->
+                <div class="coloring-apple" id="canvasApple" onclick="fillColor()">
+                    <div class="apple-body" id="applePart"></div>
+                    <div class="apple-leaf"></div>
+                </div>
+            </div>
+
+            <!-- 调色板选色 -->
+            <div class="color-palette">
+                <div class="color-swatch" style="background-color: #FF595E;" onclick="selectColor('#FF595E')"></div>
+                <div class="color-swatch" style="background-color: #FFCA3A;" onclick="selectColor('#FFCA3A')"></div>
+                <div class="color-swatch" style="background-color: #8AC926;" onclick="selectColor('#8AC926')"></div>
+                <div class="color-swatch" style="background-color: #1982C4;" onclick="selectColor('#1982C4')"></div>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        let currentColor = '#FF595E'; // 默认红色
+
+        function selectColor(color) {
+            currentColor = color;
+            // 获取所有色块并移除active状态，然后给被点中的加active
+            const swatches = document.querySelectorAll('.color-swatch');
+            swatches.forEach(s => s.style.transform = 'scale(1)');
+            event.target.style.transform = 'scale(1.2)';
+
+            // CSS动画反馈
+            event.target.style.boxShadow = `0 0 15px ${color}`;
+            setTimeout(() => {
+                event.target.style.boxShadow = '0 5px 15px var(--shadow-color)';
+            }, 300);
+        }
+
+        // 简易填色逻辑
+        function fillColor() {
+            const appleBody = document.getElementById('applePart');
+            appleBody.style.backgroundColor = currentColor;
+            // 填色有反馈
+            appleBody.style.transform = 'scale(1.05)';
+            setTimeout(() => { appleBody.style.transform = 'scale(1)'; }, 200);
+
+            // 假设我们完成后保存了一颗星
+            localStorage.setItem("apples_colored", 1);
+        }
+
+        // 防止默认拖动
+        document.body.addEventListener('touchmove', function (e) {
+            e.preventDefault();
+        }, { passive: false });
+    </script>
+</body>
+
+</html>

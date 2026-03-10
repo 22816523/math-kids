@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+    <title>Parents Center</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body style="background:#F8F9FA;align-items:flex-start;padding-top:40px;">
+    <div class="parent-panel">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+            <h2 style="border:none;padding:0;">👨‍👩‍👧 家长控制中心</h2>
+            <button class="nav-btn" onclick="location.href='index.html'">退出</button>
+        </div>
+        <div class="stat-row">
+            <div class="stat-box">
+                <h4>星星余额</h4>
+                <p id="sBalance">0</p>
+            </div>
+            <div class="stat-box">
+                <h4>完成关卡</h4>
+                <p id="sDone">0<span>/20</span></p>
+            </div>
+            <div class="stat-box">
+                <h4>今日时长</h4>
+                <p id="sTime">0<span>分钟</span></p>
+            </div>
+        </div>
+        <div>
+            <h3 style="color:var(--text);border-left:4px solid #457B9D;padding-left:10px;margin-bottom:12px;">防沉迷设置</h3>
+            <div
+                style="display:flex;align-items:center;gap:16px;background:#FFF3E0;padding:14px 20px;border-radius:var(--radius-sm);">
+                <span style="flex:1;color:var(--text);font-size:15px;">单日学习时长上限</span>
+                <select id="limitSelect" style="padding:8px;font-size:15px;border-radius:8px;border:1px solid #CCC;">
+                    <option value="15">15 分钟</option>
+                    <option value="20">20 分钟</option>
+                    <option value="30">30 分钟</option>
+                </select>
+            </div>
+        </div>
+        <div>
+            <h3 style="color:var(--text);border-left:4px solid #457B9D;padding-left:10px;margin-bottom:12px;">已掌握词汇</h3>
+            <div id="vocabList"></div>
+        </div>
+        <div>
+            <h3 style="color:var(--text);border-left:4px solid #457B9D;padding-left:10px;margin-bottom:12px;">进度管理</h3>
+            <div style="display:flex;gap:12px;flex-wrap:wrap;">
+                <button class="nav-btn" onclick="exportData()">📤 导出进度</button>
+                <button class="nav-btn" onclick="importData()">📥 恢复进度</button>
+                <button class="nav-btn" style="background:#FFE5D9;" onclick="resetData()">🗑️ 重置所有</button>
+            </div>
+        </div>
+    </div>
+    <script src="js/store.js"></script>
+    <script>
+        Store.load();
+        document.getElementById('sBalance').innerHTML = Store.starsBalance + '';
+        const done = Object.values(Store.state.lessons).filter(l => l.completed).length;
+        document.getElementById('sDone').innerHTML = done + '<span>/20</span>';
+        document.getElementById('sTime').innerHTML = Store.state.anti_addiction.today_minutes + '<span>分钟</span>';
+
+        // 防沉迷设置
+        const sel = document.getElementById('limitSelect');
+        sel.value = Store.state.anti_addiction.daily_limit_minutes;
+        sel.onchange = () => { Store.state.anti_addiction.daily_limit_minutes = parseInt(sel.value); Store.save(); };
+
+        // 词汇列表
+        fetch('data/curriculum.json').then(r => r.json()).then(data => {
+            const list = document.getElementById('vocabList');
+            data.units.forEach(unit => {
+                unit.lessons.forEach(lesson => {
+                    lesson.new_words.forEach(w => {
+                        const tag = document.createElement('span');
+                        const learned = Store.state.lessons[lesson.lesson_id] && Store.state.lessons[lesson.lesson_id].completed;
+                        tag.className = 'vocab-tag' + (learned ? '' : ' pending');
+                        tag.textContent = w.emoji + ' ' + w.word;
+                        list.appendChild(tag);
+                    });
+                });
+            });
+        });
+
+        function exportData() {
+            const code = Store.exportProgress();
+            prompt('复制下方进度码（换设备时粘贴恢复）:', code);
+        }
+        function importData() {
+            const code = prompt('请粘贴进度恢复码:');
+            if (code && Store.importProgress(code)) { alert('恢复成功！'); location.reload(); }
+            else if (code) alert('恢复码无效');
+        }
+        function resetData() {
+            if (confirm('确定要清除所有学习数据吗？此操作不可恢复！')) {
+                Store.reset(); location.reload();
+            }
+        }
+    </script>
+</body>
+
+</html>

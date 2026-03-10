@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+    <title>Picture Book</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <div id="app">
+        <div class="topbar">
+            <button class="nav-btn" onclick="location.href='collection.html'">🔙 返回</button>
+            <span id="pageTitle" style="font-size:20px;font-weight:bold;color:var(--text);"></span>
+            <div></div>
+        </div>
+        <div class="scene" style="flex-direction:column;gap:0;">
+            <div id="bookPages" style="width:100%;max-width:600px;text-align:center;"></div>
+            <div style="display:flex;gap:20px;margin-top:20px;">
+                <button class="nav-btn" id="prevBtn" onclick="flipPage(-1)">⬅️ 上一页</button>
+                <span id="pageNum" style="font-size:18px;font-weight:bold;color:var(--text);line-height:40px;"></span>
+                <button class="nav-btn" id="nextBtn" onclick="flipPage(1)">下一页 ➡️</button>
+            </div>
+        </div>
+    </div>
+    <script src="js/store.js"></script>
+    <script>
+        Store.load();
+        const params = new URLSearchParams(location.search);
+        const itemId = params.get('id') || 'book_rainbow';
+        const item = Store.state.shop.find(i => i.id === itemId);
+        document.getElementById('pageTitle').textContent = item ? item.title : '绘本';
+
+        // 简单的绘本数据
+        const bookData = {
+            'book_rainbow': [
+                { emoji: '🌈', en: 'Look! A rainbow!', cn: '看！一道彩虹！' },
+                { emoji: '🔴', en: 'Red is the first color.', cn: '红色是第一个颜色。' },
+                { emoji: '🟡', en: 'Yellow is bright like the sun.', cn: '黄色像太阳一样明亮。' },
+                { emoji: '🔵', en: 'Blue is like the sky.', cn: '蓝色像天空一样。' },
+                { emoji: '🟢', en: 'Green is like the grass.', cn: '绿色像草地一样。' },
+                { emoji: '🌈✨', en: 'All colors together make a rainbow!', cn: '所有颜色合在一起就是彩虹！' }
+            ],
+            'book_body': [
+                { emoji: '👁️', en: 'These are my eyes. I can see!', cn: '这些是我的眼睛，我能看！' },
+                { emoji: '👂', en: 'These are my ears. I can hear!', cn: '这些是我的耳朵，我能听！' },
+                { emoji: '👃', en: 'This is my nose. I can smell!', cn: '这是我的鼻子，我能闻！' },
+                { emoji: '👄', en: 'This is my mouth. I can talk!', cn: '这是我的嘴巴，我能说话！' },
+                { emoji: '🤚', en: 'These are my hands. I can clap!', cn: '这些是我的手，我能拍手！' },
+                { emoji: '🦶', en: 'These are my feet. I can jump!', cn: '这些是我的脚，我能跳！' }
+            ]
+        };
+
+        const pages = bookData[itemId] || bookData['book_rainbow'];
+        let currentPage = 0;
+
+        function renderPage() {
+            const p = pages[currentPage];
+            const container = document.getElementById('bookPages');
+            container.innerHTML = `
+        <div style="background:var(--white);border-radius:var(--radius-md);padding:30px;
+            box-shadow:0 15px 30px var(--shadow);min-height:300px;
+            display:flex;flex-direction:column;justify-content:center;align-items:center;gap:20px;
+            transition:all .3s;">
+            <div style="font-size:100px;">${p.emoji}</div>
+            <div style="font-size:26px;font-weight:bold;color:#1982C4;cursor:pointer;"
+                 onclick="playText('${p.en.replace(/'/g, "\\'")}')">${p.en}</div>
+            <div style="font-size:18px;color:var(--text2);">${p.cn}</div>
+            <div style="font-size:13px;color:#CCC;">点击英文句子可以听发音 🔊</div>
+        </div>`;
+            document.getElementById('pageNum').textContent = (currentPage + 1) + ' / ' + pages.length;
+            document.getElementById('prevBtn').style.visibility = currentPage === 0 ? 'hidden' : 'visible';
+            document.getElementById('nextBtn').textContent = currentPage === pages.length - 1 ? '读完啦 🎉' : '下一页 ➡️';
+        }
+
+        function flipPage(dir) {
+            if (currentPage === pages.length - 1 && dir === 1) { location.href = 'collection.html'; return; }
+            currentPage = Math.max(0, Math.min(pages.length - 1, currentPage + dir));
+            renderPage();
+        }
+
+        function playText(text) {
+            try { const u = new SpeechSynthesisUtterance(text); u.lang = 'en-US'; u.rate = 0.85; speechSynthesis.speak(u); } catch (e) { }
+        }
+
+        renderPage();
+    </script>
+</body>
+
+</html>
