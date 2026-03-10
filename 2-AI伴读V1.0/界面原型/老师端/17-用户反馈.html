@@ -218,8 +218,14 @@
 
             console.log('提交反馈:', feedbackData);
 
-            alert('感谢您的反馈！我们会尽快处理');
-            history.back();
+            // 微信小程序环境使用 wx.showToast
+            if (typeof wx !== 'undefined' && wx.showToast) {
+                wx.showToast({ title: '提交成功', icon: 'success', duration: 1500 });
+                setTimeout(() => { history.back(); }, 1500);
+            } else {
+                alert('感谢您的反馈！我们会尽快处理');
+                history.back();
+            }
         }
     </script>
 </body>

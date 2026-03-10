@@ -339,7 +339,7 @@
         .legend-dot {
             width: 8px;
             height: 8px;
-            border-radius: 2px;
+            border-radius: 50%;
         }
         .legend-dot.actual {
             background: #2E5BFF;
@@ -1691,6 +1691,7 @@
                     <div class="compact-avatar" style="background: linear-gradient(135deg, #36B37E 0%, #57D9A3 100%);">张三</div>
                     <div class="compact-info">
                         <div class="compact-name">张三</div>
+                        <div class="compact-progress">完成时间：07:32</div>
                     </div>
                     <button class="view-btn">查看</button>
                 </div>
@@ -1698,6 +1699,7 @@
                     <div class="compact-avatar" style="background: linear-gradient(135deg, #36B37E 0%, #57D9A3 100%);">李四</div>
                     <div class="compact-info">
                         <div class="compact-name">李四</div>
+                        <div class="compact-progress">完成时间：08:15</div>
                     </div>
                     <button class="view-btn">查看</button>
                 </div>
@@ -1705,6 +1707,7 @@
                     <div class="compact-avatar" style="background: linear-gradient(135deg, #36B37E 0%, #57D9A3 100%);">王五</div>
                     <div class="compact-info">
                         <div class="compact-name">王五</div>
+                        <div class="compact-progress">完成时间：09:03</div>
                     </div>
                     <button class="view-btn">查看</button>
                 </div>
@@ -1712,6 +1715,7 @@
                     <div class="compact-avatar" style="background: linear-gradient(135deg, #36B37E 0%, #57D9A3 100%);">赵六</div>
                     <div class="compact-info">
                         <div class="compact-name">赵六</div>
+                        <div class="compact-progress">完成时间：09:28</div>
                     </div>
                     <button class="view-btn">查看</button>
                 </div>
@@ -1719,6 +1723,7 @@
                     <div class="compact-avatar" style="background: linear-gradient(135deg, #36B37E 0%, #57D9A3 100%);">孙七</div>
                     <div class="compact-info">
                         <div class="compact-name">孙七</div>
+                        <div class="compact-progress">完成时间：10:45</div>
                     </div>
                     <button class="view-btn">查看</button>
                 </div>
@@ -1726,6 +1731,7 @@
                     <div class="compact-avatar" style="background: linear-gradient(135deg, #36B37E 0%, #57D9A3 100%);">吴九</div>
                     <div class="compact-info">
                         <div class="compact-name">吴九</div>
+                        <div class="compact-progress">完成时间：11:20</div>
                     </div>
                     <button class="view-btn">查看</button>
                 </div>
@@ -1733,6 +1739,7 @@
                     <div class="compact-avatar" style="background: linear-gradient(135deg, #36B37E 0%, #57D9A3 100%);">郑十</div>
                     <div class="compact-info">
                         <div class="compact-name">郑十</div>
+                        <div class="compact-progress">完成时间：12:08</div>
                     </div>
                     <button class="view-btn">查看</button>
                 </div>
@@ -1740,6 +1747,7 @@
                     <div class="compact-avatar" style="background: linear-gradient(135deg, #36B37E 0%, #57D9A3 100%);">钱十一</div>
                     <div class="compact-info">
                         <div class="compact-name">钱十一</div>
+                        <div class="compact-progress">完成时间：14:30</div>
                     </div>
                     <button class="view-btn">查看</button>
                 </div>
@@ -1747,6 +1755,7 @@
                     <div class="compact-avatar" style="background: linear-gradient(135deg, #36B37E 0%, #57D9A3 100%);">陈十二</div>
                     <div class="compact-info">
                         <div class="compact-name">陈十二</div>
+                        <div class="compact-progress">完成时间：16:55</div>
                     </div>
                     <button class="view-btn">查看</button>
                 </div>
@@ -1754,6 +1763,7 @@
                     <div class="compact-avatar" style="background: linear-gradient(135deg, #36B37E 0%, #57D9A3 100%);">周十三</div>
                     <div class="compact-info">
                         <div class="compact-name">周十三</div>
+                        <div class="compact-progress">完成时间：18:42</div>
                     </div>
                     <button class="view-btn">查看</button>
                 </div>
@@ -1761,26 +1771,26 @@
 
             <!-- 未完成学生列表 -->
             <div class="compact-student-list" id="checkinUndoneList" style="display: none;">
-                <div class="compact-student-item">
+                <div class="compact-student-item" onclick="window.location.href='08-学生详情.html?studentId=14'" style="cursor:pointer;">
                     <div class="compact-avatar" style="background: linear-gradient(135deg, #ff7875 0%, #ff4d4f 100%);">林十四</div>
                     <div class="compact-info">
                         <div class="compact-name">林十四</div>
                     </div>
-                    <button class="remind-btn" onclick="openRemindModal('林十四', '阅读任务')">提醒</button>
+                    <button class="remind-btn" onclick="event.stopPropagation(); openRemindModal('林十四', '阅读任务')">提醒</button>
                 </div>
-                <div class="compact-student-item">
+                <div class="compact-student-item" onclick="window.location.href='08-学生详情.html?studentId=15'" style="cursor:pointer;">
                     <div class="compact-avatar" style="background: linear-gradient(135deg, #ff7875 0%, #ff4d4f 100%);">黄十五</div>
                     <div class="compact-info">
                         <div class="compact-name">黄十五</div>
                     </div>
-                    <button class="remind-btn" onclick="openRemindModal('黄十五', '阅读任务')">提醒</button>
+                    <button class="remind-btn" onclick="event.stopPropagation(); openRemindModal('黄十五', '阅读任务')">提醒</button>
                 </div>
-                <div class="compact-student-item">
+                <div class="compact-student-item" onclick="window.location.href='08-学生详情.html?studentId=16'" style="cursor:pointer;">
                     <div class="compact-avatar" style="background: linear-gradient(135deg, #ff7875 0%, #ff4d4f 100%);">杨十六</div>
                     <div class="compact-info">
                         <div class="compact-name">杨十六</div>
                     </div>
-                    <button class="remind-btn" onclick="openRemindModal('杨十六', '阅读任务')">提醒</button>
+                    <button class="remind-btn" onclick="event.stopPropagation(); openRemindModal('杨十六', '阅读任务')">提醒</button>
                 </div>
             </div>
         </div>

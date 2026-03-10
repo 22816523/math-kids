@@ -107,7 +107,7 @@
                 <label class="form-label">验证码</label>
                 <div class="code-input-group">
                     <div class="input-wrapper">
-                        <i class="fa-solid fa-shield-halved input-icon"></i>
+                        <i class="fa-solid fa-lock input-icon"></i>
                         <input type="text" class="form-input" id="oldCodeInput" placeholder="请输入验证码" maxlength="6">
                         <div class="error-tip" id="oldCodeError">请输入6位验证码</div>
                     </div>
@@ -137,7 +137,7 @@
                 <label class="form-label">验证码</label>
                 <div class="code-input-group">
                     <div class="input-wrapper">
-                        <i class="fa-solid fa-shield-halved input-icon"></i>
+                        <i class="fa-solid fa-lock input-icon"></i>
                         <input type="text" class="form-input" id="newCodeInput" placeholder="请输入验证码" maxlength="6">
                         <div class="error-tip" id="newCodeError">请输入6位验证码</div>
                     </div>
@@ -185,10 +185,8 @@
                 document.getElementById('step1').style.display = 'none'
                 document.getElementById('content1').style.display = 'none'
 
-                // 重新编号步骤2和步骤3
-                document.querySelector('#step2 .step-number').textContent = '1'
+                // 保持步骤编号为2和3（PRD要求直接进入步骤2）
                 document.querySelector('#step2 .step-text').textContent = '绑定手机号'
-                document.querySelector('#step3 .step-number').textContent = '2'
 
                 // 显示步骤2的内容
                 document.getElementById('content2').classList.add('active')

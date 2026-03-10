@@ -1184,8 +1184,14 @@
 
         // 立即报名（跳转到报名阅读计划页面）
         function enrollPlan(planId) {
-            // 原型演示：直接显示快捷添加班级弹窗
-            showSetupModal(planId);
+            // 检查老师是否已设置学校和班级
+            if (checkTeacherSetup()) {
+                // 已有班级，直接跳转报名页面
+                window.location.href = `10-报名阅读计划.html?planId=${planId}`;
+            } else {
+                // 无班级，显示快捷添加班级弹窗
+                showSetupModal(planId);
+            }
         }
 
         // 查看详情

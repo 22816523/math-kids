@@ -233,6 +233,26 @@
             background: rgba(82, 196, 26, 0.08);
             border-left: 3px solid #52c41a;
             border-radius: 8px;
+            display: none;
+        }
+
+        .answer-section.show {
+            display: block;
+        }
+
+        .answer-toggle {
+            margin-top: 12px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #52c41a;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .answer-toggle:hover {
+            opacity: 0.8;
         }
 
         .answer-label {
@@ -270,7 +290,7 @@
     </div>
 
     <div class="page-header">
-        <div class="header-title" id="bookTitle">三体</div>
+        <div class="header-title" id="bookTitle">《三体》</div>
         <div class="header-subtitle">阅读理解测评题</div>
         <div class="header-stats">
             <div class="header-stat">
@@ -577,6 +597,17 @@
 
         let currentExamData = null;
 
+        // 切换答案显示/隐藏
+        function toggleAnswer(el) {
+            const answerSection = el.nextElementSibling;
+            const isShow = answerSection.classList.toggle('show');
+            if (isShow) {
+                el.innerHTML = '<i class="fa-solid fa-eye-slash"></i> 收起答案';
+            } else {
+                el.innerHTML = '<i class="fa-solid fa-eye"></i> 查看答案';
+            }
+        }
+
         // 页面加载时初始化
         window.addEventListener('DOMContentLoaded', () => {
             const urlParams = new URLSearchParams(window.location.search);
@@ -590,7 +621,7 @@
             currentExamData = mockExamData[bookId];
             if (!currentExamData) return;
 
-            document.getElementById('bookTitle').textContent = currentExamData.bookTitle;
+            document.getElementById('bookTitle').textContent = '《' + currentExamData.bookTitle + '》';
             document.getElementById('totalCount').textContent = currentExamData.totalCount;
 
             renderQuestions();
@@ -638,6 +669,10 @@
                                         <span class="option-label">${opt.label}.</span>${opt.text}
                                     </div>
                                 `).join('')}
+                            </div>
+                            <div class="answer-toggle" onclick="toggleAnswer(this)">
+                                <i class="fa-solid fa-eye"></i>
+                                查看答案
                             </div>
                             <div class="answer-section">
                                 <div class="answer-label">

@@ -798,11 +798,11 @@
             }
         }
 
-        // 显示评论
+        // 显示评论（跳转到打卡详情页）
         function showComments(event, id) {
             event.stopPropagation();
-            // 老师端可以跳转到学生详情页查看
-            Router.toTeacherPage('studentDetail', { studentId: id });
+            // 跳转到打卡详情页查看评论
+            window.location.href = '39-打卡详情.html?taskId=' + id;
         }
 
         // 跳转到打卡详情
