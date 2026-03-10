@@ -203,7 +203,12 @@
 
         // 删除班级
         function deleteClass(classId) {
-            if (confirm('确定要删除这个班级吗？删除后无法恢复')) {
+            const classItem = mockClasses.find(c => c.id === classId);
+            const studentCount = classItem ? classItem.actualCount : 0;
+            const confirmMsg = studentCount > 0
+                ? `该班级有${studentCount}名学生，确定删除吗？删除后无法恢复`
+                : '确定要删除这个班级吗？删除后无法恢复';
+            if (confirm(confirmMsg)) {
                 alert(`删除班级 ID: ${classId}`);
                 // 实际应该调用删除接口
             }
