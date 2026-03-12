@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+  <title>数学启蒙 · 图形与几何</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/design-system.css">
+  <link rel="stylesheet" href="css/shape.css?v=2">
+</head>
+<body>
+  <div id="app">
+    <!-- 顶栏 -->
+    <div class="topbar">
+      <div class="topbar-left">
+        <a href="index.html" class="back-btn">◀</a>
+        <span class="topbar-title">📐 图形与几何</span>
+      </div>
+      <div class="star-counter">
+        <span class="star-icon">⭐</span>
+        <span id="starCount">0</span>
+      </div>
+    </div>
+
+    <!-- 模式切换标签 -->
+    <div class="mode-tabs">
+      <button class="mode-tab active" data-mode="recognize">
+        <span class="tab-icon">👀</span>
+        <span class="tab-label">辨认</span>
+      </button>
+      <button class="mode-tab" data-mode="classify">
+        <span class="tab-icon">🏠</span>
+        <span class="tab-label">分类</span>
+      </button>
+      <button class="mode-tab" data-mode="find">
+        <span class="tab-icon">🔍</span>
+        <span class="tab-label">找一找</span>
+      </button>
+    </div>
+
+    <!-- 内容区 -->
+    <div class="content shape-content">
+
+      <!-- 提示/题目区 -->
+      <div id="questionBar" class="question-bar" style="display:none;">
+        <span class="question-icon" id="questionIcon">🎯</span>
+        <span class="question-text" id="questionText"></span>
+      </div>
+
+      <!-- 辨认模式：图形展示区 -->
+      <div id="recognizeArea" class="recognize-area">
+        <!-- JS动态生成图形 -->
+      </div>
+
+      <!-- 分类模式：图形区 + 分类篮子 -->
+      <div id="classifyArea" class="classify-area" style="display:none;">
+        <div class="classify-shapes" id="classifyShapes">
+          <!-- JS动态生成待分类图形 -->
+        </div>
+        <div class="classify-homes" id="classifyHomes">
+          <!-- JS动态生成分类目标 -->
+        </div>
+      </div>
+
+      <!-- 找一找模式：场景区 -->
+      <div id="findArea" class="find-area" style="display:none;">
+        <div class="scene-container" id="sceneContainer">
+          <!-- JS动态生成SVG场景 -->
+        </div>
+        <div class="find-progress" id="findProgress"></div>
+      </div>
+
+    </div>
+
+    <!-- 底部操作区 -->
+    <div id="bottomActions" class="bottom-actions" style="display:none;">
+      <button class="btn btn-green btn-lg" id="actionBtn">🎯 开始练习</button>
+    </div>
+
+    <!-- 反馈浮层 -->
+    <div id="feedbackOverlay" class="feedback-overlay" style="display:none;">
+      <div class="feedback-emoji" id="feedbackEmoji"></div>
+      <div class="feedback-text" id="feedbackText"></div>
+    </div>
+
+    <!-- 庆祝彩纸屑容器 -->
+    <div id="confettiContainer" class="confetti-container"></div>
+  </div>
+
+  <script src="js/shape.js?v=2"></script>
+</body>
+</html>
