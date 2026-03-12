@@ -833,7 +833,7 @@
       </div>
       <div class="scale-object">${q.obj}</div>
       <div style="margin-top:8px;font-size:20px;font-weight:700;color:var(--text);">
-        ${q.name} ${q.value} <span style="color:var(--blue);">(?)</span>
+        ${q.name} ${q.value} <span style="color:var(--blue);"> (?)</span>
       </div>
     `;
 
