@@ -348,6 +348,14 @@
     { icon: '🚗', name: '玩具车', price: 15.0 },
     { icon: '📚', name: '故事书', price: 11.5 },
     { icon: '🎮', name: '游戏机', price: 18.0 },
+    { icon: '🎒', name: '书包', price: 25.0 },
+    { icon: '👟', name: '运动鞋', price: 35.0 },
+    { icon: '🏀', name: '篮球', price: 28.0 },
+    { icon: '🎧', name: '耳机', price: 45.0 },
+    { icon: '⚽', name: '足球', price: 32.0 },
+    { icon: '🛴', name: '滑板车', price: 68.0 },
+    { icon: '🎸', name: '玩具吉他', price: 55.0 },
+    { icon: '🚲', name: '自行车', price: 88.0 },
   ];
 
   function initMoney() {
@@ -393,6 +401,9 @@
   function renderWallet() {
     wallet.innerHTML = '';
     const coins = [];
+    if (state.targetPrice >= 50) coins.push({ value: 100, label: '100元', cls: 'coin-100' });
+    if (state.targetPrice >= 30) coins.push({ value: 50, label: '50元', cls: 'coin-50' });
+    if (state.targetPrice >= 15) coins.push({ value: 20, label: '20元', cls: 'coin-20' });
     if (state.targetPrice >= 5) coins.push({ value: 10, label: '10元', cls: 'coin-10' });
     coins.push({ value: 5, label: '5元', cls: 'coin-5' });
     coins.push({ value: 1, label: '1元', cls: 'coin-1' });

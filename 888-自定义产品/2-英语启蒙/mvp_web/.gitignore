@@ -1,0 +1,5 @@
+__pycache__/
+*.pyc
+fix_unicode.py
+remove_bg.py
+generate_audio.py

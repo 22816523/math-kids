@@ -7,22 +7,29 @@
         content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
     <title>Star Shop</title>
     <link rel="stylesheet" href="css/style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 
 <body>
+    <div class="rotate-hint"><div class="rotate-icon">📱</div><p>请将手机横过来使用哦～</p></div>
     <div id="app">
         <div class="topbar">
-            <div class="stars-display"><span>⭐</span><span id="starCount">0</span></div>
-            <span style="font-size:22px;font-weight:bold;color:var(--text);">星星商店</span>
+            <div class="stars-display"><i data-lucide="star"
+                    style="width:20px;height:20px;color:#FFD166;fill:#FFD166;"></i><span id="starCount">0</span></div>
+            <span style="font-size:22px;font-weight:bold;color:var(--text);"><i data-lucide="shopping-bag"
+                    style="width:20px;height:20px;display:inline;"></i> 星星商店</span>
             <div></div>
         </div>
         <div class="scene">
             <div class="shop-grid" id="shopGrid"></div>
         </div>
         <nav class="bottom-nav">
-            <button class="tab" onclick="location.href='index.html'">🗺️ 学习</button>
-            <button class="tab active-tab" onclick="location.href='shop.html'">🏪 商店</button>
-            <button class="tab" onclick="location.href='collection.html'">💎 我的宝贝</button>
+            <button class="tab" onclick="location.href='index.html'"><i data-lucide="map"
+                    style="width:18px;height:18px;"></i> 学习</button>
+            <button class="tab active-tab" onclick="location.href='shop.html'"><i data-lucide="shopping-bag"
+                    style="width:18px;height:18px;"></i> 商店</button>
+            <button class="tab" onclick="location.href='collection.html'"><i data-lucide="gem"
+                    style="width:18px;height:18px;"></i> 我的宝贝</button>
         </nav>
     </div>
     <script src="js/store.js"></script>
@@ -57,6 +64,7 @@
             }
         });
     </script>
+    <script>lucide.createIcons();</script>
 </body>
 
 </html>

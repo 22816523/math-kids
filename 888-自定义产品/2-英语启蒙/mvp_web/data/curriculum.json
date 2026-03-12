@@ -6,19 +6,109 @@
     "total_units": 4,
     "lessons_per_unit": 5,
     "total_words": 40,
-    "total_sentences": 10
+    "total_sentences": 20
   },
   "sentences": [
-    { "id": "s01", "en": "This is an apple.", "cn": "这是一个苹果。" },
-    { "id": "s02", "en": "I like bananas.", "cn": "我喜欢香蕉。" },
-    { "id": "s03", "en": "The cat is small.", "cn": "猫咪很小。" },
-    { "id": "s04", "en": "I see a dog.", "cn": "我看到一只狗。" },
-    { "id": "s05", "en": "The bird can fly.", "cn": "小鸟会飞。" },
-    { "id": "s06", "en": "I like red.", "cn": "我喜欢红色。" },
-    { "id": "s07", "en": "My eyes can see.", "cn": "我的眼睛能看。" },
-    { "id": "s08", "en": "I have two hands.", "cn": "我有两只手。" },
-    { "id": "s09", "en": "The sun is yellow.", "cn": "太阳是黄色的。" },
-    { "id": "s10", "en": "Hello, how are you?", "cn": "你好，你好吗？" }
+    {
+      "id": "s01",
+      "en": "This is a red apple.",
+      "cn": "这是一个红苹果。"
+    },
+    {
+      "id": "s02",
+      "en": "I like yellow bananas.",
+      "cn": "我喜欢黄色的香蕉。"
+    },
+    {
+      "id": "s03",
+      "en": "The orange is big.",
+      "cn": "这个橙子好大。"
+    },
+    {
+      "id": "s04",
+      "en": "Grapes are small and sweet.",
+      "cn": "葡萄又小又甜。"
+    },
+    {
+      "id": "s05",
+      "en": "The watermelon is green.",
+      "cn": "西瓜是绿色的。"
+    },
+    {
+      "id": "s06",
+      "en": "The cat is small.",
+      "cn": "猫咪很小。"
+    },
+    {
+      "id": "s07",
+      "en": "The bird can fly.",
+      "cn": "小鸟会飞。"
+    },
+    {
+      "id": "s08",
+      "en": "The rabbit and duck are friends.",
+      "cn": "兔子和鸭子是好朋友。"
+    },
+    {
+      "id": "s09",
+      "en": "The bear and monkey play together.",
+      "cn": "熊和猴子一起玩。"
+    },
+    {
+      "id": "s10",
+      "en": "The elephant is big, the lion is brave.",
+      "cn": "大象很大，狮子很勇敢。"
+    },
+    {
+      "id": "s11",
+      "en": "The sky is blue, the cloud is white.",
+      "cn": "天空是蓝色的，云是白色的。"
+    },
+    {
+      "id": "s12",
+      "en": "I like pink and black.",
+      "cn": "我喜欢粉色和黑色。"
+    },
+    {
+      "id": "s13",
+      "en": "Purple and brown are pretty colors.",
+      "cn": "紫色和棕色很好看。"
+    },
+    {
+      "id": "s14",
+      "en": "The sun and stars are bright.",
+      "cn": "太阳和星星很明亮。"
+    },
+    {
+      "id": "s15",
+      "en": "The moon and rainbow are beautiful.",
+      "cn": "月亮和彩虹很美。"
+    },
+    {
+      "id": "s16",
+      "en": "I see with my eyes, I hear with my ears.",
+      "cn": "我用眼睛看，用耳朵听。"
+    },
+    {
+      "id": "s17",
+      "en": "I smell with my nose, I eat with my mouth.",
+      "cn": "我用鼻子闻，用嘴巴吃。"
+    },
+    {
+      "id": "s18",
+      "en": "I have two hands and two feet.",
+      "cn": "我有两只手和两只脚。"
+    },
+    {
+      "id": "s19",
+      "en": "This is my head and face.",
+      "cn": "这是我的头和脸。"
+    },
+    {
+      "id": "s20",
+      "en": "I wave my arms and kick my legs.",
+      "cn": "我挥动手臂，踢动双腿。"
+    }
   ],
   "units": [
     {
@@ -31,8 +121,20 @@
         {
           "lesson_id": 1,
           "new_words": [
-            { "word": "apple", "cn": "苹果", "emoji": "🍎", "audio": "audio/apple.mp3", "image": "images/apple.png" },
-            { "word": "red", "cn": "红色", "emoji": "🔴", "audio": "audio/red.mp3", "image": "images/red.png" }
+            {
+              "word": "apple",
+              "cn": "苹果",
+              "emoji": "🍎",
+              "audio": "audio/apple.mp3",
+              "image": "images/apple.png"
+            },
+            {
+              "word": "red",
+              "cn": "红色",
+              "emoji": "🔴",
+              "audio": "audio/red.mp3",
+              "image": "images/red.png"
+            }
           ],
           "review_word": null,
           "sentence": "s01",
@@ -41,8 +143,20 @@
         {
           "lesson_id": 2,
           "new_words": [
-            { "word": "banana", "cn": "香蕉", "emoji": "🍌", "audio": "audio/banana.mp3", "image": "images/banana.png" },
-            { "word": "yellow", "cn": "黄色", "emoji": "🟡", "audio": "audio/yellow.mp3", "image": "images/yellow.png" }
+            {
+              "word": "banana",
+              "cn": "香蕉",
+              "emoji": "🍌",
+              "audio": "audio/banana.mp3",
+              "image": "images/banana.png"
+            },
+            {
+              "word": "yellow",
+              "cn": "黄色",
+              "emoji": "🟡",
+              "audio": "audio/yellow.mp3",
+              "image": "images/yellow.png"
+            }
           ],
           "review_word": "apple",
           "sentence": "s02",
@@ -51,31 +165,67 @@
         {
           "lesson_id": 3,
           "new_words": [
-            { "word": "orange", "cn": "橙子", "emoji": "🍊", "audio": "audio/orange.mp3", "image": "images/orange.png" },
-            { "word": "big", "cn": "大的", "emoji": "⭕", "audio": "audio/big.mp3", "image": "images/big.png" }
+            {
+              "word": "orange",
+              "cn": "橙子",
+              "emoji": "🍊",
+              "audio": "audio/orange.mp3",
+              "image": "images/orange.png"
+            },
+            {
+              "word": "big",
+              "cn": "大的",
+              "emoji": "⭕",
+              "audio": "audio/big.mp3",
+              "image": "images/big.png"
+            }
           ],
           "review_word": "banana",
-          "sentence": "s09",
+          "sentence": "s03",
           "stars_to_pass": 3
         },
         {
           "lesson_id": 4,
           "new_words": [
-            { "word": "grape", "cn": "葡萄", "emoji": "🍇", "audio": "audio/grape.mp3", "image": "images/grape.png" },
-            { "word": "small", "cn": "小的", "emoji": "🔹", "audio": "audio/small.mp3", "image": "images/small.png" }
+            {
+              "word": "grape",
+              "cn": "葡萄",
+              "emoji": "🍇",
+              "audio": "audio/grape.mp3",
+              "image": "images/grape.png"
+            },
+            {
+              "word": "small",
+              "cn": "小的",
+              "emoji": "🔹",
+              "audio": "audio/small.mp3",
+              "image": "images/small.png"
+            }
           ],
           "review_word": "orange",
-          "sentence": "s06",
+          "sentence": "s04",
           "stars_to_pass": 3
         },
         {
           "lesson_id": 5,
           "new_words": [
-            { "word": "watermelon", "cn": "西瓜", "emoji": "🍉", "audio": "audio/watermelon.mp3", "image": "images/watermelon.png" },
-            { "word": "green", "cn": "绿色", "emoji": "🟢", "audio": "audio/green.mp3", "image": "images/green.png" }
+            {
+              "word": "watermelon",
+              "cn": "西瓜",
+              "emoji": "🍉",
+              "audio": "audio/watermelon.mp3",
+              "image": "images/watermelon.png"
+            },
+            {
+              "word": "green",
+              "cn": "绿色",
+              "emoji": "🟢",
+              "audio": "audio/green.mp3",
+              "image": "images/green.png"
+            }
           ],
           "review_word": "grape",
-          "sentence": "s10",
+          "sentence": "s05",
           "stars_to_pass": 3
         }
       ]
@@ -90,51 +240,111 @@
         {
           "lesson_id": 6,
           "new_words": [
-            { "word": "cat", "cn": "猫", "emoji": "🐱", "audio": "audio/cat.mp3", "image": "images/cat.png" },
-            { "word": "dog", "cn": "狗", "emoji": "🐶", "audio": "audio/dog.mp3", "image": "images/dog.png" }
+            {
+              "word": "cat",
+              "cn": "猫",
+              "emoji": "🐱",
+              "audio": "audio/cat.mp3",
+              "image": "images/cat.png"
+            },
+            {
+              "word": "dog",
+              "cn": "狗",
+              "emoji": "🐶",
+              "audio": "audio/dog.mp3",
+              "image": "images/dog.png"
+            }
           ],
           "review_word": "watermelon",
-          "sentence": "s03",
+          "sentence": "s06",
           "stars_to_pass": 3
         },
         {
           "lesson_id": 7,
           "new_words": [
-            { "word": "bird", "cn": "小鸟", "emoji": "🐦", "audio": "audio/bird.mp3", "image": "images/bird.png" },
-            { "word": "fish", "cn": "鱼", "emoji": "🐟", "audio": "audio/fish.mp3", "image": "images/fish.png" }
+            {
+              "word": "bird",
+              "cn": "小鸟",
+              "emoji": "🐦",
+              "audio": "audio/bird.mp3",
+              "image": "images/bird.png"
+            },
+            {
+              "word": "fish",
+              "cn": "鱼",
+              "emoji": "🐟",
+              "audio": "audio/fish.mp3",
+              "image": "images/fish.png"
+            }
           ],
           "review_word": "cat",
-          "sentence": "s05",
+          "sentence": "s07",
           "stars_to_pass": 3
         },
         {
           "lesson_id": 8,
           "new_words": [
-            { "word": "rabbit", "cn": "兔子", "emoji": "🐰", "audio": "audio/rabbit.mp3", "image": "images/rabbit.png" },
-            { "word": "duck", "cn": "鸭子", "emoji": "🦆", "audio": "audio/duck.mp3", "image": "images/duck.png" }
+            {
+              "word": "rabbit",
+              "cn": "兔子",
+              "emoji": "🐰",
+              "audio": "audio/rabbit.mp3",
+              "image": "images/rabbit.png"
+            },
+            {
+              "word": "duck",
+              "cn": "鸭子",
+              "emoji": "🦆",
+              "audio": "audio/duck.mp3",
+              "image": "images/duck.png"
+            }
           ],
           "review_word": "bird",
-          "sentence": "s04",
+          "sentence": "s08",
           "stars_to_pass": 3
         },
         {
           "lesson_id": 9,
           "new_words": [
-            { "word": "bear", "cn": "熊", "emoji": "🐻", "audio": "audio/bear.mp3", "image": "images/bear.png" },
-            { "word": "monkey", "cn": "猴子", "emoji": "🐵", "audio": "audio/monkey.mp3", "image": "images/monkey.png" }
+            {
+              "word": "bear",
+              "cn": "熊",
+              "emoji": "🐻",
+              "audio": "audio/bear.mp3",
+              "image": "images/bear.png"
+            },
+            {
+              "word": "monkey",
+              "cn": "猴子",
+              "emoji": "🐵",
+              "audio": "audio/monkey.mp3",
+              "image": "images/monkey.png"
+            }
           ],
           "review_word": "rabbit",
-          "sentence": "s10",
+          "sentence": "s09",
           "stars_to_pass": 3
         },
         {
           "lesson_id": 10,
           "new_words": [
-            { "word": "elephant", "cn": "大象", "emoji": "🐘", "audio": "audio/elephant.mp3", "image": "images/elephant.png" },
-            { "word": "lion", "cn": "狮子", "emoji": "🦁", "audio": "audio/lion.mp3", "image": "images/lion.png" }
+            {
+              "word": "elephant",
+              "cn": "大象",
+              "emoji": "🐘",
+              "audio": "audio/elephant.mp3",
+              "image": "images/elephant.png"
+            },
+            {
+              "word": "lion",
+              "cn": "狮子",
+              "emoji": "🦁",
+              "audio": "audio/lion.mp3",
+              "image": "images/lion.png"
+            }
           ],
           "review_word": "bear",
-          "sentence": "s03",
+          "sentence": "s10",
           "stars_to_pass": 3
         }
       ]
@@ -149,51 +359,111 @@
         {
           "lesson_id": 11,
           "new_words": [
-            { "word": "blue", "cn": "蓝色", "emoji": "🔵", "audio": "audio/blue.mp3", "image": "images/blue.png" },
-            { "word": "white", "cn": "白色", "emoji": "⬜", "audio": "audio/white.mp3", "image": "images/white.png" }
+            {
+              "word": "blue",
+              "cn": "蓝色",
+              "emoji": "🔵",
+              "audio": "audio/blue.mp3",
+              "image": "images/blue.png"
+            },
+            {
+              "word": "white",
+              "cn": "白色",
+              "emoji": "⬜",
+              "audio": "audio/white.mp3",
+              "image": "images/white.png"
+            }
           ],
           "review_word": "red",
-          "sentence": "s06",
+          "sentence": "s11",
           "stars_to_pass": 3
         },
         {
           "lesson_id": 12,
           "new_words": [
-            { "word": "black", "cn": "黑色", "emoji": "⬛", "audio": "audio/black.mp3", "image": "images/black.png" },
-            { "word": "pink", "cn": "粉色", "emoji": "🩷", "audio": "audio/pink.mp3", "image": "images/pink.png" }
+            {
+              "word": "black",
+              "cn": "黑色",
+              "emoji": "⬛",
+              "audio": "audio/black.mp3",
+              "image": "images/black.png"
+            },
+            {
+              "word": "pink",
+              "cn": "粉色",
+              "emoji": "🩷",
+              "audio": "audio/pink.mp3",
+              "image": "images/pink.png"
+            }
           ],
           "review_word": "blue",
-          "sentence": "s09",
+          "sentence": "s12",
           "stars_to_pass": 3
         },
         {
           "lesson_id": 13,
           "new_words": [
-            { "word": "purple", "cn": "紫色", "emoji": "🟣", "audio": "audio/purple.mp3", "image": "images/purple.png" },
-            { "word": "brown", "cn": "棕色", "emoji": "🟤", "audio": "audio/brown.mp3", "image": "images/brown.png" }
+            {
+              "word": "purple",
+              "cn": "紫色",
+              "emoji": "🟣",
+              "audio": "audio/purple.mp3",
+              "image": "images/purple.png"
+            },
+            {
+              "word": "brown",
+              "cn": "棕色",
+              "emoji": "🟤",
+              "audio": "audio/brown.mp3",
+              "image": "images/brown.png"
+            }
           ],
           "review_word": "black",
-          "sentence": "s06",
+          "sentence": "s13",
           "stars_to_pass": 3
         },
         {
           "lesson_id": 14,
           "new_words": [
-            { "word": "star", "cn": "星星", "emoji": "⭐", "audio": "audio/star.mp3", "image": "images/star.png" },
-            { "word": "sun", "cn": "太阳", "emoji": "☀️", "audio": "audio/sun.mp3", "image": "images/sun.png" }
+            {
+              "word": "star",
+              "cn": "星星",
+              "emoji": "⭐",
+              "audio": "audio/star.mp3",
+              "image": "images/star.png"
+            },
+            {
+              "word": "sun",
+              "cn": "太阳",
+              "emoji": "☀️",
+              "audio": "audio/sun.mp3",
+              "image": "images/sun.png"
+            }
           ],
           "review_word": "yellow",
-          "sentence": "s09",
+          "sentence": "s14",
           "stars_to_pass": 3
         },
         {
           "lesson_id": 15,
           "new_words": [
-            { "word": "moon", "cn": "月亮", "emoji": "🌙", "audio": "audio/moon.mp3", "image": "images/moon.png" },
-            { "word": "rainbow", "cn": "彩虹", "emoji": "🌈", "audio": "audio/rainbow.mp3", "image": "images/rainbow.png" }
+            {
+              "word": "moon",
+              "cn": "月亮",
+              "emoji": "🌙",
+              "audio": "audio/moon.mp3",
+              "image": "images/moon.png"
+            },
+            {
+              "word": "rainbow",
+              "cn": "彩虹",
+              "emoji": "🌈",
+              "audio": "audio/rainbow.mp3",
+              "image": "images/rainbow.png"
+            }
           ],
           "review_word": "star",
-          "sentence": "s07",
+          "sentence": "s15",
           "stars_to_pass": 3
         }
       ]
@@ -208,51 +478,111 @@
         {
           "lesson_id": 16,
           "new_words": [
-            { "word": "eye", "cn": "眼睛", "emoji": "👁️", "audio": "audio/eye.mp3", "image": "images/eye.png" },
-            { "word": "ear", "cn": "耳朵", "emoji": "👂", "audio": "audio/ear.mp3", "image": "images/ear.png" }
+            {
+              "word": "eye",
+              "cn": "眼睛",
+              "emoji": "👁️",
+              "audio": "audio/eye.mp3",
+              "image": "images/eye.png"
+            },
+            {
+              "word": "ear",
+              "cn": "耳朵",
+              "emoji": "👂",
+              "audio": "audio/ear.mp3",
+              "image": "images/ear.png"
+            }
           ],
           "review_word": "moon",
-          "sentence": "s07",
+          "sentence": "s16",
           "stars_to_pass": 3
         },
         {
           "lesson_id": 17,
           "new_words": [
-            { "word": "nose", "cn": "鼻子", "emoji": "👃", "audio": "audio/nose.mp3", "image": "images/nose.png" },
-            { "word": "mouth", "cn": "嘴巴", "emoji": "👄", "audio": "audio/mouth.mp3", "image": "images/mouth.png" }
+            {
+              "word": "nose",
+              "cn": "鼻子",
+              "emoji": "👃",
+              "audio": "audio/nose.mp3",
+              "image": "images/nose.png"
+            },
+            {
+              "word": "mouth",
+              "cn": "嘴巴",
+              "emoji": "👄",
+              "audio": "audio/mouth.mp3",
+              "image": "images/mouth.png"
+            }
           ],
           "review_word": "eye",
-          "sentence": "s10",
+          "sentence": "s17",
           "stars_to_pass": 3
         },
         {
           "lesson_id": 18,
           "new_words": [
-            { "word": "hand", "cn": "手", "emoji": "🤚", "audio": "audio/hand.mp3", "image": "images/hand.png" },
-            { "word": "foot", "cn": "脚", "emoji": "🦶", "audio": "audio/foot.mp3", "image": "images/foot.png" }
+            {
+              "word": "hand",
+              "cn": "手",
+              "emoji": "🤚",
+              "audio": "audio/hand.mp3",
+              "image": "images/hand.png"
+            },
+            {
+              "word": "foot",
+              "cn": "脚",
+              "emoji": "🦶",
+              "audio": "audio/foot.mp3",
+              "image": "images/foot.png"
+            }
           ],
           "review_word": "nose",
-          "sentence": "s08",
+          "sentence": "s18",
           "stars_to_pass": 3
         },
         {
           "lesson_id": 19,
           "new_words": [
-            { "word": "head", "cn": "头", "emoji": "🗣️", "audio": "audio/head.mp3", "image": "images/head.png" },
-            { "word": "face", "cn": "脸", "emoji": "😊", "audio": "audio/face.mp3", "image": "images/face.png" }
+            {
+              "word": "head",
+              "cn": "头",
+              "emoji": "🗣️",
+              "audio": "audio/head.mp3",
+              "image": "images/head.png"
+            },
+            {
+              "word": "face",
+              "cn": "脸",
+              "emoji": "😊",
+              "audio": "audio/face.mp3",
+              "image": "images/face.png"
+            }
           ],
           "review_word": "hand",
-          "sentence": "s10",
+          "sentence": "s19",
           "stars_to_pass": 3
         },
         {
           "lesson_id": 20,
           "new_words": [
-            { "word": "arm", "cn": "手臂", "emoji": "💪", "audio": "audio/arm.mp3", "image": "images/arm.png" },
-            { "word": "leg", "cn": "腿", "emoji": "🦵", "audio": "audio/leg.mp3", "image": "images/leg.png" }
+            {
+              "word": "arm",
+              "cn": "手臂",
+              "emoji": "💪",
+              "audio": "audio/arm.mp3",
+              "image": "images/arm.png"
+            },
+            {
+              "word": "leg",
+              "cn": "腿",
+              "emoji": "🦵",
+              "audio": "audio/leg.mp3",
+              "image": "images/leg.png"
+            }
           ],
           "review_word": "head",
-          "sentence": "s08",
+          "sentence": "s20",
           "stars_to_pass": 3
         }
       ]

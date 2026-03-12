@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>移动端首页原型Demo</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: #f5f5f5;
+            width: 375px;
+            margin: 0 auto;
+            min-height: 100vh;
+            padding-bottom: 50px;
+        }
+
+        /* ========== 顶部导航栏 ========== */
+        .navbar {
+            height: 44px;
+            background: #fff;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .navbar .title {
+            flex: 1;
+            text-align: center;
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+        .navbar .action {
+            font-size: 14px;
+            color: #666;
+            cursor: pointer;
+        }
+
+        /* ========== 搜索框 ========== */
+        .search-bar {
+            padding: 12px 16px;
+            background: #fff;
+        }
+        .search-input {
+            width: 100%;
+            height: 36px;
+            background: #f5f5f5;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 0 12px 0 32px;
+            font-size: 14px;
+            color: #333;
+            position: relative;
+        }
+        .search-wrapper {
+            position: relative;
+        }
+        .search-icon {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 14px;
+            color: #999;
+        }
+
+        /* ========== Banner轮播 ========== */
+        .banner {
+            margin: 12px 16px;
+            position: relative;
+            overflow: hidden;
+            border-radius: 4px;
+        }
+        .banner-track {
+            display: flex;
+            transition: transform 0.3s ease;
+        }
+        .banner-slide {
+            min-width: 100%;
+            height: 150px;
+            background: #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            font-size: 14px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            position: relative;
+        }
+        .banner-slide::before,
+        .banner-slide::after {
+            content: '';
+            position: absolute;
+            background: #ccc;
+        }
+        .banner-slide::before {
+            width: 141%;
+            height: 1px;
+            top: 50%;
+            left: -20%;
+            transform: rotate(25deg);
+        }
+        .banner-slide::after {
+            width: 141%;
+            height: 1px;
+            top: 50%;
+            left: -20%;
+            transform: rotate(-25deg);
+        }
+        .banner-slide span {
+            position: relative;
+            z-index: 1;
+            background: #e0e0e0;
+            padding: 4px 8px;
+        }
+        .banner-dots {
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+            margin-top: 8px;
+        }
+        .banner-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #e0e0e0;
+            cursor: pointer;
+        }
+        .banner-dot.active {
+            background: #333;
+            width: 16px;
+            border-radius: 3px;
+        }
+
+        /* ========== 功能入口网格 ========== */
+        .func-grid {
+            margin: 16px 16px 0;
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 16px;
+        }
+        .func-grid-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 16px;
+        }
+        .func-grid-items {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+        .func-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+        .func-icon {
+            width: 44px;
+            height: 44px;
+            background: #f5f5f5;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: #666;
+        }
+        .func-label {
+            font-size: 12px;
+            color: #666;
+            text-align: center;
+        }
+
+        /* ========== 内容卡片列表 ========== */
+        .section {
+            margin: 16px 16px 0;
+        }
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+        .section-more {
+            font-size: 12px;
+            color: #999;
+            cursor: pointer;
+        }
+
+        .card {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            margin-bottom: 12px;
+            overflow: hidden;
+        }
+        .card-image {
+            height: 120px;
+            background: #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            font-size: 12px;
+            position: relative;
+        }
+        .card-image::before,
+        .card-image::after {
+            content: '';
+            position: absolute;
+            background: #ccc;
+        }
+        .card-image::before {
+            width: 141%;
+            height: 1px;
+            top: 50%;
+            left: -20%;
+            transform: rotate(15deg);
+        }
+        .card-image::after {
+            width: 141%;
+            height: 1px;
+            top: 50%;
+            left: -20%;
+            transform: rotate(-15deg);
+        }
+        .card-image span {
+            position: relative;
+            z-index: 1;
+            background: #e0e0e0;
+            padding: 2px 6px;
+        }
+        .card-body {
+            padding: 12px;
+        }
+        .card-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 6px;
+        }
+        .card-desc {
+            font-size: 12px;
+            color: #999;
+            line-height: 1.5;
+            margin-bottom: 8px;
+        }
+        .card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .card-tag {
+            font-size: 12px;
+            color: #666;
+            background: #f5f5f5;
+            padding: 2px 8px;
+            border-radius: 4px;
+            border: 1px solid #e0e0e0;
+        }
+        .card-action {
+            font-size: 12px;
+            color: #333;
+            cursor: pointer;
+        }
+
+        /* 横向卡片 */
+        .card-horizontal {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            margin-bottom: 12px;
+            padding: 12px;
+            display: flex;
+            gap: 12px;
+        }
+        .card-h-image {
+            width: 80px;
+            height: 80px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+        .card-h-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .card-h-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+        }
+        .card-h-desc {
+            font-size: 12px;
+            color: #999;
+            line-height: 1.4;
+        }
+        .card-h-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #999;
+        }
+
+        /* ========== 底部Tab栏 ========== */
+        .tabbar {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 375px;
+            height: 50px;
+            background: #fff;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            z-index: 100;
+        }
+        .tabbar-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+            cursor: pointer;
+        }
+        .tabbar-icon {
+            font-size: 18px;
+            color: #999;
+        }
+        .tabbar-label {
+            font-size: 10px;
+            color: #999;
+        }
+        .tabbar-item.active .tabbar-icon,
+        .tabbar-item.active .tabbar-label {
+            color: #333;
+            font-weight: 600;
+        }
+
+        /* ========== Toast ========== */
+        .toast {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 12px 24px;
+            background: rgba(0,0,0,0.7);
+            color: #fff;
+            border-radius: 4px;
+            font-size: 14px;
+            display: none;
+            z-index: 400;
+        }
+        .toast.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 顶部导航栏 -->
+    <div class="navbar">
+        <span class="action">[☰]</span>
+        <span class="title">首页</span>
+        <span class="action">[🔔]</span>
+    </div>
+
+    <!-- 搜索框 -->
+    <div class="search-bar">
+        <div class="search-wrapper">
+            <span class="search-icon">🔍</span>
+            <input type="text" class="search-input" placeholder="搜索内容、活动、用户...">
+        </div>
+    </div>
+
+    <!-- Banner轮播 -->
+    <div class="banner">
+        <div class="banner-track" id="bannerTrack">
+            <div class="banner-slide"><span>[Banner 1]</span></div>
+            <div class="banner-slide"><span>[Banner 2]</span></div>
+            <div class="banner-slide"><span>[Banner 3]</span></div>
+        </div>
+    </div>
+    <div class="banner-dots">
+        <div class="banner-dot active" onclick="goSlide(0)"></div>
+        <div class="banner-dot" onclick="goSlide(1)"></div>
+        <div class="banner-dot" onclick="goSlide(2)"></div>
+    </div>
+
+    <!-- 功能入口网格 -->
+    <div class="func-grid">
+        <div class="func-grid-title">快捷入口</div>
+        <div class="func-grid-items">
+            <div class="func-item" onclick="showToast('功能A')">
+                <div class="func-icon">📖</div>
+                <span class="func-label">功能A</span>
+            </div>
+            <div class="func-item" onclick="showToast('功能B')">
+                <div class="func-icon">📝</div>
+                <span class="func-label">功能B</span>
+            </div>
+            <div class="func-item" onclick="showToast('功能C')">
+                <div class="func-icon">📊</div>
+                <span class="func-label">功能C</span>
+            </div>
+            <div class="func-item" onclick="showToast('功能D')">
+                <div class="func-icon">⚙</div>
+                <span class="func-label">功能D</span>
+            </div>
+            <div class="func-item" onclick="showToast('功能E')">
+                <div class="func-icon">👤</div>
+                <span class="func-label">功能E</span>
+            </div>
+            <div class="func-item" onclick="showToast('功能F')">
+                <div class="func-icon">💬</div>
+                <span class="func-label">功能F</span>
+            </div>
+            <div class="func-item" onclick="showToast('功能G')">
+                <div class="func-icon">🎯</div>
+                <span class="func-label">功能G</span>
+            </div>
+            <div class="func-item" onclick="showToast('更多')">
+                <div class="func-icon">···</div>
+                <span class="func-label">更多</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 内容卡片列表 - 竖向卡片 -->
+    <div class="section">
+        <div class="section-header">
+            <span class="section-title">推荐内容</span>
+            <span class="section-more">查看更多 [→]</span>
+        </div>
+
+        <div class="card">
+            <div class="card-image"><span>[图片]</span></div>
+            <div class="card-body">
+                <div class="card-title">卡片标题文字示例</div>
+                <div class="card-desc">这是一段描述文字，用于展示卡片内容的摘要信息，最多显示两行</div>
+                <div class="card-footer">
+                    <span class="card-tag">标签</span>
+                    <span class="card-action">[查看详情 →]</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 内容卡片列表 - 横向卡片 -->
+    <div class="section">
+        <div class="section-header">
+            <span class="section-title">最新动态</span>
+            <span class="section-more">查看更多 [→]</span>
+        </div>
+
+        <div class="card-horizontal">
+            <div class="card-h-image">[图片]</div>
+            <div class="card-h-content">
+                <div class="card-h-title">横向卡片标题</div>
+                <div class="card-h-desc">描述文字，简要说明内容</div>
+                <div class="card-h-meta">
+                    <span>2026-03-12</span>
+                    <span>128次浏览</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-horizontal">
+            <div class="card-h-image">[图片]</div>
+            <div class="card-h-content">
+                <div class="card-h-title">横向卡片标题二</div>
+                <div class="card-h-desc">另一段描述文字内容</div>
+                <div class="card-h-meta">
+                    <span>2026-03-11</span>
+                    <span>96次浏览</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-horizontal">
+            <div class="card-h-image">[图片]</div>
+            <div class="card-h-content">
+                <div class="card-h-title">横向卡片标题三</div>
+                <div class="card-h-desc">第三条内容的描述信息</div>
+                <div class="card-h-meta">
+                    <span>2026-03-10</span>
+                    <span>64次浏览</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部Tab栏 -->
+    <div class="tabbar">
+        <div class="tabbar-item active" onclick="switchTab(0)">
+            <span class="tabbar-icon">🏠</span>
+            <span class="tabbar-label">首页</span>
+        </div>
+        <div class="tabbar-item" onclick="switchTab(1)">
+            <span class="tabbar-icon">📋</span>
+            <span class="tabbar-label">分类</span>
+        </div>
+        <div class="tabbar-item" onclick="switchTab(2)">
+            <span class="tabbar-icon">💬</span>
+            <span class="tabbar-label">消息</span>
+        </div>
+        <div class="tabbar-item" onclick="switchTab(3)">
+            <span class="tabbar-icon">👤</span>
+            <span class="tabbar-label">我的</span>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        /* Banner轮播 */
+        let currentSlide = 0;
+        const totalSlides = 3;
+
+        function goSlide(index) {
+            currentSlide = index;
+            document.getElementById('bannerTrack').style.transform = `translateX(-${index * 100}%)`;
+            document.querySelectorAll('.banner-dot').forEach((dot, i) => {
+                dot.classList.toggle('active', i === index);
+            });
+        }
+
+        // 自动轮播
+        setInterval(() => {
+            currentSlide = (currentSlide + 1) % totalSlides;
+            goSlide(currentSlide);
+        }, 3000);
+
+        /* 底部Tab切换 */
+        function switchTab(index) {
+            document.querySelectorAll('.tabbar-item').forEach((item, i) => {
+                item.classList.toggle('active', i === index);
+            });
+            const labels = ['首页', '分类', '消息', '我的'];
+            showToast('切换到: ' + labels[index]);
+        }
+
+        /* Toast提示 */
+        function showToast(message, duration = 1500) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, duration);
+        }
+    </script>
+</body>
+</html>

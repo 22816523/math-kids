@@ -348,6 +348,39 @@
   height: 52px;
 }
 
+.coin-20 {
+  background: linear-gradient(135deg, #8B4513, #A0522D);
+  border: 3px solid #654321;
+  border-bottom: 5px solid #4A3319;
+  color: #FFF;
+  font-size: 16px;
+  width: 100px;
+  height: 56px;
+  border-radius: var(--radius-lg);
+}
+
+.coin-50 {
+  background: linear-gradient(135deg, #228B22, #32CD32);
+  border: 3px solid #1B6B1B;
+  border-bottom: 5px solid #145214;
+  color: #FFF;
+  font-size: 16px;
+  width: 108px;
+  height: 60px;
+  border-radius: var(--radius-lg);
+}
+
+.coin-100 {
+  background: linear-gradient(135deg, #DC143C, #FF6347);
+  border: 3px solid #B22222;
+  border-bottom: 5px solid #8B1A1A;
+  color: #FFF;
+  font-size: 16px;
+  width: 116px;
+  height: 64px;
+  border-radius: var(--radius-lg);
+}
+
 .cashier {
   display: flex;
   flex-direction: column;
@@ -396,6 +429,24 @@
   width: 40px;
   height: 40px;
   font-size: 11px;
+}
+
+.cashier-tray .coin-20 {
+  width: 68px;
+  height: 38px;
+  font-size: 13px;
+}
+
+.cashier-tray .coin-50 {
+  width: 72px;
+  height: 40px;
+  font-size: 13px;
+}
+
+.cashier-tray .coin-100 {
+  width: 76px;
+  height: 42px;
+  font-size: 13px;
 }
 
 .cashier-total {
