@@ -560,9 +560,21 @@
     state.compareType = type;
     const pool = COMPARE_QUESTIONS[type];
     const q = pool[randInt(0, pool.length - 1)];
-    state.compareAnswer = q.answer;
 
-    showQuestion('⚖️', `第${state.compareRound}题：${q.q}`);
+    const reverse = Math.random() < 0.5;
+    const questionMap = {
+      length: { normal: '哪支铅笔更长？', reverse: '哪支铅笔更短？' },
+      height: { normal: '谁更高？', reverse: '谁更矮？' },
+      weight: { normal: '谁更重？', reverse: '谁更轻？' },
+      count: { normal: '哪个更多？', reverse: '哪个更少？' },
+      size: { normal: '哪个更大？', reverse: '哪个更小？' },
+      thick: { normal: '哪根树干更粗？', reverse: '哪根树干更细？' }
+    };
+
+    const questionText = reverse ? questionMap[type].reverse : (q.q || questionMap[type].normal);
+    state.compareAnswer = reverse && q.answer !== 'same' ? (q.answer === 'a' ? 'b' : 'a') : q.answer;
+
+    showQuestion('⚖️', `第${state.compareRound}题：${questionText}`);
 
     if (type === 'length') renderLengthScene(q);
     else if (type === 'height') renderHeightScene(q);
