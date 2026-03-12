@@ -241,6 +241,7 @@
     state.clockHour = now.getHours() % 12 || 12;
     state.clockMinute = 0;
     drawClockFace(state.clockHour, state.clockMinute, true);
+    digitalClock.style.display = 'block';
     clockOptions.innerHTML = '';
     bottomActions.style.display = 'flex';
     actionBtn.textContent = '🎯 开始练习';
@@ -270,7 +271,7 @@
     const hour = randInt(1, 12);
     state.clockAnswer = { hour, minute };
     drawClockFace(hour, minute, false);
-    digitalClock.textContent = '--:--';
+    digitalClock.style.display = 'none';
 
     const timeStr = minute === 0 ? `${hour}点整` : minute === 30 ? `${hour}点半` : minute === 15 ? `${hour}点15分` : `${hour}点45分`;
     showQuestion('🎯', `第${state.clockRound}题：现在是几点？`);
