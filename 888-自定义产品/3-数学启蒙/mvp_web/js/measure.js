@@ -734,20 +734,21 @@
 
     const maxLen = 30;
     rulerContainer.innerHTML = `
-      <div style="display:flex;flex-direction:column;align-items:center;gap:12px;width:100%;">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:16px;width:100%;">
         <div style="position:relative;width:100%;max-width:320px;">
-          <div style="display:flex;height:50px;background:linear-gradient(180deg,#FFE4B5,#FFD700);border:2px solid var(--gray-300);border-radius:4px;position:relative;">
+          <div style="display:flex;height:40px;background:linear-gradient(180deg,#FFE4B5,#FFD700);border:2px solid var(--gray-300);border-radius:4px;position:relative;">
             ${Array.from({length: maxLen+1}, (_, i) => {
               const isLong = i % 5 === 0;
-              const showNum = i % 10 === 0;
-              return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;border-left:${i===0?'none':'1px solid rgba(0,0,0,0.1)'};position:relative;">
-                <div style="width:2px;height:${isLong?'16px':'10px'};background:var(--text);margin-bottom:2px;"></div>
-                ${showNum ? `<span style="font-size:10px;font-weight:700;position:absolute;bottom:2px;">${i}</span>` : ''}
-                ${i === q.len ? `<div style="position:absolute;top:-8px;width:8px;height:8px;background:#FF0000;border-radius:50%;border:2px solid white;"></div>` : ''}
+              return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;border-left:${i===0?'none':'1px solid rgba(0,0,0,0.1)'};position:relative;">
+                <div style="width:2px;height:${isLong?'16px':'10px'};background:var(--text);margin-top:2px;"></div>
+                ${i === q.len ? `<div style="position:absolute;top:-12px;width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-top:12px solid #FF0000;"></div>` : ''}
               </div>`;
             }).join('')}
           </div>
-          <div style="position:absolute;right:4px;top:50%;transform:translateY(-50%);font-size:11px;font-weight:700;color:var(--text);">cm</div>
+          <div style="display:flex;justify-content:space-between;margin-top:4px;padding:0 2px;">
+            ${Array.from({length: 4}, (_, i) => `<span style="font-size:11px;font-weight:700;">${i*10}</span>`).join('')}
+          </div>
+          <div style="position:absolute;right:4px;top:20px;transform:translateY(-50%);font-size:11px;font-weight:700;color:var(--text);">cm</div>
         </div>
         <div style="font-size:48px;">${q.obj}</div>
         <div style="font-size:18px;font-weight:700;color:var(--gray-400);">${q.name}有多长？
