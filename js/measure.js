@@ -318,12 +318,15 @@
     { icon: '🎈', name: '气球', price: 2.5 },
     { icon: '✏️', name: '铅笔', price: 1.0 },
     { icon: '📒', name: '本子', price: 3.0 },
-    { icon: '🧸', name: '玩具熊', price: 8.0 },
+    { icon: '🧸', name: '玩具熊', price: 12.5 },
     { icon: '🖍️', name: '蜡笔', price: 6.5 },
     { icon: '🍭', name: '棒棒糖', price: 0.5 },
     { icon: '🥤', name: '可乐', price: 2.5 },
     { icon: '🍿', name: '爆米花', price: 4.0 },
-    { icon: '🎨', name: '水彩笔', price: 7.5 },
+    { icon: '🎨', name: '水彩笔', price: 9.5 },
+    { icon: '🚗', name: '玩具车', price: 15.0 },
+    { icon: '📚', name: '故事书', price: 11.5 },
+    { icon: '🎮', name: '游戏机', price: 18.0 },
   ];
 
   function initMoney() {
