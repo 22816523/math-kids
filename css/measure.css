@@ -328,14 +328,24 @@
   border-radius: var(--radius-lg);
 }
 
+.coin-05 {
+  background: linear-gradient(135deg, #FFB6C1, #FF8FA3);
+  border: 3px solid #E05580;
+  border-bottom: 5px solid #CC3366;
+  color: #660033;
+  font-size: 14px;
+  width: 64px;
+  height: 64px;
+}
+
 .coin-01 {
   background: linear-gradient(135deg, #90EE90, #66CC66);
   border: 3px solid #44AA44;
   border-bottom: 5px solid #338833;
   color: #1A4D1A;
-  font-size: 14px;
-  width: 56px;
-  height: 56px;
+  font-size: 13px;
+  width: 52px;
+  height: 52px;
 }
 
 .cashier {
