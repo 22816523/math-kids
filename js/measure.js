@@ -374,9 +374,9 @@
     const coins = [];
     if (state.targetPrice >= 5) coins.push({ value: 10, label: '10元', cls: 'coin-10' });
     coins.push({ value: 5, label: '5元', cls: 'coin-5' });
-    for (let i = 0; i < 5; i++) coins.push({ value: 1, label: '1元', cls: 'coin-1' });
-    for (let i = 0; i < 3; i++) coins.push({ value: 0.5, label: '5角', cls: 'coin-05' });
-    for (let i = 0; i < 5; i++) coins.push({ value: 0.1, label: '1角', cls: 'coin-01' });
+    coins.push({ value: 1, label: '1元', cls: 'coin-1' });
+    coins.push({ value: 0.5, label: '5角', cls: 'coin-05' });
+    coins.push({ value: 0.1, label: '1角', cls: 'coin-01' });
 
     coins.forEach((c, idx) => {
       const div = document.createElement('div');
@@ -390,8 +390,6 @@
   }
 
   function payCoin(el, coin) {
-    if (el.classList.contains('used')) return;
-    el.classList.add('used');
     state.paidCoins.push(coin.value);
     const mini = document.createElement('div');
     mini.className = 'coin ' + coin.cls;
@@ -399,7 +397,6 @@
     mini.onclick = () => {
       state.paidCoins.splice(state.paidCoins.indexOf(coin.value), 1);
       mini.remove();
-      el.classList.remove('used');
       updatePaid();
     };
     cashierTray.appendChild(mini);
