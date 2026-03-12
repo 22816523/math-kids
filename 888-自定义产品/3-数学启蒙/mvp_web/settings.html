@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+  <title>家长设置</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/design-system.css">
+  <style>
+    .settings-container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .setting-item {
+      background: var(--white);
+      border: 3px solid var(--gray-100);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+    .setting-label {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+    .duration-options {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    .duration-btn {
+      padding: 16px;
+      font-size: 16px;
+      font-weight: 700;
+      background: var(--white);
+      border: 3px solid var(--gray-200);
+      border-bottom: 5px solid var(--gray-300);
+      border-radius: var(--radius-lg);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .duration-btn.active {
+      background: var(--blue-light);
+      border-color: var(--blue);
+      border-bottom-color: var(--blue-dark);
+      color: var(--blue-dark);
+    }
+    .duration-btn:active {
+      transform: translateY(3px);
+      border-bottom-width: 2px;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div class="topbar">
+      <div class="topbar-left">
+        <a href="index.html" class="back-btn">◀</a>
+        <span class="topbar-title">家长设置</span>
+      </div>
+    </div>
+
+    <div class="settings-container">
+    <div class="setting-item">
+      <div class="setting-label">⏰ 学习时长控制</div>
+      <div class="duration-options">
+        <button class="duration-btn" data-duration="0">不限制</button>
+        <button class="duration-btn" data-duration="10">10分钟</button>
+        <button class="duration-btn" data-duration="15">15分钟</button>
+        <button class="duration-btn" data-duration="20">20分钟</button>
+        <button class="duration-btn" data-duration="30">30分钟</button>
+        <button class="duration-btn" data-duration="60">60分钟</button>
+      </div>
+      <div style="margin-top:12px;font-size:14px;color:var(--gray-400);">
+        超过设定时长后需要家长验证才能继续使用
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <script src="js/timer.js"></script>
+  <script>
+    const buttons = document.querySelectorAll('.duration-btn');
+    const settings = ParentalControl.getSettings();
+
+    // 显示当前设置
+    buttons.forEach(btn => {
+      if (parseInt(btn.dataset.duration) === settings.duration) {
+        btn.classList.add('active');
+      }
+    });
+
+    // 点击设置
+    buttons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const duration = parseInt(btn.dataset.duration);
+        localStorage.setItem('parentalSettings', JSON.stringify({ duration }));
+        ParentalControl.resetTimer();
+
+        buttons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        alert('✅ 设置已保存');
+      });
+    });
+  </script>
+</body>
+</html>
