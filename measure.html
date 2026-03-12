@@ -37,6 +37,14 @@
         <span class="tab-icon">⚖️</span>
         <span class="tab-label">比较</span>
       </button>
+      <button class="mode-tab" data-mode="length">
+        <span class="tab-icon">📏</span>
+        <span class="tab-label">长度</span>
+      </button>
+      <button class="mode-tab" data-mode="weight">
+        <span class="tab-icon">⚖️</span>
+        <span class="tab-label">质量</span>
+      </button>
     </div>
 
     <!-- 内容区 -->
@@ -90,6 +98,26 @@
         </div>
       </div>
 
+      <!-- 长度模式 -->
+      <div id="lengthArea" class="length-area" style="display:none;">
+        <div class="ruler-container" id="rulerContainer">
+          <!-- JS动态生成尺子和物体 -->
+        </div>
+        <div class="length-options" id="lengthOptions">
+          <!-- JS动态生成选项 -->
+        </div>
+      </div>
+
+      <!-- 质量模式 -->
+      <div id="weightArea" class="weight-area" style="display:none;">
+        <div class="scale-display" id="scaleDisplay">
+          <!-- JS动态生成秤和物体 -->
+        </div>
+        <div class="weight-options" id="weightOptions">
+          <!-- JS动态生成选项 -->
+        </div>
+      </div>
+
     </div>
 
     <!-- 底部操作区 -->
@@ -107,6 +135,7 @@
     <div id="confettiContainer" class="confetti-container"></div>
   </div>
 
+  <script src="js/timer.js"></script>
   <script src="js/measure.js"></script>
 </body>
 </html>

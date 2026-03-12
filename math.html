@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+  <title>数学启蒙 · 加减法</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/design-system.css">
+  <link rel="stylesheet" href="css/math.css">
+</head>
+<body>
+  <div id="app">
+    <div class="topbar">
+      <div class="topbar-left">
+        <a href="index.html" class="back-btn">◀</a>
+        <span class="topbar-title">➕ 加减法</span>
+      </div>
+      <div class="star-counter">
+        <span class="star-icon">⭐</span>
+        <span id="starCount">0</span>
+      </div>
+    </div>
+
+    <div class="mode-tabs">
+      <button class="mode-tab active" data-level="1">
+        <span class="tab-icon">🔢</span>
+        <span class="tab-label">10以内</span>
+      </button>
+      <button class="mode-tab" data-level="2">
+        <span class="tab-icon">🧮</span>
+        <span class="tab-label">20以内</span>
+      </button>
+      <button class="mode-tab" data-level="3">
+        <span class="tab-icon">💯</span>
+        <span class="tab-label">100以内</span>
+      </button>
+    </div>
+
+    <div class="content">
+      <div id="questionDisplay" class="question-display"></div>
+      <div id="visualArea" class="visual-area"></div>
+      <div id="controlArea" class="control-area"></div>
+      <div class="feedback" id="feedback"></div>
+    </div>
+  </div>
+
+  <script src="js/timer.js"></script>
+  <script src="js/math.js"></script>
+</body>
+</html>

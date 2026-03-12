@@ -38,6 +38,14 @@
   const compareScene = $('#compareScene');
   const compareOptions = $('#compareOptions');
 
+  const lengthArea = $('#lengthArea');
+  const rulerContainer = $('#rulerContainer');
+  const lengthOptions = $('#lengthOptions');
+
+  const weightArea = $('#weightArea');
+  const scaleDisplay = $('#scaleDisplay');
+  const weightOptions = $('#weightOptions');
+
   const state = {
     mode: 'clock',
     stars: 0,
@@ -54,6 +62,10 @@
     compareType: null,
     compareAnswer: null,
     compareRound: 0,
+    lengthAnswer: null,
+    lengthRound: 0,
+    weightAnswer: null,
+    weightRound: 0,
   };
 
   function speak(text) {
@@ -131,6 +143,8 @@
     clockArea.style.display = 'none';
     moneyArea.style.display = 'none';
     compareArea.style.display = 'none';
+    lengthArea.style.display = 'none';
+    weightArea.style.display = 'none';
     questionBar.style.display = 'none';
     bottomActions.style.display = 'none';
 
@@ -140,9 +154,15 @@
     } else if (state.mode === 'money') {
       moneyArea.style.display = 'flex';
       initMoney();
-    } else {
+    } else if (state.mode === 'compare') {
       compareArea.style.display = 'flex';
       initCompare();
+    } else if (state.mode === 'length') {
+      lengthArea.style.display = 'flex';
+      initLength();
+    } else if (state.mode === 'weight') {
+      weightArea.style.display = 'flex';
+      initWeight();
     }
   }
 
@@ -328,6 +348,14 @@
     { icon: '🚗', name: '玩具车', price: 15.0 },
     { icon: '📚', name: '故事书', price: 11.5 },
     { icon: '🎮', name: '游戏机', price: 18.0 },
+    { icon: '🎒', name: '书包', price: 25.0 },
+    { icon: '👟', name: '运动鞋', price: 35.0 },
+    { icon: '🏀', name: '篮球', price: 28.0 },
+    { icon: '🎧', name: '耳机', price: 45.0 },
+    { icon: '⚽', name: '足球', price: 32.0 },
+    { icon: '🛴', name: '滑板车', price: 68.0 },
+    { icon: '🎸', name: '玩具吉他', price: 55.0 },
+    { icon: '🚲', name: '自行车', price: 88.0 },
   ];
 
   function initMoney() {
@@ -373,6 +401,9 @@
   function renderWallet() {
     wallet.innerHTML = '';
     const coins = [];
+    if (state.targetPrice >= 50) coins.push({ value: 100, label: '100元', cls: 'coin-100' });
+    if (state.targetPrice >= 30) coins.push({ value: 50, label: '50元', cls: 'coin-50' });
+    if (state.targetPrice >= 15) coins.push({ value: 20, label: '20元', cls: 'coin-20' });
     if (state.targetPrice >= 5) coins.push({ value: 10, label: '10元', cls: 'coin-10' });
     coins.push({ value: 5, label: '5元', cls: 'coin-5' });
     coins.push({ value: 1, label: '1元', cls: 'coin-1' });
@@ -473,6 +504,29 @@
       { a: { emoji: '🥔', label: '土豆' }, b: { emoji: '🥔', label: '土豆' }, answer: 'same', q: '谁更重？', tilt: 0 },
       { a: { emoji: '🧸', label: '玩具熊' }, b: { emoji: '📱', label: '手机' }, answer: 'a', q: '谁更重？', tilt: -8 },
     ],
+    count: [
+      { a: { emoji: '🍎', label: '苹果', num: 5 }, b: { emoji: '🍌', label: '香蕉', num: 3 }, answer: 'a', q: '哪种水果更多？' },
+      { a: { emoji: '⭐', label: '星星', num: 4 }, b: { emoji: '🌙', label: '月亮', num: 7 }, answer: 'b', q: '哪个更多？' },
+      { a: { emoji: '🌸', label: '花', num: 6 }, b: { emoji: '🌸', label: '花', num: 6 }, answer: 'same', q: '哪边的花更多？' },
+      { a: { emoji: '🎈', label: '气球', num: 8 }, b: { emoji: '🎁', label: '礼物', num: 5 }, answer: 'a', q: '哪个更多？' },
+      { a: { emoji: '🍪', label: '饼干', num: 3 }, b: { emoji: '🍭', label: '糖果', num: 9 }, answer: 'b', q: '哪个更多？' },
+      { a: { emoji: '🐝', label: '蜜蜂', num: 7 }, b: { emoji: '🦋', label: '蝴蝶', num: 4 }, answer: 'a', q: '哪个更多？' },
+    ],
+    size: [
+      { a: { emoji: '🏀', label: '篮球', size: 70 }, b: { emoji: '⚽', label: '足球', size: 55 }, answer: 'a', q: '哪个球更大？' },
+      { a: { emoji: '🎾', label: '网球', size: 40 }, b: { emoji: '🏐', label: '排球', size: 60 }, answer: 'b', q: '哪个球更大？' },
+      { a: { emoji: '📦', label: '箱子', size: 80 }, b: { emoji: '📦', label: '箱子', size: 80 }, answer: 'same', q: '哪个箱子更大？' },
+      { a: { emoji: '🍉', label: '西瓜', size: 75 }, b: { emoji: '🍎', label: '苹果', size: 45 }, answer: 'a', q: '哪个更大？' },
+      { a: { emoji: '🐘', label: '大象', size: 85 }, b: { emoji: '🐭', label: '老鼠', size: 30 }, answer: 'a', q: '哪个更大？' },
+      { a: { emoji: '🎃', label: '南瓜', size: 50 }, b: { emoji: '🍊', label: '橙子', size: 42 }, answer: 'a', q: '哪个更大？' },
+    ],
+    thick: [
+      { a: { label: '红树干', width: 60, color: '#8B4513' }, b: { label: '蓝树干', width: 35, color: '#4682B4' }, answer: 'a', q: '哪根树干更粗？' },
+      { a: { label: '绿树干', width: 40, color: '#228B22' }, b: { label: '紫树干', width: 55, color: '#9370DB' }, answer: 'b', q: '哪根树干更粗？' },
+      { a: { label: '黄树干', width: 48, color: '#DAA520' }, b: { label: '橙树干', width: 48, color: '#FF8C00' }, answer: 'same', q: '哪根树干更粗？' },
+      { a: { label: '灰树干', width: 70, color: '#808080' }, b: { label: '棕树干', width: 42, color: '#A0522D' }, answer: 'a', q: '哪根树干更粗？' },
+      { a: { label: '粉树干', width: 38, color: '#FFB6C1' }, b: { label: '青树干', width: 62, color: '#20B2AA' }, answer: 'b', q: '哪根树干更粗？' },
+    ],
   };
 
   function initCompare() {
@@ -501,18 +555,33 @@
       return;
     }
 
-    const types = ['length', 'height', 'weight'];
-    const type = types[(state.compareRound - 1) % 3];
+    const types = ['length', 'height', 'weight', 'count', 'size', 'thick'];
+    const type = types[(state.compareRound - 1) % 6];
     state.compareType = type;
     const pool = COMPARE_QUESTIONS[type];
     const q = pool[randInt(0, pool.length - 1)];
-    state.compareAnswer = q.answer;
 
-    showQuestion('⚖️', `第${state.compareRound}题：${q.q}`);
+    const reverse = Math.random() < 0.5;
+    const questionMap = {
+      length: { normal: '哪支铅笔更长？', reverse: '哪支铅笔更短？' },
+      height: { normal: '谁更高？', reverse: '谁更矮？' },
+      weight: { normal: '谁更重？', reverse: '谁更轻？' },
+      count: { normal: '哪个更多？', reverse: '哪个更少？' },
+      size: { normal: '哪个更大？', reverse: '哪个更小？' },
+      thick: { normal: '哪根树干更粗？', reverse: '哪根树干更细？' }
+    };
+
+    const questionText = reverse ? questionMap[type].reverse : (q.q || questionMap[type].normal);
+    state.compareAnswer = reverse && q.answer !== 'same' ? (q.answer === 'a' ? 'b' : 'a') : q.answer;
+
+    showQuestion('⚖️', `第${state.compareRound}题：${questionText}`);
 
     if (type === 'length') renderLengthScene(q);
     else if (type === 'height') renderHeightScene(q);
-    else renderWeightScene(q);
+    else if (type === 'weight') renderWeightScene(q);
+    else if (type === 'count') renderCountScene(q);
+    else if (type === 'size') renderSizeScene(q);
+    else renderThickScene(q);
 
     renderCompareOptions(q);
   }
@@ -562,6 +631,52 @@
       </div>`;
   }
 
+  function renderCountScene(q) {
+    compareScene.innerHTML = `
+      <div style="display:flex;gap:40px;align-items:center;">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+          <div style="display:flex;flex-wrap:wrap;gap:4px;max-width:120px;justify-content:center;">
+            ${Array(q.a.num).fill(q.a.emoji).map(e => `<span style="font-size:28px;">${e}</span>`).join('')}
+          </div>
+          <span style="font-size:14px;font-weight:700;color:var(--gray-400);">${q.a.label}</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+          <div style="display:flex;flex-wrap:wrap;gap:4px;max-width:120px;justify-content:center;">
+            ${Array(q.b.num).fill(q.b.emoji).map(e => `<span style="font-size:28px;">${e}</span>`).join('')}
+          </div>
+          <span style="font-size:14px;font-weight:700;color:var(--gray-400);">${q.b.label}</span>
+        </div>
+      </div>`;
+  }
+
+  function renderSizeScene(q) {
+    compareScene.innerHTML = `
+      <div style="display:flex;gap:40px;align-items:flex-end;">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+          <span style="font-size:${q.a.size}px;">${q.a.emoji}</span>
+          <span style="font-size:14px;font-weight:700;color:var(--gray-400);">${q.a.label}</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+          <span style="font-size:${q.b.size}px;">${q.b.emoji}</span>
+          <span style="font-size:14px;font-weight:700;color:var(--gray-400);">${q.b.label}</span>
+        </div>
+      </div>`;
+  }
+
+  function renderThickScene(q) {
+    compareScene.innerHTML = `
+      <div style="display:flex;flex-direction:column;gap:20px;width:100%;padding:20px;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="font-size:14px;font-weight:700;width:70px;text-align:right;">${q.a.label}</span>
+          <div style="width:120px;height:${q.a.width}px;background:${q.a.color};border-radius:${q.a.width/2}px;border:2px solid rgba(0,0,0,0.2);"></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="font-size:14px;font-weight:700;width:70px;text-align:right;">${q.b.label}</span>
+          <div style="width:120px;height:${q.b.width}px;background:${q.b.color};border-radius:${q.b.width/2}px;border:2px solid rgba(0,0,0,0.2);"></div>
+        </div>
+      </div>`;
+  }
+
   function renderCompareOptions(q) {
     compareOptions.innerHTML = '';
     const opts = [
@@ -590,6 +705,157 @@
         }
       };
       compareOptions.appendChild(div);
+    });
+  }
+
+  /* ========== 长度模式 ========== */
+
+  const LENGTH_QUESTIONS = [
+    { obj: '✏️', name: '铅笔', len: 8, unit: 'cm', opts: [6, 8, 10] },
+    { obj: '📏', name: '尺子', len: 15, unit: 'cm', opts: [12, 15, 18] },
+    { obj: '🔑', name: '钥匙', len: 5, unit: 'cm', opts: [3, 5, 7] },
+    { obj: '🥄', name: '勺子', len: 12, unit: 'cm', opts: [10, 12, 14] },
+    { obj: '🖊️', name: '钢笔', len: 14, unit: 'cm', opts: [12, 14, 16] },
+    { obj: '📱', name: '手机', len: 16, unit: 'cm', opts: [14, 16, 18] },
+    { obj: '🪥', name: '牙刷', len: 18, unit: 'cm', opts: [16, 18, 20] },
+    { obj: '🥖', name: '面包', len: 25, unit: 'cm', opts: [20, 25, 30] },
+  ];
+
+  function initLength() {
+    state.lengthRound = 0;
+    questionBar.style.display = 'flex';
+    questionIcon.textContent = '📏';
+    questionText.textContent = '用尺子量一量，选出正确的长度';
+    bottomActions.style.display = 'flex';
+    actionBtn.textContent = '🎯 开始练习';
+    actionBtn.className = 'btn btn-blue btn-lg';
+    actionBtn.onclick = nextLengthQuestion;
+    rulerContainer.innerHTML = '<div style="font-size:48px;padding:40px;">📏</div><div style="font-size:18px;color:var(--gray-400);">点击"开始练习"测量物体</div>';
+    lengthOptions.innerHTML = '';
+  }
+
+  function nextLengthQuestion() {
+    if (state.lengthRound >= 5) {
+      showFeedback('🎊', '全部完成！', 2000);
+      setTimeout(initLength, 2500);
+      return;
+    }
+    state.lengthRound++;
+    const q = LENGTH_QUESTIONS[Math.floor(Math.random() * LENGTH_QUESTIONS.length)];
+    state.lengthAnswer = q.len;
+
+    const maxLen = 30;
+    rulerContainer.innerHTML = `
+      <div style="display:flex;flex-direction:column;align-items:center;gap:16px;width:100%;">
+        <div style="position:relative;width:100%;max-width:320px;">
+          <div style="display:flex;height:40px;background:linear-gradient(180deg,#FFE4B5,#FFD700);border:2px solid var(--gray-300);border-radius:4px;position:relative;">
+            ${Array.from({length: maxLen+1}, (_, i) => {
+              const isLong = i % 5 === 0;
+              return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;border-left:${i===0?'none':'1px solid rgba(0,0,0,0.1)'};position:relative;">
+                <div style="width:2px;height:${isLong?'16px':'10px'};background:var(--text);margin-top:2px;"></div>
+                ${i === q.len ? `<div style="position:absolute;top:-12px;width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-top:12px solid #FF0000;"></div>` : ''}
+              </div>`;
+            }).join('')}
+          </div>
+          <div style="display:flex;justify-content:space-between;margin-top:4px;padding:0 2px;">
+            ${Array.from({length: 7}, (_, i) => `<span style="font-size:11px;font-weight:700;">${i*5}</span>`).join('')}
+          </div>
+          <div style="position:absolute;right:4px;top:20px;transform:translateY(-50%);font-size:11px;font-weight:700;color:var(--text);">cm</div>
+        </div>
+        <div style="font-size:48px;">${q.obj}</div>
+        <div style="font-size:18px;font-weight:700;color:var(--gray-400);">${q.name}有多长？
+      </div>
+    `;
+
+    lengthOptions.innerHTML = '';
+    q.opts.forEach(opt => {
+      const div = document.createElement('div');
+      div.className = 'length-option';
+      div.textContent = `${opt} ${q.unit}`;
+      div.onclick = () => {
+        if (div.classList.contains('selected')) return;
+        if (opt === state.lengthAnswer) {
+          div.classList.add('selected');
+          addStar(1);
+          showFeedback('🎉', '答对了！', 1200);
+          setTimeout(nextLengthQuestion, 1500);
+        } else {
+          div.classList.add('wrong');
+          showFeedback('🤔', '再看看哦', 800);
+          setTimeout(() => div.classList.remove('wrong'), 500);
+        }
+      };
+      lengthOptions.appendChild(div);
+    });
+  }
+
+  /* ========== 质量模式 ========== */
+
+  const WEIGHT_QUESTIONS = [
+    { obj: '🍎', name: '苹果', value: 200, answer: '克' },
+    { obj: '🍌', name: '香蕉', value: 150, answer: '克' },
+    { obj: '🥔', name: '土豆', value: 300, answer: '克' },
+    { obj: '🥕', name: '胡萝卜', value: 100, answer: '克' },
+    { obj: '📚', name: '书本', value: 500, answer: '克' },
+    { obj: '🎒', name: '书包', value: 2, answer: '千克' },
+    { obj: '🏀', name: '篮球', value: 600, answer: '克' },
+    { obj: '🧸', name: '玩具熊', value: 1, answer: '千克' },
+    { obj: '🍉', name: '西瓜', value: 3, answer: '千克' },
+    { obj: '🐱', name: '小猫', value: 4, answer: '千克' },
+  ];
+
+  function initWeight() {
+    state.weightRound = 0;
+    questionBar.style.display = 'flex';
+    questionIcon.textContent = '⚖️';
+    questionText.textContent = '用秤称一称，选出正确的重量';
+    bottomActions.style.display = 'flex';
+    actionBtn.textContent = '🎯 开始练习';
+    actionBtn.className = 'btn btn-purple btn-lg';
+    actionBtn.onclick = nextWeightQuestion;
+    scaleDisplay.innerHTML = '<div style="font-size:48px;padding:40px;">⚖️</div><div style="font-size:18px;color:var(--gray-400);">点击"开始练习"称重物体</div>';
+    weightOptions.innerHTML = '';
+  }
+
+  function nextWeightQuestion() {
+    if (state.weightRound >= 5) {
+      showFeedback('🎊', '全部完成！', 2000);
+      setTimeout(initWeight, 2500);
+      return;
+    }
+    state.weightRound++;
+    const q = WEIGHT_QUESTIONS[Math.floor(Math.random() * WEIGHT_QUESTIONS.length)];
+    state.weightAnswer = q.answer;
+
+    scaleDisplay.innerHTML = `
+      <div class="digital-scale">
+        <div class="scale-screen">${q.value}</div>
+      </div>
+      <div class="scale-object">${q.obj}</div>
+      <div style="margin-top:8px;font-size:20px;font-weight:700;color:var(--text);">
+        ${q.name} ${q.value}&nbsp;<span style="color:var(--blue);">?</span>
+      </div>
+    `;
+
+    weightOptions.innerHTML = '';
+    ['克', '千克'].forEach(unit => {
+      const div = document.createElement('div');
+      div.className = 'weight-option';
+      div.textContent = unit;
+      div.onclick = () => {
+        if (div.classList.contains('selected')) return;
+        if (unit === state.weightAnswer) {
+          div.classList.add('selected');
+          addStar(1);
+          showFeedback('🎉', '答对了！', 1200);
+          setTimeout(nextWeightQuestion, 1500);
+        } else {
+          div.classList.add('wrong');
+          showFeedback('🤔', '再想想哦', 800);
+          setTimeout(() => div.classList.remove('wrong'), 500);
+        }
+      };
+      weightOptions.appendChild(div);
     });
   }
 

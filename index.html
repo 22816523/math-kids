@@ -7,13 +7,33 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/design-system.css">
+  <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
   <style>
     .home-header {
+      position: relative;
       text-align: center;
       padding: 32px 20px 16px;
     }
+    .settings-btn {
+      position: absolute;
+      top: 32px;
+      right: 20px;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--gray-100);
+      border: 3px solid var(--gray-200);
+      border-bottom: 4px solid var(--gray-300);
+      font-size: 20px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .settings-btn:active {
+      transform: translateY(2px);
+      border-bottom-width: 2px;
+    }
     .home-title {
-      font-size: 32px;
+      font-size: 40px;
       font-weight: 900;
     }
     .home-subtitle {
@@ -47,7 +67,129 @@
       border-bottom-width: 2px;
     }
     .module-card .module-icon {
-      font-size: 48px;
+      width: 56px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .icon-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 12px);
+      gap: 3px;
+    }
+    .icon-grid-cell {
+      width: 12px;
+      height: 12px;
+      background: var(--green);
+      border-radius: 3px;
+      box-shadow: 0 2px 0 var(--green-dark);
+    }
+
+    .icon-shapes {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+    }
+    .icon-circle {
+      width: 16px;
+      height: 16px;
+      background: var(--purple);
+      border-radius: 50%;
+      box-shadow: 0 2px 0 var(--purple-dark);
+    }
+    .icon-triangle {
+      width: 0;
+      height: 0;
+      border-left: 9px solid transparent;
+      border-right: 9px solid transparent;
+      border-bottom: 16px solid var(--purple);
+      filter: drop-shadow(0 2px 0 var(--purple-dark));
+    }
+    .icon-square {
+      width: 16px;
+      height: 16px;
+      background: var(--purple);
+      border-radius: 3px;
+      box-shadow: 0 2px 0 var(--purple-dark);
+    }
+
+    .icon-clock {
+      width: 44px;
+      height: 44px;
+      background: var(--yellow);
+      border-radius: 50%;
+      border: 4px solid var(--yellow-dark);
+      position: relative;
+      box-shadow: 0 3px 0 var(--yellow-dark);
+    }
+    .icon-clock::before {
+      content: '';
+      position: absolute;
+      width: 2px;
+      height: 12px;
+      background: var(--yellow-dark);
+      top: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    .icon-clock::after {
+      content: '';
+      position: absolute;
+      width: 10px;
+      height: 2px;
+      background: var(--yellow-dark);
+      top: 19px;
+      left: 19px;
+    }
+
+    .icon-plus {
+      width: 50px;
+      height: 44px;
+      position: relative;
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+    .icon-plus-sign {
+      width: 20px;
+      height: 20px;
+      position: relative;
+    }
+    .icon-plus-sign::before,
+    .icon-plus-sign::after {
+      content: '';
+      position: absolute;
+      background: var(--red);
+      border-radius: 2px;
+      box-shadow: 0 2px 0 var(--red-dark);
+    }
+    .icon-plus-sign::before {
+      width: 4px;
+      height: 20px;
+      left: 8px;
+    }
+    .icon-plus-sign::after {
+      width: 20px;
+      height: 4px;
+      top: 8px;
+    }
+    .icon-minus-sign {
+      width: 20px;
+      height: 20px;
+      position: relative;
+    }
+    .icon-minus-sign::before {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 4px;
+      background: var(--red);
+      border-radius: 2px;
+      box-shadow: 0 2px 0 var(--red-dark);
+      top: 8px;
     }
     .module-card .module-name {
       font-size: 20px;
@@ -80,47 +222,82 @@
 <body>
   <div id="app">
     <div class="home-header">
-      <div class="home-title">🧒 数学启蒙</div>
+      <button class="settings-btn" onclick="openSettings()">⚙️</button>
+      <div class="home-title">趣味数学</div>
       <div class="home-subtitle">3-8岁 · 玩中学数学</div>
     </div>
 
     <div class="module-grid">
       <a href="baisu.html" class="module-card color-green">
-        <span class="module-icon">🔢</span>
+        <div class="module-icon">
+          <div class="icon-grid">
+            <div class="icon-grid-cell"></div>
+            <div class="icon-grid-cell"></div>
+            <div class="icon-grid-cell"></div>
+            <div class="icon-grid-cell"></div>
+            <div class="icon-grid-cell"></div>
+            <div class="icon-grid-cell"></div>
+            <div class="icon-grid-cell"></div>
+            <div class="icon-grid-cell"></div>
+            <div class="icon-grid-cell"></div>
+          </div>
+        </div>
         <span class="module-name">百数板</span>
         <span class="module-desc">认数字 · 填一填 · 跳着数 · 拆一拆</span>
       </a>
 
       <a href="shape.html" class="module-card color-purple">
-        <span class="module-icon">📐</span>
+        <div class="module-icon">
+          <div class="icon-shapes">
+            <div class="icon-circle"></div>
+            <div class="icon-triangle"></div>
+            <div class="icon-square"></div>
+          </div>
+        </div>
         <span class="module-name">图形与几何</span>
         <span class="module-desc">辨认 · 分类 · 找一找</span>
       </a>
 
       <a href="measure.html" class="module-card color-yellow">
-        <span class="module-icon">⏰</span>
+        <div class="module-icon">
+          <div class="icon-clock"></div>
+        </div>
         <span class="module-name">常见的量</span>
         <span class="module-desc">钟表 · 人民币 · 比较</span>
       </a>
 
-      <div class="module-card locked color-blue">
-        <span class="module-icon">🧩</span>
+      <div class="module-card locked color-blue" style="display:none;">
+        <div class="module-icon">🧩</div>
         <span class="module-name">综合与实践</span>
         <span class="module-desc">分类 · 找规律 · 生活问题</span>
       </div>
 
-      <div class="module-card locked color-red">
-        <span class="module-icon">➕</span>
+      <a href="math.html" class="module-card color-red">
+        <div class="module-icon">
+          <div class="icon-plus">
+            <div class="icon-plus-sign"></div>
+            <div class="icon-minus-sign"></div>
+          </div>
+        </div>
         <span class="module-name">加减法</span>
         <span class="module-desc">10以内 · 20以内 · 100以内</span>
-      </div>
+      </a>
 
-      <div class="module-card locked color-orange">
-        <span class="module-icon">🏆</span>
+      <div class="module-card locked color-orange" style="display:none;">
+        <div class="module-icon">🏆</div>
         <span class="module-name">每日闯关</span>
         <span class="module-desc">混合题型 · 星星收集</span>
       </div>
     </div>
   </div>
+
+  <script src="js/timer.js"></script>
+  <script>
+    function openSettings() {
+      ParentalControl.requireVerification(() => {
+        window.location.href = 'settings.html';
+      });
+    }
+  </script>
 </body>
 </html>
