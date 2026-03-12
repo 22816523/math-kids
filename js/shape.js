@@ -8,9 +8,9 @@
 
   // ========== 柔和色板（低饱和马卡龙色） ==========
   const SOFT_COLORS = [
-    '#E8B4B8', '#B4D4E8', '#E8D4B4', '#B4E8C8',
-    '#D4B4E8', '#E8C8B4', '#B4E0E8', '#E8B4D4',
-    '#C8E8B4', '#B4B4E8', '#E8E0B4', '#B4E8E0',
+    '#F2C4C4', '#C4DAF2', '#F2DCC4', '#C4F2D4',
+    '#DCC4F2', '#F2D0C4', '#C4ECF2', '#F2C4DC',
+    '#D4F2C4', '#C4C4F2', '#F2ECC4', '#C4F2EC',
   ];
 
   let colorIndex = 0;
