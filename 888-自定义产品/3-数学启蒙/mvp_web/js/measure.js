@@ -707,14 +707,16 @@
   /* ========== 质量模式 ========== */
 
   const WEIGHT_QUESTIONS = [
-    { obj: '🍎', name: '苹果', weight: 200, unit: 'g', opts: [150, 200, 250] },
-    { obj: '🍌', name: '香蕉', weight: 150, unit: 'g', opts: [100, 150, 200] },
-    { obj: '🥔', name: '土豆', weight: 300, unit: 'g', opts: [250, 300, 350] },
-    { obj: '🥕', name: '胡萝卜', weight: 100, unit: 'g', opts: [80, 100, 120] },
-    { obj: '📚', name: '书本', weight: 500, unit: 'g', opts: [400, 500, 600] },
-    { obj: '🎒', name: '书包', weight: 2, unit: 'kg', opts: [1, 2, 3] },
-    { obj: '🏀', name: '篮球', weight: 600, unit: 'g', opts: [500, 600, 700] },
-    { obj: '🧸', name: '玩具熊', weight: 1, unit: 'kg', opts: [1, 2, 3] },
+    { obj: '🍎', name: '苹果', value: 200, answer: '克' },
+    { obj: '🍌', name: '香蕉', value: 150, answer: '克' },
+    { obj: '🥔', name: '土豆', value: 300, answer: '克' },
+    { obj: '🥕', name: '胡萝卜', value: 100, answer: '克' },
+    { obj: '📚', name: '书本', value: 500, answer: '克' },
+    { obj: '🎒', name: '书包', value: 2, answer: '千克' },
+    { obj: '🏀', name: '篮球', value: 600, answer: '克' },
+    { obj: '🧸', name: '玩具熊', value: 1, answer: '千克' },
+    { obj: '🍉', name: '西瓜', value: 3, answer: '千克' },
+    { obj: '🐱', name: '小猫', value: 4, answer: '千克' },
   ];
 
   function initWeight() {
@@ -738,33 +740,33 @@
     }
     state.weightRound++;
     const q = WEIGHT_QUESTIONS[Math.floor(Math.random() * WEIGHT_QUESTIONS.length)];
-    state.weightAnswer = q.weight;
+    state.weightAnswer = q.answer;
 
     scaleDisplay.innerHTML = `
       <div class="digital-scale">
-        <div class="scale-screen">? ? ?</div>
+        <div class="scale-screen">${q.value}</div>
       </div>
       <div class="scale-object">${q.obj}</div>
-      <div style="margin-top:8px;font-size:18px;font-weight:700;color:var(--gray-400);">
-        ${q.name}有多重？
+      <div style="margin-top:8px;font-size:20px;font-weight:700;color:var(--text);">
+        ${q.name} ${q.value} <span style="color:var(--blue);">(?)</span>
       </div>
     `;
 
     weightOptions.innerHTML = '';
-    q.opts.forEach(opt => {
+    ['克', '千克'].forEach(unit => {
       const div = document.createElement('div');
       div.className = 'weight-option';
-      div.textContent = `${opt} ${q.unit}`;
+      div.textContent = unit;
       div.onclick = () => {
         if (div.classList.contains('selected')) return;
-        if (opt === state.weightAnswer) {
+        if (unit === state.weightAnswer) {
           div.classList.add('selected');
           addStar(1);
           showFeedback('🎉', '答对了！', 1200);
           setTimeout(nextWeightQuestion, 1500);
         } else {
           div.classList.add('wrong');
-          showFeedback('🤔', '再看看哦', 800);
+          showFeedback('🤔', '再想想哦', 800);
           setTimeout(() => div.classList.remove('wrong'), 500);
         }
       };
