@@ -748,6 +748,7 @@
         <div style="position:absolute;top:8px;left:4px;height:20px;background:rgba(255,100,100,0.6);border:2px solid #FF6347;border-radius:4px;width:${q.len/maxLen*100}%;display:flex;align-items:center;justify-content:center;font-size:28px;">
           ${q.obj}
         </div>
+        <div style="position:absolute;top:4px;left:${4+q.len/maxLen*100}%;width:3px;height:28px;background:#FF0000;"></div>
       </div>
       <div style="margin-top:12px;font-size:18px;font-weight:700;color:var(--gray-400);">
         ${q.name}有多长？
