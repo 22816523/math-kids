@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+  <title>数学启蒙 · 常见的量</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/design-system.css">
+  <link rel="stylesheet" href="css/measure.css">
+</head>
+<body>
+  <div id="app">
+    <!-- 顶栏 -->
+    <div class="topbar">
+      <div class="topbar-left">
+        <a href="index.html" class="back-btn">◀</a>
+        <span class="topbar-title">⏰ 常见的量</span>
+      </div>
+      <div class="star-counter">
+        <span class="star-icon">⭐</span>
+        <span id="starCount">0</span>
+      </div>
+    </div>
+
+    <!-- 模式切换标签 -->
+    <div class="mode-tabs">
+      <button class="mode-tab active" data-mode="clock">
+        <span class="tab-icon">🕐</span>
+        <span class="tab-label">钟表</span>
+      </button>
+      <button class="mode-tab" data-mode="money">
+        <span class="tab-icon">💰</span>
+        <span class="tab-label">人民币</span>
+      </button>
+      <button class="mode-tab" data-mode="compare">
+        <span class="tab-icon">⚖️</span>
+        <span class="tab-label">比较</span>
+      </button>
+    </div>
+
+    <!-- 内容区 -->
+    <div class="content measure-content">
+
+      <!-- 提示/题目区 -->
+      <div id="questionBar" class="question-bar" style="display:none;">
+        <span class="question-icon" id="questionIcon">🎯</span>
+        <span class="question-text" id="questionText"></span>
+      </div>
+
+      <!-- 钟表模式 -->
+      <div id="clockArea" class="clock-area">
+        <div class="clock-face" id="clockFace">
+          <svg viewBox="0 0 300 300" id="clockSvg">
+            <!-- JS动态绘制 -->
+          </svg>
+        </div>
+        <div class="digital-clock" id="digitalClock">--:--</div>
+        <div class="clock-options" id="clockOptions">
+          <!-- JS动态生成选项 -->
+        </div>
+      </div>
+
+      <!-- 人民币模式 -->
+      <div id="moneyArea" class="money-area" style="display:none;">
+        <div class="shop-shelf" id="shopShelf">
+          <!-- JS动态生成商品 -->
+        </div>
+        <div class="pay-prompt" id="payPrompt" style="display:none;">
+          <span class="pay-icon">🛒</span>
+          <span class="pay-text" id="payText"></span>
+        </div>
+        <div class="wallet" id="wallet">
+          <!-- JS动态生成钱币 -->
+        </div>
+        <div class="cashier" id="cashier">
+          <div class="cashier-label">💵 收银台</div>
+          <div class="cashier-tray" id="cashierTray"></div>
+          <div class="cashier-total">已付: <span id="paidTotal">0</span> 元</div>
+        </div>
+      </div>
+
+      <!-- 比较模式 -->
+      <div id="compareArea" class="compare-area" style="display:none;">
+        <div class="compare-scene" id="compareScene">
+          <!-- JS动态生成比较场景 -->
+        </div>
+        <div class="compare-options" id="compareOptions">
+          <!-- JS动态生成选项 -->
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 底部操作区 -->
+    <div id="bottomActions" class="bottom-actions" style="display:none;">
+      <button class="btn btn-green btn-lg" id="actionBtn">🎯 开始练习</button>
+    </div>
+
+    <!-- 反馈浮层 -->
+    <div id="feedbackOverlay" class="feedback-overlay" style="display:none;">
+      <div class="feedback-emoji" id="feedbackEmoji"></div>
+      <div class="feedback-text" id="feedbackText"></div>
+    </div>
+
+    <!-- 庆祝彩纸屑容器 -->
+    <div id="confettiContainer" class="confetti-container"></div>
+  </div>
+
+  <script src="js/measure.js"></script>
+</body>
+</html>
