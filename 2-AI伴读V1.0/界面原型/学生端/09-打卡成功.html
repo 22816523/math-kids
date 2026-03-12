@@ -288,16 +288,6 @@
     </div>
 
     <div class="content-container">
-        <div class="tips-card">
-            <div class="tips-header">
-                <div class="tips-avatar"><i class="fa-solid fa-leaf"></i></div>
-                <div class="tips-title">小读点评</div>
-            </div>
-            <div class="tips-bubble">
-                你的回答很有深度！对人物心理的分析很到位。建议在描述科学概念时可以更加具体，结合书中的例子会更好哦
-            </div>
-        </div>
-
         <div class="section-card">
             <div class="section-header">
                 <div class="section-icon"><i class="fa-solid fa-image"></i></div>
@@ -325,7 +315,10 @@
     </div>
 
     <div class="action-bar">
-        <button class="btn" onclick="Router.toStudentPage('home')">
+        <button class="btn" onclick="Router.toStudentPage('aiIntro')" style="margin-bottom: 8px;">
+            <i class="fa-solid fa-book-open"></i> 返回导读页
+        </button>
+        <button class="btn" onclick="Router.toStudentPage('home')" style="background: white; color: #666; border: 1px solid #d9d9d9;">
             <i class="fa-solid fa-house"></i> 返回首页
         </button>
     </div>

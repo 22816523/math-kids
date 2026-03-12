@@ -565,7 +565,13 @@
         <div class="menu-item" onclick="Router.toStudentPage('readingStats')">
             <div class="menu-icon" style="background: linear-gradient(135deg, #667eea, #764ba2);"><i class="fa-solid fa-chart-line" style="color: white;"></i></div>
             <div class="menu-text">我的阅读</div>
-            <div style="font-size: 12px; color: #8c8c8c; margin-right: 8px;">15本 | 打卡15次</div>
+            <div style="font-size: 12px; color: #8c8c8c; margin-right: 8px;">15本</div>
+            <div class="menu-arrow">→</div>
+        </div>
+        <div class="menu-item" onclick="Router.toStudentPage('checkinRecords')">
+            <div class="menu-icon" style="background: linear-gradient(135deg, #ff9a9e, #fad0c4);"><i class="fa-solid fa-calendar-check" style="color: white;"></i></div>
+            <div class="menu-text">我的打卡</div>
+            <div style="font-size: 12px; color: #8c8c8c; margin-right: 8px;">15次</div>
             <div class="menu-arrow">→</div>
         </div>
         <div class="menu-item" onclick="Router.toStudentPage('certificates')">
@@ -584,12 +590,6 @@
             <div class="menu-icon" style="background: linear-gradient(135deg, #36cfc9, #13c2c2);"><i class="fa-solid fa-headset" style="color: white;"></i></div>
             <div class="menu-text">联系我们</div>
             <div class="menu-arrow">→</div>
-        </div>
-    </div>
-
-    <div class="menu-section">
-        <div class="menu-item" onclick="logout()" style="justify-content: center;">
-            <div class="menu-text" style="color: #ff4d4f; text-align: center;">退出登录</div>
         </div>
     </div>
 
@@ -651,15 +651,7 @@
         }
 
         // 退出登录
-        function logout() {
-            if (confirm('确定要退出登录吗？')) {
-                // 清除登录状态
-                localStorage.removeItem('isLoggedIn');
-                localStorage.removeItem('userInfo');
-                // 跳转到登录页
-                window.location.href = '00-登录.html';
-            }
-        }
+        // 退出登录已移至设置页
     </script>
 </body>
 </html>

@@ -198,9 +198,9 @@
 
         .task-header {
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             gap: 10px;
-            margin-bottom: 10px;
+            margin-bottom: 0;
         }
 
         .task-num {
@@ -242,23 +242,30 @@
         }
 
         .task-guide {
-            font-size: 13px;
+            font-size: 14px;
             line-height: 1.6;
             color: #595959;
-            padding: 10px 12px;
-            background: #f9f9f9;
-            border-radius: 8px;
-            margin-bottom: 12px;
-            border-left: 3px solid var(--color-primary);
+            flex: 1;
         }
 
         .task-card.done .task-guide {
-            border-left-color: #d9d9d9;
+            color: #999;
+        }
+
+        .task-highlight {
+            color: #ff6b00;
+            font-weight: 600;
+        }
+
+        .task-card.done .task-highlight {
+            color: #ff6b00;
         }
 
         .task-actions {
             display: flex;
             gap: 10px;
+            margin-top: 10px;
+            padding-left: 34px;
         }
 
         .btn-skip {
@@ -468,20 +475,16 @@
             <div class="task-card done">
                 <div class="task-header">
                     <div class="task-num"><i class="fa-solid fa-check" style="font-size: 11px;"></i></div>
-                    <div class="task-name">阅读第15-30页</div>
-                    <span class="task-done-tag">已完成</span>
+                    <div class="task-guide">这一章我们将跟随主人公进入三体世界，请<span class="task-highlight">阅读第15-30页</span>，注意作者对科学概念的描写方式</div>
                 </div>
-                <div class="task-guide">这一章我们将跟随主人公进入三体世界，注意作者对科学概念的描写方式，感受硬科幻的魅力</div>
             </div>
 
             <!-- 任务2：已完成 -->
             <div class="task-card done">
                 <div class="task-header">
                     <div class="task-num"><i class="fa-solid fa-check" style="font-size: 11px;"></i></div>
-                    <div class="task-name">完成导读单二</div>
-                    <span class="task-done-tag">已完成</span>
+                    <div class="task-guide">导读单帮助你梳理阅读内容，请<span class="task-highlight">完成导读单二</span>，拍照上传你的手写导读单</div>
                 </div>
-                <div class="task-guide">导读单帮助你梳理阅读内容，拍照上传你的手写导读单，记录你的阅读思考</div>
                 <div class="task-actions">
                     <a class="btn-view-detail" onclick="location.href='30-打卡详情.html'">查看打卡详情 <i
                             class="fa-solid fa-chevron-right"></i></a>
@@ -492,9 +495,8 @@
             <div class="task-card">
                 <div class="task-header">
                     <div class="task-num">3</div>
-                    <div class="task-name">完成AI测评</div>
+                    <div class="task-guide">根据你阅读的内容，AI为你出了几道小题，请<span class="task-highlight">完成AI测评</span>，测测你的理解程度吧</div>
                 </div>
-                <div class="task-guide">根据你阅读的内容，AI为你出了几道小题，测测你的理解程度吧</div>
                 <div class="task-actions">
                     <button class="btn-skip">跳过</button>
                     <button class="btn-action exam" onclick="Router.toStudentPage('exam', {examId: 125})">去测评 <i
@@ -506,9 +508,8 @@
             <div class="task-card">
                 <div class="task-header">
                     <div class="task-num">4</div>
-                    <div class="task-name">观看AI导读视频</div>
+                    <div class="task-guide">AI为你生成了本章的导读视频，请<span class="task-highlight">观看AI导读视频</span>，帮助你更好地理解故事背景和核心概念</div>
                 </div>
-                <div class="task-guide">AI为你生成了本章的导读视频，帮助你更好地理解故事背景和核心概念</div>
                 <div class="task-actions">
                     <button class="btn-skip">跳过</button>
                     <button class="btn-action video" onclick="location.href='07-1-AI导读视频.html'">去观看 <i
