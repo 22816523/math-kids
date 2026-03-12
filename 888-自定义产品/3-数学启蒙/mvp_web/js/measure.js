@@ -732,26 +732,25 @@
     const q = LENGTH_QUESTIONS[Math.floor(Math.random() * LENGTH_QUESTIONS.length)];
     state.lengthAnswer = q.len;
 
-    const maxLen = Math.max(...q.opts) + 5;
+    const maxLen = 30;
     rulerContainer.innerHTML = `
-      <div style="position:relative;width:100%;max-width:360px;">
-        <div class="ruler" style="position:relative;">
-          <div class="ruler-marks">
-            ${Array.from({length: Math.ceil(maxLen/5)+1}, (_, i) => i*5).map(n => `
-              <div class="ruler-mark">
-                <div class="ruler-mark-line ${n % 10 === 0 ? 'long' : 'short'}"></div>
-                ${n % 10 === 0 ? `<span>${n}</span>` : ''}
-              </div>
-            `).join('')}
+      <div style="display:flex;flex-direction:column;align-items:center;gap:12px;width:100%;">
+        <div style="position:relative;width:100%;max-width:320px;">
+          <div style="display:flex;height:50px;background:linear-gradient(180deg,#FFE4B5,#FFD700);border:2px solid var(--gray-300);border-radius:4px;position:relative;">
+            ${Array.from({length: maxLen+1}, (_, i) => {
+              const isLong = i % 5 === 0;
+              const showNum = i % 10 === 0;
+              return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;border-left:${i===0?'none':'1px solid rgba(0,0,0,0.1)'};position:relative;">
+                <div style="width:2px;height:${isLong?'16px':'10px'};background:var(--text);margin-bottom:2px;"></div>
+                ${showNum ? `<span style="font-size:10px;font-weight:700;position:absolute;bottom:2px;">${i}</span>` : ''}
+                ${i === q.len ? `<div style="position:absolute;top:-8px;width:8px;height:8px;background:#FF0000;border-radius:50%;border:2px solid white;"></div>` : ''}
+              </div>`;
+            }).join('')}
           </div>
+          <div style="position:absolute;right:4px;top:50%;transform:translateY(-50%);font-size:11px;font-weight:700;color:var(--text);">cm</div>
         </div>
-        <div style="position:absolute;top:8px;left:4px;height:20px;background:rgba(255,100,100,0.6);border:2px solid #FF6347;border-radius:4px;width:${q.len/maxLen*100}%;display:flex;align-items:center;justify-content:center;font-size:28px;">
-          ${q.obj}
-        </div>
-        <div style="position:absolute;top:4px;left:${4+q.len/maxLen*100}%;width:3px;height:28px;background:#FF0000;"></div>
-      </div>
-      <div style="margin-top:12px;font-size:18px;font-weight:700;color:var(--gray-400);">
-        ${q.name}有多长？
+        <div style="font-size:48px;">${q.obj}</div>
+        <div style="font-size:18px;font-weight:700;color:var(--gray-400);">${q.name}有多长？
       </div>
     `;
 
