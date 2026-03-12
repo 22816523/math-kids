@@ -504,6 +504,29 @@
       { a: { emoji: '🥔', label: '土豆' }, b: { emoji: '🥔', label: '土豆' }, answer: 'same', q: '谁更重？', tilt: 0 },
       { a: { emoji: '🧸', label: '玩具熊' }, b: { emoji: '📱', label: '手机' }, answer: 'a', q: '谁更重？', tilt: -8 },
     ],
+    count: [
+      { a: { emoji: '🍎', label: '苹果', num: 5 }, b: { emoji: '🍌', label: '香蕉', num: 3 }, answer: 'a', q: '哪种水果更多？' },
+      { a: { emoji: '⭐', label: '星星', num: 4 }, b: { emoji: '🌙', label: '月亮', num: 7 }, answer: 'b', q: '哪个更多？' },
+      { a: { emoji: '🌸', label: '花', num: 6 }, b: { emoji: '🌸', label: '花', num: 6 }, answer: 'same', q: '哪边的花更多？' },
+      { a: { emoji: '🎈', label: '气球', num: 8 }, b: { emoji: '🎁', label: '礼物', num: 5 }, answer: 'a', q: '哪个更多？' },
+      { a: { emoji: '🍪', label: '饼干', num: 3 }, b: { emoji: '🍭', label: '糖果', num: 9 }, answer: 'b', q: '哪个更多？' },
+      { a: { emoji: '🐝', label: '蜜蜂', num: 7 }, b: { emoji: '🦋', label: '蝴蝶', num: 4 }, answer: 'a', q: '哪个更多？' },
+    ],
+    size: [
+      { a: { emoji: '🏀', label: '篮球', size: 70 }, b: { emoji: '⚽', label: '足球', size: 55 }, answer: 'a', q: '哪个球更大？' },
+      { a: { emoji: '🎾', label: '网球', size: 40 }, b: { emoji: '🏐', label: '排球', size: 60 }, answer: 'b', q: '哪个球更大？' },
+      { a: { emoji: '📦', label: '箱子', size: 80 }, b: { emoji: '📦', label: '箱子', size: 80 }, answer: 'same', q: '哪个箱子更大？' },
+      { a: { emoji: '🍉', label: '西瓜', size: 75 }, b: { emoji: '🍎', label: '苹果', size: 45 }, answer: 'a', q: '哪个更大？' },
+      { a: { emoji: '🐘', label: '大象', size: 85 }, b: { emoji: '🐭', label: '老鼠', size: 30 }, answer: 'a', q: '哪个更大？' },
+      { a: { emoji: '🎃', label: '南瓜', size: 50 }, b: { emoji: '🍊', label: '橙子', size: 42 }, answer: 'a', q: '哪个更大？' },
+    ],
+    thick: [
+      { a: { label: '红树干', width: 60, color: '#8B4513' }, b: { label: '蓝树干', width: 35, color: '#4682B4' }, answer: 'a', q: '哪根树干更粗？' },
+      { a: { label: '绿树干', width: 40, color: '#228B22' }, b: { label: '紫树干', width: 55, color: '#9370DB' }, answer: 'b', q: '哪根树干更粗？' },
+      { a: { label: '黄树干', width: 48, color: '#DAA520' }, b: { label: '橙树干', width: 48, color: '#FF8C00' }, answer: 'same', q: '哪根树干更粗？' },
+      { a: { label: '灰树干', width: 70, color: '#808080' }, b: { label: '棕树干', width: 42, color: '#A0522D' }, answer: 'a', q: '哪根树干更粗？' },
+      { a: { label: '粉树干', width: 38, color: '#FFB6C1' }, b: { label: '青树干', width: 62, color: '#20B2AA' }, answer: 'b', q: '哪根树干更粗？' },
+    ],
   };
 
   function initCompare() {
@@ -532,8 +555,8 @@
       return;
     }
 
-    const types = ['length', 'height', 'weight'];
-    const type = types[(state.compareRound - 1) % 3];
+    const types = ['length', 'height', 'weight', 'count', 'size', 'thick'];
+    const type = types[(state.compareRound - 1) % 6];
     state.compareType = type;
     const pool = COMPARE_QUESTIONS[type];
     const q = pool[randInt(0, pool.length - 1)];
@@ -543,7 +566,10 @@
 
     if (type === 'length') renderLengthScene(q);
     else if (type === 'height') renderHeightScene(q);
-    else renderWeightScene(q);
+    else if (type === 'weight') renderWeightScene(q);
+    else if (type === 'count') renderCountScene(q);
+    else if (type === 'size') renderSizeScene(q);
+    else renderThickScene(q);
 
     renderCompareOptions(q);
   }
@@ -590,6 +616,52 @@
         </div>
         <div class="scale-pillar"></div>
         <div class="scale-base"></div>
+      </div>`;
+  }
+
+  function renderCountScene(q) {
+    compareScene.innerHTML = `
+      <div style="display:flex;gap:40px;align-items:center;">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+          <div style="display:flex;flex-wrap:wrap;gap:4px;max-width:120px;justify-content:center;">
+            ${Array(q.a.num).fill(q.a.emoji).map(e => `<span style="font-size:28px;">${e}</span>`).join('')}
+          </div>
+          <span style="font-size:14px;font-weight:700;color:var(--gray-400);">${q.a.label}</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+          <div style="display:flex;flex-wrap:wrap;gap:4px;max-width:120px;justify-content:center;">
+            ${Array(q.b.num).fill(q.b.emoji).map(e => `<span style="font-size:28px;">${e}</span>`).join('')}
+          </div>
+          <span style="font-size:14px;font-weight:700;color:var(--gray-400);">${q.b.label}</span>
+        </div>
+      </div>`;
+  }
+
+  function renderSizeScene(q) {
+    compareScene.innerHTML = `
+      <div style="display:flex;gap:40px;align-items:flex-end;">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+          <span style="font-size:${q.a.size}px;">${q.a.emoji}</span>
+          <span style="font-size:14px;font-weight:700;color:var(--gray-400);">${q.a.label}</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+          <span style="font-size:${q.b.size}px;">${q.b.emoji}</span>
+          <span style="font-size:14px;font-weight:700;color:var(--gray-400);">${q.b.label}</span>
+        </div>
+      </div>`;
+  }
+
+  function renderThickScene(q) {
+    compareScene.innerHTML = `
+      <div style="display:flex;flex-direction:column;gap:20px;width:100%;padding:20px;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="font-size:14px;font-weight:700;width:70px;text-align:right;">${q.a.label}</span>
+          <div style="width:120px;height:${q.a.width}px;background:${q.a.color};border-radius:${q.a.width/2}px;border:2px solid rgba(0,0,0,0.2);"></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="font-size:14px;font-weight:700;width:70px;text-align:right;">${q.b.label}</span>
+          <div style="width:120px;height:${q.b.width}px;background:${q.b.color};border-radius:${q.b.width/2}px;border:2px solid rgba(0,0,0,0.2);"></div>
+        </div>
       </div>`;
   }
 
