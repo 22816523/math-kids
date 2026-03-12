@@ -746,7 +746,7 @@
             }).join('')}
           </div>
           <div style="display:flex;justify-content:space-between;margin-top:4px;padding:0 2px;">
-            ${Array.from({length: 4}, (_, i) => `<span style="font-size:11px;font-weight:700;">${i*10}</span>`).join('')}
+            ${Array.from({length: 7}, (_, i) => `<span style="font-size:11px;font-weight:700;">${i*5}</span>`).join('')}
           </div>
           <div style="position:absolute;right:4px;top:20px;transform:translateY(-50%);font-size:11px;font-weight:700;color:var(--text);">cm</div>
         </div>
