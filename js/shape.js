@@ -6,11 +6,11 @@
 ;(function () {
   'use strict';
 
-  // ========== 柔和色板（低饱和马卡龙色） ==========
+  // ========== 柔和色板（护眼糖果色：中饱和+高亮度） ==========
   const SOFT_COLORS = [
-    '#F2C4C4', '#C4DAF2', '#F2DCC4', '#C4F2D4',
-    '#DCC4F2', '#F2D0C4', '#C4ECF2', '#F2C4DC',
-    '#D4F2C4', '#C4C4F2', '#F2ECC4', '#C4F2EC',
+    '#FF8A8A', '#7BC8F6', '#FFD166', '#6BCB77',
+    '#C89CF2', '#FFA36C', '#6CD4DB', '#F28CB1',
+    '#A8E06C', '#8A9CF2', '#F2D16C', '#6CF2C8',
   ];
 
   let colorIndex = 0;
