@@ -660,20 +660,25 @@
     const q = LENGTH_QUESTIONS[Math.floor(Math.random() * LENGTH_QUESTIONS.length)];
     state.lengthAnswer = q.len;
 
+    const maxLen = Math.max(...q.opts) + 5;
     rulerContainer.innerHTML = `
-      <div class="ruler">
-        <div class="ruler-marks">
-          ${Array.from({length: Math.ceil(q.len/5)+2}, (_, i) => i*5).map(n => `
-            <div class="ruler-mark">
-              <div class="ruler-mark-line ${n % 10 === 0 ? 'long' : 'short'}"></div>
-              ${n % 10 === 0 ? `<span>${n}</span>` : ''}
-            </div>
-          `).join('')}
+      <div style="position:relative;width:100%;max-width:360px;">
+        <div class="ruler" style="position:relative;">
+          <div class="ruler-marks">
+            ${Array.from({length: Math.ceil(maxLen/5)+1}, (_, i) => i*5).map(n => `
+              <div class="ruler-mark">
+                <div class="ruler-mark-line ${n % 10 === 0 ? 'long' : 'short'}"></div>
+                ${n % 10 === 0 ? `<span>${n}</span>` : ''}
+              </div>
+            `).join('')}
+          </div>
+        </div>
+        <div style="position:absolute;top:8px;left:4px;height:20px;background:rgba(255,100,100,0.6);border:2px solid #FF6347;border-radius:4px;width:${q.len/maxLen*100}%;display:flex;align-items:center;justify-content:center;font-size:28px;">
+          ${q.obj}
         </div>
       </div>
-      <div class="measure-object">
-        <span>${q.obj}</span>
-        <span style="font-size:20px;color:var(--gray-400);">${q.name}</span>
+      <div style="margin-top:12px;font-size:18px;font-weight:700;color:var(--gray-400);">
+        ${q.name}有多长？
       </div>
     `;
 
@@ -737,9 +742,12 @@
 
     scaleDisplay.innerHTML = `
       <div class="digital-scale">
-        <div class="scale-screen">${q.weight} ${q.unit}</div>
+        <div class="scale-screen">? ? ?</div>
       </div>
       <div class="scale-object">${q.obj}</div>
+      <div style="margin-top:8px;font-size:18px;font-weight:700;color:var(--gray-400);">
+        ${q.name}有多重？
+      </div>
     `;
 
     weightOptions.innerHTML = '';
