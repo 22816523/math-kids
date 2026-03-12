@@ -270,6 +270,7 @@
     const hour = randInt(1, 12);
     state.clockAnswer = { hour, minute };
     drawClockFace(hour, minute, false);
+    digitalClock.textContent = '--:--';
 
     const timeStr = minute === 0 ? `${hour}点整` : minute === 30 ? `${hour}点半` : minute === 15 ? `${hour}点15分` : `${hour}点45分`;
     showQuestion('🎯', `第${state.clockRound}题：现在是几点？`);
