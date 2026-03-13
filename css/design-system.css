@@ -5,50 +5,53 @@
 
 /* ---------- CSS变量 ---------- */
 :root {
-  /* 多邻国核心色板 */
-  --green:       #58CC02;
-  --green-dark:  #46A302;
-  --green-light: #D7FFB8;
+  /* 护眼马卡龙色板 (低饱和度、高明度) */
+  --green:       #A3E4D7;
+  --green-dark:  #76D7C4;
+  --green-light: #E0F7EF;
 
-  --blue:        #1CB0F6;
-  --blue-dark:   #1899D6;
-  --blue-light:  #DDF4FF;
+  --blue:        #AED6F1;
+  --blue-dark:   #85C1E9;
+  --blue-light:  #E4F1FA;
 
-  --red:         #FF4B4B;
-  --red-dark:    #EA2B2B;
-  --red-light:   #FFE0E0;
+  --red:         #F5B7B1;
+  --red-dark:    #F1948A;
+  --red-light:   #FCE1DF;
 
-  --yellow:      #FFC800;
-  --yellow-dark: #E5B400;
-  --yellow-light:#FFF4CC;
+  --yellow:      #FAD7A1;
+  --yellow-dark: #F8C471;
+  --yellow-light:#FEF3E1;
 
-  --purple:      #CE82FF;
-  --purple-dark: #B866E6;
-  --purple-light:#F3E0FF;
+  --purple:      #D7BDE2;
+  --purple-dark: #C39BD3;
+  --purple-light:#F1E0F8;
 
-  --orange:      #FF9600;
-  --orange-dark: #E58600;
+  --orange:      #FADBD8;
+  --orange-dark: #F5B041;
 
-  /* 中性色 */
-  --bg:          #F7F7F7;
+  /* 护眼中性色 */
+  --bg-oatmeal:  #FDFBF7;
+  --bg:          var(--bg-oatmeal);
   --white:       #FFFFFF;
-  --gray-50:     #F0F0F0;
-  --gray-100:    #E5E5E5;
-  --gray-200:    #CCCCCC;
-  --gray-300:    #AFAFAF;
-  --gray-400:    #777777;
-  --gray-500:    #4B4B4B;
-  --text:        #3C3C3C;
+  --gray-50:     #F6F5F2;
+  --gray-100:    #EAE7E0;
+  --gray-200:    #D5D1C8;
+  --gray-300:    #B3AFAD;
+  --gray-400:    #8B8785;
+  --gray-500:    #6D6866;
+  --text:        #4A4644;
+  --title:       #33302E;
 
   /* 圆角 */
-  --radius-sm:   8px;
-  --radius-md:   12px;
-  --radius-lg:   16px;
-  --radius-xl:   20px;
+  --radius-sm:   12px;
+  --radius-md:   16px;
+  --radius-lg:   24px;
+  --radius-xl:   32px;
   --radius-full: 9999px;
 
-  /* 多邻国标志性底部阴影厚度 */
-  --btn-depth:   4px;
+  /* 果冻般的柔软阴影厚度 */
+  --btn-depth:   6px;
+  --card-depth:  8px;
 
   /* 字体 */
   --font: 'ZCOOL KuaiLe', 'PingFang SC', 'Hiragino Sans GB', sans-serif;
@@ -69,7 +72,8 @@ html, body {
   width: 100%;
   height: 100%;
   font-family: var(--font);
-  background: var(--bg);
+  background-color: var(--yellow-light);
+  background-image: linear-gradient(135deg, var(--bg-oatmeal) 0%, var(--yellow-light) 100%);
   color: var(--text);
   overflow: hidden;
   touch-action: manipulation;
@@ -83,9 +87,12 @@ html, body {
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  background: var(--white);
+  background: rgba(253, 251, 247, 0.4);
+  backdrop-filter: blur(10px);
   position: relative;
   overflow: hidden;
+  box-shadow: 0 0 40px rgba(0,0,0,0.03);
+  z-index: 1;
 }
 
 /* ---------- 多邻国风格按钮 ---------- */
@@ -95,67 +102,72 @@ html, body {
   justify-content: center;
   gap: 8px;
   padding: 14px 28px;
-  border: none;
+  border: 2px solid var(--white);
   border-radius: var(--radius-lg);
   font-family: var(--font);
   font-size: 18px;
   font-weight: 700;
   cursor: pointer;
   position: relative;
-  transition: filter 0.1s;
-  /* 多邻国标志性：底部厚边框模拟立体感 */
-  border-bottom: var(--btn-depth) solid;
+  transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.15s;
+  /* 更像果冻的厚底阴影 */
+  box-shadow: 0 var(--btn-depth) 0 var(--gray-200), 0 8px 12px rgba(0,0,0,0.04);
 }
 
 .btn:active {
-  border-bottom-width: 0;
-  transform: translateY(var(--btn-depth));
+  transform: translateY(calc(var(--btn-depth) - 2px));
+  box-shadow: 0 2px 0 var(--gray-200), 0 4px 6px rgba(0,0,0,0.02);
 }
 
 /* 按钮颜色变体 */
 .btn-green {
-  background: var(--green);
-  border-bottom-color: var(--green-dark);
-  color: var(--white);
+  background: linear-gradient(180deg, #F0FBF6 0%, var(--green) 100%);
+  color: var(--title);
+  box-shadow: 0 var(--btn-depth) 0 var(--green-dark), 0 8px 12px rgba(118,215,196,0.2);
 }
+.btn-green:active { box-shadow: 0 2px 0 var(--green-dark), 0 4px 6px rgba(118,215,196,0.1); }
 
 .btn-blue {
-  background: var(--blue);
-  border-bottom-color: var(--blue-dark);
-  color: var(--white);
+  background: linear-gradient(180deg, #F0F8FD 0%, var(--blue) 100%);
+  color: var(--title);
+  box-shadow: 0 var(--btn-depth) 0 var(--blue-dark), 0 8px 12px rgba(133,193,233,0.2);
 }
+.btn-blue:active { box-shadow: 0 2px 0 var(--blue-dark); }
 
 .btn-red {
-  background: var(--red);
-  border-bottom-color: var(--red-dark);
-  color: var(--white);
+  background: linear-gradient(180deg, #FEF0EF 0%, var(--red) 100%);
+  color: var(--title);
+  box-shadow: 0 var(--btn-depth) 0 var(--red-dark), 0 8px 12px rgba(241,148,138,0.2);
 }
+.btn-red:active { box-shadow: 0 2px 0 var(--red-dark); }
 
 .btn-yellow {
-  background: var(--yellow);
-  border-bottom-color: var(--yellow-dark);
-  color: var(--text);
+  background: linear-gradient(180deg, #FFFDF8 0%, var(--yellow) 100%);
+  color: var(--title);
+  box-shadow: 0 var(--btn-depth) 0 var(--yellow-dark), 0 8px 12px rgba(248,196,113,0.2);
 }
+.btn-yellow:active { box-shadow: 0 2px 0 var(--yellow-dark); }
 
 .btn-purple {
-  background: var(--purple);
-  border-bottom-color: var(--purple-dark);
-  color: var(--white);
+  background: linear-gradient(180deg, #F9F0FC 0%, var(--purple) 100%);
+  color: var(--title);
+  box-shadow: 0 var(--btn-depth) 0 var(--purple-dark), 0 8px 12px rgba(195,155,211,0.2);
 }
+.btn-purple:active { box-shadow: 0 2px 0 var(--purple-dark); }
 
 /* 幽灵按钮（白底描边） */
 .btn-ghost {
   background: var(--white);
-  border: 2px solid var(--gray-200);
-  border-bottom: var(--btn-depth) solid var(--gray-200);
+  border: 2px solid var(--white);
+  box-shadow: 0 var(--btn-depth) 0 var(--gray-200), 0 8px 12px rgba(0,0,0,0.02);
   color: var(--gray-500);
 }
 
 .btn-ghost.active {
-  border-color: var(--blue);
-  border-bottom-color: var(--blue-dark);
-  color: var(--blue);
-  background: var(--blue-light);
+  border-color: var(--blue-light);
+  box-shadow: 0 var(--btn-depth) 0 var(--blue-dark);
+  color: var(--title);
+  background: linear-gradient(180deg, #F0F8FD 0%, var(--blue) 100%);
 }
 
 /* 小按钮 */
@@ -184,15 +196,16 @@ html, body {
 /* ---------- 卡片 ---------- */
 .card {
   background: var(--white);
-  border: 2px solid var(--gray-100);
-  border-bottom: var(--btn-depth) solid var(--gray-200);
+  border: 3px solid var(--white);
+  box-shadow: 0 var(--btn-depth) 0 var(--gray-100), 0 12px 20px rgba(0,0,0,0.03);
   border-radius: var(--radius-lg);
   padding: 16px;
+  transition: transform 0.15s, box-shadow 0.15s;
 }
 
 .card:active {
-  border-bottom-width: 2px;
-  transform: translateY(2px);
+  transform: translateY(calc(var(--btn-depth) - 2px));
+  box-shadow: 0 2px 0 var(--gray-100);
 }
 
 /* ---------- 顶栏 ---------- */
@@ -201,8 +214,10 @@ html, body {
   align-items: center;
   justify-content: space-between;
   padding: 12px 20px;
-  background: var(--white);
-  border-bottom: 2px solid var(--gray-50);
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(8px);
+  border-bottom: 2px solid var(--white);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.02);
   flex-shrink: 0;
   min-height: 60px;
 }

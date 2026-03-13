@@ -7,20 +7,22 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
+  width: 48px;
+  height: 48px;
   border-radius: var(--radius-full);
-  background: var(--gray-50);
+  background: var(--white);
+  border: 3px solid var(--white);
+  box-shadow: 0 var(--btn-depth) 0 var(--gray-100), 0 8px 16px rgba(0,0,0,0.03);
   text-decoration: none;
   color: var(--gray-400);
-  font-size: 16px;
+  font-size: 18px;
   margin-right: 8px;
-  border-bottom: 2px solid var(--gray-200);
+  transition: all 0.15s;
 }
 
 .back-btn:active {
-  transform: translateY(2px);
-  border-bottom-width: 0;
+  transform: translateY(calc(var(--btn-depth) - 2px));
+  box-shadow: 0 2px 0 var(--gray-100);
 }
 
 /* ---------- 模式切换标签 ---------- */
@@ -41,8 +43,8 @@
   align-items: center;
   gap: 6px;
   padding: 10px 18px;
-  border: 2px solid var(--gray-200);
-  border-bottom: 3px solid var(--gray-200);
+  border: 2px solid var(--white);
+  box-shadow: 0 var(--btn-depth) 0 var(--gray-200), 0 8px 12px rgba(0,0,0,0.02);
   border-radius: var(--radius-lg);
   background: var(--white);
   font-family: var(--font);
@@ -51,21 +53,21 @@
   color: var(--gray-400);
   cursor: pointer;
   white-space: nowrap;
-  transition: all 0.15s;
+  transition: transform 0.15s, box-shadow 0.15s;
   flex: 1;
   justify-content: center;
 }
 
 .mode-tab.active {
-  border-color: var(--blue);
-  border-bottom-color: var(--blue-dark);
-  color: var(--blue);
-  background: var(--blue-light);
+  border-color: var(--blue-light);
+  box-shadow: 0 var(--btn-depth) 0 var(--blue-dark);
+  color: var(--title);
+  background: linear-gradient(180deg, #F0F8FD 0%, var(--blue) 100%);
 }
 
 .mode-tab:active {
-  transform: translateY(1px);
-  border-bottom-width: 2px;
+  transform: translateY(calc(var(--btn-depth) - 2px));
+  box-shadow: 0 2px 0 var(--gray-200);
 }
 
 .tab-icon {
@@ -140,39 +142,39 @@
   align-items: center;
   justify-content: center;
   background: var(--white);
-  border: 2px solid var(--gray-100);
-  border-bottom: 4px solid var(--gray-200);
+  border: 3px solid var(--white);
+  box-shadow: 0 var(--card-depth) 0 var(--gray-100), 0 8px 16px rgba(0,0,0,0.03);
   border-radius: var(--radius-lg);
   font-family: var(--font-round);
   font-size: clamp(22px, 5.5vmin, 34px);
   font-weight: 800;
   color: var(--text);
   cursor: pointer;
-  transition: all 0.15s;
+  transition: transform 0.15s, box-shadow 0.15s, background 0.3s;
   position: relative;
   aspect-ratio: 1;
 }
 
 .cell:active {
-  transform: translateY(1px);
-  border-bottom-width: 2px;
+  transform: translateY(calc(var(--card-depth) - 2px));
+  box-shadow: 0 2px 0 var(--gray-100), 0 4px 6px rgba(0,0,0,0.02);
 }
 
 /* 格子点击高亮 */
 .cell.tapped {
-  background: var(--blue-light);
-  border-color: var(--blue);
-  border-bottom-color: var(--blue-dark);
-  color: var(--blue-dark);
+  background: linear-gradient(180deg, #F0F8FD 0%, var(--blue) 100%);
+  border-color: #E4F1FA;
+  box-shadow: 0 var(--card-depth) 0 var(--blue-dark), 0 8px 12px rgba(133,193,233,0.2);
+  color: var(--title);
   animation: jelly 0.3s ease;
 }
 
 /* 跳数高亮 */
 .cell.skip-highlight {
-  background: var(--green-light);
-  border-color: var(--green);
-  border-bottom-color: var(--green-dark);
-  color: var(--green-dark);
+  background: linear-gradient(180deg, #F0FBF6 0%, var(--green) 100%);
+  border-color: #E0F7EF;
+  box-shadow: 0 var(--card-depth) 0 var(--green-dark), 0 8px 12px rgba(118,215,196,0.2);
+  color: var(--title);
   animation: pulse 0.8s ease-in-out infinite;
 }
 
@@ -183,28 +185,28 @@
 
 /* 数位认识模式选中 */
 .cell.place-selected {
-  background: var(--purple-light);
-  border-color: var(--purple);
-  border-bottom-color: var(--purple-dark);
-  color: var(--purple-dark);
+  background: linear-gradient(180deg, #F9F0FC 0%, var(--purple) 100%);
+  border-color: #F1E0F8;
+  box-shadow: 0 var(--card-depth) 0 var(--purple-dark), 0 8px 12px rgba(195,155,211,0.2);
+  color: var(--title);
   animation: jelly 0.3s ease;
 }
 
 /* 填空模式：空缺格子 */
 .cell.blank {
-  background: var(--yellow-light);
-  border: 2px dashed var(--yellow);
-  border-bottom: 3px dashed var(--yellow-dark);
+  background: rgba(250, 215, 161, 0.3); /* paler yellow */
+  border: 2px dashed var(--yellow-dark);
+  box-shadow: none; /* empty look */
   color: var(--yellow-dark);
   font-size: clamp(18px, 4vmin, 28px);
 }
 
 /* 填空模式：已填入正确 */
 .cell.filled {
-  background: var(--green-light);
-  border-color: var(--green);
-  border-bottom-color: var(--green-dark);
-  color: var(--green-dark);
+  background: linear-gradient(180deg, #F0FBF6 0%, var(--green) 100%);
+  border-color: #E0F7EF;
+  box-shadow: 0 var(--card-depth) 0 var(--green-dark), 0 8px 12px rgba(118,215,196,0.2);
+  color: var(--title);
   animation: bounceIn 0.4s ease-out;
 }
 

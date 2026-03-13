@@ -8,31 +8,35 @@
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/design-system.css">
   <link rel="stylesheet" href="css/math.css">
+  <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
 </head>
-<body>
+  <!-- 护眼背景装饰 -->
+  <div class="bg-decoration">
+    <div class="cloud cloud-1"></div>
+    <div class="cloud cloud-2"></div>
+    <div class="cloud cloud-3"></div>
+  </div>
+
   <div id="app">
     <div class="topbar">
       <div class="topbar-left">
         <a href="index.html" class="back-btn">◀</a>
-        <span class="topbar-title">➕ 加减法</span>
+        <span class="topbar-title"><span class="iconify" data-icon="fluent-emoji:plus" style="font-size: 26px; vertical-align: text-bottom;"></span> 加减法</span>
       </div>
-      <div class="star-counter">
-        <span class="star-icon">⭐</span>
-        <span id="starCount">0</span>
-      </div>
+      <!-- Removed gamification elements -->
     </div>
 
     <div class="mode-tabs">
       <button class="mode-tab active" data-level="1">
-        <span class="tab-icon">🔢</span>
+        <span class="tab-icon"><span class="iconify" data-icon="fluent-emoji:keycap-10"></span></span>
         <span class="tab-label">10以内</span>
       </button>
       <button class="mode-tab" data-level="2">
-        <span class="tab-icon">🧮</span>
+        <span class="tab-icon"><span class="iconify" data-icon="fluent-emoji:abacus"></span></span>
         <span class="tab-label">20以内</span>
       </button>
       <button class="mode-tab" data-level="3">
-        <span class="tab-icon">💯</span>
+        <span class="tab-icon"><span class="iconify" data-icon="fluent-emoji:hundred-points"></span></span>
         <span class="tab-label">100以内</span>
       </button>
     </div>
