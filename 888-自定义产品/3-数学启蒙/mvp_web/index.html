@@ -214,18 +214,6 @@
       text-align: center;
       line-height: 1.35;
     }
-    @keyframes cardBreathe {
-      0%, 100% { transform: scale(1) translateY(0); }
-      50% { transform: scale(1.02) translateY(-4px); }
-    }
-    
-    .module-card:not(.locked) {
-      animation: cardBreathe 4s ease-in-out infinite;
-    }
-    .module-card:not(.locked):nth-child(2) { animation-delay: -1s; }
-    .module-card:not(.locked):nth-child(3) { animation-delay: -2s; }
-    .module-card:not(.locked):nth-child(5) { animation-delay: -3s; }
-
     .module-card.color-green { 
       background: linear-gradient(135deg, #F0FBF6 0%, var(--green) 100%); 
       border-color: #E0F7EF; 
