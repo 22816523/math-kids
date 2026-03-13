@@ -28,10 +28,18 @@ jobs:
       - name: Configure Pages
         uses: actions/configure-pages@v5
 
+      - name: Prepare static site
+        shell: bash
+        run: |
+          rm -rf ./math-kids-site
+          mkdir -p ./math-kids-site
+          cp -R "888-自定义产品/3-数学启蒙/mvp_web/." ./math-kids-site/
+          touch ./math-kids-site/.nojekyll
+
       - name: Upload static site
         uses: actions/upload-pages-artifact@v4
         with:
-          path: "888-自定义产品/3-数学启蒙/mvp_web"
+          path: "./math-kids-site"
 
   deploy:
     environment:
