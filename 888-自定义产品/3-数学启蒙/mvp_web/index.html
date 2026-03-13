@@ -12,7 +12,8 @@
     .home-header {
       position: relative;
       text-align: center;
-      padding: 32px 20px 16px;
+      padding: 24px 20px 12px;
+      flex-shrink: 0;
     }
     .settings-btn {
       position: absolute;
@@ -33,23 +34,23 @@
       border-bottom-width: 2px;
     }
     .home-title {
-      font-size: 40px;
+      font-size: 36px;
       font-weight: 900;
     }
     .home-subtitle {
-      font-size: 16px;
+      font-size: 15px;
       color: var(--gray-400);
-      margin-top: 4px;
+      margin-top: 2px;
     }
     .module-grid {
       display: grid;
-      /* 改为一行3个 */
-      grid-template-columns: repeat(3, 1fr);
-      gap: 20px;
-      padding: 10px 24px 40px;
+      /* 首屏优先：默认 2x2，大屏再扩成 3 列 */
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      padding: 8px 20px 24px;
       flex: 1;
-      overflow-y: auto;
-      overflow-x: hidden;
+      overflow: hidden;
+      align-content: center;
       -webkit-overflow-scrolling: touch;
     }
     .module-card {
@@ -57,9 +58,11 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      aspect-ratio: 1;
-      gap: 10px;
-      padding: 16px 12px;
+      min-width: 0;
+      min-height: 0;
+      aspect-ratio: 1 / 1;
+      gap: 8px;
+      padding: 14px 10px;
       background: var(--white);
       border: 3px solid var(--gray-100);
       border-bottom: 6px solid var(--gray-200);
@@ -199,13 +202,16 @@
       top: 8px;
     }
     .module-card .module-name {
-      font-size: 20px;
+      font-size: 18px;
       font-weight: 700;
+      line-height: 1.2;
+      text-align: center;
     }
     .module-card .module-desc {
-      font-size: 13px;
+      font-size: 12px;
       color: var(--gray-300);
       text-align: center;
+      line-height: 1.35;
     }
     @keyframes cardBreathe {
       0%, 100% { transform: scale(1) translateY(0); }
@@ -285,11 +291,17 @@
     }
     .module-card.color-orange:active { box-shadow: 0 2px 0 var(--orange-dark), inset 0 2px 8px rgba(0,0,0,0.05); }
 
+    @media (min-width: 900px) {
+      .module-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
     @media (max-width: 600px) {
       .module-grid {
         grid-template-columns: repeat(2, 1fr);
-        gap: 16px;
-        padding: 10px 16px 30px;
+        gap: 12px;
+        padding: 8px 14px 18px;
       }
       .module-card {
         padding: 12px 8px;
