@@ -46,8 +46,9 @@
       display: grid;
       /* 首屏优先：默认 2x2，大屏再扩成 3 列 */
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 16px;
-      padding: 8px 20px 24px;
+      column-gap: 22px;
+      row-gap: 20px;
+      padding: 10px 22px 28px;
       flex: 1;
       overflow: hidden;
       align-content: center;
@@ -300,8 +301,9 @@
     @media (max-width: 600px) {
       .module-grid {
         grid-template-columns: repeat(2, 1fr);
-        gap: 12px;
-        padding: 8px 14px 18px;
+        column-gap: 16px;
+        row-gap: 14px;
+        padding: 10px 16px 20px;
       }
       .module-card {
         padding: 12px 8px;
