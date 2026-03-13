@@ -180,7 +180,7 @@
     speak(fb.text);
     if (isCorrect) {
       correctStreak++;
-      addStar();
+      // addStar();
       if (correctStreak >= 3) {
         correctStreak = 0;
         setTimeout(() => showCelebration(), 600);

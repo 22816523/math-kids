@@ -8,37 +8,39 @@
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/design-system.css">
   <link rel="stylesheet" href="css/baisu-board.css">
+  <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
 </head>
-<body>
+  <!-- 护眼背景装饰 -->
+  <div class="bg-decoration">
+    <div class="cloud cloud-1"></div>
+    <div class="cloud cloud-2"></div>
+    <div class="cloud cloud-3"></div>
+  </div>
+
   <div id="app">
     <!-- 顶栏 -->
     <div class="topbar">
       <div class="topbar-left">
         <a href="index.html" class="back-btn">◀</a>
-        <span class="topbar-title">🔢 百数板</span>
+        <span class="topbar-title"><span class="iconify" data-icon="fluent-emoji:input-numbers" style="font-size: 26px; vertical-align: text-bottom;"></span> 百数板</span>
       </div>
-      <div class="star-counter">
-        <span class="star-icon">⭐</span>
-        <span id="starCount">0</span>
-      </div>
+      <!-- Removed gamification elements -->
     </div>
-
-    <!-- 模式切换标签 -->
     <div class="mode-tabs">
       <button class="mode-tab active" data-mode="order">
-        <span class="tab-icon">👆</span>
+        <span class="tab-icon"><span class="iconify" data-icon="fluent-emoji:backhand-index-pointing-up"></span></span>
         <span class="tab-label">认数字</span>
       </button>
       <button class="mode-tab" data-mode="fill">
-        <span class="tab-icon">🧩</span>
+        <span class="tab-icon"><span class="iconify" data-icon="fluent-emoji:puzzle-piece"></span></span>
         <span class="tab-label">填一填</span>
       </button>
       <button class="mode-tab" data-mode="skip">
-        <span class="tab-icon">🐰</span>
+        <span class="tab-icon"><span class="iconify" data-icon="fluent-emoji:rabbit-face"></span></span>
         <span class="tab-label">跳着数</span>
       </button>
       <button class="mode-tab" data-mode="place">
-        <span class="tab-icon">🪵</span>
+        <span class="tab-icon"><span class="iconify" data-icon="fluent-emoji:wood"></span></span>
         <span class="tab-label">拆一拆</span>
       </button>
     </div>

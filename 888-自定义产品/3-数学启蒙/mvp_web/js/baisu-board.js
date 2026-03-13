@@ -101,7 +101,7 @@
 
     if (isCorrect) {
       correctStreak++;
-      addStar();
+      // addStar() 已经被移除因为页面上去掉了星星组件
       if (correctStreak >= 3) {
         correctStreak = 0;
         setTimeout(() => showCelebration(), 600);
@@ -115,12 +115,7 @@
     }, 1200);
   }
 
-  function addStar() {
-    state.stars++;
-    starCountEl.textContent = state.stars;
-    starCountEl.parentElement.classList.add('animate-jelly');
-    setTimeout(() => starCountEl.parentElement.classList.remove('animate-jelly'), 400);
-  }
+  // addStar function removed
 
   function showQuestion(icon, text) {
     questionIcon.textContent = icon;
@@ -471,6 +466,10 @@
 
     state.dragBubble = bubble;
     const touch = e.touches ? e.touches[0] : e;
+    
+    // 如果存在外层 backdrop-filter 或 transform，会导致 fixed 定位偏移，因此拖拽时将其移至 body
+    document.body.appendChild(bubble);
+    
     bubble.classList.add('dragging');
     moveBubble(touch.clientX, touch.clientY);
 
@@ -493,9 +492,14 @@
   function moveBubble(x, y) {
     const bubble = state.dragBubble;
     if (!bubble) return;
+    
+    // 动态获取气泡当前宽高的一半，保证鼠标/手指可以绝对居中于卡片上
+    const halfWidth = bubble.offsetWidth / 2;
+    const halfHeight = bubble.offsetHeight / 2;
+
     bubble.style.position = 'fixed';
-    bubble.style.left = (x - 28) + 'px';
-    bubble.style.top = (y - 28) + 'px';
+    bubble.style.left = (x - halfWidth) + 'px';
+    bubble.style.top = (y - halfHeight) + 'px';
     bubble.style.zIndex = '50';
   }
 
@@ -542,6 +546,9 @@
       bubble.classList.add('animate-shake');
       setTimeout(() => bubble.classList.remove('animate-shake'), 400);
     }
+
+    // 拖拽结束时放回原来的容器，保持 DOM 干净
+    bubbleZone.appendChild(bubble);
 
     bubble.classList.remove('dragging');
     bubble.style.left = '';
