@@ -71,10 +71,10 @@
 
   function speak(text) {
     if (!('speechSynthesis' in window)) return;
-    speechSynthesis.cancel();
+    window.speechSynthesis.cancel();
     const u = new SpeechSynthesisUtterance(text);
     u.lang = 'zh-CN'; u.rate = 0.85; u.pitch = 1.2;
-    speechSynthesis.speak(u);
+    window.speechSynthesis.speak(u);
   }
 
   const promptController = window.PracticeSupport.createPromptController({
@@ -102,6 +102,7 @@
 
   function addStar(n) {
     state.stars += n;
+    if (!starCountEl) return;
     starCountEl.textContent = state.stars;
     starCountEl.style.animation = 'none';
     void starCountEl.offsetWidth;
