@@ -70,11 +70,22 @@
   };
 
   function speak(text) {
-    if (!('speechSynthesis' in window)) return;
-    window.speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(text);
-    u.lang = 'zh-CN'; u.rate = 0.85; u.pitch = 1.2;
-    window.speechSynthesis.speak(u);
+    if (!text || !('speechSynthesis' in window) || typeof window.SpeechSynthesisUtterance !== 'function') {
+      return false;
+    }
+
+    try {
+      window.speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = 'zh-CN';
+      u.rate = 0.85;
+      u.pitch = 1.2;
+      window.speechSynthesis.speak(u);
+      return true;
+    } catch (error) {
+      console.warn('measure speech failed:', error);
+      return false;
+    }
   }
 
   const promptController = window.PracticeSupport.createPromptController({
