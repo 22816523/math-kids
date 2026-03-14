@@ -120,6 +120,7 @@
   const questionBar = $('#questionBar');
   const questionIcon = $('#questionIcon');
   const questionText = $('#questionText');
+  const questionSpeaker = $('#questionSpeaker');
   const feedbackOverlay = $('#feedbackOverlay');
   const feedbackEmoji = $('#feedbackEmoji');
   const feedbackText = $('#feedbackText');
@@ -135,6 +136,14 @@
     u.pitch = 1.2;
     window.speechSynthesis.speak(u);
   }
+
+  const promptController = window.PracticeSupport.createPromptController({
+    questionBar,
+    questionIcon,
+    questionText,
+    speakerButton: questionSpeaker,
+    speak,
+  });
 
   // ========== 工具函数 ==========
   function shuffle(arr) {
@@ -198,13 +207,29 @@
     setTimeout(() => starCountEl.parentElement.classList.remove('animate-jelly'), 400);
   }
 
-  function showQuestion(icon, text) {
-    questionIcon.textContent = icon;
-    questionText.textContent = text;
-    questionBar.style.display = 'flex';
+  function showQuestion(icon, text, speechText, options) {
+    promptController.showPrompt(icon, text, {
+      speechText: speechText ?? text,
+      autoSpeak: options?.autoSpeak !== false,
+      allowReplay: options?.allowReplay !== false,
+    });
   }
 
-  function hideQuestion() { questionBar.style.display = 'none'; }
+  function hideQuestion() { promptController.hidePrompt(); }
+
+  function scheduleAdvance(callback, delay) {
+    clearTimeout(state._advanceTimer);
+    state._advanceTimer = setTimeout(callback, delay);
+  }
+
+  function getViewportOffsets() {
+    const viewport = window.visualViewport;
+
+    return {
+      left: viewport ? viewport.offsetLeft : 0,
+      top: viewport ? viewport.offsetTop : 0,
+    };
+  }
 
   function showBottomAction(text, callback) {
     actionBtn.textContent = text;
@@ -297,6 +322,7 @@
       card.dataset.shape = key;
       card.innerHTML = shapeSvg(key);
       card.addEventListener('click', () => {
+        if (state.recTarget === null) return;
         if (card.classList.contains('selected')) return;
         if (key === state.recTarget) {
           card.classList.add('selected');
@@ -304,7 +330,8 @@
           found++;
           if (found >= total) {
             state.recScore++;
-            setTimeout(() => nextRecognizeQuestion(), 1400);
+            state.recTarget = null;
+            scheduleAdvance(() => nextRecognizeQuestion(), 1400);
           }
         } else {
           card.classList.add('wrong-select');
@@ -316,8 +343,7 @@
     });
 
     const name = SHAPES[target].name;
-    showQuestion('👀', '找出所有的' + name + '（共' + total + '个）');
-    speak('找出所有的' + name);
+    showQuestion('👀', '找出所有的' + name + '（共' + total + '个）', '找出所有的' + name);
   }
 
   // ====================================================
@@ -391,8 +417,7 @@
       classifyHomes.appendChild(home);
     });
 
-    showQuestion('🏠', '把图形拖到它的家里去');
-    speak('把图形拖到它的家里去');
+    showQuestion('🏠', '把图形拖到它的家里去', '把图形拖到它的家里去');
   }
 
   // 分类拖拽
@@ -408,6 +433,7 @@
     const item = e.currentTarget;
     if (item.classList.contains('matched')) return;
     dragItem = item;
+    document.body.appendChild(item);
     item.classList.add('dragging');
     const touch = e.touches ? e.touches[0] : e;
     moveClassifyItem(touch.clientX, touch.clientY);
@@ -438,9 +464,19 @@
 
   function moveClassifyItem(x, y) {
     if (!dragItem) return;
+    const rect = dragItem.getBoundingClientRect();
+    const viewportOffsets = getViewportOffsets();
+    const position = window.PracticeSupport.getPointerDragPosition({
+      x,
+      y,
+      rect,
+      viewportOffsetLeft: viewportOffsets.left,
+      viewportOffsetTop: viewportOffsets.top,
+    });
+
     dragItem.style.position = 'fixed';
-    dragItem.style.left = (x - 40) + 'px';
-    dragItem.style.top = (y - 40) + 'px';
+    dragItem.style.left = position.left + 'px';
+    dragItem.style.top = position.top + 'px';
     dragItem.style.zIndex = '50';
   }
 
@@ -477,7 +513,7 @@
 
           state.classifyRemaining--;
           if (state.classifyRemaining <= 0) {
-            setTimeout(() => {
+            scheduleAdvance(() => {
               showQuestion('🎉', '全部分好了！');
               showCelebration();
               showBottomAction('🔄 再来一轮', () => startClassifyPractice());
@@ -491,6 +527,10 @@
       showFeedback(false);
       dragItem.classList.add('animate-shake');
       setTimeout(() => dragItem.classList.remove('animate-shake'), 400);
+    }
+
+    if (!dragItem.classList.contains('matched')) {
+      classifyShapes.appendChild(dragItem);
     }
 
     dragItem.classList.remove('dragging');
@@ -603,8 +643,7 @@
 
     const name = SHAPES[target].name;
     const total = state.findTargets.length;
-    showQuestion('🔍', '找出' + scene.name + '里所有的' + name + '（共' + total + '个）');
-    speak('找出所有的' + name);
+    showQuestion('🔍', '找出' + scene.name + '里所有的' + name + '（共' + total + '个）', '找出所有的' + name);
     findProgress.textContent = '0 / ' + total;
   }
 
@@ -619,7 +658,7 @@
       findProgress.textContent = state.findFound + ' / ' + state.findTargets.length;
 
       if (state.findFound >= state.findTargets.length) {
-        setTimeout(() => {
+        scheduleAdvance(() => {
           // 下一个场景或完成
           state.findScene++;
           if (state.findScene < SCENES.length) {
@@ -650,6 +689,7 @@
   function switchMode(mode) {
     state.mode = mode;
     state.practicing = false;
+    clearTimeout(state._advanceTimer);
 
     $$('.mode-tab').forEach(tab => {
       tab.classList.toggle('active', tab.dataset.mode === mode);

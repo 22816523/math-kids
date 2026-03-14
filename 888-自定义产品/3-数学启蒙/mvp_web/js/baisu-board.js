@@ -55,6 +55,7 @@
   const questionBar = $('#questionBar');
   const questionIcon = $('#questionIcon');
   const questionText = $('#questionText');
+  const questionSpeaker = $('#questionSpeaker');
   const feedbackOverlay = $('#feedbackOverlay');
   const feedbackEmoji = $('#feedbackEmoji');
   const feedbackText = $('#feedbackText');
@@ -70,6 +71,14 @@
     u.pitch = 1.2;
     window.speechSynthesis.speak(u);
   }
+
+  const promptController = window.PracticeSupport.createPromptController({
+    questionBar,
+    questionIcon,
+    questionText,
+    speakerButton: questionSpeaker,
+    speak,
+  });
 
   // ========== 反馈系统 ==========
   const correctFeedbacks = [
@@ -117,14 +126,30 @@
 
   // addStar function removed
 
-  function showQuestion(icon, text) {
-    questionIcon.textContent = icon;
-    questionText.textContent = text;
-    questionBar.style.display = 'flex';
+  function showQuestion(icon, text, speechText, options) {
+    promptController.showPrompt(icon, text, {
+      speechText: speechText ?? text,
+      autoSpeak: options?.autoSpeak !== false,
+      allowReplay: options?.allowReplay !== false,
+    });
   }
 
   function hideQuestion() {
-    questionBar.style.display = 'none';
+    promptController.hidePrompt();
+  }
+
+  function scheduleAdvance(callback, delay) {
+    clearTimeout(state._advanceTimer);
+    state._advanceTimer = setTimeout(callback, delay);
+  }
+
+  function getViewportOffsets() {
+    const viewport = window.visualViewport;
+
+    return {
+      left: viewport ? viewport.offsetLeft : 0,
+      top: viewport ? viewport.offsetTop : 0,
+    };
   }
 
   // ========== 庆祝动画 ==========
@@ -365,7 +390,7 @@
       showFeedback(true);
       state.orderScore++;
       state.orderTarget = null;
-      setTimeout(() => nextOrderQuestion(), 1400);
+      scheduleAdvance(() => nextOrderQuestion(), 1400);
     } else {
       card.classList.add('order-wrong');
       showFeedback(false);
@@ -387,7 +412,7 @@
         speak('是 ' + state.orderTarget);
         state.orderTarget = null;
         state.orderScore++; // 零挫败感，不扣分
-        setTimeout(() => nextOrderQuestion(), 2000);
+        scheduleAdvance(() => nextOrderQuestion(), 2000);
       }
     }
   }
@@ -441,8 +466,7 @@
 
     bubbleZone.style.display = 'flex';
     bottomActions.style.display = 'none';
-    showQuestion('🧩', '把数字拖到正确的位置吧！');
-    speak('把数字拖到正确的位置吧');
+    showQuestion('🧩', '把数字拖到正确的位置吧！', '把数字拖到正确的位置吧');
   }
 
   function checkFillComplete() {
@@ -492,14 +516,19 @@
   function moveBubble(x, y) {
     const bubble = state.dragBubble;
     if (!bubble) return;
-    
-    // 动态获取气泡当前宽高的一半，保证鼠标/手指可以绝对居中于卡片上
-    const halfWidth = bubble.offsetWidth / 2;
-    const halfHeight = bubble.offsetHeight / 2;
+    const rect = bubble.getBoundingClientRect();
+    const viewportOffsets = getViewportOffsets();
+    const position = window.PracticeSupport.getPointerDragPosition({
+      x,
+      y,
+      rect,
+      viewportOffsetLeft: viewportOffsets.left,
+      viewportOffsetTop: viewportOffsets.top,
+    });
 
     bubble.style.position = 'fixed';
-    bubble.style.left = (x - halfWidth) + 'px';
-    bubble.style.top = (y - halfHeight) + 'px';
+    bubble.style.left = position.left + 'px';
+    bubble.style.top = position.top + 'px';
     bubble.style.zIndex = '50';
   }
 
@@ -598,8 +627,7 @@
     });
 
     const dirText = state.skipForward ? '顺数' : '倒数';
-    showQuestion('👀', step + '个一数，' + dirText + ' — 看看规律');
-    speak(step + '个一数，' + dirText);
+    showQuestion('👀', step + '个一数，' + dirText + ' — 看看规律', step + '个一数，' + dirText);
 
     showBottomAction('🎯 开始练习', () => startSkipPractice());
   }
@@ -687,11 +715,12 @@
     const next = numbers[pickIdx + 1];
     skipQuizHint.textContent = prev + '，?，' + next + ' — 中间是几？';
     skipQuiz.style.display = 'block';
-    showQuestion('🎯', step + '个一数，缺了哪个？');
-    speak(prev + '，问号，' + next + '，中间是几？');
+    showQuestion('🎯', step + '个一数，缺了哪个？', prev + '，问号，' + next + '，中间是几？');
   }
 
   function onSkipOptionClick(value, btn) {
+    if (state.skipQuizAnswer === null) return;
+
     if (value === state.skipQuizAnswer) {
       btn.classList.add('correct');
       const cell = getCellByNum(state.skipQuizAnswer);
@@ -702,7 +731,8 @@
       }
       showFeedback(true);
       state.skipQuizIndex++;
-      setTimeout(() => nextSkipQuestion(), 1400);
+      state.skipQuizAnswer = null;
+      scheduleAdvance(() => nextSkipQuestion(), 1400);
     } else {
       btn.classList.add('wrong');
       showFeedback(false);
@@ -779,8 +809,7 @@
       hintQ = ones + '根小棒，是几？在下面找到它！';
       hintS = ones + '根小棒，是数字几？点一下它';
     }
-    showQuestion('🪵', hintQ);
-    speak(hintS);
+    showQuestion('🪵', hintQ, hintS);
     bottomActions.style.display = 'none';
   }
 
@@ -793,7 +822,7 @@
       showFeedback(true);
       state.placeScore++;
       state.placeTarget = null;
-      setTimeout(() => nextPlaceQuestion(), 1400);
+      scheduleAdvance(() => nextPlaceQuestion(), 1400);
     } else {
       cell.classList.add('animate-shake');
       setTimeout(() => cell.classList.remove('animate-shake'), 400);
@@ -820,6 +849,7 @@
     state.orderTarget = null;
     state.placeTarget = null;
     clearTimeout(state._orderTimer);
+    clearTimeout(state._advanceTimer);
 
     $$('.mode-tab').forEach(tab => {
       tab.classList.toggle('active', tab.dataset.mode === mode);

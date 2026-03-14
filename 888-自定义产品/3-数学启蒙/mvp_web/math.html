@@ -42,7 +42,10 @@
     </div>
 
     <div class="content">
-      <div id="questionDisplay" class="question-display"></div>
+      <div class="question-display-bar">
+        <div id="questionDisplay" class="question-display"></div>
+        <button type="button" id="questionSpeaker" class="question-speaker" hidden aria-label="播放题目语音">🔊</button>
+      </div>
       <div id="visualArea" class="visual-area"></div>
       <div id="controlArea" class="control-area"></div>
       <div class="feedback" id="feedback"></div>
@@ -50,6 +53,7 @@
   </div>
 
   <script src="js/timer.js?v=20260313b"></script>
+  <script src="js/practice-support.js?v=20260314a"></script>
   <script src="js/math.js?v=20260313b"></script>
 </body>
 </html>

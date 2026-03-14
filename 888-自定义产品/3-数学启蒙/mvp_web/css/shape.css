@@ -87,7 +87,7 @@
 }
 
 .question-icon { font-size: 28px; }
-.question-text { font-size: 18px; font-weight: 700; color: var(--title); }
+.question-text { flex: 1; min-width: 0; font-size: 18px; font-weight: 700; color: var(--title); }
 
 /* ---------- 底部操作区 ---------- */
 .bottom-actions {

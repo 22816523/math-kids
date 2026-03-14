@@ -379,6 +379,29 @@ html, body {
   animation: bounceIn 0.5s ease-out 0.1s both;
 }
 
+.question-speaker {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.question-speaker:active {
+  transform: scale(0.94);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.question-speaker[hidden] {
+  display: none !important;
+}
+
 /* ---------- 平板适配 ---------- */
 
 /* 大平板（iPad Pro 12.9等） */

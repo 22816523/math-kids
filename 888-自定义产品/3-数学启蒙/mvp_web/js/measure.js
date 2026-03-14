@@ -13,6 +13,7 @@
   const questionBar = $('#questionBar');
   const questionIcon = $('#questionIcon');
   const questionText = $('#questionText');
+  const questionSpeaker = $('#questionSpeaker');
   const feedbackOverlay = $('#feedbackOverlay');
   const feedbackEmoji = $('#feedbackEmoji');
   const feedbackText = $('#feedbackText');
@@ -76,6 +77,14 @@
     speechSynthesis.speak(u);
   }
 
+  const promptController = window.PracticeSupport.createPromptController({
+    questionBar,
+    questionIcon,
+    questionText,
+    speakerButton: questionSpeaker,
+    speak,
+  });
+
   function shuffle(arr) {
     const a = [...arr];
     for (let i = a.length - 1; i > 0; i--) {
@@ -124,10 +133,17 @@
     setTimeout(() => { confettiBox.innerHTML = ''; }, 3500);
   }
 
-  function showQuestion(icon, text) {
-    questionIcon.textContent = icon;
-    questionText.textContent = text;
-    questionBar.style.display = 'flex';
+  function showQuestion(icon, text, speechText, options) {
+    promptController.showPrompt(icon, text, {
+      speechText: speechText ?? text,
+      autoSpeak: options?.autoSpeak !== false,
+      allowReplay: options?.allowReplay !== false,
+    });
+  }
+
+  function scheduleAdvance(callback, delay) {
+    clearTimeout(state._advanceTimer);
+    state._advanceTimer = setTimeout(callback, delay);
   }
 
   $$('.mode-tab').forEach(tab => {
@@ -145,8 +161,9 @@
     compareArea.style.display = 'none';
     lengthArea.style.display = 'none';
     weightArea.style.display = 'none';
-    questionBar.style.display = 'none';
+    promptController.hidePrompt();
     bottomActions.style.display = 'none';
+    clearTimeout(state._advanceTimer);
 
     if (state.mode === 'clock') {
       clockArea.style.display = 'flex';
@@ -294,7 +311,7 @@
     digitalClock.style.display = 'none';
 
     const timeStr = minute === 0 ? `${hour}点整` : minute === 30 ? `${hour}点半` : minute === 15 ? `${hour}点15分` : `${hour}点45分`;
-    showQuestion('🎯', `第${state.clockRound}题：现在是几点？`);
+    showQuestion('🎯', `第${state.clockRound}题：现在是几点？`, `第${state.clockRound}题，现在是几点？`);
 
     const correct = timeStr;
     const options = new Set([correct]);
@@ -312,12 +329,14 @@
       div.className = 'clock-option';
       div.innerHTML = `<span class="clock-option-icon">${icons[i]}</span><span class="clock-option-text">${opt}</span>`;
       div.onclick = () => {
+        if (state.clockAnswer === null) return;
         if (div.classList.contains('selected')) return;
         if (opt === correct) {
           div.classList.add('selected');
           addStar(1);
           showFeedback('🎉', '答对了！' + correct, 1200);
-          setTimeout(nextClockQuestion, 1500);
+          state.clockAnswer = null;
+          scheduleAdvance(nextClockQuestion, 1500);
         } else {
           div.classList.add('wrong');
           showFeedback('🤔', '再想想', 800);
@@ -391,8 +410,7 @@
     el.classList.add('chosen');
     payPrompt.style.display = 'flex';
     payText.textContent = `买${item.icon}${item.name}，需要付 ${item.price} 元`;
-    speak(`买${item.name}，需要付${item.price}元`);
-    showQuestion('💰', `请付 ${item.price} 元`);
+    showQuestion('💰', `请付 ${item.price} 元`, `买${item.name}，需要付${item.price}元`);
     renderWallet();
     cashierTray.innerHTML = '';
     paidTotal.textContent = '0';
@@ -574,7 +592,7 @@
     const questionText = reverse ? questionMap[type].reverse : (q.q || questionMap[type].normal);
     state.compareAnswer = reverse && q.answer !== 'same' ? (q.answer === 'a' ? 'b' : 'a') : q.answer;
 
-    showQuestion('⚖️', `第${state.compareRound}题：${questionText}`);
+    showQuestion('⚖️', `第${state.compareRound}题：${questionText}`, `第${state.compareRound}题，${questionText}`);
 
     if (type === 'length') renderLengthScene(q);
     else if (type === 'height') renderHeightScene(q);
@@ -692,12 +710,14 @@
       div.className = 'compare-option';
       div.innerHTML = `<span class="compare-option-icon">${opt.icon}</span><span class="compare-option-text">${opt.text}</span>`;
       div.onclick = () => {
+        if (state.compareAnswer === null) return;
         if (div.classList.contains('selected')) return;
         if (opt.key === state.compareAnswer) {
           div.classList.add('selected');
           addStar(1);
           showFeedback('🎉', '答对了！', 1200);
-          setTimeout(nextCompareQuestion, 1500);
+          state.compareAnswer = null;
+          scheduleAdvance(nextCompareQuestion, 1500);
         } else {
           div.classList.add('wrong');
           showFeedback('🤔', '再看看哦', 800);
@@ -723,9 +743,7 @@
 
   function initLength() {
     state.lengthRound = 0;
-    questionBar.style.display = 'flex';
-    questionIcon.textContent = '📏';
-    questionText.textContent = '用尺子量一量，选出正确的长度';
+    showQuestion('📏', '用尺子量一量，选出正确的长度');
     bottomActions.style.display = 'flex';
     actionBtn.textContent = '🎯 开始练习';
     actionBtn.className = 'btn btn-blue btn-lg';
@@ -743,6 +761,7 @@
     state.lengthRound++;
     const q = LENGTH_QUESTIONS[Math.floor(Math.random() * LENGTH_QUESTIONS.length)];
     state.lengthAnswer = q.len;
+    showQuestion('📏', `第${state.lengthRound}题：${q.name}有多长？`, `第${state.lengthRound}题，${q.name}有多长？`);
 
     const maxLen = 30;
     rulerContainer.innerHTML = `
@@ -773,12 +792,14 @@
       div.className = 'length-option';
       div.textContent = `${opt} ${q.unit}`;
       div.onclick = () => {
+        if (state.lengthAnswer === null) return;
         if (div.classList.contains('selected')) return;
         if (opt === state.lengthAnswer) {
           div.classList.add('selected');
           addStar(1);
           showFeedback('🎉', '答对了！', 1200);
-          setTimeout(nextLengthQuestion, 1500);
+          state.lengthAnswer = null;
+          scheduleAdvance(nextLengthQuestion, 1500);
         } else {
           div.classList.add('wrong');
           showFeedback('🤔', '再看看哦', 800);
@@ -806,9 +827,7 @@
 
   function initWeight() {
     state.weightRound = 0;
-    questionBar.style.display = 'flex';
-    questionIcon.textContent = '⚖️';
-    questionText.textContent = '用秤称一称，选出正确的重量';
+    showQuestion('⚖️', '用秤称一称，选出正确的重量');
     bottomActions.style.display = 'flex';
     actionBtn.textContent = '🎯 开始练习';
     actionBtn.className = 'btn btn-purple btn-lg';
@@ -826,6 +845,7 @@
     state.weightRound++;
     const q = WEIGHT_QUESTIONS[Math.floor(Math.random() * WEIGHT_QUESTIONS.length)];
     state.weightAnswer = q.answer;
+    showQuestion('⚖️', `第${state.weightRound}题：${q.name}应该用什么单位？`, `第${state.weightRound}题，${q.name}应该用什么单位？`);
 
     scaleDisplay.innerHTML = `
       <div class="digital-scale">
@@ -843,12 +863,14 @@
       div.className = 'weight-option';
       div.textContent = unit;
       div.onclick = () => {
+        if (state.weightAnswer === null) return;
         if (div.classList.contains('selected')) return;
         if (unit === state.weightAnswer) {
           div.classList.add('selected');
           addStar(1);
           showFeedback('🎉', '答对了！', 1200);
-          setTimeout(nextWeightQuestion, 1500);
+          state.weightAnswer = null;
+          scheduleAdvance(nextWeightQuestion, 1500);
         } else {
           div.classList.add('wrong');
           showFeedback('🤔', '再想想哦', 800);
