@@ -301,6 +301,106 @@
             font-size: 12px;
             color: #999;
         }
+        .modal-mask {
+            position: fixed;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.35);
+            z-index: 1000;
+        }
+        .modal-mask.show {
+            display: flex;
+        }
+        .modal-dialog {
+            width: 680px;
+            max-width: calc(100vw - 48px);
+            background: #fff;
+            border: 1px solid #d9d9d9;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            border-bottom: 1px solid #eaeaea;
+        }
+        .modal-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+        .modal-close {
+            border: none;
+            background: transparent;
+            color: #999;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        .modal-body {
+            padding: 20px;
+        }
+        .modal-desc {
+            margin-bottom: 16px;
+            font-size: 13px;
+            color: #666;
+            line-height: 1.6;
+        }
+        .modal-form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+        }
+        .modal-form-item {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .modal-form-item.full-width {
+            grid-column: span 2;
+        }
+        .modal-label {
+            font-size: 14px;
+            color: #333;
+        }
+        .modal-input,
+        .modal-select {
+            height: 36px;
+            padding: 0 12px;
+            border: 1px solid #d9d9d9;
+            border-radius: 4px;
+            font-size: 14px;
+            color: #333;
+        }
+        .upload-slot {
+            padding: 16px;
+            border: 1px dashed #d9d9d9;
+            border-radius: 4px;
+            background: #fafafa;
+        }
+        .upload-slot-title {
+            margin-bottom: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #555;
+        }
+        .upload-slot-hint {
+            margin-top: 8px;
+            font-size: 12px;
+            color: #999;
+            line-height: 1.5;
+        }
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            padding: 16px 20px;
+            border-top: 1px solid #eaeaea;
+            background: #fafafa;
+        }
     </style>
 </head>
 <body>
@@ -462,37 +562,38 @@
                 </div>
             </div>
 
-            <!-- 音频资源 -->
+            <!-- 电子书/音频资源 -->
             <div class="info-card">
                 <div class="info-card-header">
-                    <div class="info-card-title">音频资源(2个)</div>
-                    <button class="btn btn-primary" onclick="uploadAudio()">上传音频</button>
+                    <div class="info-card-title">电子书/音频资源(2组)</div>
+                    <button class="btn btn-primary" onclick="uploadAudio()">上传资源</button>
                 </div>
                 <div class="resource-list">
                     <div class="resource-item">
                         <div class="resource-item-left">
-                            <div class="resource-icon">[♪]</div>
+                            <div class="resource-icon">[书/♪]</div>
                             <div class="resource-info">
-                                <div class="resource-name">西游记全书朗读版（上）</div>
-                                <div class="resource-meta">时长：2:35:20 | 大小：85MB | 上传时间：2024-01-15 11:00</div>
+                                <div class="resource-name">第1回阅读资源</div>
+                                <div class="resource-meta">电子书：西游记-第1回.pdf | 音频：西游记-第1回听读音频.mp3 | 上传时间：2024-01-15 11:00</div>
                             </div>
                         </div>
                         <div class="resource-actions">
-                            <a href="#" onclick="alert('开始播放');return false;">播放</a>
+                            <a href="#" onclick="alert('打开电子书预览');return false;">预览电子书</a>
+                            <a href="#" onclick="alert('开始播放');return false;">播放音频</a>
                             <a href="#">下载</a>
                             <a href="#">删除</a>
                         </div>
                     </div>
                     <div class="resource-item">
                         <div class="resource-item-left">
-                            <div class="resource-icon">[♪]</div>
+                            <div class="resource-icon">[书/♪]</div>
                             <div class="resource-info">
-                                <div class="resource-name">西游记全书朗读版（下）</div>
-                                <div class="resource-meta">时长：2:48:15 | 大小：92MB | 上传时间：2024-01-15 11:30</div>
+                                <div class="resource-name">全书听读资源</div>
+                                <div class="resource-meta">电子书：未上传 | 音频：西游记全书朗读版（下）.mp3 | 上传时间：2024-01-15 11:30</div>
                             </div>
                         </div>
                         <div class="resource-actions">
-                            <a href="#">播放</a>
+                            <a href="#">播放音频</a>
                             <a href="#">下载</a>
                             <a href="#">删除</a>
                         </div>
@@ -500,23 +601,24 @@
                 </div>
             </div>
 
-            <!-- 导读单资源（学生版） -->
+            <!-- 导读单资源 -->
             <div class="info-card">
                 <div class="info-card-header">
-                    <div class="info-card-title">导读单资源(学生版)(3个)</div>
-                    <button class="btn btn-primary" onclick="uploadGuideStudent()">上传导读单</button>
+                    <div class="info-card-title">导读单资源(3组)</div>
+                    <button class="btn btn-primary" onclick="uploadGuideResource()">上传导读单资源</button>
                 </div>
                 <div class="resource-list">
                     <div class="resource-item">
                         <div class="resource-item-left">
                             <div class="resource-icon">[📄]</div>
                             <div class="resource-info">
-                                <div class="resource-name">第1次阅读：石猴出世</div>
-                                <div class="resource-meta">格式：PNG | 大小：2.5MB | 上传时间：2024-01-15 10:45</div>
+                                <div class="resource-name">第1次阅读导读单资源</div>
+                                <div class="resource-meta">无答案版：石猴出世-无答案版.png | 有答案版：石猴出世-有答案版.png | 上传时间：2024-01-15 10:45</div>
                             </div>
                         </div>
                         <div class="resource-actions">
-                            <a href="#">预览</a>
+                            <a href="#">预览无答案版</a>
+                            <a href="#">预览有答案版</a>
                             <a href="#">下载</a>
                             <a href="#">删除</a>
                         </div>
@@ -525,12 +627,12 @@
                         <div class="resource-item-left">
                             <div class="resource-icon">[📄]</div>
                             <div class="resource-info">
-                                <div class="resource-name">第2次阅读：拜师学艺</div>
-                                <div class="resource-meta">格式：PNG | 大小：2.3MB | 上传时间：2024-01-16 14:30</div>
+                                <div class="resource-name">第2次阅读导读单资源</div>
+                                <div class="resource-meta">无答案版：拜师学艺-无答案版.png | 有答案版：未上传 | 上传时间：2024-01-16 14:30</div>
                             </div>
                         </div>
                         <div class="resource-actions">
-                            <a href="#">预览</a>
+                            <a href="#">预览无答案版</a>
                             <a href="#">下载</a>
                             <a href="#">删除</a>
                         </div>
@@ -539,56 +641,125 @@
                         <div class="resource-item-left">
                             <div class="resource-icon">[📄]</div>
                             <div class="resource-info">
-                                <div class="resource-name">第3次阅读：大闹天宫</div>
-                                <div class="resource-meta">格式：PNG | 大小：2.8MB | 上传时间：2024-01-17 09:30</div>
+                                <div class="resource-name">第3次阅读导读单资源</div>
+                                <div class="resource-meta">无答案版：大闹天宫-无答案版.png | 有答案版：大闹天宫-有答案版.png | 上传时间：2024-01-17 09:30</div>
                             </div>
                         </div>
                         <div class="resource-actions">
-                            <a href="#">预览</a>
+                            <a href="#">预览无答案版</a>
+                            <a href="#">预览有答案版</a>
                             <a href="#">下载</a>
                             <a href="#">删除</a>
                         </div>
                     </div>
                 </div>
             </div>
+            </div>
+        </div>
+    </div>
 
-            <!-- 导读单资源（老师版） -->
-            <div class="info-card">
-                <div class="info-card-header">
-                    <div class="info-card-title">导读单资源(老师版/答案)(2个)</div>
-                    <button class="btn btn-primary" onclick="uploadGuideTeacher()">上传导读单</button>
-                </div>
-                <div class="resource-list">
-                    <div class="resource-item">
-                        <div class="resource-item-left">
-                            <div class="resource-icon">[📄]</div>
-                            <div class="resource-info">
-                                <div class="resource-name">第1次阅读答案：石猴出世</div>
-                                <div class="resource-meta">格式：PNG | 大小：2.6MB | 上传时间：2024-01-15 11:00</div>
-                            </div>
-                        </div>
-                        <div class="resource-actions">
-                            <a href="#">预览</a>
-                            <a href="#">下载</a>
-                            <a href="#">删除</a>
+    <div class="modal-mask" id="ebookAudioModal">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <div class="modal-title">上传电子书/音频资源</div>
+                <button class="modal-close" type="button" onclick="closeModal('ebookAudioModal')">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-desc">一次资源记录中可上传电子书文件和音频文件，两者可单独上传，也可同时上传。</div>
+                <div class="modal-form-grid">
+                    <div class="modal-form-item full-width">
+                        <label class="modal-label">资源名称</label>
+                        <input class="modal-input" type="text" value="第4回阅读资源" />
+                    </div>
+                    <div class="modal-form-item">
+                        <label class="modal-label">电子书文件</label>
+                        <div class="upload-slot">
+                            <div class="upload-slot-title">上传电子书</div>
+                            <button class="btn btn-secondary" type="button" onclick="alert('选择电子书文件')">选择文件</button>
+                            <div class="upload-slot-hint">支持 PDF，单文件不超过 200MB，可为空。</div>
                         </div>
                     </div>
-                    <div class="resource-item">
-                        <div class="resource-item-left">
-                            <div class="resource-icon">[📄]</div>
-                            <div class="resource-info">
-                                <div class="resource-name">第3次阅读答案：大闹天宫</div>
-                                <div class="resource-meta">格式：PNG | 大小：2.9MB | 上传时间：2024-01-17 10:00</div>
-                            </div>
-                        </div>
-                        <div class="resource-actions">
-                            <a href="#">预览</a>
-                            <a href="#">下载</a>
-                            <a href="#">删除</a>
+                    <div class="modal-form-item">
+                        <label class="modal-label">音频文件</label>
+                        <div class="upload-slot">
+                            <div class="upload-slot-title">上传音频</div>
+                            <button class="btn btn-secondary" type="button" onclick="alert('选择音频文件')">选择文件</button>
+                            <div class="upload-slot-hint">支持 MP3/WAV/AAC，单文件不超过 200MB，可为空。</div>
                         </div>
                     </div>
                 </div>
             </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" onclick="closeModal('ebookAudioModal')">取消</button>
+                <button class="btn btn-primary" type="button" onclick="submitModal('电子书/音频资源')">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-mask" id="commonUploadModal">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <div class="modal-title" id="commonModalTitle">上传资源</div>
+                <button class="modal-close" type="button" onclick="closeModal('commonUploadModal')">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-desc" id="commonModalDesc">请填写资源名称并上传文件。</div>
+                <div class="modal-form-grid">
+                    <div class="modal-form-item full-width">
+                        <label class="modal-label">资源名称</label>
+                        <input class="modal-input" type="text" id="commonResourceName" value="" />
+                    </div>
+                    <div class="modal-form-item full-width">
+                        <label class="modal-label">资源文件</label>
+                        <div class="upload-slot">
+                            <div class="upload-slot-title" id="commonUploadTitle">上传文件</div>
+                            <button class="btn btn-secondary" type="button" onclick="alert('选择资源文件')">选择文件</button>
+                            <div class="upload-slot-hint" id="commonUploadHint">请选择对应资源文件。</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" onclick="closeModal('commonUploadModal')">取消</button>
+                <button class="btn btn-primary" type="button" onclick="submitModal(document.getElementById('commonModalTitle').textContent)">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-mask" id="guideResourceModal">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <div class="modal-title">上传导读单资源</div>
+                <button class="modal-close" type="button" onclick="closeModal('guideResourceModal')">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-desc">一次资源记录中可上传无答案版导读单和有答案版导读单，两者可单独上传，也可同时上传。</div>
+                <div class="modal-form-grid">
+                    <div class="modal-form-item full-width">
+                        <label class="modal-label">资源名称</label>
+                        <input class="modal-input" type="text" value="第4次阅读导读单资源" />
+                    </div>
+                    <div class="modal-form-item">
+                        <label class="modal-label">无答案版文件</label>
+                        <div class="upload-slot">
+                            <div class="upload-slot-title">上传无答案版导读单</div>
+                            <button class="btn btn-secondary" type="button" onclick="alert('选择无答案版导读单文件')">选择文件</button>
+                            <div class="upload-slot-hint">支持 PNG、JPG、PDF，单文件不超过 10MB，可为空。</div>
+                        </div>
+                    </div>
+                    <div class="modal-form-item">
+                        <label class="modal-label">有答案版文件</label>
+                        <div class="upload-slot">
+                            <div class="upload-slot-title">上传有答案版导读单</div>
+                            <button class="btn btn-secondary" type="button" onclick="alert('选择有答案版导读单文件')">选择文件</button>
+                            <div class="upload-slot-hint">支持 PNG、JPG、PDF，单文件不超过 10MB，可为空。</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" onclick="closeModal('guideResourceModal')">取消</button>
+                <button class="btn btn-primary" type="button" onclick="submitModal('导读单资源')">保存</button>
             </div>
         </div>
     </div>
@@ -600,19 +771,39 @@
     }
 
     function uploadVideo() {
-        alert('打开上传视频对话框\n支持格式：MP4、AVI、MOV等\n单个文件不超过500MB');
+        openCommonModal('上传视频资源', '请上传视频资源文件。', '视频资源文件', '支持 MP4、AVI、MOV，单个文件不超过 500MB。', '第4回讲解视频');
     }
 
     function uploadAudio() {
-        alert('打开上传音频对话框\n支持格式：MP3、WAV、AAC等\n单个文件不超过200MB');
+        openModal('ebookAudioModal');
     }
 
-    function uploadGuideStudent() {
-        alert('打开上传导读单（学生版）对话框\n支持格式：PNG、JPG、PDF等\n单个文件不超过10MB');
+    function uploadGuideResource() {
+        openModal('guideResourceModal');
     }
 
-    function uploadGuideTeacher() {
-        alert('打开上传导读单（老师版/答案）对话框\n支持格式：PNG、JPG、PDF等\n单个文件不超过10MB');
+    function openModal(id) {
+        document.getElementById(id).classList.add('show');
+    }
+
+    function closeModal(id) {
+        document.getElementById(id).classList.remove('show');
+    }
+
+    function openCommonModal(title, desc, slotTitle, hint, defaultName) {
+        document.getElementById('commonModalTitle').textContent = title;
+        document.getElementById('commonModalDesc').textContent = desc;
+        document.getElementById('commonUploadTitle').textContent = slotTitle;
+        document.getElementById('commonUploadHint').textContent = hint;
+        document.getElementById('commonResourceName').value = defaultName;
+        openModal('commonUploadModal');
+    }
+
+    function submitModal(type) {
+        alert(`${type}保存成功`);
+        closeModal('ebookAudioModal');
+        closeModal('guideResourceModal');
+        closeModal('commonUploadModal');
     }
     </script>
 </body>
