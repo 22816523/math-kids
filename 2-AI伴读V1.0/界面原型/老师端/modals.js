@@ -229,7 +229,7 @@ const MODAL_TEMPLATES = {
                     <div class="message-preview">
                         <div class="message-title">阅读计划提醒</div>
                         <div class="message-content">
-                            同学们好，《三体》阅读计划已经开始，请按时完成每日阅读任务并打卡。如有问题请及时联系老师
+                            同学们好，《三体》阅读计划已经开始，请按时完成当前阅读任务，并在完成导读单任务后提交打卡。如有问题请及时联系老师
                         </div>
                     </div>
                     <div class="recipient-info">
