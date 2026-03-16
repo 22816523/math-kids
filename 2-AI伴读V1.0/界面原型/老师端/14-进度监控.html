@@ -1602,6 +1602,7 @@
         <div class="checkin-filter-tags">
             <span class="checkin-filter-tag">全部班级</span>
             <span class="checkin-filter-tag">2026-01-15</span>
+            <span class="checkin-filter-tag">2026春季阅读计划</span>
         </div>
 
         <!-- 今日任务 -->
@@ -1631,6 +1632,13 @@
                 <div class="filter-group">
                     <div class="filter-group-label">日期</div>
                     <input type="date" class="filter-group-select" id="checkinFilterDate" value="2026-01-15">
+                </div>
+                <div class="filter-group">
+                    <div class="filter-group-label">阅读计划</div>
+                    <select class="filter-group-select" id="checkinFilterPlan">
+                        <option selected>2026春季阅读计划</option>
+                        <option>2026寒假阅读计划</option>
+                    </select>
                 </div>
                 <div class="filter-modal-actions">
                     <button class="filter-reset-btn" onclick="resetCheckinFilter()">重置</button>
@@ -2095,18 +2103,21 @@
         function resetCheckinFilter() {
             document.getElementById('checkinFilterClass').selectedIndex = 0;
             document.getElementById('checkinFilterDate').value = '2026-01-15';
+            document.getElementById('checkinFilterPlan').selectedIndex = 0;
         }
 
         // 确认打卡筛选
         function confirmCheckinFilter() {
             const classVal = document.getElementById('checkinFilterClass').value;
             const date = document.getElementById('checkinFilterDate').value;
+            const planVal = document.getElementById('checkinFilterPlan').value;
 
             // 更新筛选标签显示
             const tagsContainer = document.querySelector('.checkin-filter-tags');
             tagsContainer.innerHTML = `
                 <span class="checkin-filter-tag">${classVal}</span>
                 <span class="checkin-filter-tag">${date}</span>
+                <span class="checkin-filter-tag">${planVal}</span>
             `;
 
             closeCheckinFilterModal();
