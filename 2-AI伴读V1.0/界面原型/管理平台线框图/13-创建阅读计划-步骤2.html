@@ -388,6 +388,159 @@
         .btn-icon:hover {
             background: #f5f5f5;
         }
+        .task-note {
+            margin-bottom: 16px;
+            padding: 12px 14px;
+            background: #f8f8f8;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            font-size: 13px;
+            color: #666;
+            line-height: 1.6;
+        }
+        .task-helper {
+            margin-top: 4px;
+            font-size: 12px;
+            color: #999;
+        }
+        .task-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .task-card {
+            border: 1px solid #e8e8e8;
+            border-radius: 4px;
+            padding: 14px;
+            background: #fafafa;
+        }
+        .task-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .task-card-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .task-type-badge {
+            display: inline-flex;
+            align-items: center;
+            height: 24px;
+            padding: 0 10px;
+            background: #333;
+            border-radius: 999px;
+            font-size: 12px;
+            color: #fff;
+        }
+        .task-card-desc {
+            font-size: 12px;
+            color: #999;
+        }
+        .task-footer {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px dashed #e0e0e0;
+        }
+        .btn-add-light {
+            background: #fff;
+            color: #333;
+            border-color: #999;
+        }
+        .btn-add-light:hover {
+            background: #f5f5f5;
+        }
+        .modal-mask {
+            position: fixed;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.35);
+            z-index: 1000;
+        }
+        .modal-mask.show {
+            display: flex;
+        }
+        .modal-dialog {
+            width: 520px;
+            max-width: calc(100vw - 48px);
+            background: #fff;
+            border: 1px solid #d9d9d9;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            border-bottom: 1px solid #eaeaea;
+        }
+        .modal-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+        .modal-close {
+            border: none;
+            background: transparent;
+            color: #999;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        .modal-body {
+            padding: 20px;
+        }
+        .modal-desc {
+            margin-bottom: 16px;
+            font-size: 13px;
+            color: #666;
+            line-height: 1.6;
+        }
+        .task-type-list {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+        }
+        .task-type-option {
+            padding: 14px;
+            border: 1px solid #dcdcdc;
+            border-radius: 6px;
+            background: #fff;
+            cursor: pointer;
+            text-align: left;
+        }
+        .task-type-option:hover {
+            border-color: #999;
+            background: #f7f7f7;
+        }
+        .task-type-option.selected {
+            border-color: #333;
+            background: #f3f3f3;
+        }
+        .task-type-option strong {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 14px;
+            color: #333;
+        }
+        .task-type-option span {
+            display: block;
+            font-size: 12px;
+            color: #777;
+            line-height: 1.5;
+        }
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            padding: 16px 20px;
+            border-top: 1px solid #eaeaea;
+            background: #fafafa;
+        }
 
         /* 表单 */
         .form-grid {
@@ -715,8 +868,8 @@
             <!-- 按钮组 -->
             <div class="form-actions">
                 <button type="button" class="btn btn-secondary" onclick="window.location.href='12-创建阅读计划-步骤1.html'">上一步</button>
-                <button type="button" class="btn btn-secondary" onclick="alert('保存成功')">保存草稿</button>
-                <button type="button" class="btn btn-primary" onclick="window.location.href='14-创建阅读计划-步骤3.html'">下一步</button>
+                <button type="button" class="btn btn-secondary" onclick="saveDraft()">保存草稿</button>
+                <button type="button" class="btn btn-primary" onclick="goNextStep()">下一步</button>
             </div>
 
             <!-- 步骤条 -->
@@ -788,46 +941,70 @@
                                 <button class="btn-add" onclick="addReadingTask()">+ 添加阅读次数</button>
                             </div>
 
+                            <div class="task-note">
+                                当前版本每次阅读默认对应1天，系统将根据书籍开始时间和阅读顺序自动生成开始日期与结束日期
+                                前台暂不开放任务周期编辑，后台已预留开始日期和结束日期字段用于兼容后续版本
+                            </div>
+
                             <div class="task-list">
                                 <!-- 阅读次数1 -->
-                                <div class="task-item">
+                                <div class="task-item" data-reading-order="1">
                                     <div class="task-item-header">
                                         <div class="task-item-title">
                                             <span class="task-item-title-text" id="title-1">第1次阅读</span>
                                             <input type="text" value="第1次阅读" id="title-input-1" style="display: none;">
                                             <button class="edit-icon" id="edit-btn-1" onclick="editTitle(1)">[编辑]</button>
                                             <button class="edit-icon" id="save-btn-1" onclick="saveTitle(1)" style="display: none;">[保存]</button>
+                                            <div class="task-helper">任务日期由系统自动生成，当前版本默认对应 2026-03-01</div>
                                         </div>
                                         <div class="task-item-actions">
                                             <button class="btn-icon" onclick="deleteReadingTask(this)">删除</button>
                                         </div>
                                     </div>
-                                    <div class="form-grid">
-                                        <!-- 阅读任务 -->
-                                        <div class="form-item full-width">
-                                            <label class="form-label">
-                                                <input type="checkbox" id="page-check-1" checked onchange="toggleTask('page-1')">
-                                                阅读任务
-                                            </label>
-                                            <div id="page-1" style="display: flex; gap: 8px; align-items: center; max-width: 400px; margin-top: 8px;">
-                                                <input type="number" class="form-input" placeholder="起始页" value="1" style="flex: 1;">
-                                                <span style="color: #999;">-</span>
-                                                <input type="number" class="form-input" placeholder="结束页" value="50" style="flex: 1;">
-                                                <span style="color: #666; white-space: nowrap;">页</span>
-                                                <button class="upload-btn" style="margin-left: 8px; white-space: nowrap;" onclick="uploadAudio()">上传音频</button>
+                                    <div class="task-cards">
+                                        <div class="task-card" data-task-type="reading">
+                                            <div class="task-card-header">
+                                                <div class="task-card-title">
+                                                    <span class="task-type-badge">阅读任务</span>
+                                                    <span class="task-card-desc">配置阅读页码和听书音频</span>
+                                                </div>
+                                                <button class="btn-icon" onclick="deleteTaskCard(this)">删除任务</button>
+                                            </div>
+                                            <div class="form-grid">
+                                                <div class="form-item full-width">
+                                                    <label class="form-label">阅读页码范围</label>
+                                                    <div style="display: flex; gap: 8px; align-items: center; max-width: 420px;">
+                                                        <input type="number" class="form-input" placeholder="起始页" value="1" style="flex: 1;">
+                                                        <span style="color: #999;">-</span>
+                                                        <input type="number" class="form-input" placeholder="结束页" value="50" style="flex: 1;">
+                                                        <span style="color: #666; white-space: nowrap;">页</span>
+                                                    </div>
+                                                </div>
+                                                <div class="form-item full-width">
+                                                    <label class="form-label">音频资源</label>
+                                                    <div class="resource-select-group" style="margin-bottom: 8px;">
+                                                        <button class="upload-btn" onclick="selectFromLibrary()">从资源库选择</button>
+                                                        <button class="upload-btn" onclick="uploadAudio()">本地上传</button>
+                                                    </div>
+                                                    <div class="upload-info-wrapper">
+                                                        <div class="upload-info">西游记-第1回听书音频.mp3</div>
+                                                        <button class="btn-delete" onclick="deleteFile(this)">×</button>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
-
-                                        <!-- 导读单任务 -->
-                                        <div class="form-item full-width">
-                                            <label class="form-label">
-                                                <input type="checkbox" id="guide-check-1" checked onchange="toggleTask('guide-1')">
-                                                导读单任务
-                                            </label>
-                                            <div id="guide-1" style="margin-top: 12px;">
-                                                <div style="margin-bottom: 16px;">
-                                                    <div style="margin-bottom: 8px; font-size: 13px; color: #666;">导读单（学生版）</div>
-                                                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                                        <div class="task-card" data-task-type="guide">
+                                            <div class="task-card-header">
+                                                <div class="task-card-title">
+                                                    <span class="task-type-badge">导读单任务</span>
+                                                    <span class="task-card-desc">学生版导读单 + 老师版答案</span>
+                                                </div>
+                                                <button class="btn-icon" onclick="deleteTaskCard(this)">删除任务</button>
+                                            </div>
+                                            <div class="form-grid">
+                                                <div class="form-item full-width">
+                                                    <label class="form-label">导读单（学生版）</label>
+                                                    <div class="resource-select-group" style="margin-bottom: 8px;">
                                                         <button class="upload-btn" onclick="selectFromLibrary()">从资源库选择</button>
                                                         <button class="upload-btn" onclick="uploadLocal()">本地上传</button>
                                                     </div>
@@ -848,11 +1025,11 @@
                                                         </label>
                                                     </div>
                                                 </div>
-                                                <div style="margin-bottom: 16px;">
-                                                    <div style="margin-bottom: 8px; font-size: 13px; color: #666;">导读单答案（老师版）</div>
-                                                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-                                                        <button class="upload-btn" onclick="alert('从资源库选择')">从资源库选择</button>
-                                                        <button class="upload-btn" onclick="alert('本地上传')">本地上传</button>
+                                                <div class="form-item full-width">
+                                                    <label class="form-label">导读单答案（老师版）</label>
+                                                    <div class="resource-select-group" style="margin-bottom: 8px;">
+                                                        <button class="upload-btn" onclick="selectFromLibrary()">从资源库选择</button>
+                                                        <button class="upload-btn" onclick="uploadLocal()">本地上传</button>
                                                     </div>
                                                     <div class="upload-info-wrapper" style="margin-bottom: 8px;">
                                                         <div class="upload-info">西游记-第1次阅读导读单答案.jpg</div>
@@ -873,80 +1050,105 @@
                                                 </div>
                                             </div>
                                         </div>
-
-                                        <!-- 观看视频 -->
-                                        <div class="form-item full-width">
-                                            <label class="form-label">
-                                                <input type="checkbox" id="video-check-1" checked onchange="toggleTask('video-1')">
-                                                观看视频
-                                            </label>
-                                            <div id="video-1" style="margin-top: 12px;">
-                                                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-                                                    <button class="upload-btn">从资源库选择</button>
-                                                    <button class="upload-btn">本地上传</button>
+                                        <div class="task-card" data-task-type="video">
+                                            <div class="task-card-header">
+                                                <div class="task-card-title">
+                                                    <span class="task-type-badge">观看视频</span>
+                                                    <span class="task-card-desc">配置视频资源和解锁方式</span>
                                                 </div>
-                                                <div class="upload-info-wrapper" style="margin-bottom: 8px;">
-                                                    <div class="upload-info">西游记-第1回讲解.mp4</div>
-                                                    <button class="btn-delete" onclick="deleteFile(this)">×</button>
-                                                </div>
-                                                <div class="form-radio-group">
-                                                    <label class="form-radio">
-                                                        <input type="radio" name="unlock-video-1" checked>
-                                                        <span>任务当天解锁</span>
-                                                    </label>
-                                                    <label class="form-radio">
-                                                        <input type="radio" name="unlock-video-1">
-                                                        <span>提前</span>
-                                                        <input type="number" class="form-input" value="0" min="0" max="30" style="width: 60px; margin: 0 4px;">
-                                                        <span>天解锁</span>
-                                                    </label>
+                                                <button class="btn-icon" onclick="deleteTaskCard(this)">删除任务</button>
+                                            </div>
+                                            <div class="form-grid">
+                                                <div class="form-item full-width">
+                                                    <label class="form-label">视频资源</label>
+                                                    <div class="resource-select-group" style="margin-bottom: 8px;">
+                                                        <button class="upload-btn" onclick="selectFromLibrary()">从资源库选择</button>
+                                                        <button class="upload-btn" onclick="uploadLocal()">本地上传</button>
+                                                    </div>
+                                                    <div class="upload-info-wrapper" style="margin-bottom: 8px;">
+                                                        <div class="upload-info">西游记-第1回讲解.mp4</div>
+                                                        <button class="btn-delete" onclick="deleteFile(this)">×</button>
+                                                    </div>
+                                                    <div class="form-radio-group">
+                                                        <label class="form-radio">
+                                                            <input type="radio" name="unlock-video-1" checked>
+                                                            <span>任务当天解锁</span>
+                                                        </label>
+                                                        <label class="form-radio">
+                                                            <input type="radio" name="unlock-video-1">
+                                                            <span>提前</span>
+                                                            <input type="number" class="form-input" value="0" min="0" max="30" style="width: 60px; margin: 0 4px;">
+                                                            <span>天解锁</span>
+                                                        </label>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="task-footer">
+                                        <button class="btn-add btn-add-light" onclick="addTask(1)">+ 添加任务</button>
+                                    </div>
                                 </div>
 
                                 <!-- 阅读次数2 -->
-                                <div class="task-item">
+                                <div class="task-item" data-reading-order="2">
                                     <div class="task-item-header">
                                         <div class="task-item-title">
                                             <span class="task-item-title-text" id="title-2">第2次阅读</span>
                                             <input type="text" value="第2次阅读" id="title-input-2" style="display: none;">
                                             <button class="edit-icon" id="edit-btn-2" onclick="editTitle(2)">[编辑]</button>
                                             <button class="edit-icon" id="save-btn-2" onclick="saveTitle(2)" style="display: none;">[保存]</button>
+                                            <div class="task-helper">任务日期由系统自动生成，当前版本默认对应 2026-03-02</div>
                                         </div>
                                         <div class="task-item-actions">
                                             <button class="btn-icon" onclick="deleteReadingTask(this)">删除</button>
                                         </div>
                                     </div>
-                                    <div class="form-grid">
-                                        <!-- 阅读任务 -->
-                                        <div class="form-item full-width">
-                                            <label class="form-label">
-                                                <input type="checkbox" id="page-check-2" checked onchange="toggleTask('page-2')">
-                                                阅读任务
-                                            </label>
-                                            <div id="page-2" style="display: flex; gap: 8px; align-items: center; max-width: 400px; margin-top: 8px;">
-                                                <input type="number" class="form-input" placeholder="起始页" value="51" style="flex: 1;">
-                                                <span style="color: #999;">-</span>
-                                                <input type="number" class="form-input" placeholder="结束页" value="100" style="flex: 1;">
-                                                <span style="color: #666; white-space: nowrap;">页</span>
-                                                <button class="upload-btn" style="margin-left: 8px; white-space: nowrap;" onclick="uploadAudio()">上传音频</button>
+                                    <div class="task-cards">
+                                        <div class="task-card" data-task-type="reading">
+                                            <div class="task-card-header">
+                                                <div class="task-card-title">
+                                                    <span class="task-type-badge">阅读任务</span>
+                                                    <span class="task-card-desc">配置阅读页码和听书音频</span>
+                                                </div>
+                                                <button class="btn-icon" onclick="deleteTaskCard(this)">删除任务</button>
+                                            </div>
+                                            <div class="form-grid">
+                                                <div class="form-item full-width">
+                                                    <label class="form-label">阅读页码范围</label>
+                                                    <div style="display: flex; gap: 8px; align-items: center; max-width: 420px;">
+                                                        <input type="number" class="form-input" placeholder="起始页" value="51" style="flex: 1;">
+                                                        <span style="color: #999;">-</span>
+                                                        <input type="number" class="form-input" placeholder="结束页" value="100" style="flex: 1;">
+                                                        <span style="color: #666; white-space: nowrap;">页</span>
+                                                    </div>
+                                                </div>
+                                                <div class="form-item full-width">
+                                                    <label class="form-label">音频资源</label>
+                                                    <div class="resource-select-group" style="margin-bottom: 8px;">
+                                                        <button class="upload-btn" onclick="selectFromLibrary()">从资源库选择</button>
+                                                        <button class="upload-btn" onclick="uploadAudio()">本地上传</button>
+                                                    </div>
+                                                    <div class="upload-info-wrapper">
+                                                        <div class="upload-info empty">未上传音频</div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
-
-                                        <!-- 导读单任务 -->
-                                        <div class="form-item full-width">
-                                            <label class="form-label">
-                                                <input type="checkbox" id="guide-check-2" checked onchange="toggleTask('guide-2')">
-                                                导读单任务
-                                            </label>
-                                            <div id="guide-2" style="margin-top: 12px;">
-                                                <div style="margin-bottom: 16px;">
-                                                    <div style="margin-bottom: 8px; font-size: 13px; color: #666;">导读单（学生版）</div>
-                                                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-                                                        <button class="upload-btn" onclick="alert('从资源库选择')">从资源库选择</button>
-                                                        <button class="upload-btn" onclick="alert('本地上传')">本地上传</button>
+                                        <div class="task-card" data-task-type="guide">
+                                            <div class="task-card-header">
+                                                <div class="task-card-title">
+                                                    <span class="task-type-badge">导读单任务</span>
+                                                    <span class="task-card-desc">学生版导读单 + 老师版答案</span>
+                                                </div>
+                                                <button class="btn-icon" onclick="deleteTaskCard(this)">删除任务</button>
+                                            </div>
+                                            <div class="form-grid">
+                                                <div class="form-item full-width">
+                                                    <label class="form-label">导读单（学生版）</label>
+                                                    <div class="resource-select-group" style="margin-bottom: 8px;">
+                                                        <button class="upload-btn" onclick="selectFromLibrary()">从资源库选择</button>
+                                                        <button class="upload-btn" onclick="uploadLocal()">本地上传</button>
                                                     </div>
                                                     <div class="upload-info-wrapper" style="margin-bottom: 8px;">
                                                         <div class="upload-info">西游记-第2次阅读导读单.jpg</div>
@@ -965,11 +1167,11 @@
                                                         </label>
                                                     </div>
                                                 </div>
-                                                <div style="margin-bottom: 16px;">
-                                                    <div style="margin-bottom: 8px; font-size: 13px; color: #666;">导读单答案（老师版）</div>
-                                                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-                                                        <button class="upload-btn" onclick="alert('从资源库选择')">从资源库选择</button>
-                                                        <button class="upload-btn" onclick="alert('本地上传')">本地上传</button>
+                                                <div class="form-item full-width">
+                                                    <label class="form-label">导读单答案（老师版）</label>
+                                                    <div class="resource-select-group" style="margin-bottom: 8px;">
+                                                        <button class="upload-btn" onclick="selectFromLibrary()">从资源库选择</button>
+                                                        <button class="upload-btn" onclick="uploadLocal()">本地上传</button>
                                                     </div>
                                                     <div class="upload-info-wrapper" style="margin-bottom: 8px;">
                                                         <div class="upload-info">西游记-第2次阅读导读单答案.jpg</div>
@@ -990,77 +1192,71 @@
                                                 </div>
                                             </div>
                                         </div>
-
-                                        <!-- 观看视频 -->
-                                        <div class="form-item full-width">
-                                            <label class="form-label">
-                                                <input type="checkbox" id="video-check-2" onchange="toggleTask('video-2')">
-                                                观看视频
-                                            </label>
-                                            <div id="video-2" style="margin-top: 12px; display: none;">
-                                                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-                                                    <button class="upload-btn">从资源库选择</button>
-                                                    <button class="upload-btn">本地上传</button>
-                                                </div>
-                                                <div class="upload-info empty" style="margin-bottom: 8px;">未上传视频</div>
-                                                <div class="form-radio-group">
-                                                    <label class="form-radio">
-                                                        <input type="radio" name="unlock-video-2" checked>
-                                                        <span>任务当天解锁</span>
-                                                    </label>
-                                                    <label class="form-radio">
-                                                        <input type="radio" name="unlock-video-2">
-                                                        <span>提前</span>
-                                                        <input type="number" class="form-input" value="0" min="0" max="30" style="width: 60px; margin: 0 4px;">
-                                                        <span>天解锁</span>
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        </div>
+                                    </div>
+                                    <div class="task-footer">
+                                        <button class="btn-add btn-add-light" onclick="addTask(2)">+ 添加任务</button>
                                     </div>
                                 </div>
 
                                 <!-- 阅读次数3 -->
-                                <div class="task-item">
+                                <div class="task-item" data-reading-order="3">
                                     <div class="task-item-header">
                                         <div class="task-item-title">
                                             <span class="task-item-title-text" id="title-3">第3次阅读</span>
                                             <input type="text" value="第3次阅读" id="title-input-3" style="display: none;">
                                             <button class="edit-icon" id="edit-btn-3" onclick="editTitle(3)">[编辑]</button>
                                             <button class="edit-icon" id="save-btn-3" onclick="saveTitle(3)" style="display: none;">[保存]</button>
+                                            <div class="task-helper">任务日期由系统自动生成，当前版本默认对应 2026-03-03</div>
                                         </div>
                                         <div class="task-item-actions">
-                                            <button class="btn-icon">删除</button>
+                                            <button class="btn-icon" onclick="deleteReadingTask(this)">删除</button>
                                         </div>
                                     </div>
-                                    <div class="form-grid">
-                                        <!-- 阅读任务 -->
-                                        <div class="form-item full-width">
-                                            <label class="form-label">
-                                                <input type="checkbox" id="page-check-3" checked onchange="toggleTask('page-3')">
-                                                阅读任务
-                                            </label>
-                                            <div id="page-3" style="display: flex; gap: 8px; align-items: center; max-width: 400px; margin-top: 8px;">
-                                                <input type="number" class="form-input" placeholder="起始页" value="101" style="flex: 1;">
-                                                <span style="color: #999;">-</span>
-                                                <input type="number" class="form-input" placeholder="结束页" value="150" style="flex: 1;">
-                                                <span style="color: #666; white-space: nowrap;">页</span>
-                                                <button class="upload-btn" style="margin-left: 8px; white-space: nowrap;" onclick="uploadAudio()">上传音频</button>
+                                    <div class="task-cards">
+                                        <div class="task-card" data-task-type="reading">
+                                            <div class="task-card-header">
+                                                <div class="task-card-title">
+                                                    <span class="task-type-badge">阅读任务</span>
+                                                    <span class="task-card-desc">配置阅读页码和听书音频</span>
+                                                </div>
+                                                <button class="btn-icon" onclick="deleteTaskCard(this)">删除任务</button>
+                                            </div>
+                                            <div class="form-grid">
+                                                <div class="form-item full-width">
+                                                    <label class="form-label">阅读页码范围</label>
+                                                    <div style="display: flex; gap: 8px; align-items: center; max-width: 420px;">
+                                                        <input type="number" class="form-input" placeholder="起始页" value="101" style="flex: 1;">
+                                                        <span style="color: #999;">-</span>
+                                                        <input type="number" class="form-input" placeholder="结束页" value="150" style="flex: 1;">
+                                                        <span style="color: #666; white-space: nowrap;">页</span>
+                                                    </div>
+                                                </div>
+                                                <div class="form-item full-width">
+                                                    <label class="form-label">音频资源</label>
+                                                    <div class="resource-select-group" style="margin-bottom: 8px;">
+                                                        <button class="upload-btn" onclick="selectFromLibrary()">从资源库选择</button>
+                                                        <button class="upload-btn" onclick="uploadAudio()">本地上传</button>
+                                                    </div>
+                                                    <div class="upload-info-wrapper">
+                                                        <div class="upload-info empty">未上传音频</div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
-
-                                        <!-- 导读单任务 -->
-                                        <div class="form-item full-width">
-                                            <label class="form-label">
-                                                <input type="checkbox" id="guide-check-3" checked onchange="toggleTask('guide-3')">
-                                                导读单任务
-                                            </label>
-                                            <div id="guide-3" style="margin-top: 12px;">
-                                                <div style="margin-bottom: 16px;">
-                                                    <div style="margin-bottom: 8px; font-size: 13px; color: #666;">导读单（学生版）</div>
-                                                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-                                                        <button class="upload-btn" onclick="alert('从资源库选择')">从资源库选择</button>
-                                                        <button class="upload-btn" onclick="alert('本地上传')">本地上传</button>
+                                        <div class="task-card" data-task-type="guide">
+                                            <div class="task-card-header">
+                                                <div class="task-card-title">
+                                                    <span class="task-type-badge">导读单任务</span>
+                                                    <span class="task-card-desc">学生版导读单 + 老师版答案</span>
+                                                </div>
+                                                <button class="btn-icon" onclick="deleteTaskCard(this)">删除任务</button>
+                                            </div>
+                                            <div class="form-grid">
+                                                <div class="form-item full-width">
+                                                    <label class="form-label">导读单（学生版）</label>
+                                                    <div class="resource-select-group" style="margin-bottom: 8px;">
+                                                        <button class="upload-btn" onclick="selectFromLibrary()">从资源库选择</button>
+                                                        <button class="upload-btn" onclick="uploadLocal()">本地上传</button>
                                                     </div>
                                                     <div class="upload-info-wrapper" style="margin-bottom: 8px;">
                                                         <div class="upload-info">西游记-第3次阅读导读单.jpg</div>
@@ -1079,11 +1275,11 @@
                                                         </label>
                                                     </div>
                                                 </div>
-                                                <div style="margin-bottom: 16px;">
-                                                    <div style="margin-bottom: 8px; font-size: 13px; color: #666;">导读单答案（老师版）</div>
-                                                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-                                                        <button class="upload-btn" onclick="alert('从资源库选择')">从资源库选择</button>
-                                                        <button class="upload-btn" onclick="alert('本地上传')">本地上传</button>
+                                                <div class="form-item full-width">
+                                                    <label class="form-label">导读单答案（老师版）</label>
+                                                    <div class="resource-select-group" style="margin-bottom: 8px;">
+                                                        <button class="upload-btn" onclick="selectFromLibrary()">从资源库选择</button>
+                                                        <button class="upload-btn" onclick="uploadLocal()">本地上传</button>
                                                     </div>
                                                     <div class="upload-info-wrapper" style="margin-bottom: 8px;">
                                                         <div class="upload-info">西游记-第3次阅读导读单答案.jpg</div>
@@ -1104,36 +1300,43 @@
                                                 </div>
                                             </div>
                                         </div>
-
-                                        <!-- 观看视频 -->
-                                        <div class="form-item full-width">
-                                            <label class="form-label">
-                                                <input type="checkbox" id="video-check-3" checked onchange="toggleTask('video-3')">
-                                                观看视频
-                                            </label>
-                                            <div id="video-3" style="margin-top: 12px;">
-                                                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-                                                    <button class="upload-btn">从资源库选择</button>
-                                                    <button class="upload-btn">本地上传</button>
+                                        <div class="task-card" data-task-type="video">
+                                            <div class="task-card-header">
+                                                <div class="task-card-title">
+                                                    <span class="task-type-badge">观看视频</span>
+                                                    <span class="task-card-desc">配置视频资源和解锁方式</span>
                                                 </div>
-                                                <div class="upload-info-wrapper" style="margin-bottom: 8px;">
-                                                    <div class="upload-info">西游记-第5回讲解.mp4</div>
-                                                    <button class="btn-delete" onclick="deleteFile(this)">×</button>
-                                                </div>
-                                                <div class="form-radio-group">
-                                                    <label class="form-radio">
-                                                        <input type="radio" name="unlock-video-3" checked>
-                                                        <span>任务当天解锁</span>
-                                                    </label>
-                                                    <label class="form-radio">
-                                                        <input type="radio" name="unlock-video-3">
-                                                        <span>提前</span>
-                                                        <input type="number" class="form-input" value="0" min="0" max="30" style="width: 60px; margin: 0 4px;">
-                                                        <span>天解锁</span>
-                                                    </label>
+                                                <button class="btn-icon" onclick="deleteTaskCard(this)">删除任务</button>
+                                            </div>
+                                            <div class="form-grid">
+                                                <div class="form-item full-width">
+                                                    <label class="form-label">视频资源</label>
+                                                    <div class="resource-select-group" style="margin-bottom: 8px;">
+                                                        <button class="upload-btn" onclick="selectFromLibrary()">从资源库选择</button>
+                                                        <button class="upload-btn" onclick="uploadLocal()">本地上传</button>
+                                                    </div>
+                                                    <div class="upload-info-wrapper" style="margin-bottom: 8px;">
+                                                        <div class="upload-info">西游记-第5回讲解.mp4</div>
+                                                        <button class="btn-delete" onclick="deleteFile(this)">×</button>
+                                                    </div>
+                                                    <div class="form-radio-group">
+                                                        <label class="form-radio">
+                                                            <input type="radio" name="unlock-video-3" checked>
+                                                            <span>任务当天解锁</span>
+                                                        </label>
+                                                        <label class="form-radio">
+                                                            <input type="radio" name="unlock-video-3">
+                                                            <span>提前</span>
+                                                            <input type="number" class="form-input" value="0" min="0" max="30" style="width: 60px; margin: 0 4px;">
+                                                            <span>天解锁</span>
+                                                        </label>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
+                                    </div>
+                                    <div class="task-footer">
+                                        <button class="btn-add btn-add-light" onclick="addTask(3)">+ 添加任务</button>
                                     </div>
                                 </div>
                             </div>
@@ -1145,7 +1348,44 @@
         </div>
     </div>
 
+    <div class="modal-mask" id="taskTypeModal">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <div class="modal-title">选择任务类型</div>
+                <button class="modal-close" type="button" onclick="closeTaskModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-desc" id="taskModalDesc">为当前阅读次数选择要添加的任务类型。当前版本通过任务卡片维护任务列表。</div>
+                <div class="task-type-list">
+                    <button type="button" class="task-type-option" data-task-value="阅读任务" onclick="selectTaskType(this)">
+                        <strong>阅读任务</strong>
+                        <span>配置页码范围和配套音频，适合指定阅读内容。</span>
+                    </button>
+                    <button type="button" class="task-type-option" data-task-value="导读单任务" onclick="selectTaskType(this)">
+                        <strong>导读单任务</strong>
+                        <span>配置学生版导读单、老师版答案和解锁规则。</span>
+                    </button>
+                    <button type="button" class="task-type-option" data-task-value="视频任务" onclick="selectTaskType(this)">
+                        <strong>视频任务</strong>
+                        <span>配置导读视频资源和解锁时机。</span>
+                    </button>
+                    <button type="button" class="task-type-option" data-task-value="测评任务" onclick="selectTaskType(this)">
+                        <strong>测评任务</strong>
+                        <span>配置测评题组和生效机制，保存或下一步时会做建议性提醒。</span>
+                    </button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeTaskModal()">取消</button>
+                <button type="button" class="btn btn-primary" onclick="confirmTaskType()">确认添加</button>
+            </div>
+        </div>
+    </div>
+
     <script>
+    let currentReadingOrder = null;
+    let selectedTaskType = '';
+
     function toggleMenu(element) {
         const menuGroup = element.parentElement;
         menuGroup.classList.toggle('expanded');
@@ -1177,29 +1417,6 @@
         document.getElementById('save-btn-' + id).style.display = 'none';
     }
 
-    function toggleTask(taskId) {
-        const taskContent = document.getElementById(taskId);
-        const checkbox = document.getElementById(taskId.replace(/^(page|audio|guide|video)-/, '$1-check-'));
-
-        if (checkbox.checked) {
-            // 启用任务
-            taskContent.style.display = 'block';
-            if (taskId.startsWith('page-')) {
-                taskContent.style.display = 'flex';
-            } else {
-                taskContent.style.display = 'block';
-            }
-            // 启用所有输入元素
-            const inputs = taskContent.querySelectorAll('input, button, textarea, select');
-            inputs.forEach(input => {
-                input.disabled = false;
-            });
-        } else {
-            // 禁用任务
-            taskContent.style.display = 'none';
-        }
-    }
-
     function deleteFile(button) {
         // 找到包含文件信息的wrapper
         const wrapper = button.parentElement;
@@ -1214,7 +1431,7 @@
     }
 
     function addReadingTask() {
-        alert('已添加新的阅读次数');
+        alert('已添加新的阅读次数\n\n当前版本可继续在该次阅读下通过“添加任务”配置阅读任务、导读单任务、观看视频或测评任务');
     }
 
     function deleteReadingTask(btn) {
@@ -1234,6 +1451,91 @@
 
     function uploadLocal() {
         alert('请选择要上传的本地文件');
+    }
+
+    function addTask(readingOrder) {
+        currentReadingOrder = readingOrder;
+        selectedTaskType = '';
+        document.getElementById('taskModalDesc').textContent = `为第${readingOrder}次阅读选择要添加的任务类型。`;
+        document.querySelectorAll('#taskTypeModal .task-type-option').forEach(option => {
+            option.classList.remove('selected');
+        });
+        document.getElementById('taskTypeModal').classList.add('show');
+    }
+
+    function deleteTaskCard(button) {
+        const taskCard = button.closest('.task-card');
+        if (taskCard) {
+            taskCard.remove();
+        }
+    }
+
+    function closeTaskModal() {
+        document.getElementById('taskTypeModal').classList.remove('show');
+    }
+
+    function selectTaskType(button) {
+        document.querySelectorAll('#taskTypeModal .task-type-option').forEach(option => {
+            option.classList.remove('selected');
+        });
+        button.classList.add('selected');
+        selectedTaskType = button.dataset.taskValue;
+    }
+
+    function confirmTaskType() {
+        if (!selectedTaskType) {
+            alert('请先选择任务类型');
+            return;
+        }
+
+        closeTaskModal();
+        alert(`已为第${currentReadingOrder}次阅读选择“${selectedTaskType}”\n\n原型阶段先展示任务类型选择弹窗，后续可再细化为生成对应任务卡片。`);
+    }
+
+    function getAssessmentWarnings() {
+        const warnings = [];
+        const readingItems = Array.from(document.querySelectorAll('.task-item[data-reading-order]'));
+        if (!readingItems.length) {
+            return warnings;
+        }
+
+        const lastReadingOrder = Math.max(...readingItems.map(item => Number(item.dataset.readingOrder)));
+        const assessmentCards = Array.from(document.querySelectorAll('.task-card[data-task-type="assessment"]'));
+
+        if (!assessmentCards.length) {
+            warnings.push('当前未配置测评任务，请确认该书是否无需测评');
+            return warnings;
+        }
+
+        const notInLastReading = assessmentCards.some(card => {
+            const taskItem = card.closest('.task-item');
+            return Number(taskItem.dataset.readingOrder) !== lastReadingOrder;
+        });
+
+        if (notInLastReading) {
+            warnings.push('当前测评任务未配置在最后一次阅读中，通常建议将测评放在最后一次阅读后，请确认是否符合本次计划安排');
+        }
+
+        return warnings;
+    }
+
+    function saveDraft() {
+        const warnings = getAssessmentWarnings();
+        let message = '保存草稿成功';
+        if (warnings.length) {
+            message = '提醒：\n' + warnings.map((text, index) => `${index + 1}. ${text}`).join('\n') + '\n\n保存草稿成功';
+        }
+        alert(message);
+    }
+
+    function goNextStep() {
+        const warnings = getAssessmentWarnings();
+        let message = '点击确定后继续进入下一步';
+        if (warnings.length) {
+            message = '提醒：\n' + warnings.map((text, index) => `${index + 1}. ${text}`).join('\n') + '\n\n点击确定后继续进入下一步';
+        }
+        alert(message);
+        window.location.href = '14-创建阅读计划-步骤3.html';
     }
 </script>
 </body>
