@@ -521,38 +521,26 @@
             border-color: #999;
         }
 
-        /* 年级筛选 */
-        .grade-filter {
+        /* 当前年级展示 */
+        .grade-display {
             margin-bottom: 16px;
         }
-        .grade-filter-label {
+        .grade-display-label {
             font-size: 14px;
             color: #333;
             margin-bottom: 8px;
             font-weight: 600;
         }
-        .grade-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-        .grade-tag {
-            padding: 6px 16px;
-            border: 1px solid #e0e0e0;
+        .grade-display-value {
+            display: inline-flex;
+            align-items: center;
+            height: 36px;
+            padding: 0 16px;
+            border: 1px solid #d9d9d9;
             border-radius: 4px;
             font-size: 14px;
             color: #666;
-            cursor: pointer;
-            background: #fff;
-            transition: all 0.2s;
-        }
-        .grade-tag:hover {
             background: #f5f5f5;
-        }
-        .grade-tag.active {
-            background: #333;
-            color: #fff;
-            border-color: #333;
         }
 
         /* 弹窗内的书籍列表 */
@@ -752,7 +740,7 @@
             <div class="form-actions">
                 <button type="button" class="btn btn-secondary" onclick="window.location.href='10-阅读计划列表.html'">返回列表</button>
                 <button type="button" class="btn btn-secondary" onclick="alert('保存成功')">保存草稿</button>
-                <button type="button" class="btn btn-primary" onclick="window.location.href='13-创建阅读计划-步骤2.html'">下一步</button>
+                <button type="button" class="btn btn-primary" onclick="window.location.href='13-配置年级书目-步骤2.html'">下一步</button>
             </div>
 
             <!-- 步骤条 -->
@@ -792,8 +780,9 @@
                 <!-- 年级选择 -->
                 <div style="margin-bottom: 20px;">
                     <label class="form-label">选择年级 <span style="color: #ff4d4f;">*</span></label>
-                    <select class="form-input" style="width: 200px; margin-top: 8px;" onchange="updateGradeLabel(this)">
-                        <option value="1" selected>一年级</option>
+                    <select id="gradeSelect" class="form-input" style="width: 200px; margin-top: 8px;" onchange="updateGradeSelection(this)">
+                        <option value="">请选择年级</option>
+                        <option value="1">一年级</option>
                         <option value="2">二年级</option>
                         <option value="3">三年级</option>
                         <option value="4">四年级</option>
@@ -805,8 +794,8 @@
                 <!-- 书籍选择 -->
                 <div class="book-select-section">
                     <div class="book-select-header">
-                        <div style="font-size: 14px; color: #333;">已选书籍（一年级）<span style="color: #999; margin-left: 8px;">共2本</span></div>
-                        <button type="button" class="btn-select-book" onclick="openBookModal()">+ 选择书籍</button>
+                        <div id="selectedBooksTitle" style="font-size: 14px; color: #333;">已选书籍（请选择年级）<span style="color: #999; margin-left: 8px;">共0本</span></div>
+                        <button id="selectBookBtn" type="button" class="btn-select-book" onclick="openBookModal()" disabled style="opacity: 0.5; cursor: not-allowed;">+ 选择书籍</button>
                     </div>
 
                     <!-- 已选书籍展示 -->
@@ -850,18 +839,10 @@
                     <input type="text" class="search-input" placeholder="搜索书籍名称或作者">
                 </div>
 
-                <!-- 年级筛选 -->
-                <div class="grade-filter">
-                    <div class="grade-filter-label">适合年级</div>
-                    <div class="grade-tags">
-                        <div class="grade-tag active">全部</div>
-                        <div class="grade-tag">一年级</div>
-                        <div class="grade-tag">二年级</div>
-                        <div class="grade-tag">三年级</div>
-                        <div class="grade-tag">四年级</div>
-                        <div class="grade-tag">五年级</div>
-                        <div class="grade-tag">六年级</div>
-                    </div>
+                <!-- 当前年级 -->
+                <div class="grade-display">
+                    <div class="grade-display-label">当前年级</div>
+                    <div id="modalGradeValue" class="grade-display-value">请选择年级后再选择书籍</div>
                 </div>
 
                 <div class="book-grid">
@@ -980,7 +961,34 @@
         menuGroup.classList.toggle('expanded');
     }
 
+    function updateGradeSelection(select) {
+        const gradeText = select.options[select.selectedIndex].text;
+        const hasGrade = !!select.value;
+        const title = document.getElementById('selectedBooksTitle');
+        const button = document.getElementById('selectBookBtn');
+        const modalGradeValue = document.getElementById('modalGradeValue');
+
+        if (hasGrade) {
+            title.innerHTML = `已选书籍（${gradeText}）<span style="color: #999; margin-left: 8px;">共0本</span>`;
+            button.disabled = false;
+            button.style.opacity = '1';
+            button.style.cursor = 'pointer';
+            modalGradeValue.textContent = `${gradeText}（已锁定）`;
+        } else {
+            title.innerHTML = `已选书籍（请选择年级）<span style="color: #999; margin-left: 8px;">共0本</span>`;
+            button.disabled = true;
+            button.style.opacity = '0.5';
+            button.style.cursor = 'not-allowed';
+            modalGradeValue.textContent = '请选择年级后再选择书籍';
+        }
+    }
+
     function openBookModal() {
+        const gradeSelect = document.getElementById('gradeSelect');
+        if (!gradeSelect.value) {
+            alert('请先选择年级后再选择书籍');
+            return;
+        }
         document.getElementById('bookModal').classList.add('show');
         document.body.style.overflow = 'hidden';
     }

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>编辑阅读计划 - 步骤2 - 校校读吧管理平台</title>
+    <title>创建阅读计划 - 步骤2 - 校校读吧管理平台</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -26,6 +26,8 @@
             display: flex;
             flex-direction: column;
         }
+
+        /* Logo区域 */
         .sidebar-header {
             height: 60px;
             display: flex;
@@ -36,6 +38,8 @@
             font-weight: 600;
             color: #333;
         }
+
+        /* 菜单区域 */
         .sidebar-menu {
             flex: 1;
             padding: 16px 0;
@@ -90,6 +94,8 @@
             display: flex;
             flex-direction: column;
         }
+
+        /* 顶部栏 */
         .header {
             height: 60px;
             background: #fff;
@@ -99,6 +105,8 @@
             justify-content: space-between;
             padding: 0 24px;
         }
+
+        /* 面包屑 */
         .breadcrumb {
             font-size: 14px;
             color: #999;
@@ -110,6 +118,8 @@
         .breadcrumb a:hover {
             color: #333;
         }
+
+        /* 用户信息 */
         .user-info {
             display: flex;
             align-items: center;
@@ -121,13 +131,15 @@
         }
         .logout-btn {
             font-size: 14px;
-            color: #999;
-            text-decoration: none;
+            color: #666;
             cursor: pointer;
+            text-decoration: none;
         }
         .logout-btn:hover {
             color: #333;
         }
+
+        /* 主内容区 */
         .main-content {
             flex: 1;
             padding: 24px;
@@ -552,6 +564,131 @@
             border-top: 1px solid #eaeaea;
             background: #fafafa;
         }
+        .modal-dialog.large {
+            width: 860px;
+        }
+        .resource-toolbar {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .resource-current-type {
+            min-width: 180px;
+            height: 36px;
+            padding: 0 12px;
+            border: 1px solid #d9d9d9;
+            border-radius: 4px;
+            background: #f5f5f5;
+            display: flex;
+            align-items: center;
+            font-size: 13px;
+            color: #666;
+        }
+        .resource-search {
+            flex: 1;
+            height: 36px;
+            border: 1px solid #d9d9d9;
+            border-radius: 4px;
+            padding: 0 12px;
+            font-size: 13px;
+        }
+        .resource-tip {
+            margin-bottom: 12px;
+            font-size: 12px;
+            color: #888;
+        }
+        .resource-table {
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .resource-row {
+            display: grid;
+            grid-template-columns: 70px 2fr 1.1fr 1fr 1fr;
+            gap: 12px;
+            align-items: center;
+            padding: 12px 16px;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 13px;
+            color: #333;
+        }
+        .resource-row:last-child {
+            border-bottom: none;
+        }
+        .resource-row.header {
+            background: #fafafa;
+            font-weight: 600;
+            color: #666;
+        }
+        .resource-row.selected {
+            background: #f7f7f7;
+        }
+        .resource-name {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .resource-name small {
+            color: #999;
+            font-size: 12px;
+        }
+        .upload-section {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .upload-dropzone {
+            border: 1px dashed #999;
+            border-radius: 4px;
+            background: #fafafa;
+            padding: 28px 20px;
+            text-align: center;
+            color: #666;
+            font-size: 13px;
+            line-height: 1.7;
+        }
+        .upload-file-list {
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 12px;
+            background: #fff;
+        }
+        .upload-file-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 13px;
+            color: #333;
+        }
+        .upload-file-item:last-child {
+            border-bottom: none;
+        }
+        .upload-file-item small {
+            color: #999;
+        }
+        .upload-split-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+        }
+        .upload-panel {
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 12px;
+            background: #fff;
+        }
+        .upload-panel-title {
+            margin-bottom: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #333;
+        }
+        .hidden {
+            display: none !important;
+        }
 
         /* 表单 */
         .form-grid {
@@ -839,105 +976,111 @@
         <div class="sidebar">
             <div class="sidebar-header">校校读吧管理平台</div>
             <div class="sidebar-menu">
-                <div class="menu-item" onclick="window.location.href='02-首页.html'">首页</div>
-                <div class="menu-group">
-                    <div class="menu-group-title" onclick="toggleMenu(this)">
-                        <span>用户管理</span>
-                        <span class="menu-group-icon">[▶]</span>
-                    </div>
-                    <div class="menu-group-items">
-                        <div class="menu-item" onclick="window.location.href='03-学校列表.html'">学校管理</div>
-                        <div class="menu-item" onclick="window.location.href='08-班级列表.html'">班级管理</div>
-                        <div class="menu-item" onclick="window.location.href='05-用户列表.html'">小程序用户管理</div>
-                    </div>
+            <div class="menu-item" onclick="window.location.href='02-首页.html'">首页</div>
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>用户管理</span>
+                    <span class="menu-group-icon">[▶]</span>
                 </div>
-                <div class="menu-group expanded">
-                    <div class="menu-group-title" onclick="toggleMenu(this)">
-                        <span>内容管理</span>
-                        <span class="menu-group-icon">[▶]</span>
-                    </div>
-                    <div class="menu-group-items">
-                        <div class="menu-item active" onclick="window.location.href='10-阅读计划列表.html'">阅读计划</div>
-                        <div class="menu-item" onclick="window.location.href='18-书籍资源库列表.html'">书籍资源库</div>
-                    </div>
+                <div class="menu-group-items">
+                    <div class="menu-item" onclick="window.location.href='03-学校列表.html'">学校管理</div>
+                    <div class="menu-item" onclick="window.location.href='08-班级列表.html'">班级管理</div>
+                    <div class="menu-item" onclick="window.location.href='05-用户列表.html'">小程序用户管理</div>
                 </div>
-                <div class="menu-group">
-                    <div class="menu-group-title" onclick="toggleMenu(this)">
-                        <span>激励体系</span>
-                        <span class="menu-group-icon">[▶]</span>
-                    </div>
-                    <div class="menu-group-items">
-                        <div class="menu-item" onclick="window.location.href='27-积分规则.html'">积分规则</div>
-                        <div class="menu-item" onclick="window.location.href='28-等级体系.html'">等级设置</div>
-                        <div class="menu-item" onclick="window.location.href='29-证书配置.html'">证书配置</div>
-                    </div>
+            </div>
+            <div class="menu-group expanded">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>内容管理</span>
+                    <span class="menu-group-icon">[▶]</span>
                 </div>
-                <div class="menu-group">
-                    <div class="menu-group-title" onclick="toggleMenu(this)">
-                        <span>消息管理</span>
-                        <span class="menu-group-icon">[▶]</span>
-                    </div>
-                    <div class="menu-group-items">
-                        <div class="menu-item" onclick="window.location.href='30-消息列表.html'">消息列表</div>
-                    </div>
+                <div class="menu-group-items">
+                    <div class="menu-item active" onclick="window.location.href='10-阅读计划列表.html'">阅读计划</div>
+                    <div class="menu-item" onclick="window.location.href='18-书籍资源库列表.html'">书籍资源库</div>
                 </div>
-                <div class="menu-group">
-                    <div class="menu-group-title" onclick="toggleMenu(this)">
-                        <span>用户反馈</span>
-                        <span class="menu-group-icon">[▶]</span>
-                    </div>
-                    <div class="menu-group-items">
-                        <div class="menu-item" onclick="window.location.href='36-意见反馈.html'">意见反馈</div>
-                    </div>
+            </div>
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>激励体系</span>
+                    <span class="menu-group-icon">[▶]</span>
                 </div>
-                <div class="menu-group">
-                    <div class="menu-group-title" onclick="toggleMenu(this)">
-                        <span>数据分析</span>
-                        <span class="menu-group-icon">[▶]</span>
-                    </div>
-                    <div class="menu-group-items">
-                        <div class="menu-item" onclick="window.location.href='39-平台数据分析.html'">平台数据分析</div>
-                        <div class="menu-item" onclick="window.location.href='39-1-学校数据分析.html'">学校数据分析</div>
-                        <div class="menu-item" onclick="window.location.href='39-2-年级数据分析.html'">年级数据分析</div>
-                        <div class="menu-item" onclick="window.location.href='39-3-学生数据分析.html'">学生数据分析</div>
+                <div class="menu-group-items">
+                    <div class="menu-item" onclick="window.location.href='27-积分规则.html'">积分规则</div>
+                    <div class="menu-item" onclick="window.location.href='28-等级体系.html'">等级设置</div>
+                    <div class="menu-item" onclick="window.location.href='29-证书配置.html'">证书配置</div>
+                </div>
+            </div>
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>消息管理</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item" onclick="window.location.href='30-消息列表.html'">消息列表</div>
+                </div>
+            </div>
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>用户反馈</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item" onclick="window.location.href='36-意见反馈.html'">意见反馈</div>
+                </div>
+            </div>
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>数据分析</span>
+                    <span class="menu-group-icon">[▶]</span>
+                </div>
+                <div class="menu-group-items">
+                    <div class="menu-item" onclick="window.location.href='39-平台数据分析.html'">平台数据分析</div>
+                    <div class="menu-item" onclick="window.location.href='39-1-学校数据分析.html'">学校数据分析</div>
+                    <div class="menu-item" onclick="window.location.href='39-2-年级数据分析.html'">年级数据分析</div>
+                    <div class="menu-item" onclick="window.location.href='39-3-学生数据分析.html'">学生数据分析</div>
                         <div class="menu-item" onclick="window.location.href='39-4-书籍测评记录.html'">书籍测评记录</div>
                         <div class="menu-item" onclick="window.location.href='39-5-阅读任务记录.html'">阅读任务记录</div>
-                    </div>
                 </div>
-                <div class="menu-group">
-                    <div class="menu-group-title" onclick="toggleMenu(this)">
-                        <span>系统配置</span>
-                        <span class="menu-group-icon">[▶]</span>
-                    </div>
-                    <div class="menu-group-items">
-                        <div class="menu-item" onclick="window.location.href='31-系统参数.html'">系统参数</div>
-                        <div class="menu-item" onclick="window.location.href='32-数据字典.html'">数据字典</div>
-                    </div>
+            </div>
+            <div class="menu-group">
+                <div class="menu-group-title" onclick="toggleMenu(this)">
+                    <span>系统配置</span>
+                    <span class="menu-group-icon">[▶]</span>
                 </div>
+                <div class="menu-group-items">
+                    <div class="menu-item" onclick="window.location.href='31-系统参数.html'">系统参数</div>
+                    <div class="menu-item" onclick="window.location.href='32-数据字典.html'">数据字典</div>
+                </div>
+            </div>
             </div>
         </div>
 
         <!-- 右侧内容区 -->
         <div class="content">
+            <!-- 顶部栏 -->
             <div class="header">
                 <div class="breadcrumb">
-                    <a href="#">首页</a> &gt; <a href="#">内容管理</a> &gt; <a href="10-阅读计划列表.html">阅读计划</a> &gt; 编辑年级书目
+                    <a href="#">首页</a> &gt;
+                    <a href="#">内容管理</a> &gt;
+                    <a href="10-阅读计划列表.html">阅读计划</a> &gt;
+                    配置年级书目
                 </div>
                 <div class="user-info">
                     <span class="user-name">管理员</span>
                     <a href="#" class="logout-btn">退出登录</a>
                 </div>
             </div>
+
+            <!-- 主内容区 -->
             <div class="main-content">
 
             <!-- 页面标题 -->
-            <div class="page-title">编辑年级书目</div>
+            <div class="page-title">配置年级书目</div>
 
             <!-- 按钮组 -->
             <div class="form-actions">
-                <button type="button" class="btn btn-secondary" onclick="window.location.href='15-编辑阅读计划-步骤1.html'">上一步</button>
-                <button type="button" class="btn btn-secondary" onclick="saveEditAndReturn()">保存修改</button>
-                <button type="button" class="btn btn-primary" onclick="goNextEditStep()">下一步</button>
+                <button type="button" class="btn btn-secondary" onclick="window.location.href='12-配置年级书目-步骤1.html'">上一步</button>
+                <button type="button" class="btn btn-secondary" onclick="saveDraft()">保存草稿</button>
+                <button type="button" class="btn btn-primary" onclick="goNextStep()">下一步</button>
             </div>
 
             <!-- 步骤条 -->
@@ -1006,7 +1149,7 @@
                                     <div class="task-title">阅读任务列表</div>
                                     <div class="task-stats">共 2 次阅读，4 个任务</div>
                                 </div>
-                                <button class="btn-add" onclick="alert('已添加新的阅读次数')">+ 添加阅读次数</button>
+                                <button class="btn-add" onclick="addReadingTask()">+ 添加阅读次数</button>
                             </div>
 
                             <div class="task-note">
@@ -1034,7 +1177,7 @@
                                             <div class="task-card-header">
                                                 <div class="task-card-title">
                                                     <span class="task-type-badge">阅读任务</span>
-                                                    <span class="task-card-desc">配置阅读页码并关联电子书/音频资源</span>
+                                                    <span class="task-card-desc">配置阅读页码，并关联电子书/音频资源</span>
                                                 </div>
                                                 <button class="btn-icon" onclick="deleteTaskCard(this)">删除任务</button>
                                             </div>
@@ -1051,8 +1194,8 @@
                                                 <div class="form-item full-width">
                                                     <label class="form-label">电子书/音频资源</label>
                                                     <div class="resource-select-group" style="margin-bottom: 8px;">
-                                                        <button class="upload-btn" onclick="selectFromLibrary()">从资源库选择</button>
-                                                        <button class="upload-btn" onclick="uploadAudio()">去资源库上传</button>
+                                                        <button class="upload-btn" onclick="selectFromLibrary('电子书/音频资源')">从资源库选择</button>
+                                                        <button class="upload-btn" onclick="uploadAudio('电子书/音频资源')">本地临时上传</button>
                                                     </div>
                                                     <div class="upload-info-wrapper">
                                                         <div class="upload-info">西游记-第1回阅读资源（电子书+音频）</div>
@@ -1065,7 +1208,7 @@
                                             <div class="task-card-header">
                                                 <div class="task-card-title">
                                                     <span class="task-type-badge">导读单任务</span>
-                                                    <span class="task-card-desc">选择导读单资源并设置解锁规则</span>
+                                                    <span class="task-card-desc">选择导读单资源或本地临时上传，并设置解锁规则</span>
                                                 </div>
                                                 <button class="btn-icon" onclick="deleteTaskCard(this)">删除任务</button>
                                             </div>
@@ -1074,8 +1217,8 @@
                                                     <div class="form-item full-width">
                                                         <label class="form-label">导读单资源</label>
                                                         <div class="resource-select-group" style="margin-bottom: 8px;">
-                                                            <button class="upload-btn" onclick="selectFromLibrary()">从资源库选择</button>
-                                                            <button class="upload-btn" onclick="uploadGuideResource()">去资源库上传</button>
+                                                            <button class="upload-btn" onclick="selectFromLibrary('导读单资源')">从资源库选择</button>
+                                                            <button class="upload-btn" onclick="uploadGuideResource()">本地临时上传</button>
                                                         </div>
                                                         <div class="guide-preview-grid">
                                                             <div class="guide-preview-card">
@@ -1158,8 +1301,8 @@
                                                 <div class="form-item full-width">
                                                     <label class="form-label">视频资源</label>
                                                     <div class="resource-select-group" style="margin-bottom: 8px;">
-                                                        <button class="upload-btn" onclick="selectFromLibrary()">从资源库选择</button>
-                                                        <button class="upload-btn" onclick="uploadLocal()">本地上传</button>
+                                                        <button class="upload-btn" onclick="selectFromLibrary('视频资源')">从资源库选择</button>
+                                                        <button class="upload-btn" onclick="uploadLocal('视频资源')">本地上传</button>
                                                     </div>
                                                     <div class="upload-info-wrapper" style="margin-bottom: 8px;">
                                                         <div class="upload-info">西游记-第5回讲解.mp4</div>
@@ -1187,7 +1330,7 @@
                                             <div class="task-card-header">
                                                 <div class="task-card-title">
                                                     <span class="task-type-badge">测评任务</span>
-                                                    <span class="task-card-desc">配置测评题组和解锁规则</span>
+                                                    <span class="task-card-desc">从资源库选择或本地临时上传测评题组，并设置解锁规则</span>
                                                 </div>
                                                 <button class="btn-icon" onclick="deleteTaskCard(this)">删除任务</button>
                                             </div>
@@ -1195,8 +1338,8 @@
                                                 <div class="form-item full-width">
                                                     <label class="form-label">测评资源/题组</label>
                                                     <div class="resource-select-group" style="margin-bottom: 8px;">
-                                                        <button class="upload-btn" onclick="selectFromLibrary()">从资源库选择</button>
-                                                        <button class="upload-btn" onclick="uploadLocal()">本地上传</button>
+                                                        <button class="upload-btn" onclick="selectFromLibrary('测评资源/题组')">从资源库选择</button>
+                                                        <button class="upload-btn" onclick="uploadLocal('测评资源/题组')">本地上传</button>
                                                     </div>
                                                     <div class="upload-info-wrapper" style="margin-bottom: 8px;">
                                                         <div class="upload-info">西游记-整本书测评题组A</div>
@@ -1245,19 +1388,19 @@
                 <div class="task-type-list">
                     <button type="button" class="task-type-option" data-task-value="阅读任务" onclick="selectTaskType(this)">
                         <strong>阅读任务</strong>
-                        <span>配置页码范围和配套音频，适合指定阅读内容。</span>
+                        <span>配置页码范围，并从资源库选择一组电子书/音频资源，或在同一弹窗内分别临时上传电子书、音频文件。</span>
                     </button>
                     <button type="button" class="task-type-option" data-task-value="导读单任务" onclick="selectTaskType(this)">
                         <strong>导读单任务</strong>
-                        <span>选择一组导读单资源，并分别配置无答案版、有答案版的解锁规则。</span>
+                        <span>从资源库选择或本地临时上传一组导读单资源，并分别配置无答案版、有答案版的解锁规则。</span>
                     </button>
                     <button type="button" class="task-type-option" data-task-value="视频任务" onclick="selectTaskType(this)">
                         <strong>视频任务</strong>
-                        <span>配置导读视频资源和解锁时机。</span>
+                        <span>从资源库选择或本地临时上传导读视频资源，并配置解锁时机。</span>
                     </button>
                     <button type="button" class="task-type-option" data-task-value="测评任务" onclick="selectTaskType(this)">
                         <strong>测评任务</strong>
-                        <span>配置测评题组和解锁规则，保存或下一步时会做建议性提醒。</span>
+                        <span>从资源库选择或本地临时上传测评题组，并设置解锁规则，保存或下一步时会做建议性提醒。</span>
                     </button>
                 </div>
             </div>
@@ -1268,9 +1411,117 @@
         </div>
     </div>
 
+    <div class="modal-mask" id="resourceLibraryModal">
+        <div class="modal-dialog large">
+            <div class="modal-header">
+                <div class="modal-title" id="resourceLibraryTitle">从资源库选择资源</div>
+                <button class="modal-close" type="button" onclick="closeResourceLibraryModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-desc" id="resourceLibraryDesc">选择后回填到当前任务配置，仅展示当前任务类型可用资源。</div>
+                <div class="resource-toolbar">
+                    <div class="resource-current-type" id="resourceLibraryType">当前资源类型：电子书/音频资源</div>
+                    <input class="resource-search" type="text" placeholder="搜索资源名称">
+                </div>
+                <div class="resource-tip">当前原型为通用资源选择弹窗，不同任务类型复用同一结构，实际资源列表按任务类型过滤。</div>
+                <div class="resource-table">
+                    <div class="resource-row header">
+                        <div>选择</div>
+                        <div>资源名称</div>
+                        <div>资源类型</div>
+                        <div>来源</div>
+                        <div>更新时间</div>
+                    </div>
+                    <div class="resource-row selected">
+                        <div><input type="radio" name="resourceRow" checked></div>
+                        <div class="resource-name">
+                            <span id="resourceExampleName1">西游记-第1回阅读资源包</span>
+                            <small id="resourceExampleNote1">电子书：已上传；音频：已上传</small>
+                        </div>
+                        <div id="resourceExampleType1">电子书/音频资源</div>
+                        <div>资源库</div>
+                        <div>2026-03-18</div>
+                    </div>
+                    <div class="resource-row">
+                        <div><input type="radio" name="resourceRow"></div>
+                        <div class="resource-name">
+                            <span id="resourceExampleName2">西游记-第2回阅读资源包</span>
+                            <small id="resourceExampleNote2">电子书：已上传；音频：未上传</small>
+                        </div>
+                        <div id="resourceExampleType2">电子书/音频资源</div>
+                        <div>资源库</div>
+                        <div>2026-03-15</div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeResourceLibraryModal()">取消</button>
+                <button type="button" class="btn btn-primary" onclick="confirmResourceLibrarySelection()">确认选择</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-mask" id="tempUploadModal">
+        <div class="modal-dialog large">
+            <div class="modal-header">
+                <div class="modal-title" id="tempUploadTitle">本地临时上传</div>
+                <button class="modal-close" type="button" onclick="closeTempUploadModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-desc" id="tempUploadDesc">上传后的资源仅绑定当前任务配置，不写入资源库。</div>
+                <div class="resource-toolbar">
+                    <div class="resource-current-type" id="tempUploadType">当前资源类型：电子书/音频资源</div>
+                    <input class="resource-search" type="text" placeholder="可填写资源备注名称（选填）">
+                </div>
+                <div class="upload-section" id="commonUploadSection">
+                    <div class="upload-dropzone" id="commonUploadHint">
+                        点击选择本地文件或拖拽到此处
+                        <br>
+                        支持当前任务类型对应的文件格式，上传后仅用于当前任务配置
+                    </div>
+                    <div class="upload-file-list">
+                        <div class="upload-file-item">
+                            <span id="commonUploadFileName">示例资源文件.pdf</span>
+                            <small>已选择，未写入资源库</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="upload-section hidden" id="guideUploadSection">
+                    <div class="upload-split-grid">
+                        <div class="upload-panel">
+                            <div class="upload-panel-title" id="splitUploadTitle1">无答案版</div>
+                            <div class="upload-dropzone" id="splitUploadHint1">点击选择无答案版文件</div>
+                            <div class="upload-file-list">
+                                <div class="upload-file-item">
+                                    <span id="splitUploadFile1">导读单-无答案版.jpg</span>
+                                    <small>仅当前任务使用</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="upload-panel">
+                            <div class="upload-panel-title" id="splitUploadTitle2">有答案版</div>
+                            <div class="upload-dropzone" id="splitUploadHint2">点击选择有答案版文件</div>
+                            <div class="upload-file-list">
+                                <div class="upload-file-item">
+                                    <span id="splitUploadFile2">导读单-有答案版.jpg</span>
+                                    <small>仅当前任务使用</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeTempUploadModal()">取消</button>
+                <button type="button" class="btn btn-primary" onclick="confirmTempUpload()">确认上传</button>
+            </div>
+        </div>
+    </div>
+
     <script>
     let currentReadingOrder = null;
     let selectedTaskType = '';
+    let currentResourceType = '';
 
     function toggleMenu(element) {
         const menuGroup = element.parentElement;
@@ -1316,24 +1567,89 @@
         button.style.display = 'none';
     }
 
-    function uploadAudio() {
-        alert('请先前往书籍资源库上传电子书/音频资源，再返回当前页面从资源库选择');
+    function addReadingTask() {
+        alert('已添加新的阅读次数\n\n当前版本可继续在该次阅读下通过“添加任务”配置阅读任务、导读单任务、观看视频或测评任务');
+    }
+
+    function deleteReadingTask(btn) {
+        if(confirm('确定要删除此阅读次数吗？')) {
+            const taskItem = btn.closest('.task-item');
+            if(taskItem) taskItem.remove();
+        }
+    }
+
+    function uploadAudio(resourceType) {
+        openTempUploadModal(resourceType || '电子书/音频资源');
     }
 
     function uploadGuideResource() {
-        alert('请先前往书籍资源库上传导读单资源，再返回当前页面从资源库选择');
+        openTempUploadModal('导读单资源');
     }
 
-    function selectFromLibrary() {
-        alert('打开资源库选择弹窗');
+    function selectFromLibrary(resourceType) {
+        currentResourceType = resourceType || '任务资源';
+        document.getElementById('resourceLibraryTitle').textContent = `从资源库选择${currentResourceType}`;
+        document.getElementById('resourceLibraryType').textContent = `当前资源类型：${currentResourceType}`;
+        document.getElementById('resourceLibraryDesc').textContent = `请选择可用于当前任务的${currentResourceType}，确认后回填到当前任务配置。`;
+        document.getElementById('resourceExampleName1').textContent = currentResourceType === '导读单资源' ? '西游记-第1次阅读导读单资源包' : currentResourceType === '电子书/音频资源' ? '西游记-第1回阅读资源包' : currentResourceType === '视频资源' ? '西游记-第1回讲解视频.mp4' : currentResourceType === '测评资源/题组' ? '西游记-整本书测评题组A' : '西游记-第1回阅读资源包';
+        document.getElementById('resourceExampleNote1').textContent = currentResourceType === '导读单资源' ? '无答案版：已上传；有答案版：已上传' : currentResourceType === '电子书/音频资源' ? '电子书：已上传；音频：已上传' : '当前任务可直接使用';
+        document.getElementById('resourceExampleType1').textContent = currentResourceType;
+        document.getElementById('resourceExampleName2').textContent = currentResourceType === '导读单资源' ? '西游记-第2次阅读导读单资源包' : currentResourceType === '电子书/音频资源' ? '西游记-第2回阅读资源包' : currentResourceType === '视频资源' ? '西游记-第2回讲解视频.mp4' : currentResourceType === '测评资源/题组' ? '西游记-整本书测评题组B' : '西游记-第2回阅读资源包';
+        document.getElementById('resourceExampleNote2').textContent = currentResourceType === '导读单资源' ? '无答案版：已上传；有答案版：未上传' : currentResourceType === '电子书/音频资源' ? '电子书：已上传；音频：未上传' : '当前任务可直接使用';
+        document.getElementById('resourceExampleType2').textContent = currentResourceType;
+        document.getElementById('resourceLibraryModal').classList.add('show');
     }
 
     function openFilePreview(fileName) {
         alert(`预览文件：${fileName}`);
     }
 
-    function uploadLocal() {
-        alert('请选择要上传的本地文件');
+    function uploadLocal(resourceType) {
+        openTempUploadModal(resourceType || '任务资源');
+    }
+
+    function closeResourceLibraryModal() {
+        document.getElementById('resourceLibraryModal').classList.remove('show');
+    }
+
+    function confirmResourceLibrarySelection() {
+        closeResourceLibraryModal();
+        alert(`已从资源库选择${currentResourceType}，并回填到当前任务配置`);
+    }
+
+    function openTempUploadModal(resourceType) {
+        currentResourceType = resourceType || '任务资源';
+        const isGuide = currentResourceType === '导读单资源';
+        const isReadingBundle = currentResourceType === '电子书/音频资源';
+        document.getElementById('tempUploadTitle').textContent = `${currentResourceType}本地临时上传`;
+        document.getElementById('tempUploadType').textContent = `当前资源类型：${currentResourceType}`;
+        document.getElementById('tempUploadDesc').textContent = `上传后的${currentResourceType}仅绑定当前任务配置，不写入资源库。`;
+        document.getElementById('splitUploadTitle1').textContent = isGuide ? '无答案版' : '电子书文件';
+        document.getElementById('splitUploadTitle2').textContent = isGuide ? '有答案版' : '音频文件';
+        document.getElementById('splitUploadHint1').textContent = isGuide ? '点击选择无答案版文件' : '点击选择电子书文件';
+        document.getElementById('splitUploadHint2').textContent = isGuide ? '点击选择有答案版文件' : '点击选择音频文件';
+        document.getElementById('splitUploadFile1').textContent = isGuide ? '导读单-无答案版.jpg' : '西游记-第1回阅读电子书.pdf';
+        document.getElementById('splitUploadFile2').textContent = isGuide ? '导读单-有答案版.jpg' : '西游记-第1回阅读音频.mp3';
+        document.getElementById('commonUploadHint').innerHTML = isGuide || isReadingBundle
+            ? ''
+            : `点击选择本地${currentResourceType}文件或拖拽到此处<br>上传后仅用于当前任务配置`;
+        document.getElementById('commonUploadFileName').textContent = currentResourceType === '视频资源'
+            ? '示例视频资源.mp4'
+            : currentResourceType === '测评资源/题组'
+                ? '示例测评题组.xlsx'
+                : '示例资源文件.pdf';
+        document.getElementById('commonUploadSection').classList.toggle('hidden', isGuide || isReadingBundle);
+        document.getElementById('guideUploadSection').classList.toggle('hidden', !(isGuide || isReadingBundle));
+        document.getElementById('tempUploadModal').classList.add('show');
+    }
+
+    function closeTempUploadModal() {
+        document.getElementById('tempUploadModal').classList.remove('show');
+    }
+
+    function confirmTempUpload() {
+        closeTempUploadModal();
+        alert(`已临时上传${currentResourceType}，仅用于当前任务配置，不写入资源库`);
     }
 
     function addTask(readingOrder) {
@@ -1402,26 +1718,23 @@
         return warnings;
     }
 
-    function saveEditAndReturn() {
+    function saveDraft() {
         const warnings = getAssessmentWarnings();
-        let message = '保存修改成功';
-
+        let message = '保存草稿成功';
         if (warnings.length) {
-            message += '\n\n提醒：\n- ' + warnings.join('\n- ');
+            message = '提醒：\n' + warnings.map((text, index) => `${index + 1}. ${text}`).join('\n') + '\n\n保存草稿成功';
         }
-
         alert(message);
     }
 
-    function goNextEditStep() {
+    function goNextStep() {
         const warnings = getAssessmentWarnings();
-        let message = '进入下一步：预览与发布';
-
+        let message = '点击确定后继续进入下一步';
         if (warnings.length) {
-            message += '\n\n提醒：\n- ' + warnings.join('\n- ');
+            message = '提醒：\n' + warnings.map((text, index) => `${index + 1}. ${text}`).join('\n') + '\n\n点击确定后继续进入下一步';
         }
-
         alert(message);
+        window.location.href = '14-配置年级书目-步骤3.html';
     }
 </script>
 </body>
