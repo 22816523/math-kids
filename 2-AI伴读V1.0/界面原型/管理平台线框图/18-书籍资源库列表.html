@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
@@ -500,6 +500,347 @@
             display: flex;
             gap: 8px;
         }
+
+        /* AI虚拟形象弹窗 */
+        .avatar-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.45);
+            z-index: 1100;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+        .avatar-modal.show {
+            display: flex;
+        }
+        .avatar-modal-content {
+            width: 920px;
+            max-width: 100%;
+            max-height: calc(100vh - 48px);
+            background: #fff;
+            border-radius: 4px;
+            border: 1px solid #e0e0e0;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .avatar-modal-header {
+            height: 56px;
+            padding: 0 20px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .avatar-modal-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+        .avatar-modal-close {
+            width: 32px;
+            height: 32px;
+            border: 1px solid #d9d9d9;
+            background: #fff;
+            border-radius: 4px;
+            font-size: 18px;
+            color: #666;
+            cursor: pointer;
+        }
+        .avatar-modal-close:hover {
+            background: #f5f5f5;
+            color: #333;
+        }
+        .avatar-modal-body {
+            padding: 20px;
+            overflow-y: auto;
+        }
+        .avatar-book-info {
+            margin-bottom: 20px;
+        }
+        .avatar-book-meta {
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 16px;
+            background: #fafafa;
+        }
+        .avatar-book-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 12px;
+        }
+        .avatar-book-desc {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.8;
+            margin-bottom: 8px;
+        }
+        .avatar-mode-tabs {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .avatar-mode-tab {
+            height: 36px;
+            padding: 0 16px;
+            border: 1px solid #d9d9d9;
+            background: #fff;
+            border-radius: 4px;
+            font-size: 14px;
+            color: #666;
+            cursor: pointer;
+        }
+        .avatar-mode-tab.active {
+            background: #333;
+            border-color: #333;
+            color: #fff;
+        }
+        .avatar-panels {
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 16px;
+        }
+        .avatar-panel {
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 20px;
+            background: #fff;
+        }
+        .avatar-section-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 12px;
+        }
+        .avatar-desc {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.7;
+            margin-bottom: 16px;
+        }
+        .avatar-feature-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        .avatar-feature-item {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.6;
+            padding-left: 18px;
+            position: relative;
+        }
+        .avatar-feature-item::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            top: 0;
+            color: #999;
+        }
+        .avatar-form-item {
+            margin-bottom: 16px;
+        }
+        .avatar-form-label {
+            display: block;
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        .avatar-textarea {
+            width: 100%;
+            min-height: 96px;
+            padding: 12px;
+            border: 1px solid #d9d9d9;
+            border-radius: 4px;
+            resize: vertical;
+            font-size: 14px;
+            line-height: 1.7;
+            color: #333;
+            outline: none;
+        }
+        .avatar-textarea:focus {
+            border-color: #999;
+        }
+        .avatar-text-hint {
+            margin-top: 8px;
+            font-size: 12px;
+            color: #999;
+            line-height: 1.6;
+        }
+        .avatar-upload-box {
+            border: 1px dashed #cfcfcf;
+            border-radius: 4px;
+            background: #fafafa;
+            padding: 24px;
+            text-align: center;
+        }
+        .avatar-upload-box .upload-hint {
+            font-size: 13px;
+            color: #999;
+            margin-top: 10px;
+            line-height: 1.6;
+        }
+        .avatar-result-card {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        .avatar-preview {
+            flex: 1;
+            min-height: 360px;
+            border: 1px dashed #d9d9d9;
+            background: #fafafa;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+            color: #999;
+            font-size: 14px;
+            line-height: 1.7;
+            margin-bottom: 16px;
+        }
+        .avatar-preview.ready {
+            border-style: solid;
+            border-color: #999;
+            color: #333;
+            background: #f5f5f5;
+        }
+        .avatar-preview-subtitle {
+            margin-top: 8px;
+            font-size: 12px;
+            color: #999;
+        }
+        .avatar-status {
+            min-height: 22px;
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 12px;
+        }
+        .avatar-status.success {
+            color: #333;
+            font-weight: 600;
+        }
+        .avatar-modal-footer {
+            border-top: 1px solid #e0e0e0;
+            padding: 16px 20px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            background: #fff;
+        }
+
+        /* 导入书籍弹窗 */
+        .import-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.45);
+            z-index: 1080;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+        .import-modal.show {
+            display: flex;
+        }
+        .import-modal-content {
+            width: 760px;
+            max-width: 100%;
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .import-modal-header {
+            height: 56px;
+            padding: 0 20px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .import-modal-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+        .import-modal-close {
+            width: 32px;
+            height: 32px;
+            border: 1px solid #d9d9d9;
+            background: #fff;
+            border-radius: 4px;
+            font-size: 18px;
+            color: #666;
+            cursor: pointer;
+        }
+        .import-modal-body {
+            padding: 20px;
+        }
+        .import-section {
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 16px;
+            background: #fafafa;
+            margin-bottom: 16px;
+        }
+        .import-section-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .import-desc {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.7;
+            margin-bottom: 12px;
+        }
+        .import-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .import-upload-box {
+            border: 1px dashed #cfcfcf;
+            border-radius: 4px;
+            background: #fff;
+            padding: 20px;
+            text-align: center;
+        }
+        .import-file-name {
+            margin-top: 12px;
+            font-size: 13px;
+            color: #333;
+        }
+        .import-file-hint {
+            margin-top: 8px;
+            font-size: 12px;
+            color: #999;
+            line-height: 1.6;
+        }
+        .import-result {
+            min-height: 20px;
+            font-size: 13px;
+            color: #666;
+            margin-top: 12px;
+        }
+        .import-modal-footer {
+            border-top: 1px solid #e0e0e0;
+            padding: 16px 20px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            background: #fff;
+        }
     </style>
 </head>
 <body>
@@ -539,8 +880,10 @@
                     </div>
                     <div class="menu-group-items">
                         <div class="menu-item" onclick="window.location.href='27-积分规则.html'">积分规则</div>
+                        <div class="menu-item" onclick="window.location.href='26-积分明细.html'">积分明细</div>
                         <div class="menu-item" onclick="window.location.href='28-等级体系.html'">等级设置</div>
                         <div class="menu-item" onclick="window.location.href='29-证书配置.html'">证书配置</div>
+                        <div class="menu-item" onclick="window.location.href='29-1-证书获取明细.html'">证书获取明细</div>
                     </div>
                 </div>
                 <div class="menu-group">
@@ -583,6 +926,7 @@
                     <div class="menu-group-items">
                         <div class="menu-item" onclick="window.location.href='31-系统参数.html'">系统参数</div>
                         <div class="menu-item" onclick="window.location.href='32-数据字典.html'">数据字典</div>
+                        <div class="menu-item" onclick="window.location.href='33-AI导语配置.html'">AI导语配置</div>
                     </div>
                 </div>
             </div>
@@ -664,9 +1008,9 @@
                 <div class="action-bar">
                     <div class="action-left">
                         <button class="btn btn-primary" onclick="window.location.href='20-新增书籍.html'">新增书籍</button>
-                        <button class="btn btn-secondary" onclick="alert('打开导入弹窗')">导入书籍</button>
+                        <button class="btn btn-secondary" id="importBooksBtn">导入书籍</button>
                         <button class="btn btn-secondary">上传资源</button>
-                        <button class="btn btn-secondary">配置测评</button>
+                        <button class="btn btn-secondary" id="configureAssessmentBtn">配置测评</button>
                         <button class="btn btn-secondary" id="generateAvatarBtn">生成AI虚拟形象</button>
                         <button class="btn btn-secondary" onclick="window.location.href='21-编辑书籍.html'">编辑</button>
                         <button class="btn btn-secondary" onclick="window.location.href='19-书籍详情.html'">查看</button>
@@ -862,7 +1206,119 @@
         </div>
     </div>
 
+    <!-- AI虚拟形象弹窗 -->
+    <div class="avatar-modal" id="avatarModal" onclick="closeAvatarModal()">
+        <div class="avatar-modal-content" onclick="event.stopPropagation()">
+            <div class="avatar-modal-header">
+                <div class="avatar-modal-title">生成AI虚拟形象</div>
+                <button class="avatar-modal-close" onclick="closeAvatarModal()">×</button>
+            </div>
+            <div class="avatar-modal-body">
+                <div class="avatar-book-info">
+                    <div class="avatar-book-meta">
+                        <div class="avatar-book-name" id="avatarBookName">《西游记》</div>
+                        <div class="avatar-book-desc">
+                            <span id="avatarBookAuthor">作者：吴承恩</span>
+                            <span id="avatarBookPress" style="margin-left: 24px;">出版社：人民文学出版社</span>
+                        </div>
+                        <div class="avatar-book-desc">支持两种方式维护虚拟形象：调用AI技术快速生成，或直接上传已设计好的形象图片。</div>
+                    </div>
+                </div>
+
+                <div class="avatar-mode-tabs">
+                    <button class="avatar-mode-tab active" id="avatarModeAi" onclick="switchAvatarMode('ai')">AI生成</button>
+                    <button class="avatar-mode-tab" id="avatarModeUpload" onclick="switchAvatarMode('upload')">直接上传</button>
+                </div>
+
+                <div class="avatar-panels">
+                    <div>
+                        <div class="avatar-panel" id="avatarAiPanel">
+                            <div class="avatar-section-title">调用AI生成虚拟形象</div>
+                            <div class="avatar-desc">系统会基于书名、作者、适读年级等书籍信息生成适合学生端阅读引导使用的虚拟形象。</div>
+                            <div class="avatar-feature-list">
+                                <div class="avatar-feature-item">自动读取当前书籍基础信息生成角色形象</div>
+                                <div class="avatar-feature-item">支持多次重新生成，选择满意结果后再保存</div>
+                                <div class="avatar-feature-item">适用于还没有现成视觉素材的书籍资源</div>
+                            </div>
+                            <div class="avatar-form-item">
+                                <label class="avatar-form-label" for="avatarPromptInput">提示词</label>
+                                <textarea class="avatar-textarea" id="avatarPromptInput" placeholder="请输入AI生成提示词">温暖、亲和、适合小学生阅读引导的角色形象，穿着与《西游记》主题相关，表情友好，适合用于阅读计划陪伴场景</textarea>
+                                <div class="avatar-text-hint">支持补充风格、年龄感、服饰、表情、场景等描述，帮助AI更准确生成你想要的虚拟形象。</div>
+                            </div>
+                            <button class="btn btn-primary" type="button" onclick="generateAvatar()">调用AI生成</button>
+                        </div>
+
+                        <div class="avatar-panel" id="avatarUploadPanel" style="display: none;">
+                            <div class="avatar-section-title">直接上传虚拟形象</div>
+                            <div class="avatar-desc">如果运营侧已准备好对应人物立绘或品牌素材，也可以直接上传并作为本书的虚拟形象使用。</div>
+                            <div class="avatar-upload-box">
+                                <button class="btn btn-secondary" type="button" onclick="document.getElementById('avatarFileInput').click()">选择图片上传</button>
+                                <div class="upload-hint">支持 JPG / JPEG / PNG / WEBP / GIF / BMP / SVG / AVIF，建议尺寸 800 × 1200，单文件不超过 5MB</div>
+                                <input type="file" id="avatarFileInput" accept=".jpg,.jpeg,.png,.webp,.gif,.bmp,.svg,.avif,image/*" style="display: none;" onchange="handleAvatarUpload(event)">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="avatar-panel avatar-result-card">
+                        <div class="avatar-section-title">效果预览</div>
+                        <div class="avatar-preview" id="avatarPreview">
+                            <div>
+                                <div>请选择“AI生成”或“直接上传”来生成虚拟形象</div>
+                                <div class="avatar-preview-subtitle">生成或上传成功后，会在这里展示预览结果</div>
+                            </div>
+                        </div>
+                        <div class="avatar-status" id="avatarStatus">当前尚未生成或上传虚拟形象</div>
+                        <button class="btn btn-secondary" type="button" onclick="resetAvatarPreview()">清空当前结果</button>
+                    </div>
+                </div>
+            </div>
+            <div class="avatar-modal-footer">
+                <button class="btn btn-secondary" type="button" onclick="closeAvatarModal()">取消</button>
+                <button class="btn btn-primary" type="button" onclick="confirmAvatarUse()">确认使用</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 导入书籍弹窗 -->
+    <div class="import-modal" id="importBooksModal" onclick="closeImportBooksModal()">
+        <div class="import-modal-content" onclick="event.stopPropagation()">
+            <div class="import-modal-header">
+                <div class="import-modal-title">导入书籍</div>
+                <button class="import-modal-close" type="button" onclick="closeImportBooksModal()">×</button>
+            </div>
+            <div class="import-modal-body">
+                <div class="import-section">
+                    <div class="import-section-title">第一步：下载导入模板</div>
+                    <div class="import-desc">请先下载书籍导入模板，按照模板填写书籍名称、作者、出版社、适合年级、标签等基础信息后，再进行文件上传。</div>
+                    <div class="import-actions">
+                        <button class="btn btn-secondary" type="button" onclick="downloadBookImportTemplate()">下载导入模板</button>
+                    </div>
+                </div>
+
+                <div class="import-section">
+                    <div class="import-section-title">第二步：上传 Excel 文件</div>
+                    <div class="import-upload-box">
+                        <button class="btn btn-primary" type="button" onclick="document.getElementById('bookImportFileInput').click()">选择文件上传</button>
+                        <div class="import-file-name" id="bookImportFileName">当前未选择导入文件</div>
+                        <div class="import-file-hint">支持 `.xlsx`、`.xls`、`.csv`，建议单次导入不超过 200 本书</div>
+                        <input type="file" id="bookImportFileInput" accept=".xlsx,.xls,.csv,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv" style="display: none;" onchange="handleBookImportFile(event)">
+                    </div>
+                    <div class="import-result" id="bookImportResult">上传后系统将校验整个文件，校验通过后才可执行导入。</div>
+                </div>
+            </div>
+            <div class="import-modal-footer">
+                <button class="btn btn-secondary" type="button" onclick="closeImportBooksModal()">取消</button>
+                <button class="btn btn-primary" type="button" onclick="confirmImportBooks()">确认导入</button>
+            </div>
+        </div>
+    </div>
+
     <script>
+    let selectedAvatarRow = null;
+    let currentAvatarMode = 'ai';
+    let avatarResultReady = false;
+    let selectedImportFileName = '';
+
     function toggleMenu(element) {
         const menuGroup = element.parentElement;
         menuGroup.classList.toggle('expanded');
@@ -877,6 +1333,160 @@
         document.getElementById('coverModal').classList.remove('show');
     }
 
+    function getSingleSelectedBookRow() {
+        const checkboxes = document.querySelectorAll('.table tbody input[type="checkbox"]:checked');
+
+        if (checkboxes.length === 0) {
+            alert('请选择要生成AI虚拟形象的书籍');
+            return null;
+        }
+
+        if (checkboxes.length > 1) {
+            alert('只能选择一本书籍生成AI虚拟形象');
+            return null;
+        }
+
+        return checkboxes[0].closest('tr');
+    }
+
+    function openAvatarModal(row) {
+        selectedAvatarRow = row;
+        const bookName = row.cells[3].textContent.trim();
+        const author = row.cells[4].textContent.trim();
+        const press = row.cells[5].textContent.trim();
+
+        document.getElementById('avatarBookName').textContent = bookName;
+        document.getElementById('avatarBookAuthor').textContent = '作者：' + author;
+        document.getElementById('avatarBookPress').textContent = '出版社：' + press;
+        document.getElementById('avatarPromptInput').value = '温暖、亲和、适合小学生阅读引导的角色形象，穿着与' + bookName + '主题相关，表情友好，适合用于阅读计划陪伴场景';
+        document.getElementById('avatarFileInput').value = '';
+
+        switchAvatarMode('ai');
+        resetAvatarPreview();
+        document.getElementById('avatarModal').classList.add('show');
+    }
+
+    function closeAvatarModal() {
+        document.getElementById('avatarModal').classList.remove('show');
+    }
+
+    function switchAvatarMode(mode) {
+        currentAvatarMode = mode;
+        document.getElementById('avatarModeAi').classList.toggle('active', mode === 'ai');
+        document.getElementById('avatarModeUpload').classList.toggle('active', mode === 'upload');
+        document.getElementById('avatarAiPanel').style.display = mode === 'ai' ? 'block' : 'none';
+        document.getElementById('avatarUploadPanel').style.display = mode === 'upload' ? 'block' : 'none';
+        resetAvatarPreview();
+    }
+
+    function resetAvatarPreview() {
+        avatarResultReady = false;
+        const preview = document.getElementById('avatarPreview');
+        const status = document.getElementById('avatarStatus');
+        preview.classList.remove('ready');
+        preview.innerHTML = '<div><div>请选择“AI生成”或“直接上传”来生成虚拟形象</div><div class="avatar-preview-subtitle">生成或上传成功后，会在这里展示预览结果</div></div>';
+        status.textContent = '当前尚未生成或上传虚拟形象';
+        status.classList.remove('success');
+    }
+
+    function generateAvatar() {
+        const preview = document.getElementById('avatarPreview');
+        const status = document.getElementById('avatarStatus');
+        const bookName = document.getElementById('avatarBookName').textContent.trim();
+        const prompt = document.getElementById('avatarPromptInput').value.trim();
+
+        if (!prompt) {
+            alert('请输入提示词后再调用AI生成');
+            return;
+        }
+
+        avatarResultReady = false;
+        preview.classList.remove('ready');
+        preview.innerHTML = '<div><div>AI生成中...</div><div class="avatar-preview-subtitle">正在基于书籍信息生成虚拟形象，请稍候</div></div>';
+        status.textContent = '正在根据提示词调用AI生成虚拟形象';
+        status.classList.remove('success');
+
+        setTimeout(function() {
+            avatarResultReady = true;
+            preview.classList.add('ready');
+            preview.innerHTML = '<div><div>' + bookName + '</div><div class="avatar-preview-subtitle">AI生成虚拟形象预览图</div><div class="avatar-preview-subtitle">提示词：' + prompt + '</div></div>';
+            status.textContent = 'AI虚拟形象已按提示词生成，可确认使用或再次生成';
+            status.classList.add('success');
+        }, 900);
+    }
+
+    function handleAvatarUpload(event) {
+        const file = event.target.files && event.target.files[0];
+        if (!file) {
+            return;
+        }
+
+        avatarResultReady = true;
+        const preview = document.getElementById('avatarPreview');
+        const status = document.getElementById('avatarStatus');
+        preview.classList.add('ready');
+        preview.innerHTML = '<div><div>' + file.name + '</div><div class="avatar-preview-subtitle">已上传虚拟形象文件预览</div></div>';
+        status.textContent = '已上传虚拟形象，可确认使用';
+        status.classList.add('success');
+    }
+
+    function confirmAvatarUse() {
+        if (!selectedAvatarRow) {
+            closeAvatarModal();
+            return;
+        }
+
+        if (!avatarResultReady) {
+            alert(currentAvatarMode === 'ai' ? '请先调用AI生成虚拟形象' : '请先上传虚拟形象图片');
+            return;
+        }
+
+        const avatarCell = selectedAvatarRow.cells[9];
+        const badge = avatarCell.querySelector('.assessment-status-badge');
+        badge.textContent = '已生成';
+        badge.classList.remove('unconfigured');
+        badge.classList.add('configured');
+        closeAvatarModal();
+        alert(currentAvatarMode === 'ai' ? 'AI虚拟形象已保存' : '上传的虚拟形象已保存');
+    }
+
+    function openImportBooksModal() {
+        selectedImportFileName = '';
+        document.getElementById('bookImportFileInput').value = '';
+        document.getElementById('bookImportFileName').textContent = '当前未选择导入文件';
+        document.getElementById('bookImportResult').textContent = '上传后系统将校验整个文件，校验通过后才可执行导入。';
+        document.getElementById('importBooksModal').classList.add('show');
+    }
+
+    function closeImportBooksModal() {
+        document.getElementById('importBooksModal').classList.remove('show');
+    }
+
+    function downloadBookImportTemplate() {
+        alert('开始下载《书籍导入模板.xlsx》');
+    }
+
+    function handleBookImportFile(event) {
+        const file = event.target.files && event.target.files[0];
+        if (!file) {
+            return;
+        }
+
+        selectedImportFileName = file.name;
+        document.getElementById('bookImportFileName').textContent = '已选择文件：' + file.name;
+        document.getElementById('bookImportResult').textContent = '文件已上传，系统校验通过，共 20 条书籍数据，可执行整包导入。';
+    }
+
+    function confirmImportBooks() {
+        if (!selectedImportFileName) {
+            alert('请先上传导入文件');
+            return;
+        }
+
+        closeImportBooksModal();
+        alert('导入成功');
+    }
+
     // 绑定按钮点击事件
     document.addEventListener('DOMContentLoaded', function() {
         const buttons = document.querySelectorAll('.action-left .btn');
@@ -886,62 +1496,40 @@
                     window.location.href = '22-上传资源.html';
                 };
             }
-            if (btn.textContent.trim() === '配置测评') {
-                btn.onclick = function() {
-                    // 获取选中的书籍
-                    const checkboxes = document.querySelectorAll('.table tbody input[type="checkbox"]:checked');
-
-                    if (checkboxes.length === 0) {
-                        alert('请选择要配置测评的书籍');
-                        return;
-                    }
-
-                    if (checkboxes.length > 1) {
-                        alert('只能选择一本书籍进行测评配置');
-                        return;
-                    }
-
-                    // 跳转到测评题目配置页面
-                    window.location.href = '22-测评题目配置.html';
-                };
-            }
         });
 
-        // 生成AI虚拟形象按钮
-        document.getElementById('generateAvatarBtn').onclick = function() {
+        document.getElementById('configureAssessmentBtn').onclick = function() {
             const checkboxes = document.querySelectorAll('.table tbody input[type="checkbox"]:checked');
 
             if (checkboxes.length === 0) {
-                alert('请选择要生成AI虚拟形象的书籍');
+                alert('请选择要配置测评的书籍');
                 return;
             }
 
             if (checkboxes.length > 1) {
-                alert('只能选择一本书籍生成AI虚拟形象');
+                alert('只能选择一本书籍进行测评配置');
                 return;
             }
 
-            // 获取选中行的书籍名称
-            const selectedRow = checkboxes[0].closest('tr');
-            const bookName = selectedRow.cells[3].textContent;
+            window.location.href = '23-测评题目配置.html';
+        };
 
-            if (confirm('确认为' + bookName + '生成AI虚拟形象吗？')) {
-                // 模拟生成过程
-                alert('正在生成AI虚拟形象，请稍候...');
+        document.getElementById('importBooksBtn').onclick = function() {
+            openImportBooksModal();
+        };
 
-                // 实际应用中这里应该调用后端API
-                // 这里模拟成功后更新状态
-                setTimeout(function() {
-                    const avatarCell = selectedRow.cells[9];
-                    const badge = avatarCell.querySelector('.assessment-status-badge');
-                    badge.textContent = '已生成';
-                    badge.classList.remove('unconfigured');
-                    badge.classList.add('configured');
-                    alert('AI虚拟形象生成成功');
-                }, 1000);
+        // 生成AI虚拟形象按钮
+        document.getElementById('generateAvatarBtn').onclick = function() {
+            const selectedRow = getSingleSelectedBookRow();
+            if (!selectedRow) {
+                return;
             }
+            openAvatarModal(selectedRow);
         };
     });
     </script>
 </body>
 </html>
+
+
+

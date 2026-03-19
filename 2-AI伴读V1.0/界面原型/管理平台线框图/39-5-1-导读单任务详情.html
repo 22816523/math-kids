@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>导读单任务详情 - 校校读吧管理平台</title>
+    <title>瀵艰鍗曚换鍔¤鎯?- 鏍℃牎璇诲惂绠＄悊骞冲彴</title>
     <style>
         * {
             margin: 0;
@@ -201,7 +201,7 @@
             font-weight: 500;
         }
 
-        /* 互动数据展示 */
+        /* 浜掑姩鏁版嵁灞曠ず */
         .interaction-card {
             background: #fff;
             border: 1px solid #e0e0e0;
@@ -315,179 +315,189 @@
 
 <body>
     <div class="main">
-        <!-- 侧边栏 -->
+        <!-- 渚ц竟鏍?-->
         <div class="sidebar">
-            <div class="sidebar-header">校校读吧管理平台</div>
+            <div class="sidebar-header">鏍℃牎璇诲惂绠＄悊骞冲彴</div>
             <div class="sidebar-menu">
-                <div class="menu-group">
-                    <div class="menu-group-title">首页</div>
-                </div>
+                <div class="menu-item" onclick="window.location.href='02-首页.html'">首页</div>
                 <div class="menu-group">
                     <div class="menu-group-title">用户管理</div>
                 </div>
                 <div class="menu-group">
-                    <div class="menu-group-title">阅读计划管理</div>
-                </div>
-                <div class="menu-group">
-                    <div class="menu-group-title">书籍资源库</div>
+                    <div class="menu-group-title">内容管理</div>
                 </div>
                 <div class="menu-group">
                     <div class="menu-group-title">激励体系</div>
+                    <div class="menu-group-items">
+                        <div class="menu-item" onclick="window.location.href='27-积分规则.html'">积分规则</div>
+                        <div class="menu-item" onclick="window.location.href='26-积分明细.html'">积分明细</div>
+                        <div class="menu-item" onclick="window.location.href='28-等级体系.html'">等级设置</div>
+                        <div class="menu-item" onclick="window.location.href='29-证书配置.html'">证书配置</div>
+                        <div class="menu-item" onclick="window.location.href='29-1-证书获取明细.html'">证书获取明细</div>
+                    </div>
                 </div>
                 <div class="menu-group">
                     <div class="menu-group-title">消息管理</div>
+                    <div class="menu-group-items">
+                        <div class="menu-item" onclick="window.location.href='30-消息列表.html'">消息列表</div>
+                    </div>
                 </div>
                 <div class="menu-group">
                     <div class="menu-group-title">用户反馈</div>
+                    <div class="menu-group-items">
+                        <div class="menu-item" onclick="window.location.href='36-意见反馈.html'">意见反馈</div>
+                    </div>
                 </div>
                 <div class="menu-group expanded">
-                    <div class="menu-group-title">数据分析 <span class="menu-group-icon">▶</span></div>
+                    <div class="menu-group-title">数据分析 <span class="menu-group-icon">▼</span></div>
                     <div class="menu-group-items">
                         <div class="menu-item" onclick="window.location.href='39-平台数据分析.html'">平台数据分析</div>
                         <div class="menu-item" onclick="window.location.href='39-1-学校数据分析.html'">学校数据分析</div>
+                        <div class="menu-item" onclick="window.location.href='39-2-年级数据分析.html'">年级数据分析</div>
                         <div class="menu-item" onclick="window.location.href='39-3-学生数据分析.html'">学生数据分析</div>
-                        <div class="menu-item" onclick="window.location.href='39-4-书籍测评记录.html'">书籍测评记录</div>
-                        <div class="menu-item" onclick="window.location.href='39-5-阅读任务记录.html'">阅读任务记录</div>
                         <div class="menu-item" onclick="window.location.href='39-4-书籍测评记录.html'">书籍测评记录</div>
                         <div class="menu-item active" onclick="window.location.href='39-5-阅读任务记录.html'">阅读任务记录</div>
                     </div>
                 </div>
                 <div class="menu-group">
                     <div class="menu-group-title">系统配置</div>
+                    <div class="menu-group-items">
+                        <div class="menu-item" onclick="window.location.href='31-系统参数.html'">系统参数</div>
+                        <div class="menu-item" onclick="window.location.href='32-数据字典.html'">数据字典</div>
+                        <div class="menu-item" onclick="window.location.href='33-AI导语配置.html'">AI导语配置</div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- 内容区域 -->
+        <!-- 鍐呭鍖哄煙 -->
         <div class="content">
-            <!-- 顶部栏 -->
+            <!-- 椤堕儴鏍?-->
             <div class="header">
                 <div class="breadcrumb">
-                    数据分析 <span>/</span> 阅读任务记录 <span>/</span> 任务详情
+                    鏁版嵁鍒嗘瀽 <span>/</span> 闃呰浠诲姟璁板綍 <span>/</span> 浠诲姟璇︽儏
                 </div>
                 <div class="user-info">
-                    <span>管理员</span>
-                    <a class="logout-link" onclick="history.back()">退出登录</a>
+                    <span>绠＄悊鍛?/span>
+                    <a class="logout-link" onclick="history.back()">閫€鍑虹櫥褰?/a>
                 </div>
             </div>
 
-            <!-- 页面内容 -->
+            <!-- 椤甸潰鍐呭 -->
             <div class="page-content">
                 <div class="page-header">
-                    <div class="page-title">任务详情</div>
-                    <button class="btn-back" onclick="window.location.href='39-5-阅读任务记录.html'">返回列表</button>
+                    <div class="page-title">浠诲姟璇︽儏</div>
+                    <button class="btn-back" onclick="window.location.href='39-5-闃呰浠诲姟璁板綍.html'">杩斿洖鍒楄〃</button>
                 </div>
 
-                <!-- 基本信息 -->
+                <!-- 鍩烘湰淇℃伅 -->
                 <div class="info-card">
                     <div class="info-grid">
                         <div class="info-item">
-                            <div class="info-label">学生名称</div>
-                            <div class="info-value">张小明</div>
+                            <div class="info-label">瀛︾敓鍚嶇О</div>
+                            <div class="info-value">寮犲皬鏄?/div>
                         </div>
                         <div class="info-item">
-                            <div class="info-label">班级</div>
-                            <div class="info-value">一年级1班</div>
+                            <div class="info-label">鐝骇</div>
+                            <div class="info-value">涓€骞寸骇1鐝?/div>
                         </div>
                         <div class="info-item">
-                            <div class="info-label">学校</div>
-                            <div class="info-value">实验小学</div>
+                            <div class="info-label">瀛︽牎</div>
+                            <div class="info-value">瀹為獙灏忓</div>
                         </div>
                         <div class="info-item">
-                            <div class="info-label">书籍</div>
-                            <div class="info-value">《三体》</div>
+                            <div class="info-label">涔︾睄</div>
+                            <div class="info-value">銆婁笁浣撱€?/div>
                         </div>
                         <div class="info-item">
-                            <div class="info-label">阅读次数</div>
-                            <div class="info-value">第1次阅读</div>
+                            <div class="info-label">闃呰娆℃暟</div>
+                            <div class="info-value">绗?娆￠槄璇?/div>
                         </div>
                         <div class="info-item">
-                            <div class="info-label">任务内容</div>
-                            <div class="info-value">完成导读单二</div>
+                            <div class="info-label">浠诲姟鍐呭</div>
+                            <div class="info-value">瀹屾垚瀵艰鍗曚簩</div>
                         </div>
                         <div class="info-item">
-                            <div class="info-label">打卡时间</div>
+                            <div class="info-label">鎵撳崱鏃堕棿</div>
                             <div class="info-value">2026-02-15 14:30</div>
                         </div>
                         <div class="info-item">
-                            <div class="info-label">状态</div>
-                            <div class="info-value"><span style="color: #34a853;">按时完成</span></div>
+                            <div class="info-label">鐘舵€?/div>
+                            <div class="info-value"><span style="color: #34a853;">鎸夋椂瀹屾垚</span></div>
                         </div>
                     </div>
                 </div>
 
-                <!-- 打卡详情 -->
+                <!-- 鎵撳崱璇︽儏 -->
                 <div class="info-card">
-                    <div style="font-size: 16px; font-weight: 600; color: #333; margin-bottom: 20px;">打卡详情</div>
+                    <div style="font-size: 16px; font-weight: 600; color: #333; margin-bottom: 20px;">鎵撳崱璇︽儏</div>
 
                     <div style="margin-bottom: 24px;">
-                        <div class="info-label" style="margin-bottom: 12px; color: #666;">打卡内容</div>
+                        <div class="info-label" style="margin-bottom: 12px; color: #666;">鎵撳崱鍐呭</div>
                         <div style="display: flex; gap: 16px;">
                             <div
                                 style="width: 120px; height: 120px; background: #f0f0f0; border: 1px dashed #d0d0d0; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #999; font-size: 14px;">
-                                图片缩略图 1
+                                鍥剧墖缂╃暐鍥?1
                             </div>
                             <div
                                 style="width: 120px; height: 120px; background: #f0f0f0; border: 1px dashed #d0d0d0; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #999; font-size: 14px;">
-                                图片缩略图 2
+                                鍥剧墖缂╃暐鍥?2
                             </div>
                         </div>
                     </div>
 
                     <div>
-                        <div class="info-label" style="margin-bottom: 8px; color: #666;">打卡感想</div>
+                        <div class="info-label" style="margin-bottom: 8px; color: #666;">鎵撳崱鎰熸兂</div>
                         <div
                             style="font-size: 14px; color: #333; line-height: 1.6; background: #f9f9f9; padding: 16px; border-radius: 4px;">
-                            这本书非常有意思，我在阅读的过程中学到了很多知识。特别是书中的主人公遇到困难时不放弃的精神，让我深受启发。我觉得大家都应该读一读这本经典科幻著作，对理解宇宙有极大的帮助。
-                        </div>
+                            杩欐湰涔﹂潪甯告湁鎰忔€濓紝鎴戝湪闃呰鐨勮繃绋嬩腑瀛﹀埌浜嗗緢澶氱煡璇嗐€傜壒鍒槸涔︿腑鐨勪富浜哄叕閬囧埌鍥伴毦鏃朵笉鏀惧純鐨勭簿绁烇紝璁╂垜娣卞彈鍚彂銆傛垜瑙夊緱澶у閮藉簲璇ヨ涓€璇昏繖鏈粡鍏哥骞昏憲浣滐紝瀵圭悊瑙ｅ畤瀹欐湁鏋佸ぇ鐨勫府鍔┿€?                        </div>
                     </div>
                 </div>
 
-                <!-- 互动数据展示 -->
+                <!-- 浜掑姩鏁版嵁灞曠ず -->
                 <div class="interaction-card">
                     <div class="likes-section">
-                        <div class="likes-text">李老师、王小明、刘芳 等3人点赞</div>
+                        <div class="likes-text">鏉庤€佸笀銆佺帇灏忔槑銆佸垬鑺?绛?浜虹偣璧?/div>
                         <div style="color: #999; cursor: pointer;">&gt;</div>
                     </div>
 
                     <div class="comments-section">
                         <div class="comments-header">
-                            <div>评论</div>
-                            <div class="comments-count">3条</div>
+                            <div>璇勮</div>
+                            <div class="comments-count">3鏉?/div>
                         </div>
 
-                        <!-- 评论 1 -->
+                        <!-- 璇勮 1 -->
                         <div class="comment-item">
                             <div class="comment-content-box">
                                 <div class="comment-user">
-                                    李老师
-                                    <span class="user-tag tag-teacher">老师</span>
+                                    鏉庤€佸笀
+                                    <span class="user-tag tag-teacher">鑰佸笀</span>
                                 </div>
-                                <div class="comment-text">阅读很认真，继续保持！</div>
+                                <div class="comment-text">闃呰寰堣鐪燂紝缁х画淇濇寔锛?/div>
                                 <div class="comment-time">2026-01-17 21:30</div>
                             </div>
                         </div>
 
-                        <!-- 评论 2 -->
+                        <!-- 璇勮 2 -->
                         <div class="comment-item">
                             <div class="comment-content-box">
                                 <div class="comment-user">
-                                    王小明
-                                    <span class="user-tag tag-student">同学</span>
+                                    鐜嬪皬鏄?                                    <span class="user-tag tag-student">鍚屽</span>
                                 </div>
-                                <div class="comment-text">写得真好，向你学习</div>
+                                <div class="comment-text">鍐欏緱鐪熷ソ锛屽悜浣犲涔?/div>
                                 <div class="comment-time">2026-01-18 08:20</div>
                             </div>
                         </div>
 
-                        <!-- 评论 3 -->
+                        <!-- 璇勮 3 -->
                         <div class="comment-item">
                             <div class="comment-content-box">
                                 <div class="comment-user">
-                                    刘芳
-                                    <span class="user-tag tag-student">同学</span>
+                                    鍒樿姵
+                                    <span class="user-tag tag-student">鍚屽</span>
                                 </div>
-                                <div class="comment-text">字迹工整，笔记做得很详细</div>
+                                <div class="comment-text">瀛楄抗宸ユ暣锛岀瑪璁板仛寰楀緢璇︾粏</div>
                                 <div class="comment-time">2026-01-18 09:15</div>
                             </div>
                         </div>

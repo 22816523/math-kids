@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
@@ -293,9 +293,7 @@
         /* 操作按钮组 */
         .action-buttons {
             display: flex;
-            justify-content: flex-end;
             gap: 12px;
-            margin-top: 24px;
         }
     </style>
 </head>
@@ -336,8 +334,10 @@
                     </div>
                     <div class="menu-group-items">
                         <div class="menu-item" onclick="window.location.href='27-积分规则.html'">积分规则</div>
+                        <div class="menu-item" onclick="window.location.href='26-积分明细.html'">积分明细</div>
                         <div class="menu-item" onclick="window.location.href='28-等级体系.html'">等级设置</div>
                         <div class="menu-item" onclick="window.location.href='29-证书配置.html'">证书配置</div>
+                        <div class="menu-item" onclick="window.location.href='29-1-证书获取明细.html'">证书获取明细</div>
                     </div>
                 </div>
                 <div class="menu-group">
@@ -380,6 +380,7 @@
                     <div class="menu-group-items">
                         <div class="menu-item" onclick="window.location.href='31-系统参数.html'">系统参数</div>
                         <div class="menu-item" onclick="window.location.href='32-数据字典.html'">数据字典</div>
+                        <div class="menu-item" onclick="window.location.href='33-AI导语配置.html'">AI导语配置</div>
                     </div>
                 </div>
             </div>
@@ -401,6 +402,10 @@
             <!-- 页面标题 -->
             <div class="page-header">
                 <div class="page-title">测评预览</div>
+                <div class="action-buttons">
+                    <button class="btn btn-secondary" onclick="window.location.href='23-测评题目配置.html'">继续添加题目</button>
+                    <button class="btn btn-primary" onclick="alert('保存成功')">保存配置</button>
+                </div>
             </div>
 
             <!-- 书籍信息 -->
@@ -474,11 +479,6 @@
                 </div>
             </div>
 
-            <!-- 操作按钮 -->
-            <div class="action-buttons">
-                <button class="btn btn-secondary" onclick="window.location.href='23-测评题目配置.html'">继续添加题目</button>
-                <button class="btn btn-primary" onclick="alert('发布成功')">发布测评</button>
-            </div>
             </div>
         </div>
     </div>
@@ -491,3 +491,6 @@
     </script>
 </body>
 </html>
+
+
+

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
@@ -645,8 +645,10 @@
                     </div>
                     <div class="menu-group-items">
                         <div class="menu-item" onclick="window.location.href='27-积分规则.html'">积分规则</div>
+                        <div class="menu-item" onclick="window.location.href='26-积分明细.html'">积分明细</div>
                         <div class="menu-item" onclick="window.location.href='28-等级体系.html'">等级设置</div>
                         <div class="menu-item" onclick="window.location.href='29-证书配置.html'">证书配置</div>
+                        <div class="menu-item" onclick="window.location.href='29-1-证书获取明细.html'">证书获取明细</div>
                     </div>
                 </div>
                 <div class="menu-group">
@@ -689,6 +691,7 @@
                     <div class="menu-group-items">
                         <div class="menu-item" onclick="window.location.href='31-系统参数.html'">系统参数</div>
                         <div class="menu-item" onclick="window.location.href='32-数据字典.html'">数据字典</div>
+                        <div class="menu-item" onclick="window.location.href='33-AI导语配置.html'">AI导语配置</div>
                     </div>
                 </div>
             </div>
@@ -759,7 +762,7 @@
                         <button class="btn btn-primary" onclick="handleCreate()">创建阅读计划</button>
                         <button class="btn btn-secondary" onclick="handleView()">查看</button>
                         <button class="btn btn-secondary" onclick="handleEdit()">编辑</button>
-                        <button class="btn btn-secondary" onclick="handleConfigGrade()">配置年级书目</button>
+                        <button class="btn btn-secondary" onclick="handleConfigGrade()">配置年级书籍</button>
                         <button class="btn btn-secondary" onclick="handlePublish()">发布</button>
                         <button class="btn btn-secondary" onclick="handleWithdraw()">撤回发布</button>
                         <button class="btn btn-secondary" onclick="handleDelete()">删除</button>
@@ -784,7 +787,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr class="selected" data-plan-id="PL202402200001" onclick="selectRow(this)">
+                            <tr class="selected" data-plan-id="PL202402200001" data-skip-holiday="是" onclick="selectRow(this)">
                                 <td><input type="checkbox" checked></td>
                                 <td>PL202402200001</td>
                                 <td><div class="cover-img">[封面]</div></td>
@@ -795,7 +798,7 @@
                                 <td>2024-02-20 10:30</td>
                                 <td>2024-02-25 14:20</td>
                             </tr>
-                            <tr data-plan-id="PL202401100001" onclick="selectRow(this)">
+                            <tr data-plan-id="PL202401100001" data-skip-holiday="否" onclick="selectRow(this)">
                                 <td><input type="checkbox"></td>
                                 <td>PL202401100001</td>
                                 <td><div class="cover-img">[封面]</div></td>
@@ -806,7 +809,7 @@
                                 <td>2024-01-10 14:20</td>
                                 <td>2024-01-12 09:30</td>
                             </tr>
-                            <tr data-plan-id="PL202403010001" onclick="selectRow(this)">
+                            <tr data-plan-id="PL202403010001" data-skip-holiday="是" onclick="selectRow(this)">
                                 <td><input type="checkbox"></td>
                                 <td>PL202403010001</td>
                                 <td><div class="cover-img">[封面]</div></td>
@@ -817,7 +820,7 @@
                                 <td>2024-03-01 09:15</td>
                                 <td>2024-03-05 16:45</td>
                             </tr>
-                            <tr data-plan-id="PL202402080001" onclick="selectRow(this)">
+                            <tr data-plan-id="PL202402080001" data-skip-holiday="否" onclick="selectRow(this)">
                                 <td><input type="checkbox"></td>
                                 <td>PL202402080001</td>
                                 <td><div class="cover-img">[封面]</div></td>
@@ -828,7 +831,7 @@
                                 <td>2024-02-08 16:45</td>
                                 <td>-</td>
                             </tr>
-                            <tr data-plan-id="PL202402150001" onclick="selectRow(this)">
+                            <tr data-plan-id="PL202402150001" data-skip-holiday="是" onclick="selectRow(this)">
                                 <td><input type="checkbox"></td>
                                 <td>PL202402150001</td>
                                 <td><div class="cover-img">[封面]</div></td>
@@ -839,7 +842,7 @@
                                 <td>2024-02-15 11:00</td>
                                 <td>2024-02-18 10:15</td>
                             </tr>
-                            <tr data-plan-id="PL202402180001" onclick="selectRow(this)">
+                            <tr data-plan-id="PL202402180001" data-skip-holiday="否" onclick="selectRow(this)">
                                 <td><input type="checkbox"></td>
                                 <td>PL202402180001</td>
                                 <td><div class="cover-img">[封面]</div></td>
@@ -854,11 +857,11 @@
                     </table>
                 </div>
 
-                <!-- 从表：年级书目配置 -->
+                <!-- 从表：年级书籍配置 -->
                 <div class="sub-table-section" id="subTableSection">
                     <div style="margin-bottom: 12px; display: flex; gap: 12px;">
                         <button class="btn btn-primary" onclick="window.location.href='11-阅读计划详情.html'">查看详情</button>
-                        <button class="btn btn-secondary" onclick="handleEditGradeBook()">编辑年级书目</button>
+                        <button class="btn btn-secondary" onclick="handleConfigReadingTask()">配置阅读任务</button>
                     </div>
                     <div class="sub-table-container">
                         <table class="table" id="gradeBookTable">
@@ -867,14 +870,16 @@
                                     <th width="40"><input type="checkbox" id="checkAllGrade"></th>
                                     <th width="80">年级</th>
                                     <th>书籍数量</th>
+                                    <th>任务配置状态</th>
                                     <th>书籍列表</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr class="selected">
-                                    <td><input type="checkbox" checked></td>
+                                <tr class="selected" onclick="selectGradeRow(this)">
+                                    <td><input type="checkbox" checked onclick="event.stopPropagation(); selectGradeCheckbox(this)"></td>
                                     <td>三年级</td>
                                     <td>2本</td>
+                                    <td><span class="status-badge status-active">已配置</span></td>
                                     <td>《小王子》、《夏洛的网》</td>
                                 </tr>
                             </tbody>
@@ -922,6 +927,7 @@
                     <p style="margin-top: 8px;"><strong>计划ID：</strong><span id="viewPlanId">PL202402200001</span></p>
                     <p style="margin-top: 8px;"><strong>开始时间：</strong><span id="viewStartTime">2024-03-01</span></p>
                     <p style="margin-top: 8px;"><strong>结束时间：</strong><span id="viewEndTime">2024-06-30</span></p>
+                    <p style="margin-top: 8px;"><strong>跳过节假日：</strong><span id="viewSkipHoliday">是</span></p>
                     <p style="margin-top: 8px;"><strong>状态：</strong><span id="viewStatus">进行中</span></p>
                     <p style="margin-top: 8px;"><strong>创建时间：</strong><span id="viewCreateTime">2024-02-20 10:30</span></p>
                     <p style="margin-top: 8px;"><strong>发布时间：</strong><span id="viewPublishTime">2024-02-25 14:20</span></p>
@@ -929,28 +935,6 @@
             </div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" onclick="closeModal('viewModal')">关闭</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- 发布弹窗 -->
-    <div class="modal-overlay" id="publishModal">
-        <div class="modal">
-            <div class="modal-header">
-                <span class="modal-title">发布阅读计划</span>
-                <button class="modal-close" onclick="closeModal('publishModal')">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div class="modal-info">
-                    <p>确认发布以下阅读计划？</p>
-                    <p style="margin-top: 12px;"><strong>计划名称：</strong><span id="publishPlanName">课外阅读计划</span></p>
-                    <p style="margin-top: 8px;"><strong>计划ID：</strong><span id="publishPlanId">PL202402080001</span></p>
-                </div>
-                <p class="modal-warning">注意：发布后计划将对学生可见，请确认配置无误。</p>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" onclick="closeModal('publishModal')">取消</button>
-                <button class="btn btn-primary" onclick="confirmPublish()">确认发布</button>
             </div>
         </div>
     </div>
@@ -1022,7 +1006,7 @@
                             <input type="checkbox" checked> 计划基本信息
                         </label>
                         <label class="modal-checkbox-item">
-                            <input type="checkbox" checked> 年级书目配置
+                            <input type="checkbox" checked> 年级书籍配置
                         </label>
                         <label class="modal-checkbox-item">
                             <input type="checkbox"> 学生阅读数据
@@ -1065,6 +1049,12 @@
                         <label class="modal-form-label">结束时间 <span style="color: #ff4d4f;">*</span></label>
                         <input type="date" class="modal-form-input" id="createEndTime">
                     </div>
+                </div>
+                <div class="modal-form-item">
+                    <label class="modal-form-label">跳过节假日</label>
+                    <label class="modal-checkbox-item">
+                        <input type="checkbox" id="createSkipHoliday" checked> 任务日期自动跳过节假日
+                    </label>
                 </div>
                 <div class="modal-form-item">
                     <label class="modal-form-label">计划描述</label>
@@ -1112,6 +1102,12 @@
                     </div>
                 </div>
                 <div class="modal-form-item">
+                    <label class="modal-form-label">跳过节假日</label>
+                    <label class="modal-checkbox-item">
+                        <input type="checkbox" id="editSkipHoliday"> 任务日期自动跳过节假日
+                    </label>
+                </div>
+                <div class="modal-form-item">
                     <label class="modal-form-label">计划描述</label>
                     <textarea class="modal-form-input" id="editDesc" style="height: 80px; padding: 8px 12px; resize: none;" placeholder="请输入计划描述"></textarea>
                 </div>
@@ -1129,7 +1125,7 @@
         menuGroup.classList.toggle('expanded');
     }
 
-    // 年级书目模拟数据
+    // 年级书籍模拟数据
     const gradeBookData = {
         'PL202402200001': [
             { grade: '三年级', count: '2本', books: '《小王子》、《夏洛的网》', status: 'done' }
@@ -1175,7 +1171,7 @@
         const tbody = document.querySelector('#gradeBookTable tbody');
 
         if (data.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: #999;">暂无年级书目配置</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #999;">暂无年级书籍配置</td></tr>';
             return;
         }
 
@@ -1183,11 +1179,14 @@
         data.forEach((item, index) => {
             const checked = index === 0 ? 'checked' : '';
             const selected = index === 0 ? 'class="selected"' : '';
+            const statusText = item.status === 'done' ? '已配置' : '未配置';
+            const statusClass = item.status === 'done' ? 'status-active' : 'status-draft';
             html += `
-                <tr ${selected}>
-                    <td><input type="checkbox" ${checked}></td>
+                <tr ${selected} onclick="selectGradeRow(this)">
+                    <td><input type="checkbox" ${checked} onclick="event.stopPropagation(); selectGradeCheckbox(this)"></td>
                     <td>${item.grade}</td>
                     <td>${item.count}</td>
+                    <td><span class="status-badge ${statusClass}">${statusText}</span></td>
                     <td>${item.books}</td>
                 </tr>
             `;
@@ -1195,8 +1194,26 @@
         tbody.innerHTML = html;
     }
 
+    function selectGradeRow(row) {
+        const allRows = document.querySelectorAll('#gradeBookTable tbody tr');
+        allRows.forEach(r => {
+            r.classList.remove('selected');
+            const checkbox = r.querySelector('input[type="checkbox"]');
+            if (checkbox) checkbox.checked = false;
+        });
+
+        row.classList.add('selected');
+        const checkbox = row.querySelector('input[type="checkbox"]');
+        if (checkbox) checkbox.checked = true;
+    }
+
+    function selectGradeCheckbox(checkbox) {
+        const row = checkbox.closest('tr');
+        if (row) selectGradeRow(row);
+    }
+
     function handleEdit() {
-        const checkboxes = document.querySelectorAll('.table tbody input[type="checkbox"]:checked');
+        const checkboxes = document.querySelectorAll('#planTable tbody input[type="checkbox"]:checked');
 
         if (checkboxes.length === 0) {
             alert('请选择要编辑的阅读计划');
@@ -1222,6 +1239,7 @@
         document.getElementById('editPlanName').value = data.planName;
         document.getElementById('editStartTime').value = data.startTime;
         document.getElementById('editEndTime').value = data.endTime;
+        document.getElementById('editSkipHoliday').checked = (row.getAttribute('data-skip-holiday') || '否') === '是';
         openModal('editModal');
     }
 
@@ -1244,10 +1262,10 @@
     }
 
     function handleConfigGrade() {
-        const checkboxes = document.querySelectorAll('.table tbody input[type="checkbox"]:checked');
+        const checkboxes = document.querySelectorAll('#planTable tbody input[type="checkbox"]:checked');
 
         if (checkboxes.length === 0) {
-            alert('请选择要配置年级书目的阅读计划');
+            alert('请选择要配置年级书籍的阅读计划');
             return;
         }
 
@@ -1260,8 +1278,8 @@
         const planId = row.cells[1].textContent;
         const planName = row.cells[3].textContent;
 
-        // 跳转到年级书目配置页面
-        window.location.href = '12-配置年级书目-步骤1.html?planId=' + planId + '&planName=' + encodeURIComponent(planName);
+        // 跳转到配置年级书籍页面
+        window.location.href = '12-配置年级书籍.html?planId=' + planId + '&planName=' + encodeURIComponent(planName);
     }
 
     // 弹窗操作
@@ -1275,7 +1293,7 @@
 
     // 获取选中行的数据
     function getSelectedRowData() {
-        const checkboxes = document.querySelectorAll('.table tbody input[type="checkbox"]:checked');
+        const checkboxes = document.querySelectorAll('#planTable tbody input[type="checkbox"]:checked');
         if (checkboxes.length === 0) return null;
         const row = checkboxes[0].closest('tr');
         return {
@@ -1283,6 +1301,7 @@
             planName: row.cells[3].textContent,
             startTime: row.cells[4].textContent,
             endTime: row.cells[5].textContent,
+            skipHoliday: row.getAttribute('data-skip-holiday') || '否',
             status: row.querySelector('.status-badge').textContent.trim(),
             createTime: row.cells[7].textContent,
             publishTime: row.cells[8].textContent
@@ -1314,7 +1333,7 @@
 
     // 查看
     function handleView() {
-        const checkboxes = document.querySelectorAll('.table tbody input[type="checkbox"]:checked');
+        const checkboxes = document.querySelectorAll('#planTable tbody input[type="checkbox"]:checked');
         if (checkboxes.length === 0) {
             alert('请选择要查看的阅读计划');
             return;
@@ -1328,6 +1347,7 @@
         document.getElementById('viewPlanId').textContent = data.planId;
         document.getElementById('viewStartTime').textContent = data.startTime;
         document.getElementById('viewEndTime').textContent = data.endTime;
+        document.getElementById('viewSkipHoliday').textContent = data.skipHoliday;
         document.getElementById('viewStatus').textContent = data.status;
         document.getElementById('viewCreateTime').textContent = data.createTime;
         document.getElementById('viewPublishTime').textContent = data.publishTime;
@@ -1336,7 +1356,7 @@
 
     // 发布
     function handlePublish() {
-        const checkboxes = document.querySelectorAll('.table tbody input[type="checkbox"]:checked');
+        const checkboxes = document.querySelectorAll('#planTable tbody input[type="checkbox"]:checked');
         if (checkboxes.length === 0) {
             alert('请选择要发布的阅读计划');
             return;
@@ -1350,19 +1370,12 @@
             alert('只能发布未发布状态的计划');
             return;
         }
-        document.getElementById('publishPlanName').textContent = data.planName;
-        document.getElementById('publishPlanId').textContent = data.planId;
-        openModal('publishModal');
-    }
-
-    function confirmPublish() {
-        alert('发布成功！');
-        closeModal('publishModal');
+        window.location.href = '14-发布（阅览）.html?planId=' + data.planId + '&planName=' + encodeURIComponent(data.planName);
     }
 
     // 撤回发布
     function handleWithdraw() {
-        const checkboxes = document.querySelectorAll('.table tbody input[type="checkbox"]:checked');
+        const checkboxes = document.querySelectorAll('#planTable tbody input[type="checkbox"]:checked');
         if (checkboxes.length === 0) {
             alert('请选择要撤回的阅读计划');
             return;
@@ -1388,7 +1401,7 @@
 
     // 删除
     function handleDelete() {
-        const checkboxes = document.querySelectorAll('.table tbody input[type="checkbox"]:checked');
+        const checkboxes = document.querySelectorAll('#planTable tbody input[type="checkbox"]:checked');
         if (checkboxes.length === 0) {
             alert('请选择要删除的阅读计划');
             return;
@@ -1414,7 +1427,7 @@
 
     // 导出
     function handleExport() {
-        const checkboxes = document.querySelectorAll('.table tbody input[type="checkbox"]:checked');
+        const checkboxes = document.querySelectorAll('#planTable tbody input[type="checkbox"]:checked');
         if (checkboxes.length === 0) {
             alert('请选择要导出的阅读计划');
             return;
@@ -1427,18 +1440,30 @@
         closeModal('exportModal');
     }
 
-    // 编辑年级书目
-    function handleEditGradeBook() {
-        const checkboxes = document.querySelectorAll('#gradeBookTable tbody input[type="checkbox"]:checked');
-        if (checkboxes.length === 0) {
-            alert('请选择要编辑的年级书目');
+    // 配置阅读任务
+    function handleConfigReadingTask() {
+        const planCheckboxes = document.querySelectorAll('#planTable tbody input[type="checkbox"]:checked');
+        if (planCheckboxes.length === 0) {
+            alert('请先选择阅读计划');
             return;
         }
-        if (checkboxes.length > 1) {
-            alert('只能选择一条年级书目进行编辑');
+
+        const gradeCheckboxes = document.querySelectorAll('#gradeBookTable tbody input[type="checkbox"]:checked');
+        if (gradeCheckboxes.length === 0) {
+            alert('请选择要配置阅读任务的年级书籍');
             return;
         }
-        window.location.href = '15-编辑年级书目-步骤1.html';
+        if (gradeCheckboxes.length > 1) {
+            alert('只能选择一条年级书籍进行配置');
+            return;
+        }
+
+        const planRow = planCheckboxes[0].closest('tr');
+        const gradeRow = gradeCheckboxes[0].closest('tr');
+        const planId = planRow.cells[1].textContent;
+        const planName = planRow.cells[3].textContent;
+        const gradeName = gradeRow.cells[1].textContent;
+        window.location.href = '13-配置阅读任务.html?planId=' + planId + '&planName=' + encodeURIComponent(planName) + '&grade=' + encodeURIComponent(gradeName);
     }
 
     // 页面加载时默认选中第一行
@@ -1451,3 +1476,6 @@
     </script>
 </body>
 </html>
+
+
+
