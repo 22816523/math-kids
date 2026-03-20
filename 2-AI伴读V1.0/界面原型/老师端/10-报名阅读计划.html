@@ -232,6 +232,13 @@
                     </div>
                     <div class="setup-error-message">请选择学校</div>
                 </div>
+                <div class="setup-form-group" id="admissionYearGroup">
+                    <label class="setup-form-label">入学年份<span class="setup-required">*</span></label>
+                    <select class="setup-form-select" id="setupAdmissionYearSelect">
+                        <option value="">选择入学年份</option>
+                    </select>
+                    <div class="setup-error-message">请选择入学年份</div>
+                </div>
                 <div class="setup-form-group" id="gradeGroup">
                     <label class="setup-form-label">年级<span class="setup-required">*</span></label>
                     <select class="setup-form-select" id="setupGradeSelect">
@@ -319,9 +326,9 @@
     <script>
         // 模拟班级数据
         const mockClasses = [
-            { id: 1, name: '一年级(1)班', studentCount: 45 },
-            { id: 2, name: '一年级(2)班', studentCount: 43 },
-            { id: 3, name: '一年级(3)班', studentCount: 46 }
+            { id: 1, name: '一年级(1)班', admissionYear: '2025', studentCount: 45 },
+            { id: 2, name: '一年级(2)班', admissionYear: '2025', studentCount: 43 },
+            { id: 3, name: '一年级(3)班', admissionYear: '2025', studentCount: 46 }
         ];
 
         // 模拟计划数据
@@ -432,7 +439,7 @@
                         </div>
                         <div class="class-info">
                             <div class="class-name">
-                                ${cls.name} · ${cls.studentCount}人
+                                ${cls.name}${cls.admissionYear ? ` · ${cls.admissionYear}年入学` : ''} · ${cls.studentCount}人
                                 ${isEnrolled ? '<span class="enrolled-badge">已报名</span>' : ''}
                             </div>
                         </div>
@@ -507,7 +514,7 @@
 
             const selectedClassNames = mockClasses
                 .filter(cls => newClassIds.includes(cls.id))
-                .map(cls => cls.name)
+                .map(cls => `${cls.name}${cls.admissionYear ? `（${cls.admissionYear}年入学）` : ''}`)
                 .join('、');
 
             const enrollData = {
@@ -547,6 +554,8 @@
         let filteredSchools = [];
 
         const gradeConfig = ['一年级', '二年级', '三年级', '四年级', '五年级', '六年级'];
+        const currentYear = new Date().getFullYear();
+        const admissionYearConfig = Array.from({ length: 8 }, (_, index) => String(currentYear - index));
 
         const schoolData = [
             { id: 1, name: '北京市实验小学', address: '北京市西城区', provinceId: 1, cityId: 101, districtId: 10102 },
@@ -573,6 +582,7 @@
         let spTempProvince = null, spTempCity = null, spTempDistrict = null;
 
         function showAddClassModal() {
+            initSetupAdmissionYearSelect();
             initSetupGradeSelect();
             initSetupClassSelect();
 
@@ -589,12 +599,25 @@
         function hideAddClassModal() {
             document.getElementById('setupModal').style.display = 'none';
             document.querySelectorAll('.setup-form-group').forEach(g => g.classList.remove('error'));
+            document.getElementById('setupAdmissionYearSelect').value = '';
             document.getElementById('setupGradeSelect').value = '';
             document.getElementById('setupClassSelect').value = '';
             document.getElementById('setupClassInput').value = '';
             document.getElementById('setupClassInput').style.display = 'none';
             document.getElementById('setupStudentCount').value = '';
             document.getElementById('setupClassPreview').textContent = '';
+        }
+
+        function initSetupAdmissionYearSelect() {
+            const sel = document.getElementById('setupAdmissionYearSelect');
+            sel.innerHTML = '<option value="">选择入学年份</option>';
+            admissionYearConfig.forEach(year => {
+                const option = document.createElement('option');
+                option.value = year;
+                option.textContent = `${year}年`;
+                sel.appendChild(option);
+            });
+            sel.onchange = updateSetupClassPreview;
         }
 
         function initSetupGradeSelect() {
@@ -618,13 +641,14 @@
         }
 
         function updateSetupClassPreview() {
+            const admissionYear = document.getElementById('setupAdmissionYearSelect').value;
             const grade = document.getElementById('setupGradeSelect').value;
             const cls = document.getElementById('setupClassSelect').value;
             const inp = document.getElementById('setupClassInput').value.trim();
             const preview = document.getElementById('setupClassPreview');
-            if (grade) {
-                if (cls === 'custom' && inp) preview.textContent = `班级名称：${grade}${inp}`;
-                else if (cls && cls !== 'custom') preview.textContent = `班级名称：${grade}(${cls})班`;
+            if (admissionYear && grade) {
+                if (cls === 'custom' && inp) preview.textContent = `入学年份：${admissionYear}年 · 班级名称：${grade}${inp}`;
+                else if (cls && cls !== 'custom') preview.textContent = `入学年份：${admissionYear}年 · 班级名称：${grade}(${cls})班`;
                 else preview.textContent = '';
             } else { preview.textContent = ''; }
         }
@@ -632,6 +656,8 @@
         function submitAddClass() {
             let valid = true;
             if (!selectedSchool) { document.getElementById('schoolGroup').classList.add('error'); valid = false; } else { document.getElementById('schoolGroup').classList.remove('error'); }
+            const admissionYear = document.getElementById('setupAdmissionYearSelect').value;
+            if (!admissionYear) { document.getElementById('admissionYearGroup').classList.add('error'); valid = false; } else { document.getElementById('admissionYearGroup').classList.remove('error'); }
             const grade = document.getElementById('setupGradeSelect').value;
             if (!grade) { document.getElementById('gradeGroup').classList.add('error'); valid = false; } else { document.getElementById('gradeGroup').classList.remove('error'); }
             const cls = document.getElementById('setupClassSelect').value;
@@ -643,14 +669,14 @@
             const studentCount = parseInt(document.getElementById('setupStudentCount').value) || 0;
 
             // 检查是否已存在同名班级
-            if (mockClasses.some(c => c.name === className)) {
+            if (mockClasses.some(c => c.name === className && c.admissionYear === admissionYear)) {
                 alert('该班级已存在');
                 return;
             }
 
             // 添加新班级到列表
             const newId = mockClasses.length > 0 ? Math.max(...mockClasses.map(c => c.id)) + 1 : 1;
-            mockClasses.push({ id: newId, name: className, studentCount: studentCount });
+            mockClasses.push({ id: newId, name: className, admissionYear: admissionYear, studentCount: studentCount });
 
             // 保存学校信息
             localStorage.setItem('teacherSchool', JSON.stringify(selectedSchool));

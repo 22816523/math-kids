@@ -415,7 +415,7 @@
         ];
 
         let currentFilter = 'all';
-        let currentClassId = 'all';  // 当前选中的班级ID
+        let currentClassId = null;  // 当前选中的班级ID
         let currentPlan = null;
         let currentBook = null;
 
@@ -447,21 +447,22 @@
         function renderClassSelector(enrolledClasses) {
             const selector = document.getElementById('classSelector');
 
-            const options = [
-                `<option value="all">全部班级（${enrolledClasses.length}个班级）</option>`,
-                ...enrolledClasses.map(c =>
-                    `<option value="${c.classId}">${c.className}</option>`
-                )
-            ].join('');
+            const options = enrolledClasses.map(c =>
+                `<option value="${c.classId}">${c.className}</option>`
+            ).join('');
 
             selector.innerHTML = options;
+            const hasCurrentClass = enrolledClasses.some(c => c.classId === currentClassId);
+            if (!hasCurrentClass && enrolledClasses.length > 0) {
+                currentClassId = enrolledClasses[0].classId;
+            }
             selector.value = currentClassId;
         }
 
         // 班级切换事件
         function onClassChange() {
             const selector = document.getElementById('classSelector');
-            currentClassId = selector.value === 'all' ? 'all' : parseInt(selector.value);
+            currentClassId = parseInt(selector.value);
 
             // 重新加载数据
             loadBookData();
@@ -469,48 +470,20 @@
 
         // 加载书籍数据
         function loadBookData() {
-            let bookData;
-            let students;
-
-            if (currentClassId === 'all') {
-                // 全部班级模式：使用汇总数据
-                bookData = currentPlan.books.find(b => b.id === bookId);
-                if (!bookData) {
-                    alert('书籍不存在');
-                    Router.back();
-                    return;
-                }
-
-                // 合并所有班级的学生数据
-                students = [];
-                currentPlan.enrolledClasses.forEach(classItem => {
-                    const classBook = classItem.books.find(b => b.id === bookId);
-                    if (classBook && classBook.students) {
-                        // 为每个学生添加班级信息
-                        const studentsWithClass = classBook.students.map(s => ({
-                            ...s,
-                            className: classItem.className
-                        }));
-                        students.push(...studentsWithClass);
-                    }
-                });
-            } else {
-                // 单个班级模式
-                const classItem = currentPlan.enrolledClasses.find(c => c.classId === currentClassId);
-                if (!classItem) {
-                    alert('班级不存在');
-                    return;
-                }
-
-                bookData = classItem.books.find(b => b.id === bookId);
-                if (!bookData) {
-                    alert('书籍不存在');
-                    Router.back();
-                    return;
-                }
-
-                students = bookData.students || [];
+            const classItem = currentPlan.enrolledClasses.find(c => c.classId === currentClassId);
+            if (!classItem) {
+                alert('班级不存在');
+                return;
             }
+
+            const bookData = classItem.books.find(b => b.id === bookId);
+            if (!bookData) {
+                alert('书籍不存在');
+                Router.back();
+                return;
+            }
+
+            const students = bookData.students || [];
 
             currentBook = bookData;
 
@@ -570,18 +543,6 @@
                 filteredStudents = allStudents.filter(s => !s.submitted);
             }
 
-            // 在全部班级模式下，按分数从高到低排序
-            if (currentClassId === 'all') {
-                filteredStudents = [...filteredStudents].sort((a, b) => {
-                    // 未提交的学生排在最后
-                    if (a.score === null && b.score === null) return 0;
-                    if (a.score === null) return 1;
-                    if (b.score === null) return -1;
-                    // 按分数降序排列
-                    return b.score - a.score;
-                });
-            }
-
             const html = filteredStudents.map(student => {
                 const statusClass = student.submitted ? 'status-submitted' : 'status-pending';
                 const statusText = student.submitted ? '已提交' : '未提交';
@@ -595,17 +556,12 @@
                     else scoreClass = 'score-low';
                 }
 
-                // 在全部班级模式下显示班级标签
-                const classTag = currentClassId === 'all' && student.className
-                    ? `<span class="student-class-tag">${student.className}</span>`
-                    : '';
-
                 return `
                     <div class="student-item" onclick="viewStudentExam(${student.id})">
                         <div class="student-left">
                             <div class="student-avatar">${student.name.substring(0, 2)}</div>
                             <div class="student-info">
-                                <div class="student-name">${student.name}${classTag}</div>
+                                <div class="student-name">${student.name}</div>
                                 <div class="student-status ${statusClass}">${statusText}</div>
                             </div>
                         </div>

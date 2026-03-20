@@ -525,6 +525,18 @@
             color: #999999;
         }
 
+        .level-read-date {
+            margin-top: 4px;
+            font-size: 12px;
+            color: #999999;
+        }
+
+        .level-read-date i {
+            color: #2E5BFF;
+            font-size: 11px;
+            margin-right: 4px;
+        }
+
         .expand-icon {
             color: #999999;
             font-size: 14px;
@@ -950,6 +962,7 @@
                         id: 1,
                         name: '第一单元',
                         type: 'normal',
+                        readDate: '2026-03-20',
                         tasks: [
                             {
                                 id: 1,
@@ -966,6 +979,7 @@
                         id: 2,
                         name: '第二单元',
                         type: 'normal',
+                        readDate: '2026-03-21',
                         tasks: [
                             { id: 2, name: '阅读第4-7页', type: 'reading' },
                             {
@@ -985,6 +999,7 @@
                         id: 3,
                         name: '第三单元',
                         type: 'normal',
+                        readDate: '2026-03-22',
                         tasks: [
                             {
                                 id: 4,
@@ -1023,6 +1038,7 @@
                         id: 7,
                         name: '第一单元',
                         type: 'normal',
+                        readDate: '2026-04-02',
                         tasks: [
                             {
                                 id: 1,
@@ -1039,6 +1055,7 @@
                         id: 8,
                         name: '第二单元',
                         type: 'normal',
+                        readDate: '2026-04-04',
                         tasks: [
                             { id: 27, name: '阅读第4-7页', type: 'reading' },
                             {
@@ -1058,6 +1075,7 @@
                         id: 9,
                         name: '第三单元',
                         type: 'normal',
+                        readDate: '2026-04-06',
                         tasks: [
                             { id: 31, name: '阅读第8-11页', type: 'reading' },
                             {
@@ -1077,6 +1095,7 @@
                         id: 10,
                         name: '第四单元',
                         type: 'boss',
+                        readDate: '2026-04-08',
                         tasks: [
                             { id: 35, name: '阅读第12-15页', type: 'reading' },
                             {
@@ -1299,6 +1318,10 @@
                                 <div class="level-task-count">
                                     <i class="fa-solid fa-list-check"></i> ${level.tasks.length}个任务
                                 </div>
+                                ${level.readDate ? `
+                                <div class="level-read-date">
+                                    <i class="fa-regular fa-calendar-days"></i> 阅读日期：${level.readDate}
+                                </div>` : ''}
                             </div>
                             <i class="fa-solid fa-chevron-down expand-icon expanded" id="expandIcon${level.id}"></i>
                         </div>

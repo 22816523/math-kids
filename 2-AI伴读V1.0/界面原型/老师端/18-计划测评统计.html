@@ -351,7 +351,7 @@
             }
         ];
 
-        let currentClassId = 'all';  // 当前选中的班级ID
+        let currentClassId = null;  // 当前选中的班级ID
         let currentPlan = null;
         // 展开收起状态
         const sectionExpanded = {
@@ -407,21 +407,22 @@
         function renderClassSelector(enrolledClasses) {
             const selector = document.getElementById('classSelector');
 
-            const options = [
-                `<option value="all">全部班级（${enrolledClasses.length}个班级）</option>`,
-                ...enrolledClasses.map(c =>
-                    `<option value="${c.classId}">${c.className}</option>`
-                )
-            ].join('');
+            const options = enrolledClasses.map(c =>
+                `<option value="${c.classId}">${c.className}</option>`
+            ).join('');
 
             selector.innerHTML = options;
+            const hasCurrentClass = enrolledClasses.some(c => c.classId === currentClassId);
+            if (!hasCurrentClass && enrolledClasses.length > 0) {
+                currentClassId = enrolledClasses[0].classId;
+            }
             selector.value = currentClassId;
         }
 
         // 班级切换事件
         function onClassChange() {
             const selector = document.getElementById('classSelector');
-            currentClassId = selector.value === 'all' ? 'all' : parseInt(selector.value);
+            currentClassId = parseInt(selector.value);
 
             // 重新加载数据
             loadPlanData();
@@ -429,38 +430,15 @@
 
         // 加载计划数据
         function loadPlanData() {
-            let books;
-            let students;
-            let totalStudents;
-
-            if (currentClassId === 'all') {
-                // 全部班级模式：使用汇总数据
-                books = currentPlan.books;
-                totalStudents = currentPlan.enrolledClasses.reduce((sum, c) => sum + c.studentCount, 0);
-
-                // 合并所有班级的学生数据
-                students = [];
-                currentPlan.enrolledClasses.forEach(classItem => {
-                    if (classItem.students) {
-                        const studentsWithClass = classItem.students.map(s => ({
-                            ...s,
-                            className: classItem.className
-                        }));
-                        students.push(...studentsWithClass);
-                    }
-                });
-            } else {
-                // 单个班级模式
-                const classItem = currentPlan.enrolledClasses.find(c => c.classId === currentClassId);
-                if (!classItem) {
-                    alert('班级不存在');
-                    return;
-                }
-
-                books = classItem.books;
-                totalStudents = classItem.studentCount;
-                students = classItem.students || [];
+            const classItem = currentPlan.enrolledClasses.find(c => c.classId === currentClassId);
+            if (!classItem) {
+                alert('班级不存在');
+                return;
             }
+
+            const books = classItem.books;
+            const totalStudents = classItem.studentCount;
+            const students = classItem.students || [];
 
             // 计算整体统计
             const totalSubmitted = books.reduce((sum, book) => sum + book.submitted, 0);
@@ -473,14 +451,7 @@
             document.getElementById('totalSubmitted').textContent = totalSubmitted;
             document.getElementById('totalStudents').textContent = totalStudents;
 
-            // 获取阅读能力分析数据
-            let abilityScores;
-            if (currentClassId === 'all') {
-                abilityScores = currentPlan.abilityScores;
-            } else {
-                const classItem = currentPlan.enrolledClasses.find(c => c.classId === currentClassId);
-                abilityScores = classItem?.abilityScores || currentPlan.abilityScores;
-            }
+            const abilityScores = classItem.abilityScores || currentPlan.abilityScores;
 
             // 渲染书籍对比
             renderBooksCompare(books);
@@ -662,9 +633,7 @@
 
                 // 计算提交人数和总人数
                 const submitted = book.submitted;
-                const total = book.total || (currentClassId === 'all'
-                    ? currentPlan.enrolledClasses.reduce((sum, c) => sum + c.studentCount, 0)
-                    : currentPlan.enrolledClasses.find(c => c.classId === currentClassId).studentCount);
+                const total = book.total || currentPlan.enrolledClasses.find(c => c.classId === currentClassId).studentCount;
 
                 return `
                     <div class="book-compare-item" onclick="viewBookStats(${currentPlan.id}, ${book.id})">
@@ -708,16 +677,11 @@
 
                 const scoreClass = student.score >= 90 ? 'score-high' : student.score >= 80 ? 'score-medium' : 'score-low';
 
-                // 在全部班级模式下显示班级标签
-                const classTag = currentClassId === 'all' && student.className
-                    ? ` (${student.className})`
-                    : '';
-
                 return `
                     <div class="student-rank-item" onclick="viewStudentDetail(${student.id})">
                         <div class="rank-number ${rankClass}">${rank}</div>
                         <div class="student-info">
-                            <div class="student-name">${student.name}${classTag}</div>
+                            <div class="student-name">${student.name}</div>
                             <div class="student-progress">${student.progress}</div>
                         </div>
                         <div class="student-score ${scoreClass}">${student.score}</div>
@@ -735,23 +699,9 @@
 
             // 模拟网络请求延迟
             setTimeout(() => {
-                // 获取当前班级的能力分析数据
-                let abilityScores;
-                if (currentClassId === 'all') {
-                    abilityScores = currentPlan.abilityScores;
-                } else {
-                    const classItem = currentPlan.enrolledClasses.find(c => c.classId === currentClassId);
-                    abilityScores = classItem?.abilityScores || currentPlan.abilityScores;
-                }
-
-                // 计算平均分
-                let books;
-                if (currentClassId === 'all') {
-                    books = currentPlan.books;
-                } else {
-                    const classItem = currentPlan.enrolledClasses.find(c => c.classId === currentClassId);
-                    books = classItem?.books || currentPlan.books;
-                }
+                const classItem = currentPlan.enrolledClasses.find(c => c.classId === currentClassId);
+                const abilityScores = classItem?.abilityScores || currentPlan.abilityScores;
+                const books = classItem?.books || currentPlan.books;
                 const avgScore = (books.reduce((sum, book) => sum + book.avgScore, 0) / books.length).toFixed(1);
 
                 // 重新渲染阅读能力分析
