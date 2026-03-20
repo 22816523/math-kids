@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>孩子管理 - 校校读吧-学生端</title>
+    <link rel="stylesheet" href="design-system.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { width: 375px; margin: 0 auto; min-height: 100vh; background: #f5f7fa; opacity: 0; padding-bottom: 24px; }
+
+        .navbar {
+            height: 44px;
+            background: white;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+        }
+
+        .back-btn { font-size: 18px; color: #595959; cursor: pointer; }
+        .navbar-title { flex: 1; text-align: center; font-size: 16px; font-weight: 600; color: #262626; }
+
+        .page-tip {
+            margin: 16px;
+            padding: 14px 16px;
+            border-radius: 12px;
+            background: #fff7e6;
+            color: #8c5a00;
+            font-size: 12px;
+            line-height: 1.7;
+        }
+
+        .child-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            padding: 0 16px;
+        }
+
+        .child-card {
+            background: white;
+            border-radius: 16px;
+            padding: 16px;
+            box-shadow: 0 4px 16px rgba(15, 23, 42, 0.06);
+        }
+
+        .child-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .child-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #e6fffb, #d9f7be);
+            color: var(--color-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .child-info { flex: 1; }
+
+        .child-name-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 6px;
+        }
+
+        .child-name { font-size: 16px; font-weight: 700; color: #262626; }
+
+        .current-tag {
+            padding: 2px 8px;
+            border-radius: 999px;
+            background: #f6ffed;
+            color: #52c41a;
+            font-size: 11px;
+        }
+
+        .child-meta { font-size: 12px; color: #8c8c8c; line-height: 1.7; }
+
+        .child-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 14px;
+            padding-top: 14px;
+            border-top: 1px solid #f5f5f5;
+        }
+
+        .unlink-btn {
+            border: none;
+            background: transparent;
+            color: #ff4d4f;
+            font-size: 13px;
+            cursor: pointer;
+            padding: 8px 0;
+        }
+
+        .switch-btn {
+            border: none;
+            border-radius: 18px;
+            padding: 8px 14px;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+            color: white;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .add-btn {
+            margin: 20px 16px 0;
+            width: calc(100% - 32px);
+            height: 48px;
+            border: 1px dashed var(--color-primary);
+            border-radius: 14px;
+            background: white;
+            color: var(--color-primary);
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="back-btn" onclick="Router.back()"><i class="fa-solid fa-chevron-left"></i></div>
+        <div class="navbar-title">孩子管理</div>
+        <div style="width: 18px;"></div>
+    </div>
+
+    <div class="page-tip">这里可查看当前账号已绑定的孩子，并切换到对应孩子的学习主页。</div>
+
+    <div class="child-list" id="childList"></div>
+
+    <button class="add-btn" onclick="Router.toStudentPage('addChild')">
+        <i class="fa-solid fa-plus" style="margin-right: 6px;"></i> 添加孩子
+    </button>
+
+    <script src="./router.js"></script>
+    <script>
+        function renderChildren() {
+            const children = StudentChildStore.ensureDemoChildren();
+            const currentChild = StudentChildStore.getCurrentChild();
+            const listEl = document.getElementById('childList');
+
+            listEl.innerHTML = children.map(child => `
+                <div class="child-card">
+                    <div class="child-header">
+                        <div class="child-avatar">${child.avatar || child.name.slice(-1)}</div>
+                        <div class="child-info">
+                            <div class="child-name-row">
+                                <div class="child-name">${child.name}</div>
+                                ${currentChild && currentChild.id === child.id ? '<span class="current-tag">当前使用中</span>' : ''}
+                            </div>
+                            <div class="child-meta">${child.school} · ${child.className}</div>
+                            <div class="child-meta">积分：${child.points || 0}</div>
+                        </div>
+                    </div>
+                    <div class="child-footer">
+                        <button class="unlink-btn" onclick="unlinkChild('${child.id}')">解绑孩子</button>
+                        <button class="switch-btn" onclick="switchChild('${child.id}')">切换查看</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function switchChild(childId) {
+            StudentChildStore.setCurrentChild(childId);
+            Router.toStudentPage('home', { childId }, 'redirectTo');
+        }
+
+        function unlinkChild(childId) {
+            const children = StudentChildStore.getChildren();
+            if (children.length <= 1) {
+                alert('当前账号至少需要保留一个孩子，暂不能解绑');
+                return;
+            }
+
+            const targetChild = children.find(child => child.id === childId);
+            if (!targetChild) return;
+
+            const confirmed = confirm(`解绑后，该孩子将不再显示在当前账号中，但不会删除已有学习数据。\n\n确认解绑 ${targetChild.name} 吗？`);
+            if (!confirmed) return;
+
+            StudentChildStore.removeChild(childId);
+            renderChildren();
+        }
+
+        renderChildren();
+    </script>
+</body>
+</html>

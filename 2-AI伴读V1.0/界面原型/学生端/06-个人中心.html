@@ -61,6 +61,22 @@
             z-index: 10;
         }
 
+        .header-settings .badge {
+            position: absolute;
+            top: -6px;
+            right: -8px;
+            background: #ff4d4f;
+            color: white;
+            font-size: 10px;
+            min-width: 16px;
+            height: 16px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 4px;
+        }
+
         .user-card {
             display: flex;
             align-items: center;
@@ -499,21 +515,24 @@
 </head>
 <body>
     <div class="header">
-        <!-- 右上角设置图标 -->
+        <div class="header-settings" onclick="Router.toStudentPage('notification')">
+            <i class="fa-solid fa-bell"></i>
+            <span class="badge">3</span>
+        </div>
         <div class="user-card">
             <div class="avatar-wrapper">
-                <div class="avatar" onclick="Router.toStudentPage('profileEdit')"><i class="fa-solid fa-user" style="color: var(--color-primary);"></i></div>
+                <div class="avatar" onclick="Router.toStudentPage('profileEdit')"><span id="currentChildAvatar">明</span></div>
                 <div class="level-badge" onclick="Router.toStudentPage('badge')">Lv.5</div>
             </div>
             <div class="user-info">
                 <div class="user-name-row" onclick="Router.toStudentPage('profileEdit')" style="cursor: pointer;">
-                    <span class="user-name">小明</span>
+                    <span class="user-name" id="currentChildName">小明</span>
                     <span class="user-title"><i class="fa-solid fa-star" style="font-size: 10px;"></i> 钻石达人</span>
                 </div>
-                <div class="user-class">阳光小学 · 三年级一班</div>
+                <div class="user-class" id="currentChildClass">阳光小学 · 三年级一班</div>
                 <div class="user-points" onclick="Router.toStudentPage('points')">
                     <i class="fa-solid fa-coins"></i>
-                    <span>520</span>
+                    <span id="currentChildPoints">520</span>
                 </div>
             </div>
         </div>
@@ -590,6 +609,11 @@
         <div class="menu-item" onclick="openContactModal()">
             <div class="menu-icon" style="background: linear-gradient(135deg, #5c7cfa, #748ffc);"><i class="fa-solid fa-headset" style="color: white;"></i></div>
             <div class="menu-text">联系我们</div>
+            <div class="menu-arrow">→</div>
+        </div>
+        <div class="menu-item" onclick="Router.toStudentPage('myChildren')">
+            <div class="menu-icon" style="background: linear-gradient(135deg, #00c9a7, #00b894);"><i class="fa-solid fa-people-roof" style="color: white;"></i></div>
+            <div class="menu-text">孩子管理</div>
             <div class="menu-arrow">→</div>
         </div>
     </div>
@@ -672,17 +696,29 @@
                 alert('已开启消息通知，可在个人信息中随时调整。');
             }
         }
+
+        function applyCurrentChild() {
+            StudentChildStore.ensureDemoChildren();
+            const currentChild = StudentChildStore.getCurrentChild();
+            if (!currentChild) return;
+
+            document.getElementById('currentChildAvatar').textContent = currentChild.avatar || currentChild.name.slice(-1);
+            document.getElementById('currentChildName').textContent = currentChild.name;
+            document.getElementById('currentChildClass').textContent = `${currentChild.school} · ${currentChild.className}`;
+            document.getElementById('currentChildPoints').textContent = currentChild.points || 0;
+        }
     </script>
     <script>
         function handleLogout() {
             if (confirm('确定要退出登录吗？')) {
                 localStorage.removeItem('isLoggedIn')
                 localStorage.removeItem('userInfo')
-                window.location.href = '00-登录页面.html'
+                window.location.href = '00-登录.html'
             }
         }
 
         window.addEventListener('DOMContentLoaded', () => {
+            applyCurrentChild();
             setTimeout(showNotifyGuideOnce, 300);
         });
     </script>

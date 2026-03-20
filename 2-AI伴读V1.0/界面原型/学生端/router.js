@@ -7,6 +7,7 @@
 const ROUTES = {
     // 学生端路由
     student: {
+        login: '00-登录.html',
         home: '01-首页.html',
         checkin: '02-打卡.html',
         aiChat: '03-AI对话.html',
@@ -14,6 +15,8 @@ const ROUTES = {
         examResult: '05-测评结果.html',
         shop: '05-积分商城.html',
         profile: '06-个人中心.html',
+        myChildren: '06-1-我的孩子.html',
+        addChild: '06-2-添加孩子.html',
         bookshelf: '07-书架.html',
         badge: '09-等级勋章.html',
         rank: '10-班级排行榜.html',
@@ -275,6 +278,170 @@ const Router = {
     }
 };
 
+const STUDENT_CHILDREN_KEY = 'studentChildren';
+const CURRENT_CHILD_KEY = 'currentChildId';
+const PENDING_CHILD_KEY = 'pendingChildProfile';
+const DEFAULT_CHILDREN = [
+    {
+        id: 'child_1',
+        name: '小明',
+        school: '阳光小学',
+        className: '三年级一班',
+        avatar: '明',
+        points: 520,
+        status: '正在学习中'
+    },
+    {
+        id: 'child_2',
+        name: '小雨',
+        school: '阳光小学',
+        className: '一年级二班',
+        avatar: '雨',
+        points: 360,
+        status: '今日待打卡'
+    }
+];
+
+const StudentChildStore = {
+    getChildren: function() {
+        try {
+            const raw = localStorage.getItem(STUDENT_CHILDREN_KEY);
+            return raw ? JSON.parse(raw) : [];
+        } catch (error) {
+            console.error('读取孩子档案失败:', error);
+            return [];
+        }
+    },
+
+    setChildren: function(children) {
+        localStorage.setItem(STUDENT_CHILDREN_KEY, JSON.stringify(children));
+    },
+
+    ensureDemoChildren: function() {
+        let children = this.getChildren();
+        if (children.length < DEFAULT_CHILDREN.length) {
+            children = DEFAULT_CHILDREN;
+            this.setChildren(children);
+        }
+
+        if (!this.getCurrentChild()) {
+            this.setCurrentChild(children[0].id);
+        } else {
+            this.syncLegacyUserInfo();
+        }
+
+        return children;
+    },
+
+    getCurrentChildId: function() {
+        return localStorage.getItem(CURRENT_CHILD_KEY);
+    },
+
+    getCurrentChild: function() {
+        const children = this.getChildren();
+        const currentId = this.getCurrentChildId();
+        return children.find(item => item.id === currentId) || children[0] || null;
+    },
+
+    setCurrentChild: function(childId) {
+        localStorage.setItem(CURRENT_CHILD_KEY, childId);
+        this.syncLegacyUserInfo();
+    },
+
+    syncLegacyUserInfo: function() {
+        const current = this.getCurrentChild();
+        if (!current) return;
+
+        localStorage.setItem('userInfo', JSON.stringify({
+            name: current.name,
+            class: current.className,
+            school: current.school
+        }));
+    },
+
+    addChild: function(childData) {
+        const children = this.getChildren();
+        const nextChild = {
+            id: `child_${Date.now()}`,
+            name: childData.name,
+            school: childData.school,
+            className: childData.className,
+            avatar: (childData.name || '新同学').slice(-1),
+            points: childData.points || 0,
+            status: childData.status || ''
+        };
+
+        children.push(nextChild);
+        this.setChildren(children);
+        this.setCurrentChild(nextChild.id);
+        return nextChild;
+    },
+
+    removeChild: function(childId) {
+        const children = this.getChildren();
+        const nextChildren = children.filter(child => child.id !== childId);
+
+        this.setChildren(nextChildren);
+
+        if (!nextChildren.length) {
+            localStorage.removeItem(CURRENT_CHILD_KEY);
+            localStorage.removeItem('userInfo');
+            return null;
+        }
+
+        const currentChild = this.getCurrentChild();
+        if (!currentChild || currentChild.id === childId) {
+            this.setCurrentChild(nextChildren[0].id);
+            return nextChildren[0];
+        }
+
+        return this.getCurrentChild();
+    },
+
+    createPendingChild: function(name) {
+        const childName = (name || '').trim() || '新同学';
+        const child = {
+            id: `child_${Date.now()}`,
+            name: childName,
+            school: '待加入班级',
+            className: '待加入班级',
+            avatar: childName.slice(-1),
+            points: 0,
+            status: '等待加入班级'
+        };
+
+        localStorage.setItem(PENDING_CHILD_KEY, JSON.stringify(child));
+        return child;
+    },
+
+    getPendingChild: function() {
+        try {
+            const raw = localStorage.getItem(PENDING_CHILD_KEY);
+            return raw ? JSON.parse(raw) : null;
+        } catch (error) {
+            console.error('读取待添加孩子失败:', error);
+            return null;
+        }
+    },
+
+    clearPendingChild: function() {
+        localStorage.removeItem(PENDING_CHILD_KEY);
+    },
+
+    finalizePendingChild: function(extra = {}) {
+        const pendingChild = this.getPendingChild();
+        if (!pendingChild) return null;
+
+        const children = this.getChildren();
+        const nextChild = { ...pendingChild, ...extra };
+        children.push(nextChild);
+        this.setChildren(children);
+        this.setCurrentChild(nextChild.id);
+        this.clearPendingChild();
+        return nextChild;
+    }
+};
+
 /**
  * 页面加载完成后的初始化
  */
@@ -294,4 +461,5 @@ document.addEventListener('DOMContentLoaded', function() {
 window.wx = wx;
 window.Router = Router;
 window.ROUTES = ROUTES;
+window.StudentChildStore = StudentChildStore;
 

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 
 <head>
@@ -32,6 +32,144 @@
         .header-title {
             font-size: var(--font-size-body);
             font-weight: 600;
+        }
+
+        .child-switcher {
+            position: absolute;
+            top: 50%;
+            right: 16px;
+            transform: translateY(-50%);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.18);
+            font-size: 12px;
+            cursor: pointer;
+            transition: all var(--duration-slow);
+        }
+
+        .child-switcher:hover {
+            background: rgba(255, 255, 255, 0.28);
+        }
+
+        .child-switcher-avatar {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.92);
+            color: var(--color-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .child-switcher-name {
+            max-width: 56px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .child-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.35);
+            display: none;
+            align-items: flex-end;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .child-modal.show {
+            display: flex;
+        }
+
+        .child-modal-panel {
+            width: 375px;
+            background: white;
+            border-radius: 20px 20px 0 0;
+            padding: 16px 16px 24px;
+            box-shadow: 0 -8px 24px rgba(15, 23, 42, 0.12);
+        }
+
+        .child-modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 14px;
+        }
+
+        .child-modal-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #262626;
+        }
+
+        .child-modal-close {
+            width: 28px;
+            height: 28px;
+            border: none;
+            background: #f5f5f5;
+            border-radius: 50%;
+            cursor: pointer;
+            color: #8c8c8c;
+        }
+
+        .child-option-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .child-option {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 12px;
+            border: 1px solid #f0f0f0;
+            border-radius: 14px;
+            cursor: pointer;
+        }
+
+        .child-option.active {
+            border-color: #87e8de;
+            background: #f6ffed;
+        }
+
+        .child-option-avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #e6fffb, #ccfbf1);
+            color: var(--color-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .child-option-main {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .child-option-name {
+            font-size: 15px;
+            font-weight: 600;
+            color: #262626;
+            margin-bottom: 4px;
+        }
+
+        .child-option-meta {
+            font-size: 12px;
+            color: #8c8c8c;
+            line-height: 1.6;
         }
 
         .user-info {
@@ -540,34 +678,6 @@
             transform: scale(1.1);
         }
 
-        /* 右上角消息图标 */
-        .header-message {
-            position: absolute;
-            top: 50%;
-            right: 16px;
-            transform: translateY(-50%);
-            cursor: pointer;
-            font-size: 20px;
-            color: white;
-            z-index: 10;
-        }
-
-        .header-message .badge {
-            position: absolute;
-            top: -6px;
-            right: -8px;
-            background: #ff4d4f;
-            color: white;
-            font-size: 10px;
-            min-width: 16px;
-            height: 16px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0 4px;
-        }
-
         /* Font Awesome图标样式优化 */
         .fa-solid,
         .fa-regular {
@@ -622,10 +732,10 @@
 <body>
     <div class="header" style="position: relative;">
         <div class="header-title">校校读吧-学生端</div>
-        <!-- 右上角消息图标 -->
-        <div class="header-message" onclick="Router.toStudentPage('notification')">
-            <i class="fa-solid fa-bell"></i>
-            <span class="badge">3</span>
+        <div class="child-switcher" onclick="openChildSelectorModal()">
+            <span class="child-switcher-avatar" id="currentChildAvatar">明</span>
+            <strong class="child-switcher-name" id="currentChildName">小明</strong>
+            <i class="fa-solid fa-chevron-down" id="childSwitchArrow" style="color: white; opacity: 1;"></i>
         </div>
     </div>
 
@@ -799,6 +909,18 @@
         <div class="tab-item" onclick="Router.toStudentPage('profile')">
             <div class="tab-icon"><i class="fa-solid fa-user"></i></div>
             <div class="tab-label">我的</div>
+        </div>
+    </div>
+
+    <div class="child-modal" id="childSelectorModal" onclick="closeChildSelectorModal(event)">
+        <div class="child-modal-panel" onclick="event.stopPropagation()">
+            <div class="child-modal-header">
+                <div class="child-modal-title">选择孩子</div>
+                <button class="child-modal-close" onclick="closeChildSelectorModal()">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="child-option-list" id="childOptionList"></div>
         </div>
     </div>
 
@@ -1005,8 +1127,66 @@
             document.getElementById('squareDot').classList.remove('show');
         }
 
-        // 页面加载时检查未读状态
+        function closeChildSelectorModal(event) {
+            if (event && event.target !== event.currentTarget) return;
+            localStorage.removeItem('showChildSelectorOnHome');
+            document.getElementById('childSelectorModal').classList.remove('show');
+        }
+
+        function renderChildSelectorModal() {
+            const currentChild = StudentChildStore.getCurrentChild();
+            const children = StudentChildStore.ensureDemoChildren();
+            const listEl = document.getElementById('childOptionList');
+
+            listEl.innerHTML = children.map(child => `
+                <div class="child-option ${currentChild && currentChild.id === child.id ? 'active' : ''}" onclick="selectCurrentChild('${child.id}')">
+                    <div class="child-option-avatar">${child.avatar || child.name.slice(-1)}</div>
+                    <div class="child-option-main">
+                        <div class="child-option-name">${child.name}</div>
+                        <div class="child-option-meta">${child.school} · ${child.className}</div>
+                    </div>
+                    <i class="fa-solid fa-check" style="${currentChild && currentChild.id === child.id ? 'color:#52c41a;' : 'color:#d9d9d9;'}"></i>
+                </div>
+            `).join('');
+        }
+
+        function openChildSelectorModal() {
+            renderChildSelectorModal();
+            document.getElementById('childSelectorModal').classList.add('show');
+        }
+
+        function selectCurrentChild(childId) {
+            StudentChildStore.setCurrentChild(childId);
+            localStorage.removeItem('showChildSelectorOnHome');
+            applyCurrentChild();
+            closeChildSelectorModal();
+        }
+
+        function applyCurrentChild() {
+            const childId = Router.getQuery('childId');
+            if (childId) {
+                StudentChildStore.setCurrentChild(childId);
+            } else {
+                StudentChildStore.ensureDemoChildren();
+            }
+
+            const currentChild = StudentChildStore.getCurrentChild();
+            if (!currentChild) return;
+
+            document.getElementById('currentChildAvatar').textContent = currentChild.avatar || currentChild.name.slice(-1);
+            document.getElementById('currentChildName').textContent = currentChild.name;
+            renderChildSelectorModal();
+
+            if (localStorage.getItem('showChildSelectorOnHome') === 'true') {
+                openChildSelectorModal();
+            }
+        }
+
+        window.closeChildSelectorModal = closeChildSelectorModal;
+        window.selectCurrentChild = selectCurrentChild;
+
         checkUnreadDots();
+        applyCurrentChild();
     </script>
 </body>
 

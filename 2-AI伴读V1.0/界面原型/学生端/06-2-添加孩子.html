@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>添加孩子 - 校校读吧-学生端</title>
+    <link rel="stylesheet" href="design-system.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { width: 375px; margin: 0 auto; min-height: 100vh; background: #f5f7fa; opacity: 0; }
+
+        .navbar {
+            height: 44px;
+            background: white;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+        }
+
+        .back-btn { font-size: 18px; color: #595959; cursor: pointer; }
+        .navbar-title { flex: 1; text-align: center; font-size: 16px; font-weight: 600; color: #262626; }
+
+        .content { padding: 20px 16px 28px; }
+
+        .info-card,
+        .form-card {
+            background: white;
+            border-radius: 16px;
+            padding: 18px 16px;
+            box-shadow: 0 4px 16px rgba(15, 23, 42, 0.06);
+        }
+
+        .info-card { margin-bottom: 16px; }
+
+        .info-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #262626;
+            margin-bottom: 10px;
+        }
+
+        .info-desc,
+        .form-tip {
+            font-size: 13px;
+            line-height: 1.8;
+            color: #8c8c8c;
+        }
+
+        .form-row { margin-bottom: 14px; }
+
+        .form-label {
+            display: block;
+            font-size: 13px;
+            color: #595959;
+            margin-bottom: 8px;
+        }
+
+        .form-input {
+            width: 100%;
+            height: 44px;
+            border: 1px solid #d9d9d9;
+            border-radius: 12px;
+            padding: 0 14px;
+            font-size: 15px;
+            color: #262626;
+            outline: none;
+        }
+
+        .form-input:focus {
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 2px rgba(0, 201, 167, 0.08);
+        }
+
+        .primary-btn {
+            width: 100%;
+            height: 48px;
+            border: none;
+            border-radius: 24px;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="back-btn" onclick="Router.back()"><i class="fa-solid fa-chevron-left"></i></div>
+        <div class="navbar-title">添加孩子</div>
+        <div style="width: 18px;"></div>
+    </div>
+
+    <div class="content">
+        <div class="info-card">
+            <div class="info-title">填写孩子信息</div>
+            <div class="info-desc">填写孩子姓名、学校和班级后，确认即可直接添加到孩子管理列表。</div>
+        </div>
+
+        <div class="form-card">
+            <div class="form-row">
+                <label class="form-label" for="childName">孩子姓名</label>
+                <input class="form-input" id="childName" placeholder="请输入孩子姓名" maxlength="12">
+            </div>
+
+            <div class="form-row">
+                <label class="form-label" for="childSchool">学校</label>
+                <input class="form-input" id="childSchool" placeholder="请输入学校名称" maxlength="30">
+            </div>
+
+            <div class="form-row">
+                <label class="form-label" for="childClass">班级</label>
+                <input class="form-input" id="childClass" placeholder="请输入班级，例如三年级一班" maxlength="20">
+            </div>
+
+            <button class="primary-btn" onclick="submitChild()">确认添加</button>
+        </div>
+    </div>
+
+    <script src="./router.js"></script>
+    <script>
+        function submitChild() {
+            const name = document.getElementById('childName').value.trim();
+            const school = document.getElementById('childSchool').value.trim();
+            const className = document.getElementById('childClass').value.trim();
+
+            if (!name) {
+                alert('请填写孩子姓名');
+                return;
+            }
+
+            if (!school) {
+                alert('请填写学校');
+                return;
+            }
+
+            if (!className) {
+                alert('请填写班级');
+                return;
+            }
+
+            StudentChildStore.addChild({
+                name,
+                school,
+                className
+            });
+
+            StudentChildStore.clearPendingChild();
+            alert('添加成功');
+            Router.toStudentPage('myChildren', {}, 'redirectTo');
+        }
+    </script>
+</body>
+</html>
