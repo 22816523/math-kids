@@ -116,6 +116,11 @@
             <div class="form-value">138****8888</div>
             <div class="form-arrow">→</div>
         </div>
+        <div class="form-item" onclick="toggleWechatNotify()">
+            <div class="form-label">微信服务通知</div>
+            <div class="form-value" id="notifyValue">未开启</div>
+            <div class="form-arrow">→</div>
+        </div>
     </div>
 
     <div class="form-section">
@@ -151,6 +156,8 @@
 
     <script src="./router.js"></script>
     <script>
+        const TEACHER_NOTIFY_ENABLED_KEY = 'teacherWechatNotifyEnabled';
+
         function uploadAvatar() {
             window.location.href = '28-更换头像.html'
         }
@@ -186,6 +193,28 @@
         function selectTeachingYears() {
             window.location.href = '35-选择教龄.html'
         }
+
+        function updateNotifyDisplay() {
+            const notifyEnabled = localStorage.getItem(TEACHER_NOTIFY_ENABLED_KEY) === 'true';
+            const notifyValueEl = document.getElementById('notifyValue');
+            notifyValueEl.textContent = notifyEnabled ? '已开启' : '未开启';
+            notifyValueEl.style.color = notifyEnabled ? '#52c41a' : '#999999';
+        }
+
+        function toggleWechatNotify() {
+            const notifyEnabled = localStorage.getItem(TEACHER_NOTIFY_ENABLED_KEY) === 'true';
+            const message = notifyEnabled
+                ? '关闭后，将不再通过微信服务通知接收提醒。是否关闭？'
+                : '开启后，可通过微信服务通知接收重要提醒。是否开启？';
+
+            if (!confirm(message)) return;
+
+            localStorage.setItem(TEACHER_NOTIFY_ENABLED_KEY, notifyEnabled ? 'false' : 'true');
+            updateNotifyDisplay();
+            alert(notifyEnabled ? '已关闭消息通知' : '已开启消息通知');
+        }
+
+        window.addEventListener('DOMContentLoaded', updateNotifyDisplay);
     </script>
 </body>
 </html>

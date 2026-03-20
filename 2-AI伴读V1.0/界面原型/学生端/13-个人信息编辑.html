@@ -83,10 +83,17 @@
             <div class="form-value" id="phoneValue">未绑定</div>
             <div class="form-arrow">→</div>
         </div>
+        <div class="form-item" onclick="toggleWechatNotify()">
+            <div class="form-label">微信服务通知</div>
+            <div class="form-value" id="notifyValue">未开启</div>
+            <div class="form-arrow">→</div>
+        </div>
     </div>
 
     <script src="./router.js"></script>
     <script>
+        const STUDENT_NOTIFY_ENABLED_KEY = 'studentWechatNotifyEnabled';
+
         // 模拟手机号绑定状态
         let phoneBound = false;
         let phoneNumber = '';
@@ -117,6 +124,26 @@
             }
         }
 
+        function updateNotifyDisplay() {
+            const notifyEnabled = localStorage.getItem(STUDENT_NOTIFY_ENABLED_KEY) === 'true';
+            const notifyValueEl = document.getElementById('notifyValue');
+            notifyValueEl.textContent = notifyEnabled ? '已开启' : '未开启';
+            notifyValueEl.style.color = notifyEnabled ? '#52c41a' : '#999999';
+        }
+
+        function toggleWechatNotify() {
+            const notifyEnabled = localStorage.getItem(STUDENT_NOTIFY_ENABLED_KEY) === 'true';
+            const message = notifyEnabled
+                ? '关闭后，将不再通过微信服务通知接收提醒。是否关闭？'
+                : '开启后，可通过微信服务通知接收重要提醒。是否开启？';
+
+            if (!confirm(message)) return;
+
+            localStorage.setItem(STUDENT_NOTIFY_ENABLED_KEY, notifyEnabled ? 'false' : 'true');
+            updateNotifyDisplay();
+            alert(notifyEnabled ? '已关闭消息通知' : '已开启消息通知');
+        }
+
         // 页面加载时检查手机号绑定状态
         window.addEventListener('DOMContentLoaded', () => {
             // 模拟已绑定状态
@@ -130,6 +157,8 @@
                 phoneValueEl.textContent = '未绑定';
                 phoneValueEl.style.color = '#ff4d4f';
             }
+
+            updateNotifyDisplay();
         });
     </script>
 </body>

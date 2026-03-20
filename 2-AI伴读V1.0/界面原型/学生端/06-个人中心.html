@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
@@ -500,10 +500,6 @@
 <body>
     <div class="header">
         <!-- 右上角设置图标 -->
-        <div class="header-settings" onclick="Router.toStudentPage('security')">
-            <i class="fa-solid fa-gear"></i>
-        </div>
-
         <div class="user-card">
             <div class="avatar-wrapper">
                 <div class="avatar" onclick="Router.toStudentPage('profileEdit')"><i class="fa-solid fa-user" style="color: var(--color-primary);"></i></div>
@@ -586,10 +582,21 @@
             <div style="font-size: 12px; color: #8c8c8c; margin-right: 8px;">5次</div>
             <div class="menu-arrow">→</div>
         </div>
+        <div class="menu-item" onclick="Router.toStudentPage('feedback')">
+            <div class="menu-icon" style="background: linear-gradient(135deg, #36cfc9, #13c2c2);"><i class="fa-solid fa-comment-dots" style="color: white;"></i></div>
+            <div class="menu-text">用户反馈</div>
+            <div class="menu-arrow">→</div>
+        </div>
         <div class="menu-item" onclick="openContactModal()">
-            <div class="menu-icon" style="background: linear-gradient(135deg, #36cfc9, #13c2c2);"><i class="fa-solid fa-headset" style="color: white;"></i></div>
+            <div class="menu-icon" style="background: linear-gradient(135deg, #5c7cfa, #748ffc);"><i class="fa-solid fa-headset" style="color: white;"></i></div>
             <div class="menu-text">联系我们</div>
             <div class="menu-arrow">→</div>
+        </div>
+    </div>
+
+    <div class="menu-section">
+        <div class="menu-item" onclick="handleLogout()" style="justify-content: center;">
+            <div class="menu-text" style="color: #ff4d4f; text-align: center;">退出登录</div>
         </div>
     </div>
 
@@ -635,6 +642,9 @@
     <!-- 引入路由管理脚本 -->
     <script src="./router.js"></script>
     <script>
+        const STUDENT_NOTIFY_ENABLED_KEY = 'studentWechatNotifyEnabled';
+        const STUDENT_NOTIFY_PROMPT_SHOWN_KEY = 'studentWechatNotifyPromptShown';
+
         // 打开联系我们弹窗
         function openContactModal() {
             const modal = document.getElementById('contactModal');
@@ -650,8 +660,31 @@
             document.body.style.overflow = '';
         }
 
-        // 退出登录
-        // 退出登录已移至设置页
+        function showNotifyGuideOnce() {
+            const hasShown = localStorage.getItem(STUDENT_NOTIFY_PROMPT_SHOWN_KEY) === 'true';
+            if (hasShown) return;
+
+            localStorage.setItem(STUDENT_NOTIFY_PROMPT_SHOWN_KEY, 'true');
+
+            const shouldEnable = confirm('是否开启消息通知？\n开启后可通过微信服务通知接收重要提醒，后续也可以在个人信息界面打开或关闭。');
+            if (shouldEnable) {
+                localStorage.setItem(STUDENT_NOTIFY_ENABLED_KEY, 'true');
+                alert('已开启消息通知，可在个人信息中随时调整。');
+            }
+        }
+    </script>
+    <script>
+        function handleLogout() {
+            if (confirm('确定要退出登录吗？')) {
+                localStorage.removeItem('isLoggedIn')
+                localStorage.removeItem('userInfo')
+                window.location.href = '00-登录页面.html'
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(showNotifyGuideOnce, 300);
+        });
     </script>
 </body>
 </html>

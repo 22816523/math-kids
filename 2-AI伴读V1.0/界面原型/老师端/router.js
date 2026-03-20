@@ -74,7 +74,6 @@ const ROUTES = {
         selectSchool: '33-选择学校.html',
         selectSubject: '34-选择学科.html',
         selectTeachingYears: '35-选择教龄.html',
-        security: '36-账号安全.html',
         bindEmail: '37-绑定邮箱.html',
         changePhone: '38-修改手机号.html',
         studentCheckinDynamic: '39-学生打卡动态.html'

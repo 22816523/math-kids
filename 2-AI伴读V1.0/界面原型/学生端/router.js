@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 校校读吧小管家 - 路由管理系统
  * 模拟小程序的路由跳转功能
  */
@@ -22,7 +22,6 @@ const ROUTES = {
         profileEdit: '13-个人信息编辑.html',
         notification: '14-消息通知.html',
         messageDetail: '14-1-消息详情.html',
-        security: '14-账号安全.html',
         exchangeRecord: '16-兑换记录.html',
         readingStats: '17-我的阅读.html',
         readBook: '18-阅读书籍.html',
@@ -84,7 +83,6 @@ const ROUTES = {
         resourceLibrary: '25-资源库.html',
         parentCommunication: '26-家长沟通.html',
         profileEdit: '27-个人信息编辑.html',
-        security: '28-账号安全.html',
         changePassword: '28-1-修改密码.html',
         changePhone: '28-2-修改手机号.html',
         bindEmail: '28-3-绑定邮箱.html',
@@ -296,3 +294,4 @@ document.addEventListener('DOMContentLoaded', function() {
 window.wx = wx;
 window.Router = Router;
 window.ROUTES = ROUTES;
+

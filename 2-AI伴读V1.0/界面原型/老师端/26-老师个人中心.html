@@ -236,9 +236,9 @@
             <div class="menu-text">数据报告</div>
             <div class="menu-arrow">→</div>
         </div>
-        <div class="menu-item" onclick="Router.toTeacherPage('security')">
-            <div class="menu-icon"><i class="fa-solid fa-lock"></i></div>
-            <div class="menu-text">账号安全</div>
+        <div class="menu-item" onclick="Router.toTeacherPage('userFeedback')">
+            <div class="menu-icon"><i class="fa-solid fa-comment-dots"></i></div>
+            <div class="menu-text">用户反馈</div>
             <div class="menu-arrow">→</div>
         </div>
         <div class="menu-item" onclick="openContactModal()">
@@ -295,6 +295,9 @@
 
     <script src="./router.js"></script>
     <script>
+        const TEACHER_NOTIFY_ENABLED_KEY = 'teacherWechatNotifyEnabled';
+        const TEACHER_NOTIFY_PROMPT_SHOWN_KEY = 'teacherWechatNotifyPromptShown';
+
         // 模拟班级数据（与04-班级列表.html保持一致）
         const mockClasses = [
             {
@@ -353,6 +356,19 @@
             document.body.style.overflow = '';
         }
 
+        function showNotifyGuideOnce() {
+            const hasShown = localStorage.getItem(TEACHER_NOTIFY_PROMPT_SHOWN_KEY) === 'true';
+            if (hasShown) return;
+
+            localStorage.setItem(TEACHER_NOTIFY_PROMPT_SHOWN_KEY, 'true');
+
+            const shouldEnable = confirm('是否开启消息通知？\n开启后可通过微信服务通知接收重要提醒，后续也可以在个人信息界面打开或关闭。');
+            if (shouldEnable) {
+                localStorage.setItem(TEACHER_NOTIFY_ENABLED_KEY, 'true');
+                alert('已开启消息通知，可在个人信息中随时调整。');
+            }
+        }
+
         // 页面加载时检查登录状态并更新统计数据
         window.addEventListener('DOMContentLoaded', () => {
             const isLoggedIn = localStorage.getItem('isLoggedIn')
@@ -364,6 +380,7 @@
 
             // 更新统计数据
             updateStats();
+            setTimeout(showNotifyGuideOnce, 300);
         })
     </script>
 </body>
