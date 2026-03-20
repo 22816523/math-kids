@@ -307,6 +307,201 @@
             background: #FF5252;
         }
 
+        .question-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.45);
+            display: none;
+            align-items: flex-end;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .question-modal.show {
+            display: flex;
+        }
+
+        .question-modal-sheet {
+            width: 375px;
+            max-height: 82vh;
+            background: #fff;
+            border-radius: 24px 24px 0 0;
+            overflow: hidden;
+            box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.16);
+            animation: slideUp 0.22s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(24px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-handle {
+            width: 48px;
+            height: 5px;
+            border-radius: 999px;
+            background: #d9d9d9;
+            margin: 10px auto 0;
+        }
+
+        .question-modal-body {
+            padding: 18px 16px 20px;
+            max-height: calc(82vh - 15px);
+            overflow-y: auto;
+        }
+
+        .question-modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 14px;
+        }
+
+        .question-modal-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .question-modal-close {
+            width: 32px;
+            height: 32px;
+            border: none;
+            border-radius: 50%;
+            background: #f5f5f5;
+            color: #666;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .question-result-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 14px;
+        }
+
+        .question-result-badge.correct {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .question-result-badge.wrong {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .question-stem {
+            font-size: 15px;
+            font-weight: 600;
+            line-height: 1.7;
+            color: #333;
+            margin-bottom: 12px;
+        }
+
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+
+        .option-row {
+            display: flex;
+            gap: 10px;
+            padding: 10px 12px;
+            border-radius: 12px;
+            background: #f8f9fa;
+            border: 1px solid #edf0f2;
+        }
+
+        .option-row.user-correct {
+            background: #eef7ff;
+            border-color: #bbdefb;
+        }
+
+        .option-row.user-wrong {
+            background: #fff1f0;
+            border-color: #ffcdd2;
+        }
+
+        .option-row.correct-answer {
+            background: #f1f8e9;
+            border-color: #c5e1a5;
+        }
+
+        .option-row-tag {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: #eceff1;
+            color: #666;
+            font-size: 12px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .option-row-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .option-row-text {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .option-row-desc {
+            margin-top: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .option-row-desc.correct {
+            color: #2e7d32;
+        }
+
+        .option-row-desc.wrong {
+            color: #c62828;
+        }
+
+        .analysis-card {
+            background: #fff8e1;
+            border-radius: 16px;
+            padding: 14px;
+            border: 1px solid #ffe082;
+        }
+
+        .analysis-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #8d6e63;
+            margin-bottom: 8px;
+        }
+
+        .analysis-text {
+            font-size: 13px;
+            color: #6d4c41;
+            line-height: 1.7;
+        }
+
         /* 底部操作栏 */
         .bottom-bar {
             position: fixed;
@@ -514,6 +709,30 @@
         </div>
     </div>
 
+    <div class="question-modal" id="questionModal" onclick="closeQuestionModal()">
+        <div class="question-modal-sheet" onclick="event.stopPropagation()">
+            <div class="modal-handle"></div>
+            <div class="question-modal-body">
+                <div class="question-modal-header">
+                    <div class="question-modal-title" id="modalQuestionTitle">第 1 题</div>
+                    <button class="question-modal-close" onclick="closeQuestionModal()">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+                <div class="question-result-badge correct" id="modalQuestionResult">
+                    <i class="fa-solid fa-check"></i>
+                    <span>回答正确</span>
+                </div>
+                <div class="question-stem" id="modalQuestionStem"></div>
+                <div class="options-list" id="modalQuestionOptions"></div>
+                <div class="analysis-card">
+                    <div class="analysis-title">答案解析</div>
+                    <div class="analysis-text" id="modalQuestionAnalysis"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="bottom-bar">
         <button class="btn btn-secondary" onclick="Router.toStudentPage('home')">
             <i class="fa-solid fa-house"></i>
@@ -527,8 +746,194 @@
 
     <script src="./router.js"></script>
     <script>
+        const questionDetails = {
+            1: {
+                stem: '《三体》中，最先把汪淼卷入“三体”事件的人是谁？',
+                options: { A: '叶文洁', B: '史强', C: '常伟思', D: '丁仪' },
+                userAnswer: 'B',
+                correctAnswer: 'B',
+                analysis: '史强最早以刑警身份接触汪淼，并引导他参与与三体相关事件的调查。'
+            },
+            2: {
+                stem: '“科学边界”成员频繁提到的核心危机是什么？',
+                options: { A: '资源枯竭', B: '宇宙战争', C: '物理学不存在了', D: '人类失去记忆' },
+                userAnswer: 'C',
+                correctAnswer: 'C',
+                analysis: '小说前期通过高能物理实验异常，反复强化“物理学不存在了”这一危机感。'
+            },
+            3: {
+                stem: '汪淼在游戏中进入的虚拟世界名称是？',
+                options: { A: '红岸', B: '三体', C: '面壁', D: '古筝' },
+                userAnswer: 'B',
+                correctAnswer: 'B',
+                analysis: '“三体”游戏是ETO传播思想和筛选成员的重要媒介。'
+            },
+            4: {
+                stem: '叶文洁在红岸基地做出的关键行为是？',
+                options: { A: '摧毁天线', B: '向宇宙发送地球文明信息', C: '关闭接收系统', D: '组织古筝行动' },
+                userAnswer: 'D',
+                correctAnswer: 'B',
+                analysis: '叶文洁利用红岸基地向宇宙发送信号，成为三体文明发现地球的重要起点。'
+            },
+            5: {
+                stem: 'ETO 的中文名称更准确的是哪一项？',
+                options: { A: '地球守护组织', B: '地球三体组织', C: '宇宙科学联盟', D: '文明拯救计划' },
+                userAnswer: 'B',
+                correctAnswer: 'B',
+                analysis: 'ETO 即 Earth-Trisolaris Organization，中文通常译为“地球三体组织”。'
+            },
+            6: {
+                stem: '“古筝行动”主要针对的目标是？',
+                options: { A: '红岸基地', B: '三体舰队', C: '审判日号', D: '科学边界总部' },
+                userAnswer: 'C',
+                correctAnswer: 'C',
+                analysis: '古筝行动利用纳米丝切割“审判日”号，目标是获取被隐藏的重要数据。'
+            },
+            7: {
+                stem: '汪淼的专业领域是？',
+                options: { A: '纳米材料', B: '天体物理', C: '考古学', D: '量子通信' },
+                userAnswer: 'A',
+                correctAnswer: 'A',
+                analysis: '汪淼是纳米材料专家，他的技术成果也是推动剧情的重要线索。'
+            },
+            8: {
+                stem: '“倒计时”最先出现在哪位人物的视野中？',
+                options: { A: '叶文洁', B: '史强', C: '汪淼', D: '丁仪' },
+                userAnswer: 'C',
+                correctAnswer: 'C',
+                analysis: '汪淼在摄影作品和现实视野中看到神秘倒计时，这也是故事的重要悬念。'
+            },
+            9: {
+                stem: '三体文明最核心的生存困境是？',
+                options: { A: '能源不足', B: '社会分裂', C: '恒纪元与乱纪元交替', D: '海洋消失' },
+                userAnswer: 'A',
+                correctAnswer: 'C',
+                analysis: '三体世界因多恒星系统导致运行无序，恒纪元与乱纪元交替，生存极不稳定。'
+            },
+            10: {
+                stem: '叶文洁对人类文明失望的主要原因不包括以下哪项？',
+                options: { A: '父亲受迫害', B: '人性中的冷漠与背叛', C: '环境破坏', D: '对外星技术的崇拜' },
+                userAnswer: 'D',
+                correctAnswer: 'D',
+                analysis: '叶文洁的失望源于现实世界的创伤与观察，并非一开始就因崇拜外星技术。'
+            },
+            11: {
+                stem: '小说中“三体问题”本质上指向什么？',
+                options: { A: '多天体系统运动难以精确预测', B: '三种文明冲突', C: '三类武器平衡', D: '三个时代轮回' },
+                userAnswer: 'A',
+                correctAnswer: 'A',
+                analysis: '“三体问题”源于经典力学中的多体运动问题，构成了小说的科学设定基础。'
+            },
+            12: {
+                stem: '以下哪位角色更偏向理性、冷静的科学家形象？',
+                options: { A: '史强', B: '丁仪', C: '魏成', D: '杨冬' },
+                userAnswer: 'B',
+                correctAnswer: 'B',
+                analysis: '丁仪是典型科学家角色，在关键时刻体现出对物理问题的敏锐洞察。'
+            },
+            13: {
+                stem: '“不要回答！不要回答！不要回答！”这句警告的意义是什么？',
+                options: { A: '提醒地球隐藏位置', B: '提示关闭红岸系统', C: '要求停止古筝行动', D: '暗示ETO内部叛变' },
+                userAnswer: 'A',
+                correctAnswer: 'A',
+                analysis: '这句警告表明宇宙中存在危险文明竞争逻辑，暴露位置可能招致毁灭性后果。'
+            },
+            14: {
+                stem: '三体游戏中“脱水”与“浸泡”分别对应什么？',
+                options: { A: '文明毁灭与重建', B: '人体休眠与复苏', C: '战争与和平', D: '记忆清除与恢复' },
+                userAnswer: 'B',
+                correctAnswer: 'B',
+                analysis: '脱水和浸泡是三体人在极端环境中保存生命、等待稳定纪元的一种生存方式。'
+            },
+            15: {
+                stem: '汪淼理解三体游戏真正用途后，最核心的认识是什么？',
+                options: { A: '普通娱乐产品', B: '军事训练系统', C: 'ETO筛选与传播思想的工具', D: '红岸基地档案库' },
+                userAnswer: 'B',
+                correctAnswer: 'C',
+                analysis: '三体游戏并非单纯游戏，而是ETO向外传播三体文明信息、筛选成员的重要工具。'
+            },
+            16: {
+                stem: '史强这一角色最鲜明的特点是？',
+                options: { A: '沉默寡言', B: '经验丰富、行动果断', C: '理想主义强烈', D: '过度依赖技术' },
+                userAnswer: 'B',
+                correctAnswer: 'B',
+                analysis: '史强以强烈的现实感、行动力和判断力，在复杂局面中提供了可靠支撑。'
+            },
+            17: {
+                stem: '《三体》第一部最核心的悬念推进方式是？',
+                options: { A: '宫廷斗争', B: '校园成长', C: '科学悬疑与文明谜团', D: '旅行冒险' },
+                userAnswer: 'C',
+                correctAnswer: 'C',
+                analysis: '作品通过实验异常、神秘组织、外星文明线索等元素，构建出层层推进的科学悬疑感。'
+            },
+            18: {
+                stem: '红岸基地在故事中的作用更接近以下哪项？',
+                options: { A: '普通科研站', B: '地外文明接触起点', C: '城市避难所', D: '教育培训基地' },
+                userAnswer: 'B',
+                correctAnswer: 'B',
+                analysis: '红岸基地是地球向宇宙发出信号并与三体文明建立联系的关键地点。'
+            },
+            19: {
+                stem: '在阅读理解层面，《三体》最突出的主题之一是？',
+                options: { A: '家庭伦理', B: '文明选择与生存危机', C: '校园友情', D: '商业竞争' },
+                userAnswer: 'B',
+                correctAnswer: 'B',
+                analysis: '《三体》不仅写科技设定，也不断讨论文明面对危机时的选择与代价。'
+            },
+            20: {
+                stem: '从整套测评看，最适合作为本书阅读建议的是哪项？',
+                options: { A: '只记人物名字即可', B: '重点关注人物关系、科学设定与关键转折', C: '只看结局', D: '跳过背景部分' },
+                userAnswer: 'B',
+                correctAnswer: 'B',
+                analysis: '阅读《三体》时，结合人物动机、核心科学设定和情节转折，能更完整地理解作品主题。'
+            }
+        };
+
         function viewQuestion(num) {
-            alert('查看第 ' + num + ' 题详情');
+            const detail = questionDetails[num];
+            if (!detail) return;
+
+            const isCorrect = detail.userAnswer === detail.correctAnswer;
+            document.getElementById('modalQuestionTitle').textContent = '第 ' + num + ' 题';
+            document.getElementById('modalQuestionStem').textContent = detail.stem;
+            document.getElementById('modalQuestionAnalysis').textContent = detail.analysis;
+
+            const resultEl = document.getElementById('modalQuestionResult');
+            resultEl.className = 'question-result-badge ' + (isCorrect ? 'correct' : 'wrong');
+            resultEl.innerHTML = isCorrect
+                ? '<i class="fa-solid fa-check"></i><span>回答正确</span>'
+                : '<i class="fa-solid fa-xmark"></i><span>回答错误</span>';
+            document.getElementById('modalQuestionOptions').innerHTML = Object.entries(detail.options).map(([key, value]) => {
+                let rowClass = 'option-row';
+                let desc = '';
+
+                if (detail.userAnswer === key && detail.correctAnswer === key) {
+                    rowClass += ' user-correct';
+                    desc = '<div class="option-row-desc correct">你的答案</div>';
+                } else if (detail.userAnswer === key) {
+                    rowClass += ' user-wrong';
+                    desc = '<div class="option-row-desc wrong">你的答案</div>';
+                } else if (detail.correctAnswer === key) {
+                    rowClass += ' correct-answer';
+                    desc = '<div class="option-row-desc correct">正确答案</div>';
+                }
+
+                return `
+                    <div class="${rowClass}">
+                        <div class="option-row-tag">${key}</div>
+                        <div class="option-row-content">
+                            <div class="option-row-text">${value}</div>
+                            ${desc}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('questionModal').classList.add('show');
+        }
+
+        function closeQuestionModal() {
+            document.getElementById('questionModal').classList.remove('show');
         }
     </script>
 </body>
