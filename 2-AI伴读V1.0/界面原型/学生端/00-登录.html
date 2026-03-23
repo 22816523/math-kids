@@ -80,25 +80,6 @@
             font-weight: 500;
         }
 
-        .login-hint {
-            display: flex;
-            align-items: flex-start;
-            gap: 8px;
-            margin-bottom: 16px;
-            padding: 12px 14px;
-            background: #fff7e6;
-            border: 1px solid #ffe7ba;
-            border-radius: 10px;
-            color: #8c5a00;
-            font-size: 12px;
-            line-height: 1.6;
-        }
-
-        .login-hint i {
-            margin-top: 2px;
-            color: #fa8c16;
-        }
-
         .tab-content { display: none; }
         .tab-content.active { display: block; }
 
@@ -244,11 +225,6 @@
         <div class="tab-bar">
             <div class="tab-item active" onclick="switchTab('wechat')">微信登录</div>
             <div class="tab-item" onclick="switchTab('phone')">手机号登录</div>
-        </div>
-
-        <div class="login-hint">
-            <i class="fa-solid fa-circle-info"></i>
-            <div>若当前账号绑定了多个孩子，登录后将在首页弹出切换面板，请先选择要查看的孩子。</div>
         </div>
 
         <div class="tab-content active" id="wechat-tab">
