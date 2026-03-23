@@ -38,6 +38,7 @@
             line-height: 1.6; color: #333333; }
         .menu-arrow { color: #999999; font-size: 18px;
             line-height: 1.4; }
+        .menu-value { font-size: 14px; line-height: 1.6; color: #999999; margin-right: 8px; }
         .menu-badge { background: #ff4d4f; color: white; font-size: 11px;
             line-height: 1.4; padding: 2px 6px; border-radius: 10px; margin-left: 8px; }
         .section-title { font-size: 14px;
@@ -241,6 +242,12 @@
             <div class="menu-text">用户反馈</div>
             <div class="menu-arrow">→</div>
         </div>
+        <div class="menu-item" onclick="toggleWechatNotify()">
+            <div class="menu-icon"><i class="fa-brands fa-weixin"></i></div>
+            <div class="menu-text">微信服务通知</div>
+            <div class="menu-value" id="teacherNotifyValue">未开启</div>
+            <div class="menu-arrow">→</div>
+        </div>
         <div class="menu-item" onclick="openContactModal()">
             <div class="menu-icon"><i class="fa-solid fa-headset"></i></div>
             <div class="menu-text">联系我们</div>
@@ -365,8 +372,29 @@
             const shouldEnable = confirm('是否开启消息通知？\n开启后可通过微信服务通知接收重要提醒，后续也可以在个人信息界面打开或关闭。');
             if (shouldEnable) {
                 localStorage.setItem(TEACHER_NOTIFY_ENABLED_KEY, 'true');
+                updateNotifyDisplay();
                 alert('已开启消息通知，可在个人信息中随时调整。');
             }
+        }
+
+        function updateNotifyDisplay() {
+            const notifyEnabled = localStorage.getItem(TEACHER_NOTIFY_ENABLED_KEY) === 'true';
+            const notifyValueEl = document.getElementById('teacherNotifyValue');
+            notifyValueEl.textContent = notifyEnabled ? '已开启' : '未开启';
+            notifyValueEl.style.color = notifyEnabled ? '#52c41a' : '#999999';
+        }
+
+        function toggleWechatNotify() {
+            const notifyEnabled = localStorage.getItem(TEACHER_NOTIFY_ENABLED_KEY) === 'true';
+            const message = notifyEnabled
+                ? '关闭后，将不再通过微信服务通知接收提醒。是否关闭？'
+                : '开启后，可通过微信服务通知接收重要提醒。是否开启？';
+
+            if (!confirm(message)) return;
+
+            localStorage.setItem(TEACHER_NOTIFY_ENABLED_KEY, notifyEnabled ? 'false' : 'true');
+            updateNotifyDisplay();
+            alert(notifyEnabled ? '已关闭消息通知' : '已开启消息通知');
         }
 
         // 页面加载时检查登录状态并更新统计数据
@@ -380,6 +408,7 @@
 
             // 更新统计数据
             updateStats();
+            updateNotifyDisplay();
             setTimeout(showNotifyGuideOnce, 300);
         })
     </script>

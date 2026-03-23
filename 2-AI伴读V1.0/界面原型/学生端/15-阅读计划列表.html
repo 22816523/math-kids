@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>阅读计划 - 校校读吧学生端</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            width: 375px;
+            margin: 0 auto;
+            min-height: 100vh;
+            background: #f5f7fa;
+            font-family: "PingFang SC", "Microsoft YaHei", -apple-system, BlinkMacSystemFont, sans-serif;
+            color: #1f2937;
+        }
+
+        .navbar {
+            height: 44px;
+            background: #ffffff;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar-side {
+            width: 48px;
+            font-size: 16px;
+            color: #6b7280;
+            cursor: pointer;
+        }
+
+        .navbar-side.right {
+            text-align: right;
+            color: transparent;
+            cursor: default;
+        }
+
+        .navbar-title {
+            flex: 1;
+            text-align: center;
+            font-size: 16px;
+            font-weight: 600;
+            color: #111827;
+        }
+
+        .history-link-row {
+            padding: 8px 16px 24px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .history-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 14px;
+            line-height: 1.5;
+            color: #2E5BFF;
+            cursor: pointer;
+            user-select: none;
+            font-weight: 500;
+        }
+
+        .history-link:active {
+            opacity: 0.85;
+        }
+
+        .plans-list {
+            padding: 12px 16px 20px;
+        }
+
+        .plan-card {
+            background: #ffffff;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .plan-card:active {
+            opacity: 0.92;
+            transform: scale(0.995);
+        }
+
+        .plan-cover {
+            width: 100%;
+            height: 64px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .plan-cover-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0.08), rgba(0, 0, 0, 0.2));
+            z-index: 1;
+        }
+
+        .plan-type-badge {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(255, 255, 255, 0.92);
+            color: #52c41a;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 12px;
+            line-height: 1.5;
+            font-weight: 600;
+            z-index: 3;
+        }
+
+        .plan-cover-info {
+            position: absolute;
+            left: 10px;
+            right: 10px;
+            bottom: 6px;
+            z-index: 2;
+        }
+
+        .plan-cover-title {
+            font-size: 14px;
+            line-height: 1.5;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 2px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .plan-cover-time {
+            font-size: 12px;
+            line-height: 1.5;
+            color: rgba(255, 255, 255, 0.95);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .plan-content {
+            padding: 12px;
+        }
+
+        .plan-desc {
+            font-size: 13px;
+            color: #595959;
+            line-height: 1.6;
+            margin-bottom: 10px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+
+        .plan-stats {
+            display: flex;
+            gap: 12px;
+            font-size: 12px;
+            line-height: 1.5;
+            color: #6b7280;
+            flex-wrap: wrap;
+        }
+
+        .plan-stats span {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .plan-arrow {
+            margin-left: auto;
+            color: #9ca3af;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            color: #9ca3af;
+        }
+
+        .empty-icon {
+            font-size: 56px;
+            margin-bottom: 12px;
+        }
+
+        .empty-text {
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .fa-solid, .fa-regular {
+            font-weight: 400;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="navbar">
+        <div class="navbar-side" onclick="Router.back()"><i class="fa-solid fa-chevron-left"></i></div>
+        <div class="navbar-title">阅读计划</div>
+        <div class="navbar-side right">.</div>
+    </div>
+
+    <div class="plans-list" id="plansList"></div>
+    <div class="history-link-row">
+        <div class="history-link" onclick="viewHistoryPlans()">
+            <i class="fa-solid fa-rotate-left"></i>
+            <span id="historyText">查看历史活动（2个）</span>
+        </div>
+    </div>
+
+    <script src="./router.js"></script>
+    <script>
+        const cardColors = [
+            'linear-gradient(135deg, #3399ff 0%, #6cb6ff 100%)',
+            'linear-gradient(135deg, #ffb366 0%, #ffd08a 100%)',
+            'linear-gradient(135deg, #7c83fd 0%, #a5b4fc 100%)'
+        ];
+
+        const historyPlanCount = 2;
+
+        const readingPlans = [
+            {
+                id: 1,
+                name: '2026春季阅读计划',
+                startDate: '2026-03-01',
+                endDate: '2026-05-31',
+                statusText: '进行中',
+                description: '围绕春季主题精选经典文学与科普读物，帮助同学们持续养成阅读习惯。',
+                bookCount: 4,
+                progressText: '已完成 1 / 4 本'
+            },
+            {
+                id: 2,
+                name: '名著精读成长计划',
+                startDate: '2026-03-10',
+                endDate: '2026-06-10',
+                statusText: '进行中',
+                description: '以整本书深度阅读为主，通过导读、测评和打卡完成阅读理解训练。',
+                bookCount: 3,
+                progressText: '已完成 0 / 3 本'
+            },
+            {
+                id: 3,
+                name: '班级共读挑战计划',
+                startDate: '2026-03-15',
+                endDate: '2026-04-30',
+                statusText: '进行中',
+                description: '全班共同参与的阶段性阅读活动，按阅读任务推进并记录班级阅读成果。',
+                bookCount: 5,
+                progressText: '已完成 2 / 5 本'
+            }
+        ];
+
+        function renderCurrentChildInfo() {
+            document.getElementById('historyText').textContent = `查看历史活动（${historyPlanCount}个）`;
+        }
+
+        function renderPlans() {
+            const plansList = document.getElementById('plansList');
+
+            if (!readingPlans.length) {
+                plansList.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon"><i class="fa-solid fa-book-open"></i></div>
+                        <div class="empty-text">暂无进行中的阅读计划</div>
+                    </div>
+                `;
+                return;
+            }
+
+            plansList.innerHTML = readingPlans.map((plan, index) => `
+                <div class="plan-card" onclick="viewPlanDetail(${plan.id})">
+                    <div class="plan-cover" style="background: ${cardColors[index % cardColors.length]};">
+                        <div class="plan-cover-overlay"></div>
+                        <div class="plan-type-badge">${plan.statusText}</div>
+                        <div class="plan-cover-info">
+                            <div class="plan-cover-title">${plan.name}</div>
+                            <div class="plan-cover-time">
+                                <i class="fa-solid fa-calendar"></i>
+                                <span>${plan.startDate} 至 ${plan.endDate}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="plan-content">
+                        <div class="plan-desc">${plan.description}</div>
+                        <div class="plan-stats">
+                            <span><i class="fa-solid fa-book"></i>${plan.bookCount}本书</span>
+                            <span><i class="fa-solid fa-flag-checkered"></i>${plan.progressText}</span>
+                            <span class="plan-arrow"><i class="fa-solid fa-chevron-right"></i></span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function viewPlanDetail(planId) {
+            Router.toStudentPage('readingPlanDetail', { planId });
+        }
+
+        function viewHistoryPlans() {
+            Router.toStudentPage('readingPlanHistory');
+        }
+
+        renderCurrentChildInfo();
+        renderPlans();
+    </script>
+</body>
+</html>
