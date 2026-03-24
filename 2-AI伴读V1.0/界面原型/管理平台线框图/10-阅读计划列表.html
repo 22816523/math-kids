@@ -1385,8 +1385,8 @@
             return;
         }
         const data = getSelectedRowData();
-        if (data.status === '未发布') {
-            alert('未发布状态的计划无需撤回');
+        if (data.status !== '待开始') {
+            alert('只有待开始状态的计划才可撤回');
             return;
         }
         document.getElementById('withdrawPlanName').textContent = data.planName;

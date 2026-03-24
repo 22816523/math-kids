@@ -286,6 +286,14 @@
         .table td {
             color: #666;
         }
+        .class-info {
+            display: inline-block;
+            max-width: 180px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            vertical-align: bottom;
+        }
         .table tbody tr:hover {
             background: #fafafa;
         }
@@ -559,6 +567,10 @@
                             </select>
                         </div>
                         <div class="filter-item">
+                            <label class="filter-label">学生ID</label>
+                            <input type="text" class="filter-input" placeholder="请输入学生ID">
+                        </div>
+                        <div class="filter-item">
                             <label class="filter-label">姓名</label>
                             <input type="text" class="filter-input" placeholder="请输入姓名">
                         </div>
@@ -588,7 +600,7 @@
                 <!-- 操作栏 -->
                 <div class="action-bar">
                     <div class="action-buttons">
-                        <button class="btn btn-secondary" onclick="window.location.href='06-用户详情-学生.html'">查看</button>
+                        <button class="btn btn-secondary" onclick="viewSelectedUserDetail()">查看</button>
                         <button class="btn btn-secondary">导出</button>
                     </div>
                 </div>
@@ -607,14 +619,14 @@
                                     <th>账号手机号</th>
                                     <th>同账号孩子数</th>
                                     <th>学校</th>
-                                    <th>班级</th>
+                                    <th>班级信息</th>
                                     <th>最后登录时间</th>
                                     <th>注册时间</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td><input type="checkbox"></td>
+                                <tr data-user-type="teacher" data-detail-url="07-用户详情-老师.html">
+                                    <td><input type="checkbox" class="row-checkbox"></td>
                                     <td>U00000101</td>
                                     <td>-</td>
                                     <td><span class="user-type-badge">老师</span></td>
@@ -622,12 +634,12 @@
                                     <td>13800138001</td>
                                     <td>-</td>
                                     <td>实验小学</td>
-                                    <td>三年级1班</td>
+                                    <td><span class="class-info" title="三年级1班、三年级2班、三年级3班">三年级1班、三年级2班、三年级3班</span></td>
                                     <td>2026-02-11 09:30:00</td>
                                     <td>2026-01-15 10:30:00</td>
                                 </tr>
-                                <tr>
-                                    <td><input type="checkbox"></td>
+                                <tr data-user-type="student" data-detail-url="06-用户详情-学生.html">
+                                    <td><input type="checkbox" class="row-checkbox"></td>
                                     <td>U00010001</td>
                                     <td>S00000001</td>
                                     <td><span class="user-type-badge">学生</span></td>
@@ -635,12 +647,12 @@
                                     <td>13900139001</td>
                                     <td>2</td>
                                     <td>实验小学</td>
-                                    <td>三年级1班</td>
+                                    <td><span class="class-info" title="三年级1班">三年级1班</span></td>
                                     <td>2026-02-11 08:15:00</td>
                                     <td>2026-01-15 11:20:00</td>
                                 </tr>
-                                <tr>
-                                    <td><input type="checkbox"></td>
+                                <tr data-user-type="student" data-detail-url="06-用户详情-学生.html">
+                                    <td><input type="checkbox" class="row-checkbox"></td>
                                     <td>U00010002</td>
                                     <td>S00000002</td>
                                     <td><span class="user-type-badge">学生</span></td>
@@ -648,12 +660,12 @@
                                     <td>13900139002</td>
                                     <td>1</td>
                                     <td>实验小学</td>
-                                    <td>三年级1班</td>
+                                    <td><span class="class-info" title="三年级1班">三年级1班</span></td>
                                     <td>2026-02-11 07:45:00</td>
                                     <td>2026-01-15 11:25:00</td>
                                 </tr>
-                                <tr>
-                                    <td><input type="checkbox"></td>
+                                <tr data-user-type="teacher" data-detail-url="07-用户详情-老师.html">
+                                    <td><input type="checkbox" class="row-checkbox"></td>
                                     <td>U00000102</td>
                                     <td>-</td>
                                     <td><span class="user-type-badge">老师</span></td>
@@ -661,12 +673,12 @@
                                     <td>13800138002</td>
                                     <td>-</td>
                                     <td>育才小学</td>
-                                    <td>四年级2班</td>
+                                    <td><span class="class-info" title="四年级1班、四年级2班、四年级3班、四年级4班">四年级1班、四年级2班、四年级3班、四年级4班</span></td>
                                     <td>2026-02-11 10:20:00</td>
                                     <td>2026-01-12 14:20:00</td>
                                 </tr>
-                                <tr>
-                                    <td><input type="checkbox"></td>
+                                <tr data-user-type="student" data-detail-url="06-用户详情-学生.html">
+                                    <td><input type="checkbox" class="row-checkbox"></td>
                                     <td>U00010001</td>
                                     <td>S00000003</td>
                                     <td><span class="user-type-badge">学生</span></td>
@@ -674,7 +686,7 @@
                                     <td>13900139001</td>
                                     <td>2</td>
                                     <td>育才小学</td>
-                                    <td>四年级2班</td>
+                                    <td><span class="class-info" title="四年级2班">四年级2班</span></td>
                                     <td>2026-02-10 19:30:00</td>
                                     <td>2026-01-12 15:10:00</td>
                                 </tr>
@@ -716,6 +728,24 @@
     function toggleMenu(element) {
         const menuGroup = element.parentElement;
         menuGroup.classList.toggle('expanded');
+    }
+
+    function viewSelectedUserDetail() {
+        const selectedRows = Array.from(document.querySelectorAll('.row-checkbox:checked'))
+            .map((checkbox) => checkbox.closest('tr'));
+
+        if (selectedRows.length === 0) {
+            alert('请先选择一条用户记录');
+            return;
+        }
+
+        if (selectedRows.length > 1) {
+            alert('一次仅可查看一条用户记录');
+            return;
+        }
+
+        const detailUrl = selectedRows[0].dataset.detailUrl;
+        window.location.href = detailUrl;
     }
     </script>
 </body>

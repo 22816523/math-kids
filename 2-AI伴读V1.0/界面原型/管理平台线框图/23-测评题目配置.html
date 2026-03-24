@@ -748,11 +748,11 @@
 
             <!-- 题目列表 -->
             <div class="question-list">
-                <!-- 题目1 - 单选题 -->
+                <!-- 题目1 - 选择题 -->
                 <div class="question-item">
                     <div class="question-header">
                         <div class="question-number">第 1 题</div>
-                        <div class="question-type">单选题</div>
+                        <div class="question-type">选择题</div>
                         <div class="question-score">（5分）</div>
                         <div class="question-content-preview">孙悟空在花果山自封为什么？</div>
                         <div class="question-abilities">
@@ -766,11 +766,11 @@
                     </div>
                 </div>
 
-                <!-- 题目2 - 单选题 -->
+                <!-- 题目2 - 选择题 -->
                 <div class="question-item">
                     <div class="question-header">
                         <div class="question-number">第 2 题</div>
-                        <div class="question-type">单选题</div>
+                        <div class="question-type">选择题</div>
                         <div class="question-score">（5分）</div>
                         <div class="question-content-preview">猪八戒原来在天庭担任什么职务？</div>
                         <div class="question-abilities">
@@ -813,8 +813,8 @@
                 <div class="template-download">
                     <div class="template-icon">[📄]</div>
                     <div class="template-info">
-                        <div class="template-title">单选题导入模板.xlsx</div>
-                        <div class="template-desc">包含题目、选项A-D、正确答案、分值、能力标签等字段</div>
+                        <div class="template-title">选择题导入模板.xlsx</div>
+                        <div class="template-desc">包含题目、选项A-D、正确答案、分值、阅读能力标签（取自数据字典）等字段</div>
                     </div>
                     <button class="btn btn-secondary" style="height: 32px; padding: 0 16px;" onclick="alert('开始下载模板')">下载模板</button>
                 </div>
@@ -858,7 +858,7 @@
                                 <span style="font-size: 13px; color: #666;">道</span>
                             </div>
                             <div>
-                                <span style="font-size: 13px; color: #666;">单选题：</span>
+                                <span style="font-size: 13px; color: #666;">选择题：</span>
                                 <span id="singleCount" style="font-size: 14px; color: #333;">0</span>
                             </div>
                         </div>
@@ -895,13 +895,7 @@
                 <div class="form-item-inline">
                     <label class="form-label">题目类型<span class="required">*</span></label>
                     <div class="form-control">
-                        <select class="form-select" id="questionType">
-                            <option value="">请选择题目类型</option>
-                            <option value="single">单选题</option>
-                            <option value="multiple">多选题</option>
-                            <option value="judge">判断题</option>
-                            <option value="essay">问答题</option>
-                        </select>
+                        <input type="text" class="form-input" id="questionType" value="选择题" readonly>
                     </div>
                 </div>
                 <div class="form-item-inline">
@@ -911,11 +905,12 @@
                     </div>
                 </div>
                 <div class="form-item-inline">
-                    <label class="form-label">阅读能力<span class="required">*</span></label>
+                    <label class="form-label">阅读能力标签<span class="required">*</span></label>
                     <div class="form-control">
                         <div class="multi-select-tags" id="abilityContainer">
-                            <button type="button" class="tag-add-btn" onclick="openAbilityModal()">+ 添加阅读能力</button>
+                            <button type="button" class="tag-add-btn" onclick="openAbilityModal()">+ 从字典选择标签</button>
                         </div>
+                        <div style="margin-top: 8px; font-size: 12px; color: #999;">标签项来自数据字典「阅读能力」分类，不在此页面维护</div>
                     </div>
                 </div>
                 <div class="form-item">
@@ -924,9 +919,47 @@
                     <div class="char-count">0/500</div>
                 </div>
                 <div class="form-item" id="optionsArea">
-                    <div style="padding: 48px; text-align: center; background: #fafafa; border: 1px dashed #e0e0e0; border-radius: 4px;">
-                        <div style="font-size: 14px; color: #999; margin-bottom: 8px;">请先选择题目类型</div>
-                        <div style="font-size: 12px; color: #ccc;">根据题目类型将显示对应的选项和答案设置</div>
+                    <div style="margin-bottom: 24px;">
+                        <label class="form-label">选项设置<span class="required">*</span></label>
+                        <div class="options-group">
+                            <div class="option-item">
+                                <span class="option-label">选项 A</span>
+                                <input type="text" class="option-input" id="optionA" placeholder="请输入选项A内容">
+                            </div>
+                            <div class="option-item">
+                                <span class="option-label">选项 B</span>
+                                <input type="text" class="option-input" id="optionB" placeholder="请输入选项B内容">
+                            </div>
+                            <div class="option-item">
+                                <span class="option-label">选项 C</span>
+                                <input type="text" class="option-input" id="optionC" placeholder="请输入选项C内容">
+                            </div>
+                            <div class="option-item">
+                                <span class="option-label">选项 D</span>
+                                <input type="text" class="option-input" id="optionD" placeholder="请输入选项D内容">
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="form-label">正确答案<span class="required">*</span></label>
+                        <div class="answer-group">
+                            <div class="answer-option">
+                                <input type="radio" name="answer" id="answerA" value="A" checked>
+                                <label for="answerA">选项 A</label>
+                            </div>
+                            <div class="answer-option">
+                                <input type="radio" name="answer" id="answerB" value="B">
+                                <label for="answerB">选项 B</label>
+                            </div>
+                            <div class="answer-option">
+                                <input type="radio" name="answer" id="answerC" value="C">
+                                <label for="answerC">选项 C</label>
+                            </div>
+                            <div class="answer-option">
+                                <input type="radio" name="answer" id="answerD" value="D">
+                                <label for="answerD">选项 D</label>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="form-item">
@@ -945,11 +978,12 @@
     <!-- 阅读能力选择弹窗 -->
     <div class="select-modal" id="abilityModal">
         <div class="select-modal-content">
-            <div class="select-modal-header">选择阅读能力</div>
+            <div class="select-modal-header">从数据字典选择阅读能力标签</div>
             <div class="select-modal-search">
-                <input type="text" id="abilitySearch" placeholder="搜索阅读能力" oninput="filterAbilityOptions()">
+                <input type="text" id="abilitySearch" placeholder="搜索数据字典中的阅读能力标签" oninput="filterAbilityOptions()">
             </div>
             <div class="select-modal-body" id="abilityOptions">
+                <div style="padding: 12px 16px; font-size: 12px; color: #999; border-bottom: 1px solid #f0f0f0;">标签项维护入口：系统配置 > 数据字典 > 阅读能力。以下仅展示该字典分类下的可选项。</div>
                 <div class="select-option" data-value="1" data-label="信息提取能力" onclick="toggleAbilitySelection(this)">
                     <div class="select-option-checkbox"></div>
                     <span>信息提取能力</span>
@@ -1099,152 +1133,9 @@
         }
     });
 
-    // 题型切换
-    document.getElementById('questionType').addEventListener('change', function() {
-        const type = this.value;
-        const optionsArea = document.getElementById('optionsArea');
-
-        if (!type) {
-            optionsArea.innerHTML = `
-                <div style="padding: 48px; text-align: center; background: #fafafa; border: 1px dashed #e0e0e0; border-radius: 4px;">
-                    <div style="font-size: 14px; color: #999; margin-bottom: 8px;">请先选择题目类型</div>
-                    <div style="font-size: 12px; color: #ccc;">根据题目类型将显示对应的选项和答案设置</div>
-                </div>
-            `;
-            return;
-        }
-
-        let content = '';
-
-        if (type === 'single') {
-            // 单选题
-            content = `
-                <div style="margin-bottom: 24px;">
-                    <label class="form-label">选项设置<span class="required">*</span></label>
-                    <div class="options-group">
-                        <div class="option-item">
-                            <span class="option-label">选项 A</span>
-                            <input type="text" class="option-input" placeholder="请输入选项A内容" value="美猴王">
-                        </div>
-                        <div class="option-item">
-                            <span class="option-label">选项 B</span>
-                            <input type="text" class="option-input" placeholder="请输入选项B内容" value="齐天大圣">
-                        </div>
-                        <div class="option-item">
-                            <span class="option-label">选项 C</span>
-                            <input type="text" class="option-input" placeholder="请输入选项C内容" value="孙行者">
-                        </div>
-                        <div class="option-item">
-                            <span class="option-label">选项 D</span>
-                            <input type="text" class="option-input" placeholder="请输入选项D内容" value="斗战胜佛">
-                        </div>
-                    </div>
-                </div>
-                <div>
-                    <label class="form-label">正确答案<span class="required">*</span></label>
-                    <div class="answer-group">
-                        <div class="answer-option">
-                            <input type="radio" name="answer" id="answerA" value="A" checked>
-                            <label for="answerA">选项 A</label>
-                        </div>
-                        <div class="answer-option">
-                            <input type="radio" name="answer" id="answerB" value="B">
-                            <label for="answerB">选项 B</label>
-                        </div>
-                        <div class="answer-option">
-                            <input type="radio" name="answer" id="answerC" value="C">
-                            <label for="answerC">选项 C</label>
-                        </div>
-                        <div class="answer-option">
-                            <input type="radio" name="answer" id="answerD" value="D">
-                            <label for="answerD">选项 D</label>
-                        </div>
-                    </div>
-                </div>
-            `;
-        } else if (type === 'multiple') {
-            // 多选题
-            content = `
-                <div style="margin-bottom: 24px;">
-                    <label class="form-label">选项设置<span class="required">*</span></label>
-                    <div class="options-group">
-                        <div class="option-item">
-                            <span class="option-label">选项 A</span>
-                            <input type="text" class="option-input" placeholder="请输入选项A内容" value="孙悟空">
-                        </div>
-                        <div class="option-item">
-                            <span class="option-label">选项 B</span>
-                            <input type="text" class="option-input" placeholder="请输入选项B内容" value="猪八戒">
-                        </div>
-                        <div class="option-item">
-                            <span class="option-label">选项 C</span>
-                            <input type="text" class="option-input" placeholder="请输入选项C内容" value="沙僧">
-                        </div>
-                        <div class="option-item">
-                            <span class="option-label">选项 D</span>
-                            <input type="text" class="option-input" placeholder="请输入选项D内容" value="白龙马">
-                        </div>
-                    </div>
-                </div>
-                <div>
-                    <label class="form-label">正确答案<span class="required">*</span></label>
-                    <div class="answer-group">
-                        <div class="answer-option">
-                            <input type="checkbox" id="answerA" value="A" checked>
-                            <label for="answerA">选项 A</label>
-                        </div>
-                        <div class="answer-option">
-                            <input type="checkbox" id="answerB" value="B" checked>
-                            <label for="answerB">选项 B</label>
-                        </div>
-                        <div class="answer-option">
-                            <input type="checkbox" id="answerC" value="C" checked>
-                            <label for="answerC">选项 C</label>
-                        </div>
-                        <div class="answer-option">
-                            <input type="checkbox" id="answerD" value="D">
-                            <label for="answerD">选项 D</label>
-                        </div>
-                    </div>
-                    <div class="form-hint">多选题可以选择多个正确答案</div>
-                </div>
-            `;
-        } else if (type === 'judge') {
-            // 判断题
-            content = `
-                <div>
-                    <label class="form-label">正确答案<span class="required">*</span></label>
-                    <div class="answer-group">
-                        <div class="answer-option">
-                            <input type="radio" name="answer" id="answerTrue" value="true" checked>
-                            <label for="answerTrue">正确</label>
-                        </div>
-                        <div class="answer-option">
-                            <input type="radio" name="answer" id="answerFalse" value="false">
-                            <label for="answerFalse">错误</label>
-                        </div>
-                    </div>
-                </div>
-            `;
-        } else if (type === 'essay') {
-            // 问答题
-            content = `
-                <div>
-                    <label class="form-label">参考答案<span class="required">*</span></label>
-                    <textarea class="form-textarea" placeholder="请输入参考答案" style="min-height: 120px;">白骨精三次变化想要吃唐僧肉,第一次变成少女,第二次变成老妇人,第三次变成老公公。孙悟空三次识破妖怪真身并将其打死,但唐僧不明真相,误以为孙悟空滥杀无辜,最终将孙悟空赶走。这个故事体现了孙悟空的火眼金睛和降妖除魔的本领,也反映了唐僧的善良但缺乏辨别能力</textarea>
-                    <div class="char-count">0/1000</div>
-                    <div class="form-hint">问答题的参考答案用于评分参考,学生答案需要人工评阅</div>
-                </div>
-            `;
-        }
-
-        optionsArea.innerHTML = content;
-    });
-
     // 题目数据
     const questionsData = {
         1: {
-            type: 'single',
             score: 5,
             abilities: ['1', '2'],
             content: '孙悟空在花果山自封为什么？',
@@ -1258,36 +1149,35 @@
             explanation: '孙悟空在花果山自封为美猴王，后来大闹天宫时才被封为齐天大圣'
         },
         2: {
-            type: 'multiple',
             score: 5,
             abilities: ['1', '3'],
-            content: '以下哪些是唐僧的徒弟？',
+            content: '猪八戒原来在天庭担任什么职务？',
             options: {
-                A: '孙悟空',
-                B: '猪八戒',
-                C: '沙僧',
-                D: '白龙马'
+                A: '齐天大圣',
+                B: '天蓬元帅',
+                C: '卷帘大将',
+                D: '托塔天王'
             },
-            answer: ['A', 'B', 'C'],
-            explanation: '唐僧有三个徒弟：孙悟空、猪八戒、沙僧。白龙马是坐骑，不是徒弟'
-        },
-        3: {
-            type: 'judge',
-            score: 5,
-            abilities: ['2'],
-            content: '孙悟空被压在五指山下五百年',
-            answer: 'true',
-            explanation: '孙悟空大闹天宫后被如来佛祖压在五指山下整整五百年，直到唐僧路过才被救出'
-        },
-        4: {
-            type: 'essay',
-            score: 5,
-            abilities: ['2', '4'],
-            content: '请简述孙悟空三打白骨精的故事情节',
-            answer: '白骨精三次变化想要吃唐僧肉，第一次变成少女，第二次变成老妇人，第三次变成老公公。孙悟空三次识破妖怪真身并将其打死，但唐僧不明真相，误以为孙悟空滥杀无辜，最终将孙悟空赶走。这个故事体现了孙悟空的火眼金睛和降妖除魔的本领，也反映了唐僧的善良但缺乏辨别能力',
-            explanation: '这是《西游记》中的经典情节，展现了孙悟空的本领和唐僧的善良'
+            answer: 'B',
+            explanation: '猪八戒原是天庭的天蓬元帅，因调戏嫦娥被贬下凡间'
         }
     };
+
+    function fillChoiceOptions(question) {
+        const data = question || {
+            options: { A: '', B: '', C: '', D: '' },
+            answer: 'A'
+        };
+
+        document.getElementById('optionA').value = data.options.A || '';
+        document.getElementById('optionB').value = data.options.B || '';
+        document.getElementById('optionC').value = data.options.C || '';
+        document.getElementById('optionD').value = data.options.D || '';
+
+        document.querySelectorAll('input[name="answer"]').forEach((radio) => {
+            radio.checked = radio.value === (data.answer || 'A');
+        });
+    }
 
     // 编辑题目
     function editQuestion(id, event) {
@@ -1297,15 +1187,11 @@
         const question = questionsData[id];
         if (!question) return;
 
-        // 设置题目类型
-        document.getElementById('questionType').value = question.type;
+        // 题目类型固定为选择题
+        document.getElementById('questionType').value = '选择题';
 
         // 设置题目分值
         document.getElementById('questionScore').value = question.score;
-
-        // 触发题型切换事件以显示对应的选项和答案区域
-        const event2 = new Event('change');
-        document.getElementById('questionType').dispatchEvent(event2);
 
         // 设置阅读能力
         selectedAbilities.clear();
@@ -1327,42 +1213,8 @@
 
         // 设置题目内容
         document.getElementById('questionContent').value = question.content;
-
-        // 延迟设置选项和答案，等待DOM更新
-        setTimeout(() => {
-            if (question.type === 'single') {
-                // 设置单选题选项
-                const optionInputs = document.querySelectorAll('#optionsArea .option-input');
-                optionInputs[0].value = question.options.A;
-                optionInputs[1].value = question.options.B;
-                optionInputs[2].value = question.options.C;
-                optionInputs[3].value = question.options.D;
-
-                // 设置单选题答案
-                document.querySelector(`#optionsArea input[type="radio"][value="${question.answer}"]`).checked = true;
-            } else if (question.type === 'multiple') {
-                // 设置多选题选项
-                const optionInputs = document.querySelectorAll('#optionsArea .option-input');
-                optionInputs[0].value = question.options.A;
-                optionInputs[1].value = question.options.B;
-                optionInputs[2].value = question.options.C;
-                optionInputs[3].value = question.options.D;
-
-                // 设置多选题答案
-                document.querySelectorAll('#optionsArea input[type="checkbox"]').forEach(checkbox => {
-                    checkbox.checked = question.answer.includes(checkbox.value);
-                });
-            } else if (question.type === 'judge') {
-                // 设置判断题答案
-                document.querySelector(`#optionsArea input[type="radio"][value="${question.answer}"]`).checked = true;
-            } else if (question.type === 'essay') {
-                // 设置问答题参考答案
-                document.querySelector('#optionsArea textarea').value = question.answer;
-            }
-
-            // 设置题目解析
-            document.getElementById('questionExplanation').value = question.explanation;
-        }, 100);
+        fillChoiceOptions(question);
+        document.getElementById('questionExplanation').value = question.explanation;
 
         document.getElementById('editModal').classList.add('active');
     }
@@ -1395,10 +1247,11 @@
     // 添加新题目
     function addNewQuestion() {
         document.getElementById('editModalTitle').textContent = '添加题目';
-        document.getElementById('questionType').value = '';
+        document.getElementById('questionType').value = '选择题';
         document.getElementById('questionScore').value = '';
         document.getElementById('questionContent').value = '';
         document.getElementById('questionExplanation').value = '';
+        fillChoiceOptions();
         // 清空阅读能力选择
         selectedAbilities.clear();
         const container = document.getElementById('abilityContainer');
@@ -1522,7 +1375,7 @@
         document.getElementById('parseProgress').style.display = 'none';
         document.getElementById('parseResult').style.display = 'block';
 
-        // 模拟解析结果数据（只有单选题）
+        // 模拟解析结果数据（只有选择题）
         const mockResult = {
             total: 5,
             single: 5
@@ -1542,7 +1395,7 @@
     function showExcelParseResult() {
         document.getElementById('parseResult').style.display = 'block';
 
-        // 模拟解析结果数据（只有单选题）
+        // 模拟解析结果数据（只有选择题）
         const mockResult = {
             total: 8,
             single: 8
@@ -1576,7 +1429,7 @@
                 <div style="padding: 16px; border-bottom: 1px solid #f0f0f0;">
                     <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
                         <span style="font-size: 14px; color: #333; font-weight: 600;">第 ${index + 1} 题</span>
-                        <span style="padding: 2px 8px; background: #f5f5f5; border-radius: 3px; font-size: 12px; color: #666;">单选题</span>
+                        <span style="padding: 2px 8px; background: #f5f5f5; border-radius: 3px; font-size: 12px; color: #666;">选择题</span>
                         <span style="font-size: 13px; color: #666;">（${q.score}分）</span>
                     </div>
                     <div style="font-size: 14px; color: #333; margin-bottom: 12px; line-height: 1.6;">${q.content}</div>
@@ -1602,38 +1455,38 @@
 
     // 生成题目详细预览（Word/PDF解析）
     function generateQuestionPreview() {
-        // 模拟解析出的题目数据（只有单选题）
+        // 模拟解析出的题目数据（只有选择题）
         const mockQuestions = [
             {
-                typeName: '单选题',
+                typeName: '选择题',
                 content: '孙悟空在花果山自封为什么？',
                 options: ['A. 美猴王', 'B. 齐天大圣', 'C. 斗战胜佛', 'D. 弼马温'],
                 answer: 'A',
                 score: 5
             },
             {
-                typeName: '单选题',
+                typeName: '选择题',
                 content: '唐僧师徒四人中，谁最先成为唐僧的徒弟？',
                 options: ['A. 孙悟空', 'B. 猪八戒', 'C. 沙僧', 'D. 白龙马'],
                 answer: 'A',
                 score: 5
             },
             {
-                typeName: '单选题',
+                typeName: '选择题',
                 content: '猪八戒原本在天庭担任什么职位？',
                 options: ['A. 天蓬元帅', 'B. 卷帘大将', 'C. 托塔天王', 'D. 二郎神'],
                 answer: 'A',
                 score: 5
             },
             {
-                typeName: '单选题',
+                typeName: '选择题',
                 content: '沙僧原本在天庭担任什么职位？',
                 options: ['A. 卷帘大将', 'B. 天蓬元帅', 'C. 托塔天王', 'D. 二郎神'],
                 answer: 'A',
                 score: 5
             },
             {
-                typeName: '单选题',
+                typeName: '选择题',
                 content: '《西游记》的作者是谁？',
                 options: ['A. 吴承恩', 'B. 罗贯中', 'C. 施耐庵', 'D. 曹雪芹'],
                 answer: 'A',
@@ -1682,7 +1535,7 @@
     // 确认导入
     function confirmImport() {
         const total = document.getElementById('totalQuestions').textContent;
-        alert('题目导入成功！共导入' + total + '道单选题');
+        alert('题目导入成功！共导入' + total + '道选择题');
         closeImportModal();
         // 实际应用中这里应该刷新题目列表
     }

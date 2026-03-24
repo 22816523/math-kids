@@ -401,6 +401,120 @@
             border-top: 1px solid #eaeaea;
             background: #fafafa;
         }
+        .preview-panel {
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            background: #fafafa;
+            padding: 16px;
+        }
+        .preview-frame {
+            min-height: 280px;
+            border: 1px solid #d9d9d9;
+            border-radius: 4px;
+            background: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            font-size: 14px;
+            text-align: center;
+            padding: 24px;
+        }
+        .preview-frame.video {
+            min-height: 320px;
+        }
+        .preview-frame.ebook {
+            min-height: 360px;
+            align-items: stretch;
+            justify-content: stretch;
+            background: #fff;
+            padding: 20px;
+        }
+        .preview-frame.guide {
+            min-height: 360px;
+            background: #fff;
+        }
+        .preview-doc {
+            width: 100%;
+            border: 1px solid #e0e0e0;
+            background: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 20px;
+        }
+        .preview-doc-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 12px;
+        }
+        .preview-doc-line {
+            height: 12px;
+            background: #f0f0f0;
+            margin-bottom: 10px;
+            border-radius: 2px;
+        }
+        .preview-doc-line.short {
+            width: 45%;
+        }
+        .preview-doc-line.medium {
+            width: 70%;
+        }
+        .preview-doc-line:last-child {
+            margin-bottom: 0;
+        }
+        .audio-player {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .audio-bar {
+            width: 100%;
+            height: 8px;
+            border-radius: 999px;
+            background: #e0e0e0;
+            position: relative;
+        }
+        .audio-bar::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 38%;
+            height: 100%;
+            border-radius: 999px;
+            background: #999;
+        }
+        .audio-controls {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+        }
+        .audio-btn {
+            width: 44px;
+            height: 44px;
+            border: 1px solid #cfcfcf;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            background: #fff;
+        }
+        .preview-meta {
+            margin-top: 16px;
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px 24px;
+            font-size: 13px;
+            color: #666;
+        }
+        .preview-meta-item strong {
+            color: #333;
+            margin-right: 6px;
+        }
     </style>
 </head>
 <body>
@@ -528,7 +642,7 @@
                             </div>
                         </div>
                         <div class="resource-actions">
-                            <a href="#" onclick="alert('打开预览');return false;">预览</a>
+                            <a href="#" onclick="openPreviewModal('video', '第一回：灵根育孕源流出 心性修持大道生', {duration: '15:30', size: '125MB', uploadedAt: '2024-01-15 10:30'});return false;">预览</a>
                             <a href="#" onclick="alert('开始下载');return false;">下载</a>
                             <a href="#" onclick="if(confirm('确定删除？'))alert('已删除');return false;">删除</a>
                         </div>
@@ -542,7 +656,7 @@
                             </div>
                         </div>
                         <div class="resource-actions">
-                            <a href="#">预览</a>
+                            <a href="#" onclick="openPreviewModal('video', '第二回：悟彻菩提真妙理 断魔归本合元神', {duration: '18:45', size: '156MB', uploadedAt: '2024-01-16 14:20'});return false;">预览</a>
                             <a href="#">下载</a>
                             <a href="#">删除</a>
                         </div>
@@ -556,7 +670,7 @@
                             </div>
                         </div>
                         <div class="resource-actions">
-                            <a href="#">预览</a>
+                            <a href="#" onclick="openPreviewModal('video', '第三回：四海千山皆拱伏 九幽十类尽除名', {duration: '16:20', size: '138MB', uploadedAt: '2024-01-17 09:15'});return false;">预览</a>
                             <a href="#">下载</a>
                             <a href="#">删除</a>
                         </div>
@@ -580,8 +694,8 @@
                             </div>
                         </div>
                         <div class="resource-actions">
-                            <a href="#" onclick="alert('打开电子书预览');return false;">预览电子书</a>
-                            <a href="#" onclick="alert('开始播放');return false;">播放音频</a>
+                            <a href="#" onclick="openPreviewModal('ebook', '西游记-第1回.pdf', {resourceName: '第1回阅读资源', uploadedAt: '2024-01-15 11:00'});return false;">预览电子书</a>
+                            <a href="#" onclick="openPreviewModal('audio', '西游记-第1回听读音频.mp3', {resourceName: '第1回阅读资源', uploadedAt: '2024-01-15 11:00'});return false;">播放音频</a>
                             <a href="#">下载</a>
                             <a href="#">删除</a>
                         </div>
@@ -595,7 +709,7 @@
                             </div>
                         </div>
                         <div class="resource-actions">
-                            <a href="#">播放音频</a>
+                            <a href="#" onclick="openPreviewModal('audio', '西游记全书朗读版（下）.mp3', {resourceName: '全书听读资源', uploadedAt: '2024-01-15 11:30'});return false;">播放音频</a>
                             <a href="#">下载</a>
                             <a href="#">删除</a>
                         </div>
@@ -619,8 +733,8 @@
                             </div>
                         </div>
                         <div class="resource-actions">
-                            <a href="#">预览无答案版</a>
-                            <a href="#">预览有答案版</a>
+                            <a href="#" onclick="openPreviewModal('guide', '石猴出世-无答案版.png', {version: '无答案版', resourceName: '第1次阅读导读单资源', uploadedAt: '2024-01-15 10:45'});return false;">预览无答案版</a>
+                            <a href="#" onclick="openPreviewModal('guide', '石猴出世-有答案版.png', {version: '有答案版', resourceName: '第1次阅读导读单资源', uploadedAt: '2024-01-15 10:45'});return false;">预览有答案版</a>
                             <a href="#">下载</a>
                             <a href="#">删除</a>
                         </div>
@@ -634,7 +748,7 @@
                             </div>
                         </div>
                         <div class="resource-actions">
-                            <a href="#">预览无答案版</a>
+                            <a href="#" onclick="openPreviewModal('guide', '拜师学艺-无答案版.png', {version: '无答案版', resourceName: '第2次阅读导读单资源', uploadedAt: '2024-01-16 14:30'});return false;">预览无答案版</a>
                             <a href="#">下载</a>
                             <a href="#">删除</a>
                         </div>
@@ -648,8 +762,8 @@
                             </div>
                         </div>
                         <div class="resource-actions">
-                            <a href="#">预览无答案版</a>
-                            <a href="#">预览有答案版</a>
+                            <a href="#" onclick="openPreviewModal('guide', '大闹天宫-无答案版.png', {version: '无答案版', resourceName: '第3次阅读导读单资源', uploadedAt: '2024-01-17 09:30'});return false;">预览无答案版</a>
+                            <a href="#" onclick="openPreviewModal('guide', '大闹天宫-有答案版.png', {version: '有答案版', resourceName: '第3次阅读导读单资源', uploadedAt: '2024-01-17 09:30'});return false;">预览有答案版</a>
                             <a href="#">下载</a>
                             <a href="#">删除</a>
                         </div>
@@ -766,6 +880,26 @@
         </div>
     </div>
 
+    <div class="modal-mask" id="previewModal">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <div class="modal-title" id="previewModalTitle">资源预览</div>
+                <button class="modal-close" type="button" onclick="closeModal('previewModal')">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-desc" id="previewModalDesc">预览当前资源内容。</div>
+                <div class="preview-panel">
+                    <div id="previewContent"></div>
+                    <div class="preview-meta" id="previewMeta"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" onclick="closeModal('previewModal')">关闭</button>
+                <button class="btn btn-primary" type="button" onclick="alert('开始下载当前资源')">下载资源</button>
+            </div>
+        </div>
+    </div>
+
     <script>
     function toggleMenu(element) {
         const menuGroup = element.parentElement;
@@ -806,6 +940,107 @@
         closeModal('ebookAudioModal');
         closeModal('guideResourceModal');
         closeModal('commonUploadModal');
+    }
+
+    function openPreviewModal(type, name, meta) {
+        const titleMap = {
+            video: '视频预览',
+            ebook: '电子书预览',
+            audio: '音频预览',
+            guide: '导读单预览'
+        };
+        const descMap = {
+            video: '查看视频资源内容与基础信息。',
+            ebook: '查看电子书文件的页面预览效果。',
+            audio: '查看音频播放面板与文件信息。',
+            guide: '查看导读单图片或文档的预览效果。'
+        };
+
+        document.getElementById('previewModalTitle').textContent = titleMap[type] || '资源预览';
+        document.getElementById('previewModalDesc').textContent = descMap[type] || '预览当前资源内容。';
+        document.getElementById('previewContent').innerHTML = buildPreviewContent(type, name, meta || {});
+        document.getElementById('previewMeta').innerHTML = buildPreviewMeta(type, name, meta || {});
+        openModal('previewModal');
+    }
+
+    function buildPreviewContent(type, name, meta) {
+        if (type === 'video') {
+            return `
+                <div class="preview-frame video">
+                    <div>
+                        <div style="font-size:48px; margin-bottom:16px;">[▶]</div>
+                        <div>${name}</div>
+                        <div style="margin-top:8px; font-size:12px;">视频播放预览区</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        if (type === 'ebook') {
+            return `
+                <div class="preview-frame ebook">
+                    <div class="preview-doc">
+                        <div>
+                            <div class="preview-doc-title">${name}</div>
+                            <div class="preview-doc-line"></div>
+                            <div class="preview-doc-line"></div>
+                            <div class="preview-doc-line medium"></div>
+                            <div class="preview-doc-line"></div>
+                            <div class="preview-doc-line short"></div>
+                        </div>
+                        <div style="font-size:12px; color:#999; text-align:right;">第 1 / 24 页</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        if (type === 'audio') {
+            return `
+                <div class="preview-frame">
+                    <div class="audio-player">
+                        <div style="font-size:42px; color:#999;">[♪]</div>
+                        <div>${name}</div>
+                        <div class="audio-bar"></div>
+                        <div class="audio-controls">
+                            <div class="audio-btn">[<<]</div>
+                            <div class="audio-btn">[▶]</div>
+                            <div class="audio-btn">[>>]</div>
+                        </div>
+                        <div style="font-size:12px; color:#999;">00:58 / 12:36</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        return `
+            <div class="preview-frame guide">
+                <div>
+                    <div style="font-size:42px; margin-bottom:16px;">[📄]</div>
+                    <div>${name}</div>
+                    <div style="margin-top:8px; font-size:12px;">导读单图文预览区</div>
+                </div>
+            </div>
+        `;
+    }
+
+    function buildPreviewMeta(type, name, meta) {
+        const items = [];
+        items.push(`<div class="preview-meta-item"><strong>文件名称</strong>${name}</div>`);
+
+        if (meta.duration) {
+            items.push(`<div class="preview-meta-item"><strong>时长</strong>${meta.duration}</div>`);
+        }
+        if (meta.size) {
+            items.push(`<div class="preview-meta-item"><strong>文件大小</strong>${meta.size}</div>`);
+        }
+        if (meta.version) {
+            items.push(`<div class="preview-meta-item"><strong>版本</strong>${meta.version}</div>`);
+        }
+        if (meta.uploadedAt) {
+            items.push(`<div class="preview-meta-item"><strong>上传时间</strong>${meta.uploadedAt}</div>`);
+        }
+
+        return items.join('');
     }
     </script>
 </body>
