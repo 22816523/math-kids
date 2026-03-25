@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+  <title>数学启蒙 · 数字描红</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/design-system.css?v=20260315">
+  <link rel="stylesheet" href="css/trace.css?v=20260315">
+  <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
+</head>
+<body>
+  <!-- 护眼背景装饰 -->
+  <div class="bg-decoration">
+    <div class="cloud cloud-1"></div>
+    <div class="cloud cloud-2"></div>
+    <div class="cloud cloud-3"></div>
+  </div>
+
+  <div id="app">
+    <!-- 顶栏 -->
+    <div class="topbar">
+      <div class="topbar-left">
+        <a href="index.html" class="back-btn">◀</a>
+        <span class="topbar-title"><span class="iconify" data-icon="fluent-emoji:writing-hand" style="font-size: 26px; vertical-align: text-bottom;"></span> 数字描红</span>
+      </div>
+    </div>
+
+    <!-- 数字选择器 -->
+    <div class="number-picker" id="numberPicker">
+      <!-- JS渲染 0-9 按钮 -->
+    </div>
+
+    <!-- 描红画布区 -->
+    <div class="content trace-content">
+      <div class="trace-board">
+        <div class="board-header">
+          <span class="board-title">一起来写数字：</span>
+          <span class="board-target" id="boardTargetText">1</span>
+          <button class="btn btn-purple btn-sm" id="clearBtn">🧹 擦除重写</button>
+        </div>
+        
+        <div class="canvas-container">
+          <!-- 背景参考数字（虚线或浅色） -->
+          <canvas id="bgCanvas" width="300" height="360"></canvas>
+          <!-- 用户手写交互层 -->
+          <canvas id="drawCanvas" width="300" height="360"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- 底部操作区 -->
+    <div id="bottomActions" class="bottom-actions">
+      <button class="btn btn-green btn-lg" id="submitBtn">✨ 写好了，检查一下</button>
+    </div>
+
+    <!-- 反馈浮层 -->
+    <div id="feedbackOverlay" class="feedback-overlay" style="display:none;">
+      <div class="feedback-emoji" id="feedbackEmoji"></div>
+      <div class="feedback-text" id="feedbackText"></div>
+    </div>
+    
+    <!-- 庆祝彩纸屑容器 -->
+    <div id="confettiContainer" class="confetti-container"></div>
+  </div>
+
+  <!-- 工具类引入 -->
+  <script src="js/practice-support.js?v=20260315"></script>
+  <!-- 描红主逻辑 -->
+  <script src="js/trace.js?v=20260315"></script>
+</body>
+</html>
