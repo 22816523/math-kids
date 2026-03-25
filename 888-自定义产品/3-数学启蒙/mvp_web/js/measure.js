@@ -197,6 +197,9 @@
     } else if (state.mode === 'weight') {
       weightArea.style.display = 'flex';
       initWeight();
+    } else if (state.mode === 'calendar') {
+      calendarArea.style.display = 'flex';
+      initCalendar();
     }
   }
 

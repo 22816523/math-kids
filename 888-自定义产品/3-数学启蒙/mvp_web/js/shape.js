@@ -691,6 +691,348 @@
     }
   }
 
+
+  // ====================================================
+  //  模式：拼一拼 (七巧板拼贴)
+  // ====================================================
+  const TANGRAM_PUZZLES = [
+    {
+      name: '小红花',
+      pieces: [
+        { shape: 'circle', color: '#FF8A8A', x: 30, y: 10, w: 40, h: 40 },
+        { shape: 'rectangle', color: '#6BCB77', x: 45, y: 55, w: 10, h: 40 },
+        { shape: 'oval', color: '#FFD166', x: 15, y: 50, w: 30, h: 20 },
+        { shape: 'oval', color: '#FFD166', x: 55, y: 50, w: 30, h: 20 }
+      ]
+    },
+    {
+      name: '小房子',
+      pieces: [
+        { shape: 'triangle', color: '#FFD166', x: 15, y: 10, w: 70, h: 40 },
+        { shape: 'square', color: '#7BC8F6', x: 25, y: 50, w: 50, h: 50 },
+        { shape: 'rectangle', color: '#FF8A8A', x: 40, y: 70, w: 20, h: 30 }
+      ]
+    },
+    {
+      name: '小火车',
+      pieces: [
+        { shape: 'rectangle', color: '#8A9CF2', x: 10, y: 50, w: 40, h: 30 },
+        { shape: 'square', color: '#6CF2C8', x: 50, y: 30, w: 30, h: 50 },
+        { shape: 'circle', color: '#FF8A8A', x: 15, y: 80, w: 20, h: 20 },
+        { shape: 'circle', color: '#FF8A8A', x: 55, y: 80, w: 20, h: 20 },
+        { shape: 'rectangle', color: '#FFD166', x: 70, y: 10, w: 10, h: 20 }
+      ]
+    }
+  ];
+
+  function enterTangramExplore() {
+    state.practicing = true;
+    state.tangramRound = 0;
+    bottomActions.style.display = 'none';
+    prepareTangramLevel();
+  }
+
+  function prepareTangramLevel() {
+    if (state.tangramRound >= TANGRAM_PUZZLES.length) {
+       showQuestion('🏆', '所有拼图都拼完啦！太棒了！');
+       showCelebration();
+       showBottomAction('🔄 再玩一次', () => enterTangramExplore());
+       tangramBoard.innerHTML = '';
+       return;
+    }
+
+    const puzzle = TANGRAM_PUZZLES[state.tangramRound];
+    state.tangramPiecesFound = 0;
+    showQuestion('🧩', '拖动图形，拼出一个' + puzzle.name + '吧！');
+
+    tangramBoard.innerHTML = '<div class="puzzle-area"></div><div class="pieces-area"></div>';
+    const puzzleArea = tangramBoard.querySelector('.puzzle-area');
+    const piecesArea = tangramBoard.querySelector('.pieces-area');
+
+    puzzle.pieces.forEach((p, idx) => {
+       const slot = document.createElement('div');
+       slot.className = 'puzzle-slot';
+       slot.dataset.idx = idx;
+       slot.style.left = p.x + '%';
+       slot.style.top = p.y + '%';
+       slot.style.width = p.w + '%';
+       slot.style.height = p.h + '%';
+       slot.innerHTML = SHAPES[p.shape].makeSvg('#E2E8F0'); 
+       puzzleArea.appendChild(slot);
+
+       const piece = document.createElement('div');
+       piece.className = 'puzzle-piece';
+       piece.dataset.idx = idx;
+       piece.dataset.shape = p.shape;
+       piece.innerHTML = SHAPES[p.shape].makeSvg(p.color);
+       
+       piece.style.position = 'relative';
+       piece.style.width = '60px';
+       piece.style.height = '60px';
+       setupTangramDrag(piece, p, slot, piecesArea);
+       piecesArea.appendChild(piece);
+    });
+
+    for (let i = piecesArea.children.length; i >= 0; i--) {
+        piecesArea.appendChild(piecesArea.children[Math.random() * i | 0]);
+    }
+  }
+
+  function setupTangramDrag(piece, pData, targetSlot, pieceContainer) {
+     let sx=0, sy=0;
+     let isDragging = false;
+     let ghost = null;
+
+     function onStart(e) {
+        if(piece.classList.contains('locked')) return;
+        e.preventDefault();
+        isDragging = true;
+        const touch = e.touches ? e.touches[0] : e;
+        sx = touch.clientX;
+        sy = touch.clientY;
+        
+        ghost = piece.cloneNode(true);
+        ghost.classList.add('dragging');
+        const rect = piece.getBoundingClientRect();
+        ghost.style.position = 'fixed';
+        ghost.style.left = rect.left + 'px';
+        ghost.style.top = rect.top + 'px';
+        ghost.style.width = rect.width + 'px';
+        ghost.style.height = rect.height + 'px';
+        ghost.style.zIndex = 1000;
+        document.body.appendChild(ghost);
+        piece.style.opacity = 0.3;
+
+        document.addEventListener('mousemove', onMove);
+        document.addEventListener('touchmove', onMove, {passive:false});
+        document.addEventListener('mouseup', onEnd);
+        document.addEventListener('touchend', onEnd);
+     }
+
+     function onMove(e) {
+        if(!isDragging) return;
+        e.preventDefault();
+        const touch = e.touches ? e.touches[0] : e;
+        const dx = touch.clientX - sx;
+        const dy = touch.clientY - sy;
+        ghost.style.transform = 'translate(' + dx + 'px, ' + dy + 'px) scale(1.1)';
+     }
+
+     function onEnd(e) {
+        if(!isDragging) return;
+        isDragging = false;
+        
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('touchmove', onMove);
+        document.removeEventListener('mouseup', onEnd);
+        document.removeEventListener('touchend', onEnd);
+
+        const touch = e.changedTouches ? e.changedTouches[0] : e;
+        const sRect = targetSlot.getBoundingClientRect();
+        const cx = touch.clientX;
+        const cy = touch.clientY;
+
+        if(cx > sRect.left - 40 && cx < sRect.right + 40 && cy > sRect.top - 40 && cy < sRect.bottom + 40) {
+           speak('对了！');
+           targetSlot.innerHTML = SHAPES[pData.shape].makeSvg(pData.color);
+           targetSlot.classList.add('animate-jelly');
+           targetSlot.style.filter = 'none';
+           state.tangramPiecesFound++;
+           piece.remove();
+           showFeedback(true);
+           if(state.tangramPiecesFound >= TANGRAM_PUZZLES[state.tangramRound].pieces.length) {
+               showQuestion('🎉', '拼图完成！');
+               showCelebration();
+               state.tangramRound++;
+               scheduleAdvance(prepareTangramLevel, 2000);
+           }
+        } else {
+           speak('放到哪里呢？');
+           piece.style.opacity = 1;
+           showFeedback(false);
+        }
+        ghost.remove();
+     }
+
+     piece.addEventListener('mousedown', onStart);
+     piece.addEventListener('touchstart', onStart, {passive:false});
+  }
+
+  // ====================================================
+  //  模式：听指令 (方位九宫格)
+  // ====================================================
+  const SPATIAL_POSITIONS = [
+    { row: 0, col: 0, name: '左上角' }, { row: 0, col: 1, name: '正上方中心' }, { row: 0, col: 2, name: '右上角' },
+    { row: 1, col: 0, name: '左边中间' }, { row: 1, col: 1, name: '正中间' }, { row: 1, col: 2, name: '右边中间' },
+    { row: 2, col: 0, name: '左下角' }, { row: 2, col: 1, name: '正下方中心' }, { row: 2, col: 2, name: '右下角' }
+  ];
+
+  function enterSpatialExplore() {
+    state.practicing = true;
+    state.spatialRound = 0;
+    bottomActions.style.display = 'none';
+    prepareSpatialLevel();
+  }
+
+  function prepareSpatialLevel() {
+    if(state.spatialRound >= 3) {
+       showQuestion('🏆', '太棒啦！柜子摆放得真整齐！');
+       showCelebration();
+       spatialShelf.innerHTML = '';
+       let spatialTray = document.getElementById('spatialTray');
+       if(spatialTray) spatialTray.remove();
+       showBottomAction('🔄 再理一次', () => enterSpatialExplore());
+       return;
+    }
+
+    spatialShelf.innerHTML = '';
+    for(let r=0; r<3; r++){
+       for(let c=0; c<3; c++){
+          const cell = document.createElement('div');
+          cell.className = 'shelf-cell';
+          cell.dataset.r = r;
+          cell.dataset.c = c;
+          spatialShelf.appendChild(cell);
+       }
+    }
+
+    let tray = document.getElementById('spatialTray');
+    if(!tray) {
+       tray = document.createElement('div');
+       tray.id = 'spatialTray';
+       tray.className = 'spatial-tray';
+       spatialArea.appendChild(tray);
+    }
+    tray.innerHTML = '';
+
+    const targetKeys = pickN(SHAPE_KEYS, 3);
+    const targetSlots = pickN(SPATIAL_POSITIONS, 3);
+    state.spatialTasks = targetKeys.map((k, i) => ({
+       shape: k,
+       color: nextColor(),
+       pos: targetSlots[i]
+    }));
+    state.currentSpatialTaskIdx = 0;
+    
+    state.spatialTasks.forEach(task => {
+        const toy = document.createElement('div');
+        toy.className = 'spatial-toy';
+        toy.dataset.shape = task.shape;
+        toy.innerHTML = SHAPES[task.shape].makeSvg(task.color);
+        setupSpatialDrag(toy, task, tray);
+        tray.appendChild(toy);
+    });
+
+    nextSpatialInstruction();
+  }
+
+  function nextSpatialInstruction() {
+      const task = state.spatialTasks[state.currentSpatialTaskIdx];
+      const shapeName = SHAPES[task.shape].name;
+      const posName = task.pos.name;
+      const text = '请把 【' + shapeName + '】 放在柜子的 【' + posName + '】';
+      showQuestion('🧭', text, text, {autoSpeak: true, allowReplay: true});
+  }
+
+  function setupSpatialDrag(toy, taskData, tray) {
+     let isDragging = false;
+     let sx=0, sy=0;
+     let ghost = null;
+
+     function onStart(e) {
+        if(toy.classList.contains('locked')) return;
+        e.preventDefault();
+        isDragging = true;
+        const touch = e.touches ? e.touches[0] : e;
+        sx = touch.clientX;
+        sy = touch.clientY;
+        
+        ghost = toy.cloneNode(true);
+        ghost.classList.add('dragging');
+        const rect = toy.getBoundingClientRect();
+        ghost.style.position = 'fixed';
+        ghost.style.left = rect.left + 'px';
+        ghost.style.top = rect.top + 'px';
+        ghost.style.width = rect.width + 'px';
+        ghost.style.height = rect.height + 'px';
+        ghost.style.zIndex = 1000;
+        document.body.appendChild(ghost);
+        toy.style.opacity = 0.2;
+
+        document.addEventListener('mousemove', onMove);
+        document.addEventListener('touchmove', onMove, {passive:false});
+        document.addEventListener('mouseup', onEnd);
+        document.addEventListener('touchend', onEnd);
+     }
+
+     function onMove(e) {
+        if(!isDragging) return;
+        e.preventDefault();
+        const touch = e.touches ? e.touches[0] : e;
+        const dx = touch.clientX - sx;
+        const dy = touch.clientY - sy;
+        ghost.style.transform = 'translate(' + dx + 'px, ' + dy + 'px) scale(1.1)';
+     }
+
+     function onEnd(e) {
+        if(!isDragging) return;
+        isDragging = false;
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('touchmove', onMove);
+        document.removeEventListener('mouseup', onEnd);
+        document.removeEventListener('touchend', onEnd);
+
+        const touch = e.changedTouches ? e.changedTouches[0] : e;
+        const cx = touch.clientX;
+        const cy = touch.clientY;
+
+        let droppedCell = null;
+        $$('.shelf-cell').forEach(c => {
+           const rect = c.getBoundingClientRect();
+           if(cx > rect.left && cx < rect.right && cy > rect.top && cy < rect.bottom) {
+              droppedCell = c;
+           }
+        });
+
+        const currentTask = state.spatialTasks[state.currentSpatialTaskIdx];
+
+        if(droppedCell) {
+           const isRightToy = (taskData.shape === currentTask.shape);
+           const isRightCell = (parseInt(droppedCell.dataset.r) === currentTask.pos.row && parseInt(droppedCell.dataset.c) === currentTask.pos.col);
+           
+           if(isRightToy && isRightCell) {
+              speak('放对了！真能干！');
+              droppedCell.innerHTML = SHAPES[taskData.shape].makeSvg(taskData.color);
+              droppedCell.classList.add('animate-jelly');
+              toy.remove();
+              showFeedback(true);
+              
+              state.currentSpatialTaskIdx++;
+              if(state.currentSpatialTaskIdx >= state.spatialTasks.length) {
+                  showQuestion('🎉', '全部都摆放整齐啦！');
+                  showCelebration();
+                  state.spatialRound++;
+                  scheduleAdvance(prepareSpatialLevel, 2000);
+              } else {
+                  scheduleAdvance(nextSpatialInstruction, 1000);
+              }
+           } else {
+              if(!isRightToy) speak('哎呀，那是别的玩具，我们要找' + SHAPES[currentTask.shape].name);
+              else speak('位置不对哦。它应该去' + currentTask.pos.name);
+              toy.style.opacity = 1;
+              showFeedback(false);
+              ghost.classList.add('animate-shake');
+           }
+        } else {
+           toy.style.opacity = 1;
+        }
+
+        ghost.remove();
+     }
+
+     toy.addEventListener('mousedown', onStart);
+     toy.addEventListener('touchstart', onStart, {passive:false});
+  }
   // ====================================================
   //  模式切换
   // ====================================================
@@ -706,6 +1048,8 @@
     recognizeArea.style.display = 'none';
     classifyArea.style.display = 'none';
     findArea.style.display = 'none';
+    tangramArea.style.display = 'none';
+    spatialArea.style.display = 'none';
     bottomActions.style.display = 'none';
     hideQuestion();
 
@@ -721,6 +1065,14 @@
       case 'find':
         findArea.style.display = '';
         enterFindExplore();
+        break;
+      case 'tangram':
+        tangramArea.style.display = '';
+        enterTangramExplore();
+        break;
+      case 'spatial':
+        spatialArea.style.display = '';
+        enterSpatialExplore();
         break;
     }
   }

@@ -934,3 +934,31 @@
   color: var(--red-dark);
 }
 
+
+/* ===== 魔法等量天平 样式 ===== */
+.scale-container { display:flex; flex-direction:column; align-items:center; }
+.scale-beam { display:flex; justify-content:space-between; align-items:flex-end; width:280px; height:40px; background:linear-gradient(90deg,#D4A04C,#F5C842,#D4A04C); border-radius:8px; box-shadow:0 4px 8px rgba(0,0,0,0.15); transform-origin:center bottom; transition:transform 0.5s cubic-bezier(0.34,1.56,0.64,1); position:relative; }
+.scale-pan { display:flex; flex-direction:column; align-items:center; }
+.scale-pan-items { min-height:50px; display:flex; flex-wrap:wrap; gap:4px; justify-content:center; max-width:120px; }
+.scale-pan-plate { height:14px; border-radius:100px; background:#E0B030; border:3px solid #A87020; margin-top:4px; box-shadow:0 4px 0 rgba(0,0,0,0.15); }
+.scale-pillar { width:16px; background:linear-gradient(180deg,#E0B030,#A87020); border-radius:8px; margin:0 auto; }
+.scale-base { background:linear-gradient(90deg,#A87020,#D4A04C); border-radius:8px; box-shadow:0 4px 8px rgba(0,0,0,0.1); }
+.weight-area { display:flex; flex-direction:column; align-items:center; gap:16px; width:100%; }
+.scale-display { width:100%; display:flex; flex-direction:column; align-items:center; }
+.weight-options { width:100%; display:flex; flex-direction:column; align-items:center; }
+
+/* ===== 时光日历 样式 ===== */
+.calendar-area { display:flex; flex-direction:column; align-items:center; width:100%; padding-bottom:20px; }
+.calendar-paper { background:#FFF9E6; border-radius:16px; box-shadow:0 8px 24px rgba(0,0,0,0.08); padding:16px; width:100%; max-width:380px; border:2px solid #FFE599; }
+.calendar-header { text-align:center; padding:8px 0 12px; }
+.cal-month-title { font-size:20px; font-weight:900; color:#7A5C00; }
+.calendar-weekdays { display:grid; grid-template-columns:repeat(7,1fr); gap:4px; margin-bottom:8px; }
+.calendar-weekdays span { text-align:center; font-size:13px; font-weight:700; color:#A07020; padding:4px 0; }
+.calendar-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:4px; }
+.cal-day { aspect-ratio:1; display:flex; align-items:center; justify-content:center; border-radius:50%; font-size:16px; font-weight:700; color:#5A4030; cursor:pointer; transition:all 0.2s; }
+.cal-day:hover { background:rgba(255,180,0,0.2); }
+.cal-day.empty { cursor:default; }
+.cal-day.today { background:#FFD166; color:#5A4030; box-shadow:0 0 0 3px #FFA500; }
+.cal-day.selected { background:#4CAF50; color:#fff; transform:scale(1.2); }
+.cal-day.wrong { background:#FF4B4B; color:#fff; animation:shake 0.3s ease; }
+@keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
