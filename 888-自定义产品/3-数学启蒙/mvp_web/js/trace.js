@@ -23,7 +23,8 @@
 
   const TRACE_MIN_NUMBER = 1;
   const TRACE_MAX_NUMBER = 100;
-  const GUIDE_STROKE_COLOR = '#94A3B8';
+  const GUIDE_BAND_COLOR = 'rgba(203, 213, 225, 0.55)';
+  const GUIDE_STROKE_COLOR = '#8EA0B8';
   const DRAW_STROKE_COLOR = '#6C5CE7';
   const DIGIT_HEIGHT = 140;
   const DIGIT_GAP = 22;
@@ -53,12 +54,13 @@
         {
           type: 'path',
           commands: [
-            ['M', 24, 36],
-            ['Q', 38, 18, 60, 18],
-            ['Q', 82, 20, 78, 46],
-            ['Q', 74, 62, 54, 76],
-            ['L', 28, 104],
-            ['L', 80, 104],
+            ['M', 26, 34],
+            ['Q', 42, 18, 62, 18],
+            ['Q', 82, 20, 80, 44],
+            ['Q', 78, 60, 60, 74],
+            ['L', 38, 90],
+            ['Q', 28, 98, 28, 106],
+            ['L', 80, 106],
           ],
         },
       ],
@@ -69,13 +71,13 @@
         {
           type: 'path',
           commands: [
-            ['M', 24, 28],
-            ['Q', 42, 18, 60, 18],
-            ['Q', 80, 20, 76, 46],
-            ['Q', 72, 62, 50, 68],
-            ['Q', 76, 72, 78, 94],
-            ['Q', 80, 118, 52, 118],
-            ['Q', 34, 118, 24, 108],
+            ['M', 28, 30],
+            ['Q', 44, 18, 62, 18],
+            ['Q', 80, 20, 78, 44],
+            ['Q', 76, 60, 54, 68],
+            ['Q', 82, 74, 82, 96],
+            ['Q', 82, 120, 52, 120],
+            ['Q', 34, 120, 24, 108],
           ],
         },
       ],
@@ -113,12 +115,12 @@
           type: 'path',
           commands: [
             ['M', 78, 22],
-            ['L', 32, 22],
-            ['L', 28, 64],
-            ['L', 58, 64],
-            ['Q', 82, 68, 78, 96],
-            ['Q', 74, 118, 50, 118],
-            ['Q', 32, 118, 22, 108],
+            ['L', 34, 22],
+            ['L', 30, 62],
+            ['L', 58, 62],
+            ['Q', 82, 66, 82, 92],
+            ['Q', 82, 120, 50, 120],
+            ['Q', 32, 120, 22, 108],
           ],
         },
       ],
@@ -131,10 +133,10 @@
           commands: [
             ['M', 72, 28],
             ['Q', 56, 18, 42, 28],
-            ['Q', 20, 44, 24, 82],
-            ['Q', 28, 118, 56, 118],
-            ['Q', 80, 118, 80, 92],
-            ['Q', 80, 64, 54, 64],
+            ['Q', 22, 42, 24, 76],
+            ['Q', 26, 120, 56, 120],
+            ['Q', 82, 120, 82, 92],
+            ['Q', 82, 64, 54, 64],
             ['Q', 32, 66, 28, 84],
           ],
         },
@@ -166,11 +168,11 @@
         {
           type: 'path',
           commands: [
-            ['M', 72, 80],
-            ['Q', 58, 92, 42, 88],
-            ['Q', 18, 82, 24, 50],
-            ['Q', 30, 18, 58, 22],
-            ['Q', 82, 26, 80, 62],
+            ['M', 74, 74],
+            ['Q', 60, 90, 42, 88],
+            ['Q', 20, 82, 22, 50],
+            ['Q', 26, 18, 58, 20],
+            ['Q', 82, 22, 82, 60],
             ['L', 76, 118],
           ],
         },
@@ -241,8 +243,9 @@
 
   function getTraceStrokeWidths(scale) {
     return {
-      guideLineWidth: clamp(4, 6 * scale, 7),
-      maskLineWidth: clamp(18, 24 * scale, 26),
+      guideLineWidth: clamp(8, 9 * scale, 10),
+      underlayLineWidth: clamp(14, 18 * scale, 20),
+      maskLineWidth: clamp(22, 30 * scale, 32),
     };
   }
 
@@ -388,6 +391,11 @@
       drawGlyphs(maskCtx, layout, {
         strokeStyle: '#000000',
         lineWidth: strokeWidths.maskLineWidth,
+      });
+
+      drawGlyphs(bgCtx, layout, {
+        strokeStyle: GUIDE_BAND_COLOR,
+        lineWidth: strokeWidths.underlayLineWidth,
       });
 
       drawGlyphs(bgCtx, layout, {

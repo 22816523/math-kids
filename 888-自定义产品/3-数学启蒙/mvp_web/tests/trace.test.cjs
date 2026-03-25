@@ -4,6 +4,7 @@ const assert = require('node:assert/strict');
 const {
   DIGIT_SKELETONS,
   getNumberTraceLayout,
+  getTraceStrokeWidths,
   pickRandomTraceNumber,
   evaluateTraceQuality,
 } = require('../js/trace.js');
@@ -35,6 +36,14 @@ test('getNumberTraceLayout lays out multi-digit skeletons within the board', () 
   assert.ok(layout.glyphs[0].x < layout.glyphs[1].x);
   assert.ok(layout.glyphs[1].x < layout.glyphs[2].x);
   assert.ok(layout.totalWidth <= 300);
+});
+
+test('getTraceStrokeWidths keeps the guide visually thicker than before', () => {
+  const widths = getTraceStrokeWidths(1);
+
+  assert.ok(widths.underlayLineWidth > widths.guideLineWidth);
+  assert.ok(widths.maskLineWidth > widths.underlayLineWidth);
+  assert.ok(widths.guideLineWidth >= 8);
 });
 
 test('evaluateTraceQuality returns strong pass feedback for high coverage and low overflow', () => {
