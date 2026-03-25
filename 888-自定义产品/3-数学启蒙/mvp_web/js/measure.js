@@ -1414,6 +1414,188 @@
     });
   }
 
+  function initCompare() {
+    state.compareRound = 0;
+    bottomActions.style.display = 'none';
+    compareOptions.innerHTML = '';
+    nextCompareQuestion();
+  }
+
+  function nextCompareQuestion() {
+    state.compareRound++;
+    if (state.compareRound > 15) {
+      showFeedback('🎉', '比较大师！', 2000);
+      showConfetti();
+      addStar(3);
+      setTimeout(initCompare, 2500);
+      return;
+    }
+
+    const types = getComparePracticeTypes();
+    const type = types[(state.compareRound - 1) % types.length];
+    const pool = COMPARE_QUESTIONS[type];
+    const question = pool[randInt(0, pool.length - 1)];
+    const reverse = Math.random() < 0.5;
+    const questionMap = {
+      length: { normal: '哪支铅笔更长？', reverse: '哪支铅笔更短？' },
+      height: { normal: '谁更高？', reverse: '谁更矮？' },
+      count: { normal: '哪个更多？', reverse: '哪个更少？' },
+      size: { normal: '哪个更大？', reverse: '哪个更小？' },
+      thick: { normal: '哪根树干更粗？', reverse: '哪根树干更细？' },
+    };
+    const questionTextValue = reverse ? questionMap[type].reverse : (question.q || questionMap[type].normal);
+    state.compareAnswer = reverse && question.answer !== 'same'
+      ? (question.answer === 'a' ? 'b' : 'a')
+      : question.answer;
+
+    showQuestion('📏', `第${state.compareRound}题：${questionTextValue}`, `第${state.compareRound}题，${questionTextValue}`);
+
+    if (type === 'length') renderLengthScene(question);
+    else if (type === 'height') renderHeightScene(question);
+    else if (type === 'count') renderCountScene(question);
+    else if (type === 'size') renderSizeScene(question);
+    else renderThickScene(question);
+
+    renderCompareOptions(question);
+  }
+
+  function initLength() {
+    state.lengthRound = 0;
+    bottomActions.style.display = 'none';
+    nextLengthQuestion();
+  }
+
+  function renderWeightJudgeScene(question) {
+    const tilt = question.tilt || 0;
+    scaleDisplay.innerHTML = `
+      <div class="scale-container weight-scale-board">
+        <div class="scale-beam" style="transform:rotate(${tilt}deg);transition:transform 0.35s ease;">
+          <div class="scale-pan scale-pan-left">
+            <div class="scale-pan-items weight-pan-items"><span style="font-size:42px;">${question.a.emoji}</span></div>
+            <div class="scale-pan-plate" style="width:120px;"></div>
+          </div>
+          <div class="scale-pan scale-pan-right">
+            <div class="scale-pan-items weight-pan-items"><span style="font-size:42px;">${question.b.emoji}</span></div>
+            <div class="scale-pan-plate" style="width:120px;"></div>
+          </div>
+        </div>
+        <div class="scale-pillar" style="height:80px;width:16px;"></div>
+        <div class="scale-base" style="width:120px;height:16px;"></div>
+      </div>
+      <div class="weight-status">${question.a.label} 和 ${question.b.label}，谁更重？</div>
+    `;
+  }
+
+  function renderWeightOptions(question) {
+    weightOptions.innerHTML = '';
+    const options = [
+      { key: 'a', icon: question.a.emoji, text: question.a.label },
+      { key: 'b', icon: question.b.emoji, text: question.b.label },
+    ];
+    if (question.answer === 'same') {
+      options.push({ key: 'same', icon: '⚪', text: '一样重' });
+    }
+
+    options.forEach((option) => {
+      const node = document.createElement('div');
+      node.className = 'weight-option';
+      node.innerHTML = `<span class="compare-option-icon">${option.icon}</span><span class="compare-option-text">${option.text}</span>`;
+      node.onclick = () => {
+        if (state.weightAnswer === null) return;
+        if (option.key === state.weightAnswer) {
+          node.classList.add('selected');
+          addStar(1);
+          showFeedback('🎉', '答对了！', 1000);
+          state.weightAnswer = null;
+          state.weightRound++;
+          scheduleAdvance(nextWeightQuestion, 1200);
+        } else {
+          node.classList.add('wrong');
+          showFeedback('🤔', '再看看哪边更低一些', 900);
+          setTimeout(() => node.classList.remove('wrong'), 500);
+        }
+      };
+      weightOptions.appendChild(node);
+    });
+  }
+
+  function initWeight() {
+    state.weightRound = 0;
+    bottomActions.style.display = 'none';
+    nextWeightQuestion();
+  }
+
+  function nextWeightQuestion() {
+    const questions = COMPARE_QUESTIONS.weight;
+    if (state.weightRound >= questions.length) {
+      showFeedback('🎉', '轻重大师！', 2000);
+      showConfetti();
+      addStar(4);
+      setTimeout(initWeight, 2500);
+      return;
+    }
+
+    const question = questions[state.weightRound % questions.length];
+    state.weightAnswer = question.answer;
+    showQuestion('⚖️', `第${state.weightRound + 1}题：谁更重？`, `第${state.weightRound + 1}题，谁更重？`);
+    renderWeightJudgeScene(question);
+    renderWeightOptions(question);
+  }
+
+  function initCalendar() {
+    calendarArea.style.display = 'flex';
+    state.calendarRound = 0;
+    bottomActions.style.display = 'none';
+    nextCalendarQuestion();
+  }
+
+  function renderMonth(todayHighlight) {
+    if (calMonthTitle) {
+      calMonthTitle.textContent = `${CALENDAR_MONTH_INFO.monthLabel} ${CALENDAR_MONTH_INFO.englishLabel}`;
+    }
+    const cells = getCalendarMonthCells(todayHighlight);
+    calendarGrid.innerHTML = cells.map((cell) => {
+      if (cell.empty) return '<div class="cal-day empty"></div>';
+      const classes = ['cal-day'];
+      if (cell.isToday) classes.push('today');
+      return `<button type="button" class="${classes.join(' ')}" data-day="${cell.day}">${cell.day}</button>`;
+    }).join('');
+  }
+
+  function nextCalendarQuestion() {
+    if (state.calendarRound >= CALENDAR_QUESTIONS.length) {
+      showFeedback('🎉', '日历小达人！', 2000);
+      showConfetti();
+      addStar(5);
+      setTimeout(initCalendar, 2500);
+      return;
+    }
+
+    const question = CALENDAR_QUESTIONS[state.calendarRound];
+    renderMonth(question.today);
+    updateCalendarHelper(`今天是 ${question.today} 日`, question.q);
+    showQuestion('🗓️', `第${state.calendarRound + 1}题：${question.q}`, `第${state.calendarRound + 1}题，${question.q}`);
+
+    const days = calendarGrid.querySelectorAll('.cal-day:not(.empty)');
+    days.forEach((day) => {
+      day.onclick = () => {
+        if (day.classList.contains('selected')) return;
+        const dayNumber = parseInt(day.dataset.day, 10);
+        if (dayNumber === question.target) {
+          day.classList.add('selected');
+          showFeedback('🎉', '日期找对了！', 1000);
+          addStar(2);
+          state.calendarRound++;
+          scheduleAdvance(nextCalendarQuestion, 1200);
+        } else {
+          day.classList.add('wrong');
+          showFeedback('🤔', '先看黄色的今天，再数一数', 900);
+          setTimeout(() => day.classList.remove('wrong'), 500);
+        }
+      };
+    });
+  }
+
   if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
       CALENDAR_MONTH_INFO,
