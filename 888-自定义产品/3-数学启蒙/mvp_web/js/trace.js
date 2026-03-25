@@ -73,8 +73,8 @@
     const cx = bgCanvas.width / 2;
     const cy = bgCanvas.height / 2 + 20;
 
-    // 先画非常宽的浅色外描边，当作合法区域
-    bgCtx.lineWidth = 50; 
+    // 浅色外描边，当作合法区域（适中宽度，不需要涂满）
+    bgCtx.lineWidth = 28; 
     bgCtx.strokeStyle = '#E2E8F0'; // 灰白色
     bgCtx.lineJoin = 'round';
     bgCtx.lineCap = 'round';
@@ -145,7 +145,7 @@
     const pos = getPos(e);
 
     drawCtx.lineTo(pos.x, pos.y);
-    drawCtx.lineWidth = 20;
+    drawCtx.lineWidth = 12;
     drawCtx.lineCap = 'round';
     drawCtx.lineJoin = 'round';
     drawCtx.strokeStyle = '#6C5CE7';
@@ -210,10 +210,10 @@
     let isPass = false;
     let rank = 'C';
 
-    if (coverage > 0.6 && outsideRatio < 0.3) {
+    if (coverage > 0.25 && outsideRatio < 0.6) {
       isPass = true;
-      rank = coverage > 0.8 && outsideRatio < 0.1 ? 'S' : 'A';
-    } else if (coverage > 0.4 && outsideRatio < 0.5) {
+      rank = coverage > 0.5 && outsideRatio < 0.2 ? 'S' : 'A';
+    } else if (coverage > 0.15 && outsideRatio < 0.8) {
       isPass = true;
       rank = 'B';
     }
@@ -234,8 +234,8 @@
       }, 1500);
     } else {
       let txt = '有点出界了，再试一次吧';
-      if(coverage < 0.3) txt = '还没写满哦，再涂满一点';
-      if(outsideRatio > 0.6) txt = '乱涂乱画可不行哦！';
+      if(coverage < 0.1) txt = '还没写满哦，再涂满一点';
+      if(outsideRatio > 1.0) txt = '乱涂乱画可不行哦！';
       showFeedback(false, '🤔', txt);
       speak(txt);
       setTimeout(() => {
