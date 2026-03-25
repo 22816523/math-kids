@@ -130,8 +130,8 @@
   }
 
   function hideQuestion() {
-    $('.cell.neighbor-highlight').forEach(c => c.classList.remove('neighbor-highlight'));
-    $('.cell.ninegrid-highlight').forEach(c => c.classList.remove('ninegrid-highlight'));
+    $$('.cell.neighbor-highlight').forEach(c => c.classList.remove('neighbor-highlight'));
+    $$('.cell.ninegrid-highlight').forEach(c => c.classList.remove('ninegrid-highlight'));
     promptController.hidePrompt();
   }
 
