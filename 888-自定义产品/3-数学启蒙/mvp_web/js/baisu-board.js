@@ -227,50 +227,18 @@
         speak(String(num));
         break;
 
-      case 'skip':
-        // 跳数探索：点击读出数字
+      case 'pattern':
+        // 找规律探索：点击读出数字
         speak(String(num));
         break;
 
-      case 'place':
-        // 拆一拆探索：点击显示数位分解
-        showPlaceValueExplore(num);
+      case 'treasure':
+        speak(String(num));
         break;
     }
   }
 
-  // 拆一拆探索：显示数位分解卡片
-  function showPlaceValueExplore(num) {
-    const tens = Math.floor(num / 10);
-    const ones = num % 10;
-
-    $('#pvNumber').textContent = num;
-    $('#pvTensDigit').textContent = tens;
-    $('#pvOnesDigit').textContent = ones;
-
-    const pvTens = $('#pvTens');
-    pvTens.innerHTML = '';
-    for (let i = 0; i < tens; i++) {
-      const bundle = document.createElement('div');
-      bundle.className = 'rod-bundle';
-      bundle.textContent = '10';
-      pvTens.appendChild(bundle);
-    }
-
-    const pvOnes = $('#pvOnes');
-    pvOnes.innerHTML = '';
-    for (let i = 0; i < ones; i++) {
-      const rod = document.createElement('div');
-      rod.className = 'rod-single';
-      pvOnes.appendChild(rod);
-    }
-
-    placeValueCard.style.display = 'block';
-    placeValueCard.classList.add('animate-bounce');
-    setTimeout(() => placeValueCard.classList.remove('animate-bounce'), 500);
-
-    speak(`${num}，${tens}个十，${ones}个一`);
-  }
+  // 已经被寻宝模式取代，故此函数删除
 
   // ====================================================
   //  进入探索模式（每个模式切换时调用）
@@ -295,15 +263,15 @@
         showBottomAction('🎯 开始练习', () => startNinegridPractice());
         break;
 
-      case 'skip':
-        skipControls.style.display = 'flex';
-        showSkipExplorePattern();
-        showBottomAction('🎯 开始练习', () => startSkipPractice());
+      case 'pattern':
+        skipControls.style.display = 'flex'; // 继续复用顶部的 "2个一数/5个一数" 控制栏
+        showPatternExplorePattern();
+        showBottomAction('🎯 开始练习', () => startPatternPractice());
         break;
 
-      case 'place':
-        showQuestion('🪵', '点一个数字，看看它能拆成几个十和几个一');
-        showBottomAction('🎯 开始练习', () => startPlacePractice());
+      case 'treasure':
+        showQuestion('💎', '数字海盗藏了宝藏，我们根据线索来找！');
+        showBottomAction('🎯 开始寻宝', () => startTreasurePractice());
         break;
     }
   }
@@ -695,6 +663,7 @@
           showFeedback(true);
           if (state.mode === 'neighbor') checkNeighborComplete();
           else if (state.mode === 'ninegrid') checkNinegridComplete();
+          else if (state.mode === 'pattern') checkPatternComplete();
         }
       }
     });
@@ -722,16 +691,16 @@
   }
 
   // ====================================================
-  //  模式3：跳数
-  //  探索：展示跳数规律高亮 | 练习：填空选择
+  //  模式4：找规律（等差数列填空）
   // ====================================================
-  function showSkipExplorePattern() {
+  function showPatternExplorePattern() {
     // 清除之前状态
     $$('.cell').forEach(c => {
-      c.classList.remove('skip-highlight', 'skip-animate', 'blank', 'filled');
+      c.classList.remove('skip-highlight', 'skip-animate', 'blank', 'filled', 'hidden-num');
       c.textContent = c.dataset.num;
     });
     skipQuiz.style.display = 'none';
+    bubbleZone.style.display = 'none';
 
     const step = state.skipStep;
     // 全量序列
@@ -741,7 +710,6 @@
     } else {
       for (let i = 100; i >= step; i -= step) allNumbers.push(i);
     }
-    // 全局序列
     const visible = allNumbers;
 
     visible.forEach((num, idx) => {
@@ -754,19 +722,19 @@
     });
 
     const dirText = state.skipForward ? '顺数' : '倒数';
-    showQuestion('👀', step + '个一数，' + dirText + ' — 看看规律', step + '个一数，' + dirText);
+    showQuestion('🚀', step + '个一数，' + dirText + ' — 看看规律', step + '个一数，' + dirText);
 
-    showBottomAction('🎯 开始练习', () => startSkipPractice());
+    showBottomAction('🎯 开始练习', () => startPatternPractice());
   }
 
-  function startSkipPractice() {
+  function startPatternPractice() {
     state.practicing = true;
     state.skipQuizIndex = 0;
     bottomActions.style.display = 'none';
-    nextSkipQuestion();
+    nextPatternQuestion();
   }
 
-  function nextSkipQuestion() {
+  function nextPatternQuestion() {
     const step = state.skipStep;
     // 全量序列
     const allNumbers = [];
@@ -775,188 +743,261 @@
     } else {
       for (let i = 100; i >= step; i -= step) allNumbers.push(i);
     }
-    // 当前序列
     const numbers = allNumbers;
 
-    if (state.skipQuizIndex >= 5 || numbers.length < 3) {
+    if (state.skipQuizIndex >= 5 || numbers.length < 5) {
       skipQuiz.style.display = 'none';
-      showQuestion('🎉', '跳数练习完成！');
+      bubbleZone.style.display = 'none';
+      showQuestion('🎉', '找规律练习完成！');
+      $$('.cell.hidden-num').forEach(c => c.classList.remove('hidden-num'));
       showCelebration();
       showBottomAction('🔄 回去看看', () => {
         state.practicing = false;
-        showSkipExplorePattern();
+        showPatternExplorePattern();
       });
       return;
     }
 
-    // 选一个位置挖空
-    const availableIdx = [];
-    for (let i = 1; i < numbers.length - 1; i++) availableIdx.push(i);
-    const pickIdx = availableIdx[Math.floor(Math.random() * availableIdx.length)];
-    const answer = numbers[pickIdx];
-    state.skipQuizAnswer = answer;
+    // 随机选取连续的 3-5 个数字作为题面
+    const len = 3 + Math.floor(Math.random() * 3); // 3,4,5
+    // 确保能够截取这么多数字
+    const maxStartIdx = numbers.length - len;
+    const startIdx = Math.floor(Math.random() * (maxStartIdx + 1));
+    const questionSeries = numbers.slice(startIdx, startIdx + len);
 
-    // 重置网格
+    // 在这几个里挖空 1-2个（不能全挖空，至少留2个数字来显示规律）
+    let blankCount = len === 5 ? 2 : 1;
+    const blankNums = [];
+    const availableIndices = [];
+    for (let i = 0; i < len; i++) availableIndices.push(i);
+    
+    while(blankNums.length < blankCount && availableIndices.length > 0) {
+      const rIdx = Math.floor(Math.random() * availableIndices.length);
+      const selIdx = availableIndices.splice(rIdx, 1)[0];
+      blankNums.push(questionSeries[selIdx]);
+    }
+
+    state.skipQuizAnswer = blankNums; // 用于老版跳数逻辑判定，不过这里我们复用拖拽系统更好
+    state.blanks = blankNums.map(num => ({ position: num, value: num, filled: false }));
+
+    // 重置并隐藏不在序列里的网格
     $$('.cell').forEach(c => {
-      c.classList.remove('skip-highlight', 'skip-animate', 'blank', 'filled');
-      c.textContent = c.dataset.num;
-    });
-
-    // 高亮序列，挖空一个
-    numbers.forEach((num) => {
-      const cell = getCellByNum(num);
-      if (!cell) return;
-      if (num === answer) {
-        cell.textContent = '?';
-        cell.classList.add('blank', 'skip-highlight');
+      c.classList.remove('skip-highlight', 'skip-animate', 'blank', 'filled', 'hidden-num');
+      delete c.dataset.blank;
+      const num = parseInt(c.dataset.num);
+      
+      if (questionSeries.includes(num)) {
+        if (blankNums.includes(num)) {
+          c.textContent = '?';
+          c.classList.add('blank');
+          c.dataset.blank = num;
+        } else {
+          c.textContent = num;
+        }
       } else {
-        cell.classList.add('skip-highlight');
+        c.classList.add('hidden-num');
       }
     });
 
-    // 生成4个选项
-    const options = [answer];
-    while (options.length < 4) {
-      const fake = answer + (Math.floor(Math.random() * 5) - 2) * step;
-      if (fake > 0 && fake <= 100 && !options.includes(fake) && fake !== answer) {
-        options.push(fake);
-      } else {
-        const r = 1 + Math.floor(Math.random() * 100);
-        if (!options.includes(r)) options.push(r);
-      }
+    // 题目展示文本，例如：5，10，?，20
+    const hintTextStr = questionSeries.map(n => blankNums.includes(n) ? '?' : n).join('，');
+
+    // 气泡选项：包含正确答案 + 干扰项
+    const options = [...blankNums];
+    while(options.length < blankCount + 2) {
+       // 干扰项从整个序列里挑，或者稍微大点小点
+       const fake = numbers[Math.floor(Math.random() * numbers.length)] || (Math.floor(Math.random()*100)+1);
+       if (!options.includes(fake)) {
+         options.push(fake);
+       }
     }
     options.sort(() => Math.random() - 0.5);
 
-    skipQuizOptions.innerHTML = '';
-    options.forEach(opt => {
-      const btn = document.createElement('div');
-      btn.className = 'skip-option';
-      btn.textContent = opt;
-      btn.addEventListener('click', () => onSkipOptionClick(opt, btn));
-      skipQuizOptions.appendChild(btn);
-    });
-
-    const prev = numbers[pickIdx - 1];
-    const next = numbers[pickIdx + 1];
-    skipQuizHint.textContent = prev + '，?，' + next + ' — 中间是几？';
     skipQuiz.style.display = 'block';
-    showQuestion('🎯', step + '个一数，缺了哪个？', prev + '，问号，' + next + '，中间是几？');
-  }
-
-  function onSkipOptionClick(value, btn) {
-    if (state.skipQuizAnswer === null) return;
-
-    if (value === state.skipQuizAnswer) {
-      btn.classList.add('correct');
-      const cell = getCellByNum(state.skipQuizAnswer);
-      if (cell) {
-        cell.textContent = state.skipQuizAnswer;
-        cell.classList.remove('blank');
-        cell.classList.add('filled');
-      }
-      showFeedback(true);
-      state.skipQuizIndex++;
-      state.skipQuizAnswer = null;
-      scheduleAdvance(() => nextSkipQuestion(), 1400);
-    } else {
-      btn.classList.add('wrong');
-      showFeedback(false);
-      setTimeout(() => btn.classList.remove('wrong'), 400);
-    }
-  }
-
-  // ====================================================
-  //  模式4：拆一拆
-  //  探索：点击看分解 | 练习：看小棒找数字
-  // ====================================================
-  function startPlacePractice() {
-    state.practicing = true;
-    state.placeScore = 0;
-    nextPlaceQuestion();
-  }
-
-  function nextPlaceQuestion() {
-    if (state.placeScore >= state.placeTotal) {
-      showQuestion('🎉', '全部答对了！答对了 ' + state.placeTotal + ' 个！');
-      placeValueCard.style.display = 'none';
-      showCelebration();
-      showBottomAction('🔄 再来一轮', () => startPlacePractice());
-      return;
-    }
-
-    // 清除之前的高亮
-    $$('.cell.place-selected, .cell.hint-glow').forEach(c => {
-      c.classList.remove('place-selected', 'hint-glow');
+    skipQuizOptions.innerHTML = '';
+    skipQuizHint.textContent = `规律：${step}个一数。排列：` + hintTextStr;
+    
+    bubbleZone.innerHTML = '';
+    options.forEach((opt, idx) => {
+      const bubble = document.createElement('div');
+      bubble.className = 'bubble';
+      bubble.textContent = opt;
+      bubble.dataset.value = opt;
+      bubble.style.animationDelay = (idx * 0.08) + 's';
+      setupDrag(bubble);
+      bubbleZone.appendChild(bubble);
     });
 
-    // 随机出题（1-100内）
-    state.placeTarget = Math.floor(Math.random() * 100) + 1;
-    const num = state.placeTarget;
-    const tens = Math.floor(num / 10);
-    const ones = num % 10;
-
-    // 显示小棒卡片（隐藏数字让孩子猜）
-    $('#pvNumber').textContent = '?';
-    $('#pvTensDigit').textContent = tens;
-    $('#pvOnesDigit').textContent = ones;
-
-    const pvTens = $('#pvTens');
-    pvTens.innerHTML = '';
-    for (let i = 0; i < tens; i++) {
-      const bundle = document.createElement('div');
-      bundle.className = 'rod-bundle';
-      bundle.textContent = '10';
-      pvTens.appendChild(bundle);
-    }
-
-    const pvOnes = $('#pvOnes');
-    pvOnes.innerHTML = '';
-    for (let i = 0; i < ones; i++) {
-      const rod = document.createElement('div');
-      rod.className = 'rod-single';
-      pvOnes.appendChild(rod);
-    }
-
-    placeValueCard.style.display = 'block';
-    placeValueCard.classList.add('animate-bounce');
-    setTimeout(() => placeValueCard.classList.remove('animate-bounce'), 500);
-
-    let hintQ, hintS;
-    if (tens > 0 && ones > 0) {
-      hintQ = tens + '捆小棒加' + ones + '根，是几？在下面找到它！';
-      hintS = tens + '捆小棒加' + ones + '根，是数字几？点一下它';
-    } else if (tens > 0) {
-      hintQ = tens + '捆小棒，是几？在下面找到它！';
-      hintS = tens + '捆小棒，是数字几？点一下它';
-    } else {
-      hintQ = ones + '根小棒，是几？在下面找到它！';
-      hintS = ones + '根小棒，是数字几？点一下它';
-    }
-    showQuestion('🪵', hintQ, hintS);
-    bottomActions.style.display = 'none';
+    bubbleZone.style.display = 'flex';
+    showQuestion('🎯', '按规律，问号处应该填几？', '按规律，拖动正确的数字填入问号');
   }
 
-  function onPlacePracticeClick(num, cell) {
-    if (state.placeTarget === null) return;
+  function checkPatternComplete() {
+    if (state.blanks.every(b => b.filled)) {
+      showQuestion('✅', '恭喜你，找对规律了！');
+      state.skipQuizIndex++;
+      
+      setTimeout(() => {
+        nextPatternQuestion();
+      }, 1500);
+    }
+  }
 
-    if (num === state.placeTarget) {
-      cell.classList.add('place-selected');
-      $('#pvNumber').textContent = num;
-      showFeedback(true);
-      state.placeScore++;
-      state.placeTarget = null;
-      scheduleAdvance(() => nextPlaceQuestion(), 1400);
+  // ====================================================
+  //  模式5：数字寻宝（多条件线索推理）
+  // ====================================================
+  function startTreasurePractice() {
+    state.practicing = true;
+    hideQuestion();
+
+    // 随机一个目标数字 (避免太靠边的边角料让线索太容易)
+    state.treasureTarget = Math.floor(Math.random() * 80) + 11; 
+    const target = state.treasureTarget;
+    
+    // 生成3条线索
+    const clues = [];
+    const tens = Math.floor(target / 10);
+    const ones = target % 10;
+    const row = tens + (ones === 0 ? 0 : 1); // 1-10行
+    
+    // 线索1：行或列 (包含)
+    if (Math.random() > 0.5) {
+      clues.push(`在第 ${row} 行`);
     } else {
-      cell.classList.add('animate-shake');
-      setTimeout(() => cell.classList.remove('animate-shake'), 400);
-      showFeedback(false);
+      clues.push(`个位是 ${ones}`);
+    }
 
-      const target = getCellByNum(state.placeTarget);
-      if (target) {
-        setTimeout(() => target.classList.add('hint-glow'), 800);
+    // 线索2：大小范围 (排除法)
+    const offset = Math.floor(Math.random() * 5) + 5; // 5-9的偏移
+    if (Math.random() > 0.5) {
+       // 大于 X
+       const lowerBound = Math.max(1, target - offset);
+       clues.push(`比 ${lowerBound} 大`);
+    } else {
+       // 小于 X
+       const upperBound = Math.min(100, target + offset);
+       clues.push(`比 ${upperBound} 小`);
+    }
+
+    // 线索3：特定数值特征或其他
+    if (clues.some(c => c.includes('个位'))) {
+       // 已经有个位线索了，就给十位或者范围
+       clues.push(Math.random() > 0.5 ? `十位是 ${tens}` : `它的相邻数字有 ${target - 1}`);
+    } else {
+       clues.push(`个位是 ${ones}`);
+    }
+
+    state.treasureClues = clues.sort(() => Math.random() - 0.5);
+    state.treasureStep = 0;
+
+    // UI 显示
+    $$('.cell').forEach(c => {
+      c.classList.remove('hidden-num', 'skip-highlight', 'blank', 'filled');
+      c.textContent = c.dataset.num;
+    });
+
+    bottomActions.style.display = 'flex';
+    actionBtn.onclick = revealNextTreasureClue;
+    actionBtn.textContent = '📜 查看线索';
+
+    showQuestion('🗺️', '海盗把大钻石藏在了一个数字下面！', '海盗把大钻石藏在了一个数字下面，看看线索吧');
+  }
+
+  function revealNextTreasureClue() {
+    if (state.treasureStep >= state.treasureClues.length) return;
+    
+    const clue = state.treasureClues[state.treasureStep];
+    state.treasureStep++;
+
+    const target = state.treasureTarget;
+    const tens = Math.floor(target / 10);
+    const ones = target % 10;
+    const row = tens + (ones === 0 ? 0 : 1);
+
+    // 解析当前所有已揭示线索对应的存活数字
+    const activeClues = state.treasureClues.slice(0, state.treasureStep);
+    
+    $$('.cell').forEach((cell) => {
+      if (cell.classList.contains('hidden-num')) return; // 已经被淘汰了
+      
+      const num = parseInt(cell.dataset.num);
+      let isAlive = true;
+      const cTens = Math.floor(num / 10);
+      const cOnes = num % 10;
+      const cRow = cTens + (cOnes === 0 ? 0 : 1);
+
+      activeClues.forEach(c => {
+        if (c.includes('行')) {
+           const r = parseInt(c.match(/\d+/)[0]);
+           if (cRow !== r) isAlive = false;
+        } else if (c.includes('个位')) {
+           const o = parseInt(c.match(/\d+/)[0]);
+           if (cOnes !== o && num !== 100) isAlive = false;
+           if (cOnes !== o && num === 100 && o !== 0) isAlive = false; // 100的个位是0
+        } else if (c.includes('十位')) {
+           const t = parseInt(c.match(/\d+/)[0]);
+           if (cTens !== t && num !== 100) isAlive = false;
+        } else if (c.includes('大')) {
+           const val = parseInt(c.match(/\d+/)[0]);
+           if (num <= val) isAlive = false;
+        } else if (c.includes('小')) {
+           const val = parseInt(c.match(/\d+/)[0]);
+           if (num >= val) isAlive = false;
+        } else if (c.includes('相邻')) {
+           // 它的相邻数字有 target-1, 说明 num 是 target
+           if (num !== target) isAlive = false;
+        }
+      });
+
+      if (!isAlive) {
+         cell.classList.add('hidden-num');
       }
+    });
+
+    showQuestion('📜', `线索 ${state.treasureStep}: ${clue}`);
+
+    if (state.treasureStep === state.treasureClues.length) {
+      actionBtn.textContent = '🔍 我猜对了！';
+      actionBtn.onclick = () => {
+         const remaining = $$('.cell:not(.hidden-num)');
+         if (remaining.length === 1 && parseInt(remaining[0].dataset.num) === state.treasureTarget) {
+            checkTreasureComplete(remaining[0]);
+         } else {
+            // 点击格子的交互
+            showQuestion('🤔', '只剩这些数字了，点击那是哪个！');
+            bottomActions.style.display = 'none';
+            $$('.cell:not(.hidden-num)').forEach(c => {
+               c.onclick = () => {
+                  if (parseInt(c.dataset.num) === state.treasureTarget) {
+                    checkTreasureComplete(c);
+                  } else {
+                    c.classList.add('hidden-num');
+                    showFeedback(false);
+                  }
+               };
+            });
+         }
+      };
     }
   }
+
+  function checkTreasureComplete(cell) {
+     cell.textContent = '💎';
+     cell.classList.add('skip-highlight'); // 让它亮起来
+     showFeedback(true);
+     showQuestion('🎉', `找到了！藏在 ${state.treasureTarget} 号下面！`);
+     showCelebration();
+     
+     // 延迟几秒后全盘亮起并重置事件
+     setTimeout(() => {
+       $$('.cell.hidden-num').forEach(c => c.classList.remove('hidden-num'));
+       $$('.cell').forEach(c => {
+          c.onclick = () => onCellClick(parseInt(c.dataset.num), c);
+       });
+       showBottomAction('🔄 再玩一次', () => startTreasurePractice());
+     }, 1000);
+  }
+
 
   // ========== 底部按钮工具 ==========
   function showBottomAction(text, callback) {
@@ -981,10 +1022,7 @@
     // 隐藏所有模式专属UI
     orderQuiz.style.display = 'none';
     boardWrapper.style.display = '';
-    rangeTabs.style.display = 'flex';
-    skipControls.style.display = 'none';
     skipQuiz.style.display = 'none';
-    placeValueCard.style.display = 'none';
     bubbleZone.style.display = 'none';
     bottomActions.style.display = 'none';
     hideQuestion();
@@ -1005,7 +1043,7 @@
         btn.classList.add('active');
         state.skipStep = parseInt(btn.dataset.step);
         if (!state.practicing) {
-          showSkipExplorePattern();
+          showPatternExplorePattern();
         }
       });
     });
@@ -1014,19 +1052,8 @@
       state.skipForward = !state.skipForward;
       $('#skipDirText').textContent = state.skipForward ? '顺数 ▶' : '◀ 倒数';
       if (!state.practicing) {
-        showSkipExplorePattern();
+        showPatternExplorePattern();
       }
-    });
-
-    // 分段切换
-    $$('.range-tab').forEach(tab => {
-      tab.addEventListener('click', () => {
-        state.rangeStart = parseInt(tab.dataset.start);
-        $$('.range-tab').forEach(t => t.classList.remove('active'));
-        tab.classList.add('active');
-        // 退出练习，回到当前模式的探索
-        enterExploreMode();
-      });
     });
 
     // 初始进入认数字探索模式
