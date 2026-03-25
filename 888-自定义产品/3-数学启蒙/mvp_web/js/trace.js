@@ -25,9 +25,9 @@
   const TRACE_MAX_NUMBER = 100;
   const GUIDE_BAND_COLOR = 'rgba(188, 198, 214, 0.88)';
   const GUIDE_STROKE_COLOR = '#8EA0B8';
+  const CELL_GUIDE_COLOR = 'rgba(160, 160, 160, 0.28)';
   const DRAW_STROKE_COLOR = '#6C5CE7';
   const DIGIT_HEIGHT = 140;
-  const DIGIT_GAP = 22;
 
   const DIGIT_SKELETONS = Object.freeze({
     '0': {
@@ -72,12 +72,13 @@
           type: 'path',
           commands: [
             ['M', 26, 34],
-            ['Q', 42, 18, 62, 18],
-            ['Q', 82, 20, 80, 44],
-            ['Q', 78, 60, 60, 74],
-            ['L', 38, 90],
-            ['Q', 28, 98, 28, 106],
-            ['L', 80, 106],
+            ['Q', 42, 18, 64, 18],
+            ['Q', 82, 20, 80, 42],
+            ['Q', 78, 58, 60, 72],
+            ['Q', 44, 84, 36, 92],
+            ['L', 82, 92],
+            ['L', 82, 106],
+            ['L', 28, 106],
           ],
         },
       ],
@@ -97,9 +98,9 @@
             ['Q', 44, 18, 62, 18],
             ['Q', 80, 20, 78, 44],
             ['Q', 76, 60, 54, 68],
-            ['Q', 82, 74, 82, 96],
-            ['Q', 82, 120, 52, 120],
-            ['Q', 34, 120, 24, 108],
+            ['Q', 76, 74, 78, 94],
+            ['Q', 80, 118, 52, 118],
+            ['Q', 34, 118, 24, 108],
           ],
         },
       ],
@@ -150,11 +151,11 @@
           commands: [
             ['M', 78, 22],
             ['L', 34, 22],
-            ['L', 30, 62],
-            ['L', 58, 62],
-            ['Q', 82, 66, 82, 92],
-            ['Q', 82, 120, 50, 120],
-            ['Q', 32, 120, 22, 108],
+            ['L', 30, 58],
+            ['L', 60, 58],
+            ['Q', 82, 60, 82, 90],
+            ['Q', 82, 118, 50, 118],
+            ['Q', 30, 118, 22, 106],
           ],
         },
       ],
@@ -173,11 +174,11 @@
           commands: [
             ['M', 72, 28],
             ['Q', 56, 18, 42, 28],
-            ['Q', 22, 42, 24, 76],
-            ['Q', 26, 120, 56, 120],
-            ['Q', 82, 120, 82, 92],
-            ['Q', 82, 64, 54, 64],
-            ['Q', 32, 66, 28, 84],
+            ['Q', 22, 44, 24, 78],
+            ['Q', 26, 118, 56, 118],
+            ['Q', 80, 118, 80, 90],
+            ['Q', 80, 62, 54, 62],
+            ['Q', 32, 64, 28, 84],
           ],
         },
       ],
@@ -210,8 +211,8 @@
         [74, 94],
       ],
       strokes: [
-        { type: 'ellipse', cx: 50, cy: 46, rx: 22, ry: 26 },
-        { type: 'ellipse', cx: 50, cy: 94, rx: 28, ry: 30 },
+        { type: 'ellipse', cx: 50, cy: 44, rx: 22, ry: 24 },
+        { type: 'ellipse', cx: 50, cy: 94, rx: 28, ry: 28 },
       ],
     },
     '9': {
@@ -230,8 +231,8 @@
             ['Q', 60, 90, 42, 88],
             ['Q', 20, 82, 22, 50],
             ['Q', 26, 18, 58, 20],
-            ['Q', 82, 22, 82, 60],
-            ['L', 76, 118],
+            ['Q', 80, 22, 80, 58],
+            ['Q', 80, 88, 74, 118],
           ],
         },
       ],
@@ -255,18 +256,20 @@
   function getNumberTraceLayout(num, options = {}) {
     const canvasWidth = options.canvasWidth ?? 300;
     const canvasHeight = options.canvasHeight ?? 360;
-    const paddingX = options.paddingX ?? 34;
-    const paddingY = options.paddingY ?? 34;
+    const paddingX = options.paddingX ?? 22;
+    const paddingY = options.paddingY ?? 24;
     const digits = String(num).split('');
     const contentWidth = canvasWidth - paddingX * 2;
     const slotWidth = contentWidth / digits.length;
     const slotPadding = Math.min(12, slotWidth * 0.08);
+    const cellTop = paddingY;
+    const cellHeight = canvasHeight - paddingY * 2;
     const maxDigitWidth = digits.reduce((maxWidth, digit) => Math.max(maxWidth, DIGIT_SKELETONS[digit].width), 0);
     const scaleX = (slotWidth - slotPadding * 2) / maxDigitWidth;
-    const scaleY = (canvasHeight - paddingY * 2) / DIGIT_HEIGHT;
+    const scaleY = (cellHeight - 22) / DIGIT_HEIGHT;
     const scale = Math.min(scaleX, scaleY);
     const totalHeight = DIGIT_HEIGHT * scale;
-    const startY = (canvasHeight - totalHeight) / 2;
+    const startY = cellTop + (cellHeight - totalHeight) / 2;
 
     const glyphs = [];
     digits.forEach((digit, index) => {
@@ -284,6 +287,8 @@
         height: DIGIT_HEIGHT * scale,
         slotX,
         slotWidth,
+        cellTop,
+        cellHeight,
         skeleton,
       });
     });
@@ -299,6 +304,8 @@
       totalHeight,
       startX,
       startY,
+      cellTop,
+      cellHeight,
     };
   }
 
@@ -520,6 +527,32 @@
       ctx.restore();
     }
 
+    function drawPracticeCells(ctx, layout) {
+      ctx.save();
+      ctx.strokeStyle = CELL_GUIDE_COLOR;
+      ctx.lineWidth = 2;
+      layout.glyphs.forEach((glyph) => {
+        const insetX = 6;
+        const left = glyph.slotX + insetX;
+        const right = glyph.slotX + glyph.slotWidth - insetX;
+        const top = glyph.cellTop;
+        const bottom = glyph.cellTop + glyph.cellHeight;
+        const midX = (left + right) / 2;
+        const midY = (top + bottom) / 2;
+
+        ctx.beginPath();
+        ctx.moveTo(midX, top);
+        ctx.lineTo(midX, bottom);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(left, midY);
+        ctx.lineTo(right, midY);
+        ctx.stroke();
+      });
+      ctx.restore();
+    }
+
     function renderReferenceNumber(num) {
       const layout = getNumberTraceLayout(num, {
         canvasWidth: bgCanvas.width,
@@ -530,6 +563,8 @@
 
       bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
       maskCtx.clearRect(0, 0, maskCanvas.width, maskCanvas.height);
+
+      drawPracticeCells(bgCtx, layout);
 
       drawGlyphs(maskCtx, layout, {
         strokeStyle: '#000000',
