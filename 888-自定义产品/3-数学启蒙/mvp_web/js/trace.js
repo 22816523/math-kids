@@ -42,19 +42,19 @@
   function initNumberPicker() {
     let html = '';
     for (let i = 0; i <= 9; i++) {
-      html += \`<button class="num-btn \${i === state.currentNum ? 'active' : ''}" data-val="\${i}">\${i}</button>\`;
+      html += `<button class="mode-tab ${i === state.currentNum ? 'active' : ''}" data-val="${i}"><span class="tab-label">${i}</span></button>`;
     }
     numberPicker.innerHTML = html;
 
-    $$('.num-btn').forEach(btn => {
+    $$('.mode-tab').forEach(btn => {
       btn.onclick = () => {
-        $$('.num-btn').forEach(b => b.classList.remove('active'));
+        $$('.mode-tab').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         state.currentNum = parseInt(btn.dataset.val);
         boardTargetText.textContent = state.currentNum;
         clearDrawCanvas();
         renderReferenceNumber(state.currentNum);
-        speak(\`来写数字 \${state.currentNum} 吧\`);
+        speak(`来写数字 ${state.currentNum} 吧`);
       };
     });
   }
@@ -227,7 +227,7 @@
         window.PracticeSupport?.showConfetti?.();
         // 自动切下一个数字
         if (state.currentNum < 9) {
-          const nextBtn = \`[data-val="\${state.currentNum + 1}"]\`;
+          const nextBtn = `[data-val="${state.currentNum + 1}"]`;
           const btnObj = $(nextBtn);
           if(btnObj) btnObj.click();
         }
