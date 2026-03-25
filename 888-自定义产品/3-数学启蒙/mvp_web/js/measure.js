@@ -794,7 +794,7 @@
           <div style="position:absolute;right:4px;top:20px;transform:translateY(-50%);font-size:11px;font-weight:700;color:var(--text);">cm</div>
         </div>
         <div style="font-size:48px;">${q.obj}</div>
-        <div style="font-size:18px;font-weight:700;color:var(--gray-400);">${q.name}有多长？
+        <div style="font-size:18px;font-weight:700;color:var(--gray-400);">${q.name}有多长？</div>
       </div>
     `;
 
@@ -822,75 +822,133 @@
     });
   }
 
-  /* ========== 质量模式 ========== */
+  /* ========== 质量模式 (魔法等量天平) ========== */
 
-  const WEIGHT_QUESTIONS = [
-    { obj: '🍎', name: '苹果', value: 200, answer: '克' },
-    { obj: '🍌', name: '香蕉', value: 150, answer: '克' },
-    { obj: '🥔', name: '土豆', value: 300, answer: '克' },
-    { obj: '🥕', name: '胡萝卜', value: 100, answer: '克' },
-    { obj: '📚', name: '书本', value: 500, answer: '克' },
-    { obj: '🎒', name: '书包', value: 2, answer: '千克' },
-    { obj: '🏀', name: '篮球', value: 600, answer: '克' },
-    { obj: '🧸', name: '玩具熊', value: 1, answer: '千克' },
-    { obj: '🍉', name: '西瓜', value: 3, answer: '千克' },
-    { obj: '🐱', name: '小猫', value: 4, answer: '千克' },
+  const BALANCE_QUESTIONS = [
+    // 基础数量配平 (感知重量与数量关系)
+    { type: 'basic', leftCount: 2, leftIcon: '🍉', rightIcon: '🍎', target: 6, weightRatio: 3, q: '1个西瓜和3个苹果一样重。2个西瓜等于几个苹果呢？' },
+    { type: 'basic', leftCount: 3, leftIcon: '🐷', rightIcon: '🍓', target: 6, weightRatio: 2, q: '1只小猪和2颗草莓一样重。填满右边让天平平衡！' },
+    
+    // 算式配平 (代数前置)
+    { type: 'equation', leftText: '4 + 3', rightIcon: '1️⃣', target: 7, weightRatio: 1, q: '左方是 4 加 3，右方需要放几个 1？' },
+    { type: 'equation', leftText: '10 - 2', rightIcon: '🍎', target: 8, weightRatio: 1, q: '多少个苹果能让天平（10 - 2）平衡？' },
+    
+    // 纯逻辑代换 (生活场景)
+    { type: 'substitute', leftCount: 2, leftIcon: '🐄', rightIcon: '🐑', target: 4, weightRatio: 2, q: '已知 1头牛 = 2只羊。那么 2头牛等于几只羊？' },
+    { type: 'substitute', leftCount: 1, leftIcon: '🐘', rightIcon: '🐒', target: 5, weightRatio: 5, q: '大象好重呀！1只大象等于5只猴子。' },
   ];
 
   function initWeight() {
     state.weightRound = 0;
-    showQuestion('⚖️', '用秤称一称，选出正确的重量');
+    state.rightItems = 0;
+    showQuestion('⚖️', '魔法天平：放上东西，让两边一样重！');
     bottomActions.style.display = 'flex';
-    actionBtn.textContent = '🎯 开始练习';
+    actionBtn.textContent = '🎯 开始魔法挑战';
     actionBtn.className = 'btn btn-purple btn-lg';
     actionBtn.onclick = nextWeightQuestion;
-    scaleDisplay.innerHTML = '<div style="font-size:48px;padding:40px;">⚖️</div><div style="font-size:18px;color:var(--gray-400);">点击"开始练习"称重物体</div>';
+    
+    scaleDisplay.innerHTML = `
+      <div style="font-size:64px;padding:20px;margin-bottom:20px;">⚖️</div>
+      <div style="font-size:20px;font-weight:700;color:var(--title);max-width:280px;text-align:center;">
+        点击物品放入托盘，<br>让天平完美平衡！
+      </div>`;
     weightOptions.innerHTML = '';
   }
 
   function nextWeightQuestion() {
-    if (state.weightRound >= 5) {
-      showFeedback('🎊', '全部完成！', 2000);
+    if (state.weightRound >= BALANCE_QUESTIONS.length) {
+      showFeedback('🎊', '天平大师！', 2000);
+      showConfetti();
+      addStar(5);
       setTimeout(initWeight, 2500);
       return;
     }
-    state.weightRound++;
-    const q = WEIGHT_QUESTIONS[Math.floor(Math.random() * WEIGHT_QUESTIONS.length)];
-    state.weightAnswer = q.answer;
-    showQuestion('⚖️', `第${state.weightRound}题：${q.name}应该用什么单位？`, `第${state.weightRound}题，${q.name}应该用什么单位？`);
+    const q = BALANCE_QUESTIONS[state.weightRound];
+    state.rightItems = 0;
+    
+    showQuestion('⚖️', `第${state.weightRound + 1}关：${q.q}`, q.q);
+    renderBalanceScale(q);
+  }
+
+  function renderBalanceScale(q) {
+    const leftWeight = q.target * 10;
+    const rightWeight = state.rightItems * 10;
+    const diff = rightWeight - leftWeight;
+    let tilt = (diff / leftWeight) * 25;
+    if (tilt < -25) tilt = -25;
+    if (tilt > 25) tilt = 25;
+
+    let leftHTML = '';
+    if (q.type === 'equation') {
+      leftHTML = `<div style="font-size:32px;font-weight:900;background:var(--white);padding:4px 12px;border-radius:12px;border:4px solid var(--blue);color:var(--blue-dark);box-shadow:0 4px 0 var(--blue-light);">${q.leftText}</div>`;
+    } else {
+      leftHTML = Array(q.leftCount).fill(`<span style="font-size:40px;">${q.leftIcon}</span>`).join('');
+    }
+
+    let rightHTML = Array(state.rightItems).fill(`<span class="removable-item" style="font-size:40px;cursor:pointer;transition:transform 0.1s;">${q.rightIcon}</span>`).join('');
 
     scaleDisplay.innerHTML = `
-      <div class="digital-scale">
-        <div class="scale-screen">${q.value}</div>
-      </div>
-      <div class="scale-object">${q.obj}</div>
-      <div style="margin-top:8px;font-size:20px;font-weight:700;color:var(--text);">
-        ${q.name} ${q.value}&nbsp;<span style="color:var(--blue);">?</span>
+      <div class="scale-container" style="margin-top:40px;margin-bottom:20px;transform:scale(1.15);">
+        <div class="scale-beam" style="transform:rotate(${tilt}deg);transition:transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);">
+          <div class="scale-pan scale-pan-left">
+            <div class="scale-pan-items" style="display:flex;gap:4px;flex-wrap:wrap;justify-content:center;max-width:120px;">
+              ${leftHTML}
+            </div>
+            <div class="scale-pan-plate" style="width:120px;${diff === 0 && state.rightItems > 0 ? 'background:var(--green);border-color:var(--green-dark);' : ''}"></div>
+          </div>
+          <div class="scale-pan scale-pan-right">
+            <div class="scale-pan-items" id="rightPanItems" style="display:flex;gap:4px;flex-wrap:wrap;justify-content:center;max-width:120px;min-height:50px;">
+              ${rightHTML}
+            </div>
+            <div class="scale-pan-plate" style="width:120px;${diff === 0 && state.rightItems > 0 ? 'background:var(--green);border-color:var(--green-dark);' : ''}"></div>
+          </div>
+        </div>
+        <div class="scale-pillar" style="height:80px;width:16px;"></div>
+        <div class="scale-base" style="width:120px;height:16px;"></div>
       </div>
     `;
 
-    weightOptions.innerHTML = '';
-    ['克', '千克'].forEach(unit => {
-      const div = document.createElement('div');
-      div.className = 'weight-option';
-      div.textContent = unit;
-      div.onclick = () => {
-        if (state.weightAnswer === null) return;
-        if (div.classList.contains('selected')) return;
-        if (unit === state.weightAnswer) {
-          div.classList.add('selected');
-          addStar(1);
-          showFeedback('🎉', '答对了！', 1200);
-          state.weightAnswer = null;
-          scheduleAdvance(nextWeightQuestion, 1500);
-        } else {
-          div.classList.add('wrong');
-          showFeedback('🤔', '再想想哦', 800);
-          setTimeout(() => div.classList.remove('wrong'), 500);
-        }
+    const rItems = scaleDisplay.querySelectorAll('.removable-item');
+    rItems.forEach(item => {
+      item.onclick = () => {
+        if (diff === 0 && state.rightItems === q.target) return;
+        state.rightItems--;
+        speak('拿走');
+        renderBalanceScale(q);
       };
-      weightOptions.appendChild(div);
     });
+
+    if (diff === 0 && state.rightItems > 0) {
+      weightOptions.innerHTML = '';
+      setTimeout(() => {
+        showFeedback('🎉', '完美平衡！', 1500);
+        addStar(2);
+        state.weightRound++;
+        scheduleAdvance(nextWeightQuestion, 2000);
+      }, 500);
+    } else {
+      weightOptions.innerHTML = `
+        <div style="width:100%;text-align:center;margin-bottom:12px;color:var(--purple-dark);font-weight:900;">点击放入托盘：</div>
+        <div style="display:flex;gap:16px;justify-content:center;">
+          <div class="weight-option" id="addBtn" style="font-size:32px;padding:12px 30px;background:var(--white);border:4px solid var(--white);box-shadow:0 6px 0 var(--gray-200);border-radius:100px;cursor:pointer;user-select:none;">
+             <span style="font-size:40px;vertical-align:middle;">➕ ${q.rightIcon}</span>
+          </div>
+        </div>
+      `;
+      const addBtn = document.getElementById('addBtn');
+      if (addBtn) {
+        addBtn.onmousedown = () => addBtn.style.transform = 'translateY(6px)';
+        addBtn.onmouseup = () => addBtn.style.transform = 'none';
+        addBtn.ontouchstart = () => addBtn.style.transform = 'translateY(6px)';
+        addBtn.ontouchend = () => addBtn.style.transform = 'none';
+
+        addBtn.onclick = () => {
+          state.rightItems++;
+          speak(String(state.rightItems));
+          renderBalanceScale(q);
+        };
+      }
+    }
   }
 
   switchMode();

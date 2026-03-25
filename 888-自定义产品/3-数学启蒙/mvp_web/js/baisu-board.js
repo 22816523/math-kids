@@ -43,13 +43,8 @@
   const orderHint = $('#orderHint');
   const orderSpeaker = $('#orderSpeaker');
   const orderProgress = $('#orderProgress');
-  const rangeTabs = $('#rangeTabs');
-  const bubbleZone = $('#bubbleZone');
   const skipControls = $('#skipControls');
-  const skipQuiz = $('#skipQuiz');
-  const skipQuizHint = $('#skipQuizHint');
-  const skipQuizOptions = $('#skipQuizOptions');
-  const placeValueCard = $('#placeValueCard');
+  const bubbleZone = $('#bubbleZone');
   const bottomActions = $('#bottomActions');
   const actionBtn = $('#actionBtn');
   const questionBar = $('#questionBar');
@@ -193,12 +188,7 @@
 
   // ========== 格子点击（统一入口） ==========
   function onCellClick(num, cell) {
-    if (state.practicing) {
-      // 练习模式下的点击
-      switch (state.mode) {
-        case 'place': onPlacePracticeClick(num, cell); break;
-      }
-    } else {
+    if (!state.practicing) {
       // 探索模式下的点击
       onExploreClick(num, cell);
     }
@@ -287,7 +277,6 @@
 
     // 隐藏百数板，显示选数卡片区
     boardWrapper.style.display = 'none';
-    rangeTabs.style.display = 'none';
     orderQuiz.style.display = 'flex';
     bottomActions.style.display = 'none';
 
@@ -303,7 +292,6 @@
     if (state.orderScore >= state.orderTotal) {
       orderQuiz.style.display = 'none';
       boardWrapper.style.display = '';
-      rangeTabs.style.display = 'flex';
       showQuestion('🎉', '全部答对了！答对 ' + state.orderTotal + ' 个！');
       showCelebration();
       showBottomAction('🔄 再来一轮', () => startOrderPractice());
@@ -1022,8 +1010,8 @@
     // 隐藏所有模式专属UI
     orderQuiz.style.display = 'none';
     boardWrapper.style.display = '';
-    skipQuiz.style.display = 'none';
-    bubbleZone.style.display = 'none';
+    skipControls.style.display = 'none';
+    if (bubbleZone) bubbleZone.style.display = 'none';
     bottomActions.style.display = 'none';
     hideQuestion();
 

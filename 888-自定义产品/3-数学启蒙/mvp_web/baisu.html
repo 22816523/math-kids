@@ -59,6 +59,24 @@
         <button type="button" id="questionSpeaker" class="question-speaker" hidden aria-label="播放题目语音">🔊</button>
       </div>
 
+      <!-- 认数字练习区（听音选数4选1） -->
+      <div id="orderQuiz" class="order-quiz" style="display:none;">
+        <div class="order-progress" id="orderProgress">1 / 5</div>
+        <div class="order-hint" id="orderHint">听一听，选出正确的数字</div>
+        <div class="order-options" id="orderOptions">
+          <!-- JS动态生成4张选项卡片 -->
+        </div>
+        <button class="order-speaker" id="orderSpeaker">🔊 再听一遍</button>
+      </div>
+
+      <!-- 找规律控制栏 -->
+      <div id="skipControls" class="skip-controls" style="display:none;">
+        <button class="skip-step-btn active" data-step="2">2个一数</button>
+        <button class="skip-step-btn" data-step="5">5个一数</button>
+        <button class="skip-step-btn" data-step="10">10个一数</button>
+        <button id="skipDirectionBtn" class="skip-direction-btn"><span id="skipDirText">顺数 ▶</span></button>
+      </div>
+
       <!-- 百数板网格 -->
       <div class="board-wrapper" id="boardWrapper">
         <div class="board-grid" id="boardGrid">

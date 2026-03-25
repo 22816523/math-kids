@@ -102,6 +102,8 @@
     findTargets: [],
     findFound: 0,
     findScene: 0,
+    tangramRound: 0,
+    tangramFilled: 0,
   };
 
   // ========== DOM引用 ==========
@@ -115,6 +117,8 @@
   const findArea = $('#findArea');
   const sceneContainer = $('#sceneContainer');
   const findProgress = $('#findProgress');
+  const tangramArea = $('#tangramArea');
+  const tangramBoard = $('#tangramBoard');
   const bottomActions = $('#bottomActions');
   const actionBtn = $('#actionBtn');
   const questionBar = $('#questionBar');

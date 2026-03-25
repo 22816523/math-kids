@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="css/design-system.css?v=20260314b">
   <link rel="stylesheet" href="css/shape.css?v=20260314b">
 </head>
+<body>
   <!-- 护眼背景装饰 -->
   <div class="bg-decoration">
     <div class="cloud cloud-1"></div>
@@ -39,6 +40,11 @@
       <button class="mode-tab" data-mode="find">
         <span class="tab-icon">🔍</span>
         <span class="tab-label">找一找</span>
+      </button>
+      <!-- 新增：七巧板拼摆模式 -->
+      <button class="mode-tab" data-mode="tangram">
+        <span class="tab-icon">🧩</span>
+        <span class="tab-label">拼一拼</span>
       </button>
     </div>
 
@@ -73,6 +79,13 @@
           <!-- JS动态生成SVG场景 -->
         </div>
         <div class="find-progress" id="findProgress"></div>
+      </div>
+
+      <!-- 新增：拼一拼模式（七巧板拼摆） -->
+      <div id="tangramArea" class="tangram-area" style="display:none;">
+        <div class="tangram-board" id="tangramBoard">
+          <!-- JS动态生成目标轮廓底图和散落拼图碎片 -->
+        </div>
       </div>
 
     </div>
