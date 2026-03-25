@@ -72,9 +72,6 @@ function showStartScreen() {
   feedback.textContent = '';
   feedback.className = 'feedback';
   bottomActions.style.display = 'none';
-  actionBtn.textContent = '开始练习';
-  actionBtn.className = 'btn btn-green btn-lg';
-  actionBtn.onclick = startPractice;
   setPrompt('准备好了吗？', '准备好了吗？点击开始练习');
   visualArea.innerHTML = `
     <div style="text-align:center;padding:40px 0;">
@@ -83,7 +80,6 @@ function showStartScreen() {
     </div>
   `;
   controlArea.innerHTML = '<button class="btn btn-green btn-lg" onclick="startPractice()">🎯 开始练习</button>';
-  controlArea.innerHTML = '<button class="btn-green btn-lg" onclick="startPractice()">开始练习</button>';
 }
 
 function startPractice() {
@@ -200,14 +196,6 @@ function showCompleteScreen() {
   `;
   controlArea.innerHTML = '<button class="btn btn-blue btn-lg" onclick="startPractice()">🔄 再来一组</button>';
   bottomActions.style.display = 'none';
-  actionBtn.textContent = '再来一组';
-  actionBtn.className = 'btn btn-blue btn-lg';
-  actionBtn.onclick = startPractice;
-  feedback.textContent = '';
-  feedback.className = 'feedback';
-  return;
-
-  controlArea.innerHTML = '<button class="btn-blue btn-lg" onclick="startPractice()">再来一组</button>';
   feedback.textContent = '';
   feedback.className = 'feedback';
 }
@@ -224,9 +212,9 @@ function generateLevel1Question() {
     state.answer = a + b;
     renderLevel1Addition();
   } else {
-    const result = Math.floor(Math.random() * 8) + 2;
-    const subtract = Math.floor(Math.random() * result) + 1;
-    const total = result + subtract;
+    const total = Math.floor(Math.random() * 9) + 2;
+    const subtract = Math.floor(Math.random() * (total - 1)) + 1;
+    const result = total - subtract;
     state.question = { total, subtract };
     state.answer = result;
     renderLevel1Subtraction();
@@ -236,7 +224,7 @@ function generateLevel1Question() {
 function renderLevel1Addition() {
   const { a, b } = state.question;
   const fruit = state.currentFruit;
-  setPrompt(`${getQuestionPrefix()}：${a} + ${b} = ?`, `${getQuestionPrefix()}，${a}加${b}等于几？`);
+  setPrompt(`${getQuestionPrefix()}：${a} + ${b} = ?`, `${getQuestionPrefix()}，${a}加${b}等于多少？`);
 
   visualArea.innerHTML = `
     <div class="objects-container">
@@ -296,7 +284,7 @@ function mergeApples() {
 function renderLevel1Subtraction() {
   const { total, subtract } = state.question;
   const fruit = state.currentFruit;
-  setPrompt(`${getQuestionPrefix()}：${total} - ${subtract} = ?`, `${getQuestionPrefix()}，${total}减${subtract}等于几？`);
+  setPrompt(`${getQuestionPrefix()}：${total} - ${subtract} = ?`, `${getQuestionPrefix()}，${total}减${subtract}等于多少？`);
 
   visualArea.innerHTML = `
     <div class="object-group">
@@ -361,7 +349,7 @@ function generateLevel2Question() {
 
 function renderLevel2Addition() {
   const { a, b } = state.question;
-  setPrompt(`${getQuestionPrefix()}：${a} + ${b} = ?`, `${getQuestionPrefix()}，${a}加${b}等于几？`);
+  setPrompt(`${getQuestionPrefix()}：${a} + ${b} = ?`, `${getQuestionPrefix()}，${a}加${b}等于多少？`);
 
   visualArea.innerHTML = `
     <div class="level2-container">
@@ -473,7 +461,7 @@ function generateLevel3Question() {
 
 function renderLevel3Subtraction() {
   const { total, subtract } = state.question;
-  setPrompt(`${getQuestionPrefix()}：${total} - ${subtract} = ?`, `${getQuestionPrefix()}，${total}减${subtract}等于几？`);
+  setPrompt(`${getQuestionPrefix()}：${total} - ${subtract} = ?`, `${getQuestionPrefix()}，${total}减${subtract}等于多少？`);
   updateRodsDisplay();
   showAnswerOptions('showLevel3Demo');
 }
