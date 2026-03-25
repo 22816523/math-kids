@@ -39,6 +39,16 @@
 - 已重写 `mvp_web/js/math.js`，保留原玩法并补齐题干语音、反馈语音、喇叭重播。
 - 已新增轻量回归测试 `mvp_web/tests/practice-support.test.cjs`，覆盖题干播报/重播和拖拽定位核心逻辑。
 
+### 2026-03-25
+
+- 已核对 GitHub 仓库 `origin`（`https://github.com/22816523/math-kids.git`），当前本地 `main` 与 `origin/main` 提交完全一致，无未推送提交。
+- `888-自定义产品/3-数学启蒙` 目录下已跟踪文件没有本地未提交改动，说明当前已纳入版本控制的项目文件已经同步到 GitHub。
+- 本地仍存在未跟踪内容：`mvp_web/check_live_errors.js`、`mvp_web/test_baisu.js` 与 `mvp_web/node_modules/`，这些内容目前未发布到 GitHub。
+- 已完成 `mvp_web/trace.html` 数字描红页调整：顶部返回按钮与标题样式对齐其他练习页，底部操作按钮居中显示。
+- 已将数字描红参考字改为“只显示中间一条虚线”，同时新增隐藏命中蒙层维持原有判定体验，避免只剩细虚线后难以通过。
+- 已将描红数字改为随机 `1-100`，并在通过后继续随机切换下一题，不再限制在 `1-10`。
+- 已新增回归测试 `mvp_web/tests/trace.test.cjs`，覆盖随机数字范围与描红判定核心逻辑。
+
 ## 6. 下一步指引
 
 - 优先在真实 iPad / Pad 浏览器上验证：
@@ -46,3 +56,4 @@
   - 图形“分类”拖拽是否也稳定
   - 题干自动播报与喇叭重播在 Safari / Chrome 移动端是否都正常
 - 如果钟表练习仍有“不自动跳题”的反馈，优先复查真机上是否存在点击事件重复触发或语音权限阻塞导致的流程感知问题。
+- 如果需要让 GitHub 与当前本地目录完全一致，下一步先判断 `check_live_errors.js`、`test_baisu.js` 是否应该入库；`node_modules/` 更适合补 `.gitignore` 后不提交。

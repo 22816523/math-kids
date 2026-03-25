@@ -1,214 +1,71 @@
 /* ============================================
    数字描红 · 核心逻辑
-   画布渲染与准确度算法
+   随机 1-100 出题、参考虚线渲染与准确度判定
    ============================================ */
-;(function () {
+(function (global, factory) {
+  const api = factory();
+
+  if (typeof module === 'object' && module.exports) {
+    module.exports = api;
+  }
+
+  if (typeof window !== 'undefined' && typeof document !== 'undefined') {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => {
+        api.initTracePage();
+      }, { once: true });
+    } else {
+      api.initTracePage();
+    }
+  }
+})(typeof globalThis !== 'undefined' ? globalThis : this, function () {
   'use strict';
 
-  const $ = (s) => document.querySelector(s);
-  const $$ = (s) => document.querySelectorAll(s);
+  const TRACE_MIN_NUMBER = 1;
+  const TRACE_MAX_NUMBER = 100;
+  const TRACE_FONT_FAMILY = '"Nunito", sans-serif';
+  const GUIDE_STROKE_COLOR = '#94A3B8';
+  const DRAW_STROKE_COLOR = '#6C5CE7';
 
-  // ========== 状态 ==========
-  const state = {
-    currentNum: 1,
-    isDrawing: false,
-    lastX: 0,
-    lastY: 0,
-    strokeCount: 0
-  };
-
-  // ========== DOM引用 ==========
-  const numberPicker = $('#numberPicker');
-  const boardTargetText = $('#boardTargetText');
-  const clearBtn = $('#clearBtn');
-  const submitBtn = $('#submitBtn');
-  
-  const bgCanvas = $('#bgCanvas');
-  const drawCanvas = $('#drawCanvas');
-  const bgCtx = bgCanvas.getContext('2d', { willReadFrequently: true });
-  const drawCtx = drawCanvas.getContext('2d', { willReadFrequently: true });
-
-  const feedbackOverlay = $('#feedbackOverlay');
-  const feedbackEmoji = $('#feedbackEmoji');
-  const feedbackText = $('#feedbackText');
-
-  // ========== 初始化 ==========
-  function init() {
-    initNumberPicker();
-    bindEvents();
-    renderReferenceNumber(state.currentNum);
+  function pickRandomTraceNumber(randomFn = Math.random) {
+    return Math.floor(randomFn() * TRACE_MAX_NUMBER) + TRACE_MIN_NUMBER;
   }
 
-  function initNumberPicker() {
-    let html = '';
-    for (let i = 0; i <= 9; i++) {
-      html += `<button class="mode-tab ${i === state.currentNum ? 'active' : ''}" data-val="${i}"><span class="tab-label">${i}</span></button>`;
-    }
-    numberPicker.innerHTML = html;
+  function pickNextTraceNumber(currentNum, randomFn = Math.random) {
+    const candidate = pickRandomTraceNumber(randomFn);
 
-    $$('.mode-tab').forEach(btn => {
-      btn.onclick = () => {
-        $$('.mode-tab').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        state.currentNum = parseInt(btn.dataset.val);
-        boardTargetText.textContent = state.currentNum;
-        clearDrawCanvas();
-        renderReferenceNumber(state.currentNum);
-        speak(`来写数字 ${state.currentNum} 吧`);
-      };
-    });
-  }
-
-  // ========== 画布渲染 ==========
-  function renderReferenceNumber(num) {
-    // 清空背景
-    bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
-    
-    // 我们用原生文字渲染出非常粗浅灰色的字作为描红底纹
-    const text = String(num);
-    bgCtx.font = 'bold 280px "Nunito", sans-serif';
-    bgCtx.textAlign = 'center';
-    bgCtx.textBaseline = 'middle';
-    
-    const cx = bgCanvas.width / 2;
-    const cy = bgCanvas.height / 2 + 20;
-
-    // 浅色外描边，当作合法区域（适中宽度，不需要涂满）
-    bgCtx.lineWidth = 28; 
-    bgCtx.strokeStyle = '#E2E8F0'; // 灰白色
-    bgCtx.lineJoin = 'round';
-    bgCtx.lineCap = 'round';
-    bgCtx.strokeText(text, cx, cy);
-
-    // 再画内部虚线，用来引导视觉
-    bgCtx.lineWidth = 5;
-    bgCtx.setLineDash([15, 15]);
-    bgCtx.strokeStyle = '#94A3B8';
-    bgCtx.strokeText(text, cx, cy);
-    bgCtx.setLineDash([]); // 恢复
-  }
-
-  function clearDrawCanvas() {
-    drawCtx.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
-    state.strokeCount = 0;
-  }
-
-  // ========== 绘图交互 ==========
-  function bindEvents() {
-    clearBtn.onclick = clearDrawCanvas;
-    submitBtn.onclick = checkDrawQuality;
-
-    // Mouse
-    drawCanvas.addEventListener('mousedown', startDraw);
-    drawCanvas.addEventListener('mousemove', draw);
-    window.addEventListener('mouseup', endDraw); // attach to window to catch out-of-bounds release
-
-    // Touch
-    drawCanvas.addEventListener('touchstart', startDraw, { passive: false });
-    drawCanvas.addEventListener('touchmove', draw, { passive: false });
-    window.addEventListener('touchend', endDraw);
-  }
-
-  function getPos(e) {
-    const rect = drawCanvas.getBoundingClientRect();
-    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-    // 需要考虑 canvas 实际尺寸与 CSS 缩放比例
-    const scaleX = drawCanvas.width / rect.width;
-    const scaleY = drawCanvas.height / rect.height;
-    return {
-      x: (clientX - rect.left) * scaleX,
-      y: (clientY - rect.top) * scaleY
-    };
-  }
-
-  function startDraw(e) {
-    e.preventDefault();
-    state.isDrawing = true;
-    const pos = getPos(e);
-    state.lastX = pos.x;
-    state.lastY = pos.y;
-    state.strokeCount++;
-
-    drawCtx.beginPath();
-    drawCtx.arc(pos.x, pos.y, 10, 0, Math.PI * 2);
-    drawCtx.fillStyle = '#6C5CE7'; // 主笔触紫色
-    drawCtx.fill();
-    
-    drawCtx.beginPath();
-    drawCtx.moveTo(pos.x, pos.y);
-  }
-
-  function draw(e) {
-    if (!state.isDrawing) return;
-    e.preventDefault();
-    const pos = getPos(e);
-
-    drawCtx.lineTo(pos.x, pos.y);
-    drawCtx.lineWidth = 12;
-    drawCtx.lineCap = 'round';
-    drawCtx.lineJoin = 'round';
-    drawCtx.strokeStyle = '#6C5CE7';
-    drawCtx.stroke();
-
-    state.lastX = pos.x;
-    state.lastY = pos.y;
-  }
-
-  function endDraw() {
-    if (state.isDrawing) {
-      state.isDrawing = false;
-      drawCtx.closePath();
-    }
-  }
-
-  // ========== 打分算法 ==========
-  function checkDrawQuality() {
-    if (state.strokeCount === 0) {
-      speak('你还没开始写呢');
-      return;
+    if (candidate !== currentNum) {
+      return candidate;
     }
 
-    const bgData = bgCtx.getImageData(0, 0, bgCanvas.width, bgCanvas.height).data;
-    const drawData = drawCtx.getImageData(0, 0, drawCanvas.width, drawCanvas.height).data;
+    return currentNum >= TRACE_MAX_NUMBER ? TRACE_MIN_NUMBER : currentNum + 1;
+  }
 
-    let totalBgPixels = 0;   // 灰色参考区总像素
-    let coveredBgPixels = 0; // 被用户笔触覆盖的灰区像素
-    let outsidePixels = 0;   // 画在灰区外面的像素
+  function getTraceFontSize(num) {
+    const digits = String(num).length;
 
-    for (let i = 0; i < bgData.length; i += 4) {
-      const bgAlpha = bgData[i + 3];     // 背景 alpha
-      const drawAlpha = drawData[i + 3]; // 笔触 alpha
+    if (digits >= 3) return 176;
+    if (digits === 2) return 224;
+    return 280;
+  }
 
-      const inBgArea = bgAlpha > 30;     // 是否属于合法区
-      const hasDrawn = drawAlpha > 30;   // 用户是否涂抹
+  function getTraceMaskLineWidth(num) {
+    const digits = String(num).length;
 
-      if (inBgArea) {
-        totalBgPixels++;
-        if (hasDrawn) {
-          coveredBgPixels++;
-        }
-      } else {
-        if (hasDrawn) {
-          outsidePixels++;
-        }
-      }
-    }
+    if (digits >= 3) return 22;
+    if (digits === 2) return 28;
+    return 32;
+  }
 
-    if (totalBgPixels === 0) {
-      // 异常情况，比如画布没字
-      totalBgPixels = 1;
-    }
-
-    // 计算覆盖率：目标线内涂抹面积占总合法面积百分比
-    const coverage = coveredBgPixels / totalBgPixels;
-    // 越界率：飞出合法框外的乱涂乱画占合法面积百分比
-    const outsideRatio = outsidePixels / totalBgPixels;
-
-    console.log({ coverage, outsideRatio, coveredBgPixels, totalBgPixels, outsidePixels });
+  function evaluateTraceQuality({ coveredPixels, totalMaskPixels, outsidePixels }) {
+    const safeTotalMaskPixels = totalMaskPixels > 0 ? totalMaskPixels : 1;
+    const coverage = coveredPixels / safeTotalMaskPixels;
+    const outsideRatio = outsidePixels / safeTotalMaskPixels;
 
     let isPass = false;
     let rank = 'C';
+    let text = '有点出界了，再试一次吧';
+    let emoji = '🤔';
 
     if (coverage > 0.25 && outsideRatio < 0.6) {
       isPass = true;
@@ -219,53 +76,252 @@
     }
 
     if (isPass) {
-      let txt = '写得很好！';
-      if(rank === 'S') txt = '完美！太漂亮了！';
-      showFeedback(true, rank === 'S' ? '🌟' : '🎉', txt);
-      speak(txt);
-      setTimeout(() => {
-        window.PracticeSupport?.showConfetti?.();
-        // 自动切下一个数字
-        if (state.currentNum < 9) {
-          const nextBtn = `[data-val="${state.currentNum + 1}"]`;
-          const btnObj = $(nextBtn);
-          if(btnObj) btnObj.click();
-        }
-      }, 1500);
-    } else {
-      let txt = '有点出界了，再试一次吧';
-      if(coverage < 0.1) txt = '还没写满哦，再涂满一点';
-      if(outsideRatio > 1.0) txt = '乱涂乱画可不行哦！';
-      showFeedback(false, '🤔', txt);
-      speak(txt);
-      setTimeout(() => {
-         clearDrawCanvas();
+      text = rank === 'S' ? '完美！太漂亮了！' : '写得很好！';
+      emoji = rank === 'S' ? '🌟' : '🎉';
+    } else if (coverage < 0.1) {
+      text = '还没写满哦，再涂满一点';
+    } else if (outsideRatio > 1.0) {
+      text = '乱涂乱画可不行哦！';
+    }
+
+    return {
+      coverage,
+      outsideRatio,
+      isPass,
+      rank,
+      text,
+      emoji,
+    };
+  }
+
+  function initTracePage() {
+    if (typeof document === 'undefined' || typeof window === 'undefined') {
+      return null;
+    }
+
+    const $ = (selector) => document.querySelector(selector);
+    const boardTargetText = $('#boardTargetText');
+    const clearBtn = $('#clearBtn');
+    const submitBtn = $('#submitBtn');
+    const bgCanvas = $('#bgCanvas');
+    const drawCanvas = $('#drawCanvas');
+    const feedbackOverlay = $('#feedbackOverlay');
+    const feedbackEmoji = $('#feedbackEmoji');
+    const feedbackText = $('#feedbackText');
+
+    if (!boardTargetText || !clearBtn || !submitBtn || !bgCanvas || !drawCanvas || !feedbackOverlay || !feedbackEmoji || !feedbackText) {
+      return null;
+    }
+
+    const bgCtx = bgCanvas.getContext('2d', { willReadFrequently: true });
+    const drawCtx = drawCanvas.getContext('2d', { willReadFrequently: true });
+    const maskCanvas = document.createElement('canvas');
+    maskCanvas.width = bgCanvas.width;
+    maskCanvas.height = bgCanvas.height;
+    const maskCtx = maskCanvas.getContext('2d', { willReadFrequently: true });
+
+    const state = {
+      currentNum: pickRandomTraceNumber(),
+      isDrawing: false,
+      strokeCount: 0,
+    };
+
+    function applyTextStyle(ctx, fontSize) {
+      ctx.font = `900 ${fontSize}px ${TRACE_FONT_FAMILY}`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.lineJoin = 'round';
+      ctx.lineCap = 'round';
+    }
+
+    function renderReferenceNumber(num) {
+      const text = String(num);
+      const cx = bgCanvas.width / 2;
+      const cy = bgCanvas.height / 2 + 20;
+      const fontSize = getTraceFontSize(num);
+      const maskLineWidth = getTraceMaskLineWidth(num);
+
+      bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
+      maskCtx.clearRect(0, 0, maskCanvas.width, maskCanvas.height);
+
+      applyTextStyle(maskCtx, fontSize);
+      maskCtx.lineWidth = maskLineWidth;
+      maskCtx.strokeStyle = '#000000';
+      maskCtx.strokeText(text, cx, cy);
+
+      applyTextStyle(bgCtx, fontSize);
+      bgCtx.lineWidth = 5;
+      bgCtx.strokeStyle = GUIDE_STROKE_COLOR;
+      bgCtx.setLineDash([12, 10]);
+      bgCtx.strokeText(text, cx, cy);
+      bgCtx.setLineDash([]);
+    }
+
+    function clearDrawCanvas() {
+      drawCtx.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
+      state.strokeCount = 0;
+    }
+
+    function speak(text) {
+      if (!('speechSynthesis' in window)) return;
+
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'zh-CN';
+      utterance.rate = 0.85;
+      utterance.pitch = 1.2;
+      window.speechSynthesis.speak(utterance);
+    }
+
+    function setCurrentNumber(num, { announce = true } = {}) {
+      state.currentNum = num;
+      boardTargetText.textContent = String(num);
+      clearDrawCanvas();
+      renderReferenceNumber(num);
+
+      if (announce) {
+        speak(`来写数字 ${num} 吧`);
+      }
+    }
+
+    function getPos(e) {
+      const rect = drawCanvas.getBoundingClientRect();
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      const scaleX = drawCanvas.width / rect.width;
+      const scaleY = drawCanvas.height / rect.height;
+
+      return {
+        x: (clientX - rect.left) * scaleX,
+        y: (clientY - rect.top) * scaleY,
+      };
+    }
+
+    function startDraw(e) {
+      e.preventDefault();
+      state.isDrawing = true;
+      state.strokeCount += 1;
+
+      const pos = getPos(e);
+      drawCtx.beginPath();
+      drawCtx.arc(pos.x, pos.y, 10, 0, Math.PI * 2);
+      drawCtx.fillStyle = DRAW_STROKE_COLOR;
+      drawCtx.fill();
+
+      drawCtx.beginPath();
+      drawCtx.moveTo(pos.x, pos.y);
+    }
+
+    function draw(e) {
+      if (!state.isDrawing) return;
+
+      e.preventDefault();
+      const pos = getPos(e);
+
+      drawCtx.lineTo(pos.x, pos.y);
+      drawCtx.lineWidth = 12;
+      drawCtx.lineCap = 'round';
+      drawCtx.lineJoin = 'round';
+      drawCtx.strokeStyle = DRAW_STROKE_COLOR;
+      drawCtx.stroke();
+    }
+
+    function endDraw() {
+      if (!state.isDrawing) return;
+
+      state.isDrawing = false;
+      drawCtx.closePath();
+    }
+
+    function showFeedback(isCorrect, emoji, text) {
+      feedbackEmoji.textContent = emoji;
+      feedbackText.textContent = text;
+      feedbackText.style.color = isCorrect ? 'var(--green-dark)' : 'var(--yellow-dark)';
+      feedbackOverlay.style.display = 'flex';
+
+      window.setTimeout(() => {
+        feedbackOverlay.style.display = 'none';
       }, 1500);
     }
+
+    function collectDrawStats() {
+      const maskData = maskCtx.getImageData(0, 0, maskCanvas.width, maskCanvas.height).data;
+      const drawData = drawCtx.getImageData(0, 0, drawCanvas.width, drawCanvas.height).data;
+
+      let totalMaskPixels = 0;
+      let coveredPixels = 0;
+      let outsidePixels = 0;
+
+      for (let i = 0; i < maskData.length; i += 4) {
+        const inMaskArea = maskData[i + 3] > 30;
+        const hasDrawn = drawData[i + 3] > 30;
+
+        if (inMaskArea) {
+          totalMaskPixels += 1;
+          if (hasDrawn) {
+            coveredPixels += 1;
+          }
+        } else if (hasDrawn) {
+          outsidePixels += 1;
+        }
+      }
+
+      return { coveredPixels, totalMaskPixels, outsidePixels };
+    }
+
+    function checkDrawQuality() {
+      if (state.strokeCount === 0) {
+        speak('你还没开始写呢');
+        return;
+      }
+
+      const result = evaluateTraceQuality(collectDrawStats());
+      showFeedback(result.isPass, result.emoji, result.text);
+      speak(result.text);
+
+      if (result.isPass) {
+        window.setTimeout(() => {
+          window.PracticeSupport?.showConfetti?.();
+          setCurrentNumber(pickNextTraceNumber(state.currentNum), { announce: true });
+        }, 1500);
+      } else {
+        window.setTimeout(() => {
+          clearDrawCanvas();
+        }, 1500);
+      }
+    }
+
+    function bindEvents() {
+      clearBtn.onclick = clearDrawCanvas;
+      submitBtn.onclick = checkDrawQuality;
+
+      drawCanvas.addEventListener('mousedown', startDraw);
+      drawCanvas.addEventListener('mousemove', draw);
+      window.addEventListener('mouseup', endDraw);
+
+      drawCanvas.addEventListener('touchstart', startDraw, { passive: false });
+      drawCanvas.addEventListener('touchmove', draw, { passive: false });
+      window.addEventListener('touchend', endDraw);
+    }
+
+    bindEvents();
+    setCurrentNumber(state.currentNum, { announce: false });
+    speak(`来写数字 ${state.currentNum} 吧`);
+
+    return {
+      setCurrentNumber,
+      clearDrawCanvas,
+      checkDrawQuality,
+      state,
+    };
   }
 
-  // ========== 反馈通用 ==========
-  function showFeedback(isCorrect, emoji, text) {
-    feedbackEmoji.textContent = emoji;
-    feedbackText.textContent = text;
-    feedbackText.style.color = isCorrect ? 'var(--green-dark)' : 'var(--yellow-dark)';
-    feedbackOverlay.style.display = 'flex';
-    setTimeout(() => {
-      feedbackOverlay.style.display = 'none';
-    }, 1500);
-  }
-
-  function speak(text) {
-    if (!('speechSynthesis' in window)) return;
-    window.speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(text);
-    u.lang = 'zh-CN';
-    u.rate = 0.85;
-    u.pitch = 1.2;
-    window.speechSynthesis.speak(u);
-  }
-
-  // Bootstrap
-  init();
-
-})();
+  return {
+    pickRandomTraceNumber,
+    pickNextTraceNumber,
+    getTraceFontSize,
+    getTraceMaskLineWidth,
+    evaluateTraceQuality,
+    initTracePage,
+  };
+});
