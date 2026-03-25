@@ -219,8 +219,11 @@
         speak(String(num));
         break;
 
-      case 'fill':
-        // 填一填探索：点击读出数字
+      case 'neighbor':
+        speak(String(num));
+        break;
+
+      case 'ninegrid':
         speak(String(num));
         break;
 
@@ -282,9 +285,14 @@
         showBottomAction('🎯 开始练习', () => startOrderPractice());
         break;
 
-      case 'fill':
-        showQuestion('🧩', '点一点数字，认识百数板');
-        showBottomAction('🎯 开始练习', () => startFillPractice());
+      case 'neighbor':
+        showQuestion('🧩', '点一点数字，认识它们的邻居');
+        showBottomAction('🎯 开始练习', () => startNeighborPractice());
+        break;
+
+      case 'ninegrid':
+        showQuestion('🔲', '点一点数字，看看它周围的数字');
+        showBottomAction('🎯 开始练习', () => startNinegridPractice());
         break;
 
       case 'skip':
@@ -410,35 +418,67 @@
   }
 
   // ====================================================
-  //  模式2：缺数填空
-  //  探索：点击读数字 | 练习：拖拽填空
+  //  模式2：找邻居（局部连续填空 / 左右邻居）
   // ====================================================
-  function startFillPractice() {
+  function startNeighborPractice() {
     state.practicing = true;
     hideQuestion();
 
-    const count = 5 + Math.floor(Math.random() * 4); // 5-8个空缺（100格里）
-    const positions = [];
-    while (positions.length < count) {
-      const p = Math.floor(Math.random() * 100) + 1;
-      if (!positions.includes(p)) positions.push(p);
+    // 类型0: 连续段 (如 23, ?, 25, ?)
+    // 类型1: 左右邻居 (如 ?, 45, ?)
+    const type = Math.random() > 0.5 ? 0 : 1;
+    let visibleNums = [];
+    let blankNums = [];
+
+    if (type === 0) {
+      // 找一段连续的 4-6 个数字，其中挖空 2-3 个
+      const len = 4 + Math.floor(Math.random() * 3); // 4,5,6
+      const startNum = Math.floor(Math.random() * (100 - len)) + 1;
+      for (let i = 0; i < len; i++) visibleNums.push(startNum + i);
+      
+      const count = len === 4 ? 2 : (len === 5 ? 2 : 3);
+      // 不能把头尾都挖空，最好随机挖中间的
+      while (blankNums.length < count) {
+        const candidate = visibleNums[Math.floor(Math.random() * len)];
+        if (!blankNums.includes(candidate)) {
+          blankNums.push(candidate);
+        }
+      }
+    } else {
+      // 左右邻居
+      const center = Math.floor(Math.random() * 98) + 2; // 2-99
+      // 注意：不在同一行的不能算左右邻居，确保不跨行
+      const cMod = center % 10;
+      if (cMod === 1 || cMod === 0) {
+        // 如果是行首结尾，退回类型0以防太复杂
+        return startNeighborPractice();
+      }
+      visibleNums = [center - 1, center, center + 1];
+      blankNums = [center - 1, center + 1];
     }
 
-    state.blanks = positions.map(p => ({ position: p, value: p, filled: false }));
+    state.blanks = blankNums.map(num => ({ position: num, value: num, filled: false }));
 
     const cells = grid.children;
     for (let i = 0; i < cells.length; i++) {
       const cell = cells[i];
       const num = parseInt(cell.dataset.num);
-      const blank = state.blanks.find(b => b.position === num);
-      if (blank) {
-        cell.textContent = '?';
-        cell.classList.add('blank');
-        cell.dataset.blank = num;
+      
+      cell.classList.remove('blank', 'filled', 'hidden-num');
+      delete cell.dataset.blank;
+
+      if (visibleNums.includes(num)) {
+        if (blankNums.includes(num)) {
+          cell.textContent = '?';
+          cell.classList.add('blank');
+          cell.dataset.blank = num;
+        } else {
+          cell.textContent = num;
+        }
       } else {
+        // 不在局部区域内的数字，深色隐藏
         cell.textContent = num;
-        cell.classList.remove('blank', 'filled');
-        delete cell.dataset.blank;
+        cell.classList.add('hidden-num');
       }
     }
 
@@ -459,10 +499,108 @@
     showQuestion('🧩', '把数字拖到正确的位置吧！', '把数字拖到正确的位置吧');
   }
 
-  function checkFillComplete() {
+  function checkNeighborComplete() {
     if (state.blanks.every(b => b.filled)) {
       showQuestion('🎉', '全部填对了！');
-      showBottomAction('🔄 再来一轮', () => startFillPractice());
+      
+      // 完成后把周边被隐藏的数字也稍微亮出来庆祝一下
+      setTimeout(() => {
+        $$('.cell.hidden-num').forEach(c => c.classList.remove('hidden-num'));
+      }, 500);
+
+      showBottomAction('🔄 再来一轮', () => startNeighborPractice());
+      showCelebration();
+    }
+  }
+
+  // ====================================================
+  //  模式3：九宫格（十字/对角/全框空缺）
+  // ====================================================
+  function startNinegridPractice() {
+    state.practicing = true;
+    hideQuestion();
+
+    // 随机一个中心点 (不能在第一行、最后一行、第一列、最后一列)
+    // 即：范围 12..89, 个位不能是 1 或 0
+    let center;
+    while (true) {
+      center = Math.floor(Math.random() * 78) + 12; // 12~89
+      const mod = center % 10;
+      if (mod !== 1 && mod !== 0) break;
+    }
+
+    // 确定九宫格所有点
+    const nineCells = [
+      center - 11, center - 10, center - 9,
+      center - 1,  center,      center + 1,
+      center + 9,  center + 10, center + 11
+    ];
+
+    // 难度类型：
+    // 0: 十字空缺 (上下左右4个)
+    // 1: 四角空缺 (对角线4个)
+    // 2: 外周围全空缺 (8个)
+    const type = Math.floor(Math.random() * 3);
+    let blankNums = [];
+    if (type === 0) {
+      blankNums = [center - 10, center - 1, center + 1, center + 10];
+    } else if (type === 1) {
+      blankNums = [center - 11, center - 9, center + 9, center + 11];
+    } else {
+      blankNums = nineCells.filter(n => n !== center);
+    }
+
+    state.blanks = blankNums.map(num => ({ position: num, value: num, filled: false }));
+
+    const cells = grid.children;
+    for (let i = 0; i < cells.length; i++) {
+      const cell = cells[i];
+      const num = parseInt(cell.dataset.num);
+      
+      cell.classList.remove('blank', 'filled', 'hidden-num');
+      delete cell.dataset.blank;
+
+      if (nineCells.includes(num)) {
+        if (blankNums.includes(num)) {
+          cell.textContent = '?';
+          cell.classList.add('blank');
+          cell.dataset.blank = num;
+        } else {
+          cell.textContent = num;
+        }
+      } else {
+        // 不在九宫格内的数字隐藏
+        cell.textContent = num;
+        cell.classList.add('hidden-num');
+      }
+    }
+
+    const shuffled = [...state.blanks].sort(() => Math.random() - 0.5);
+    bubbleZone.innerHTML = '';
+    shuffled.forEach((b, idx) => {
+      const bubble = document.createElement('div');
+      bubble.className = 'bubble';
+      bubble.textContent = b.value;
+      bubble.dataset.value = b.value;
+      bubble.style.animationDelay = (idx * 0.08) + 's';
+      setupDrag(bubble);
+      bubbleZone.appendChild(bubble);
+    });
+
+    bubbleZone.style.display = 'flex';
+    bottomActions.style.display = 'none';
+    showQuestion('🔲', '把数字拖进神奇九宫格！', '把数字拖进神奇九宫格！');
+  }
+
+  function checkNinegridComplete() {
+    if (state.blanks.every(b => b.filled)) {
+      showQuestion('🎉', '九宫格全部填对了！');
+      
+      setTimeout(() => {
+        $$('.cell.hidden-num').forEach(c => c.classList.remove('hidden-num'));
+      }, 500);
+
+      showBottomAction('🔄 再来一轮', () => startNinegridPractice());
       showCelebration();
     }
   }
@@ -555,7 +693,8 @@
           bubble.style.display = 'none';
           matched = true;
           showFeedback(true);
-          checkFillComplete();
+          if (state.mode === 'neighbor') checkNeighborComplete();
+          else if (state.mode === 'ninegrid') checkNinegridComplete();
         }
       }
     });
