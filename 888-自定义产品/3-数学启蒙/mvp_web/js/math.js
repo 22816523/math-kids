@@ -149,14 +149,14 @@ function generateOptions(answer) {
 }
 
 function checkAnswer(selected) {
-  controlArea.innerHTML = '';
-
   if (selected === state.answer) {
+    controlArea.innerHTML = '';
     state.correctCount += 1;
     speakFeedback('✅ 太好啦！', 'correct');
   } else {
     speakFeedback('😹 再想想', 'encourage');
   }
+  if (selected !== state.answer) return;
 
   setTimeout(() => {
     nextQuestion();
