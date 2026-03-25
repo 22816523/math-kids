@@ -108,7 +108,7 @@ function nextQuestion() {
 }
 
 function getQuestionPrefix() {
-  return `第${state.currentQuestion}/${state.totalQuestions}题`;
+  return `第${state.currentQuestion}题`;
 }
 
 function showAnswerOptions(demoFuncName) {
