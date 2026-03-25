@@ -466,7 +466,6 @@
       const boardEl = document.createElement('div');
       boardEl.className = 'sudoku-board';
       boardEl.style.setProperty('--grid-size', config.size);
-      boardEl.style.setProperty('--board-size', boardHost.style.getPropertyValue('--board-size') || '420px');
       boardEl.dataset.size = String(config.size);
 
       for (let rowIndex = 0; rowIndex < config.size; rowIndex += 1) {
@@ -502,7 +501,6 @@
       }
 
       boardHost.appendChild(boardEl);
-      updateBoardSize(config.size);
     }
 
     function renderDigitBank() {
@@ -559,6 +557,7 @@
       setFeedback('', '');
       setPrompt('🧩', `${config.label}：把空格补完整`, `${config.label}。${config.intro}`);
       showBottomAction('🎯 开始练习', startStagePractice, 'btn btn-green btn-lg');
+      updateBoardSize(config.size);
     }
 
     function showStageComplete() {
@@ -572,6 +571,7 @@
       setFeedback('', '');
       setPrompt('🏆', `${config.label} 完成啦`, `${config.label} 完成啦，再来一轮吧。`);
       showBottomAction('🔄 再来一轮', startStagePractice, 'btn btn-blue btn-lg');
+      updateBoardSize(config.size);
     }
 
     function loadPuzzle(index) {
@@ -585,11 +585,12 @@
       state.board = cloneGrid(state.currentPuzzle.givens);
       state.activeCell = findFirstEmptyCell(state.board);
       hideBottomAction();
-      renderBoard();
-      renderDigitBank();
       helperText.textContent = '把下面的数字拖到空格里。';
       setFeedback('', '');
       setPrompt('🔢', `${getStageConfig(state.stageId).label}：把空格补完整`, `${getStageConfig(state.stageId).label}，第 ${index + 1} 题。把空格补完整。`);
+      renderDigitBank();
+      updateBoardSize(getStageConfig(state.stageId).size);
+      renderBoard();
     }
 
     function startStagePractice() {
