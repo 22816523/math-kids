@@ -46,6 +46,9 @@
   const weightArea = $('#weightArea');
   const scaleDisplay = $('#scaleDisplay');
   const weightOptions = $('#weightOptions');
+  const calendarArea = $('#calendarArea');
+  const calendarGrid = $('#calendarGrid');
+  const calMonthTitle = $('#calMonthTitle');
 
   const state = {
     mode: 'clock',
@@ -67,6 +70,7 @@
     lengthRound: 0,
     weightAnswer: null,
     weightRound: 0,
+    calendarRound: 0,
   };
 
   function speak(text) {
@@ -173,6 +177,7 @@
     compareArea.style.display = 'none';
     lengthArea.style.display = 'none';
     weightArea.style.display = 'none';
+    calendarArea.style.display = 'none';
     promptController.hidePrompt();
     bottomActions.style.display = 'none';
     clearTimeout(state._advanceTimer);
@@ -949,6 +954,84 @@
         };
       }
     }
+  }
+
+  
+  /* ====================================================
+     日历模式
+     ==================================================== */
+  // 假定当月 1 号是周三（索引 3），共 31 天
+  const CALENDAR_QUESTIONS = [
+    { q: "今天是 12 号，明天是几号？请圈出来。", today: 12, target: 13 },
+    { q: "今天是 5 号，大后天是几号？", today: 5, target: 8 },
+    { q: "今天是 18 号，上个星期五是几号？", today: 18, target: 10 },
+    { q: "今天是 25 号，昨天是几号？", today: 25, target: 24 },
+    { q: "这周四是几号？请把它圈出来。", today: 2, target: 2 } // 1号周三，2号周四
+  ];
+
+  function initCalendar() {
+    calendarArea.style.display = 'flex';
+    state.calendarRound = 0;
+    bottomActions.style.display = 'flex';
+    actionBtn.textContent = '🎯 开始时间挑战';
+    actionBtn.className = 'btn btn-purple btn-lg';
+    actionBtn.onclick = nextCalendarQuestion;
+    
+    // 初始化一份默认日历用于展示
+    renderMonth(null); 
+    showQuestion('🗓️', '认识日历：跟着问题圈出正确的日期吧！');
+  }
+
+  function renderMonth(todayHighlight) {
+    let html = '';
+    // 3 empty slots for offset (Su, Mo, Tu) -> 1st is Wed
+    for(let i=0; i<3; i++) {
+        html += '<div class="cal-day empty"></div>';
+    }
+    // 31 days
+    for(let i=1; i<=31; i++) {
+      let extClass = '';
+      if (i === todayHighlight) extClass = 'today';
+      html += `<div class="cal-day ${extClass}" data-day="${i}">${i}</div>`;
+    }
+    calendarGrid.innerHTML = html;
+  }
+
+  function nextCalendarQuestion() {
+    if (state.calendarRound >= CALENDAR_QUESTIONS.length) {
+      showFeedback('🎊', '日历小达人！', 2000);
+      showConfetti();
+      addStar(5);
+      setTimeout(initCalendar, 2500);
+      return;
+    }
+    bottomActions.style.display = 'none';
+    const q = CALENDAR_QUESTIONS[state.calendarRound];
+    
+    showQuestion('🗓️', `第${state.calendarRound + 1}关：${q.q}`, q.q);
+    renderMonth(q.today);
+    
+    const days = calendarGrid.querySelectorAll('.cal-day:not(.empty)');
+    days.forEach(day => {
+      day.onclick = () => {
+        if (day.classList.contains('selected')) return;
+        const d = parseInt(day.dataset.day);
+        if (d === q.target) {
+          day.classList.add('selected');
+          speak('找对啦！');
+          setTimeout(() => {
+            showFeedback('🎉', '圈的非常准！', 1500);
+            state.calendarRound++;
+            addStar(2);
+            scheduleAdvance(nextCalendarQuestion, 2000);
+          }, 500);
+        } else {
+          day.classList.add('wrong');
+          speak('再数一数');
+          setTimeout(() => day.classList.remove('wrong'), 500);
+        }
+      };
+    });
   }
 
   switchMode();

@@ -411,3 +411,77 @@
   z-index: 100;
 }
 
+
+/* ====================================================
+   听指令模式 (方位九宫格)
+   ==================================================== */
+.spatial-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  height: 100%;
+}
+
+.spatial-shelf {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  width: 90vw;
+  max-width: 340px;
+  aspect-ratio: 1;
+  background: #D4A373; /* 木制书架颜色 */
+  padding: 10px;
+  gap: 8px;
+  border-radius: 12px;
+  box-shadow: inset 0 6px 16px rgba(139,69,19,0.3), 0 12px 24px rgba(0,0,0,0.1);
+  border: 4px solid #B07D4B;
+}
+
+.spatial-cell {
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 6px;
+  box-shadow: inset 0 2px 6px rgba(0,0,0,0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 50px;
+  position: relative;
+  transition: background 0.2s;
+}
+
+.spatial-cell.highlight {
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: inset 0 0 0 3px var(--green);
+}
+
+.spatial-tray {
+  min-height: 80px;
+  background: rgba(255, 255, 255, 0.8);
+  border: 3px solid var(--white);
+  border-radius: var(--radius-xl);
+  padding: 16px 32px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.06);
+}
+
+.spatial-item {
+  font-size: 60px;
+  cursor: grab;
+  transition: transform 0.1s;
+  user-select: none;
+  filter: drop-shadow(0 6px 8px rgba(0,0,0,0.2));
+}
+
+.spatial-item:active {
+  cursor: grabbing;
+}
+
+.spatial-item.dragging {
+  opacity: 0.9;
+  transform: scale(1.15) translateY(-10px);
+  z-index: 100;
+}
+

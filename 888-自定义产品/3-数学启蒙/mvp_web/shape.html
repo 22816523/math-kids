@@ -46,6 +46,11 @@
         <span class="tab-icon">🧩</span>
         <span class="tab-label">拼一拼</span>
       </button>
+      <!-- 新增：方位九宫格模式 -->
+      <button class="mode-tab" data-mode="spatial">
+        <span class="tab-icon">🧭</span>
+        <span class="tab-label">听指令</span>
+      </button>
     </div>
 
     <!-- 内容区 -->
@@ -85,6 +90,16 @@
       <div id="tangramArea" class="tangram-area" style="display:none;">
         <div class="tangram-board" id="tangramBoard">
           <!-- JS动态生成目标轮廓底图和散落拼图碎片 -->
+        </div>
+      </div>
+
+      <!-- 新增：方位九宫格模式应用 -->
+      <div id="spatialArea" class="spatial-area" style="display:none;">
+        <div class="spatial-shelf" id="spatialShelf">
+          <!-- JS动态生成3x3置物架槽位 -->
+        </div>
+        <div class="spatial-tray" id="spatialTray">
+          <!-- JS动态生成可以被拖拽的物品 -->
         </div>
       </div>
 

@@ -104,6 +104,7 @@
     findScene: 0,
     tangramRound: 0,
     tangramFilled: 0,
+    spatialRound: 0,
   };
 
   // ========== DOM引用 ==========
@@ -119,6 +120,9 @@
   const findProgress = $('#findProgress');
   const tangramArea = $('#tangramArea');
   const tangramBoard = $('#tangramBoard');
+  const spatialArea = $('#spatialArea');
+  const spatialShelf = $('#spatialShelf');
+  const spatialTray = $('#spatialTray');
   const bottomActions = $('#bottomActions');
   const actionBtn = $('#actionBtn');
   const questionBar = $('#questionBar');

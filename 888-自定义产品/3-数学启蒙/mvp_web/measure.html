@@ -49,6 +49,10 @@
         <span class="tab-icon"><span class="iconify" data-icon="fluent-emoji:balance-scale"></span></span>
         <span class="tab-label">质量</span>
       </button>
+      <button class="mode-tab" data-mode="calendar">
+        <span class="tab-icon"><span class="iconify" data-icon="fluent-emoji:calendar"></span></span>
+        <span class="tab-label">日历</span>
+      </button>
     </div>
 
     <!-- 内容区 -->
@@ -120,6 +124,23 @@
         </div>
         <div class="weight-options" id="weightOptions">
           <!-- JS动态生成选项 -->
+        </div>
+      </div>
+
+    </div>
+
+      <!-- 日历模式展示区 -->
+      <div id="calendarArea" class="calendar-area" style="display:none;">
+        <div class="calendar-paper" id="calendarPaper">
+          <div class="calendar-header">
+            <span class="cal-month-title" id="calMonthTitle">五月 May</span>
+          </div>
+          <div class="calendar-weekdays">
+            <span>日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span>
+          </div>
+          <div class="calendar-grid" id="calendarGrid">
+            <!-- JS 渲染天数 -->
+          </div>
         </div>
       </div>
 
