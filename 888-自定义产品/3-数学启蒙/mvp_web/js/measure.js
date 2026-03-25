@@ -1498,6 +1498,15 @@
   function renderWeightOptions(question) {
     weightOptions.innerHTML = '';
     const options = buildWeightChoiceOptions(question);
+    const row = document.createElement('div');
+    row.className = 'weight-choice-row';
+    row.style.display = 'flex';
+    row.style.flexDirection = 'row';
+    row.style.flexWrap = 'wrap';
+    row.style.justifyContent = 'center';
+    row.style.alignItems = 'stretch';
+    row.style.gap = '12px';
+    row.style.width = '100%';
 
     options.forEach((option) => {
       const node = document.createElement('div');
@@ -1518,8 +1527,9 @@
           setTimeout(() => node.classList.remove('wrong'), 500);
         }
       };
-      weightOptions.appendChild(node);
+      row.appendChild(node);
     });
+    weightOptions.appendChild(row);
   }
 
   function initWeight() {
