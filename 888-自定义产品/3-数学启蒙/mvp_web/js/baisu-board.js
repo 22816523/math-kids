@@ -130,6 +130,8 @@
   }
 
   function hideQuestion() {
+    $('.cell.neighbor-highlight').forEach(c => c.classList.remove('neighbor-highlight'));
+    $('.cell.ninegrid-highlight').forEach(c => c.classList.remove('ninegrid-highlight'));
     promptController.hidePrompt();
   }
 
@@ -706,7 +708,7 @@
       c.classList.remove('skip-highlight', 'skip-animate', 'blank', 'filled', 'hidden-num');
       c.textContent = c.dataset.num;
     });
-    skipQuiz.style.display = 'none';
+    
     bubbleZone.style.display = 'none';
 
     const step = state.skipStep;
@@ -751,7 +753,7 @@
     }
 
     if (state.skipQuizIndex >= 5 || allNumbers.length < 5) {
-      if(typeof skipQuiz !== 'undefined' && skipQuiz) skipQuiz.style.display = 'none';
+      if(typeof skipQuiz !== 'undefined' && skipQuiz) 
       bubbleZone.style.display = 'none';
       showQuestion('🎉', '找规律练习完成！');
       $$('.cell.hidden-num').forEach(c => c.classList.remove('hidden-num'));
@@ -824,7 +826,7 @@
     });
 
     bubbleZone.style.display = 'flex';
-    showQuestion('🚀', '能找到规律并拖入缺失的数字吗？', '能找到规律并拖入缺失的数字吗');
+    showQuestion('🚀', '按规律，拖入缺失的数字', '能找到规律并拖入缺失的数字吗');
   }
 
   function checkPatternComplete() {
@@ -840,11 +842,36 @@
   function startTreasurePractice() {
     state.practicing = true;
     state.treasureStep = 0;
+    
+    // 生成动态严谨的目标，规避逢0或者逢1太死板
     state.treasureTarget = Math.floor(Math.random() * 80) + 11;
+    const t = state.treasureTarget;
+    const tens = Math.floor(t / 10);
+    const ones = t % 10;
+    
+    // 用3步提示必定收敛于一个数
+    // 线索1：范围夹击
+    const offset1 = Math.floor(Math.random() * 8) + 10;
+    const offset2 = Math.floor(Math.random() * 8) + 10;
+    const lower = Math.max(1, t - offset1);
+    const upper = Math.min(100, t + offset2);
+    
     state.treasureHints = [
-      { text: "海盗把宝藏藏在了大于 50 的数字区域！(请点击满足条件的任意格子)", condition: (n) => n > 50, act: () => $$('.cell').forEach(c => {if(parseInt(c.dataset.num)<=50) c.classList.add('hidden-num')}) },
-      { text: "他最喜欢绿色，宝藏是个双数 (偶数)！(点击偶数格子)", condition: (n) => n % 2 === 0, act: () => $$('.cell:not(.hidden-num)').forEach(c => {if(parseInt(c.dataset.num)%2!==0) c.classList.add('hidden-num')}) },
-      { text: "他的幸运数字在个位，而且是 8！找到它！", condition: (n) => n % 10 === 8, act: () => $$('.cell:not(.hidden-num)').forEach(c => {if(parseInt(c.dataset.num)%10!==8) c.classList.add('hidden-num')}) }
+      { 
+        text: '它比 ' + lower + ' 大，比 ' + upper + ' 小。', 
+        condition: (n) => n > lower && n < upper, 
+        act: () => $$('.cell').forEach(c => {const v=parseInt(c.dataset.num); if(v<=lower || v>=upper) c.classList.add('hidden-num')}) 
+      },
+      { 
+        text: '它的个位数字是 ' + ones + '！', 
+        condition: (n) => n % 10 === ones, 
+        act: () => $$('.cell:not(.hidden-num)').forEach(c => {if(parseInt(c.dataset.num)%10!==ones) c.classList.add('hidden-num')}) 
+      },
+      { 
+        text: '最后线索：它的十位数字是 ' + tens + '！快揪出它！', 
+        condition: (n) => Math.floor(n / 10) === tens, 
+        act: () => $$('.cell:not(.hidden-num)').forEach(c => {if(Math.floor(parseInt(c.dataset.num)/10)!==tens) c.classList.add('hidden-num')}) 
+      }
     ];
 
     bottomActions.style.display = 'none';
