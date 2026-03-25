@@ -1,6 +1,6 @@
 /* ============================================
    数独启蒙 · 核心逻辑
-   支持 4x4 / 6x6 / 9x9 的分阶段题库与触屏交互
+   支持 4x4 / 6x6 / 9x9 阶段、题库、拖动填数
    ============================================ */
 (function (global, factory) {
   const api = factory();
@@ -33,7 +33,7 @@
   const SUDOKU_STAGE_CONFIGS = Object.freeze({
     '4x4-easy': {
       id: '4x4-easy',
-      label: '4x4 入门',
+      label: '4x4入门',
       icon: '🌱',
       size: 4,
       subgridRows: 2,
@@ -43,7 +43,7 @@
     },
     '4x4-advanced': {
       id: '4x4-advanced',
-      label: '4x4 进阶',
+      label: '4x4进阶',
       icon: '🚀',
       size: 4,
       subgridRows: 2,
@@ -53,27 +53,27 @@
     },
     '6x6-easy': {
       id: '6x6-easy',
-      label: '6x6 入门',
+      label: '6x6入门',
       icon: '🌼',
       size: 6,
       subgridRows: 2,
       subgridCols: 3,
       roundsPerSession: 5,
-      intro: '适应更大的盘面，学会看 1 到 6。',
+      intro: '适应更大的盘面，先练习 1 到 6。',
     },
     '6x6-advanced': {
       id: '6x6-advanced',
-      label: '6x6 进阶',
+      label: '6x6进阶',
       icon: '✨',
       size: 6,
       subgridRows: 2,
       subgridCols: 3,
       roundsPerSession: 5,
-      intro: '继续观察行、列和小宫格，试着多想几步。',
+      intro: '继续观察行、列和小宫格，慢慢多想几步。',
     },
     '9x9-easy': {
       id: '9x9-easy',
-      label: '9x9 入门',
+      label: '9x9入门',
       icon: '🌟',
       size: 9,
       subgridRows: 3,
@@ -83,7 +83,7 @@
     },
     '9x9-advanced': {
       id: '9x9-advanced',
-      label: '9x9 进阶',
+      label: '9x9进阶',
       icon: '🏆',
       size: 9,
       subgridRows: 3,
@@ -301,6 +301,16 @@
     return board.reduce((count, row) => count + row.filter((cell) => cell === 0).length, 0);
   }
 
+  function getPointerPoint(event) {
+    if (event.touches && event.touches[0]) {
+      return { x: event.touches[0].clientX, y: event.touches[0].clientY };
+    }
+    if (event.changedTouches && event.changedTouches[0]) {
+      return { x: event.changedTouches[0].clientX, y: event.changedTouches[0].clientY };
+    }
+    return { x: event.clientX, y: event.clientY };
+  }
+
   function findFirstEmptyCell(board) {
     for (let rowIndex = 0; rowIndex < board.length; rowIndex += 1) {
       for (let colIndex = 0; colIndex < board[rowIndex].length; colIndex += 1) {
@@ -331,6 +341,9 @@
     const stageHint = $('#stageHint');
     const bottomActions = $('#bottomActions');
     const actionBtn = $('#actionBtn');
+    const topbar = $('.topbar');
+    const modeTabs = $('.mode-tabs');
+    const content = $('.sudoku-content');
 
     const state = {
       stageId: SUDOKU_STAGE_ORDER[0],
@@ -338,11 +351,12 @@
       puzzleIndex: 0,
       currentPuzzle: null,
       board: [],
-      selectedCell: null,
       practiceMode: false,
       wrongCell: null,
+      activeCell: null,
       wrongTimer: null,
       advanceTimer: null,
+      drag: null,
     };
 
     function speak(text) {
@@ -386,10 +400,22 @@
       }
     }
 
-    function clearTransientState() {
+    function clearTimers() {
       clearTimeout(state.wrongTimer);
       clearTimeout(state.advanceTimer);
       state.wrongCell = null;
+    }
+
+    function clearDrag() {
+      if (state.drag?.ghost?.remove) {
+        state.drag.ghost.remove();
+      }
+      const draggingButton = digitBank.querySelector('.dragging');
+      if (draggingButton) {
+        draggingButton.classList.remove('dragging');
+      }
+      state.drag = null;
+      state.activeCell = null;
     }
 
     function updateStageTabs() {
@@ -400,7 +426,6 @@
 
     function updateProgress() {
       const config = getStageConfig(state.stageId);
-      if (!config) return;
       stageHint.textContent = `${config.icon} ${config.label}`;
       progressText.textContent = state.practiceMode && state.queue.length
         ? `第 ${state.puzzleIndex + 1} / ${state.queue.length} 题`
@@ -419,66 +444,60 @@
       actionBtn.onclick = null;
     }
 
-    function renderIntroCard() {
-      const config = getStageConfig(state.stageId);
-      boardHost.innerHTML = `
-        <div class="sudoku-intro-card">
-          <div class="intro-emoji">${config.icon}</div>
-          <div class="intro-title">${config.label}</div>
-          <div class="intro-desc">${config.intro}</div>
-          <div class="intro-rule">每一行、每一列、每个小宫格都不能重复。</div>
-        </div>
-      `;
+    function updateBoardSize(size) {
+      const topHeight = (topbar?.offsetHeight || 0) + (modeTabs?.offsetHeight || 0);
+      const questionHeight = questionBar?.offsetHeight || 0;
+      const statusHeight = progressText?.parentElement?.offsetHeight || 0;
+      const bankHeight = digitBank?.offsetHeight || 0;
+      const helperHeight = (helperText?.offsetHeight || 0) + (feedback?.offsetHeight || 0);
+      const bottomHeight = bottomActions?.offsetHeight || 0;
+      const chromeHeight = topHeight + questionHeight + statusHeight + bankHeight + helperHeight + bottomHeight + 92;
+      const availableHeight = Math.max(window.innerHeight - chromeHeight, 180);
+      const availableWidth = Math.max((content?.clientWidth || window.innerWidth) - 16, 180);
+      const cap = size === 9 ? 430 : size === 6 ? 500 : 540;
+      const boardSize = Math.max(Math.min(availableWidth, availableHeight, cap), size === 9 ? 240 : 260);
+
+      boardHost.style.setProperty('--board-size', `${boardSize}px`);
     }
 
-    function showStageIntro() {
-      const config = getStageConfig(state.stageId);
-      clearTransientState();
-      state.practiceMode = false;
-      state.queue = [];
-      state.puzzleIndex = 0;
-      state.currentPuzzle = null;
-      state.board = [];
-      state.selectedCell = null;
-      updateStageTabs();
-      updateProgress();
-      renderIntroCard();
-      digitBank.innerHTML = '';
-      digitBank.style.display = 'none';
-      helperText.textContent = '先观察规则，再开始做题。';
-      setFeedback('', '');
-      setPrompt('🧩', `${config.label}：把空格补完整`, `${config.label}。${config.intro}`);
-      showBottomAction('🎯 开始练习', startStagePractice, 'btn btn-green btn-lg');
+    function getRelatedState(row, col, compareCell, config) {
+      if (!compareCell) return false;
+      return compareCell.row === row
+        || compareCell.col === col
+        || (
+          getSubgridStart(compareCell.row, config.subgridRows) === getSubgridStart(row, config.subgridRows)
+          && getSubgridStart(compareCell.col, config.subgridCols) === getSubgridStart(col, config.subgridCols)
+        );
     }
 
     function renderBoard() {
       const config = getStageConfig(state.stageId);
-      const selected = state.selectedCell;
-
       boardHost.innerHTML = '';
+
       const boardEl = document.createElement('div');
       boardEl.className = 'sudoku-board';
       boardEl.style.setProperty('--grid-size', config.size);
+      boardEl.style.setProperty('--board-size', boardHost.style.getPropertyValue('--board-size') || '420px');
       boardEl.dataset.size = String(config.size);
 
       for (let rowIndex = 0; rowIndex < config.size; rowIndex += 1) {
         for (let colIndex = 0; colIndex < config.size; colIndex += 1) {
-          const cell = document.createElement('button');
+          const cell = document.createElement('div');
           const cellValue = state.board[rowIndex][colIndex];
           const isFixed = state.currentPuzzle.givens[rowIndex][colIndex] !== 0;
-          const isSelected = selected && selected.row === rowIndex && selected.col === colIndex;
-          const sameRow = selected && selected.row === rowIndex;
-          const sameCol = selected && selected.col === colIndex;
-          const sameBox = selected
-            && getSubgridStart(selected.row, config.subgridRows) === getSubgridStart(rowIndex, config.subgridRows)
-            && getSubgridStart(selected.col, config.subgridCols) === getSubgridStart(colIndex, config.subgridCols);
+          const isActive = state.activeCell && state.activeCell.row === rowIndex && state.activeCell.col === colIndex;
 
-          cell.type = 'button';
           cell.className = 'sudoku-cell';
+          cell.dataset.row = String(rowIndex);
+          cell.dataset.col = String(colIndex);
           if (isFixed) cell.classList.add('fixed');
           if (!isFixed && cellValue !== 0) cell.classList.add('filled');
-          if (isSelected) cell.classList.add('selected');
-          if (!isSelected && (sameRow || sameCol || sameBox)) cell.classList.add('related');
+          if (getRelatedState(rowIndex, colIndex, state.activeCell, config) && !isActive) {
+            cell.classList.add('related');
+          }
+          if (isActive) {
+            cell.classList.add('drop-target');
+          }
           if (state.wrongCell && state.wrongCell.row === rowIndex && state.wrongCell.col === colIndex) {
             cell.classList.add('wrong');
           }
@@ -488,57 +507,80 @@
           cell.style.borderRightWidth = ((colIndex + 1) % config.subgridCols === 0 && colIndex !== config.size - 1) ? '4px' : '';
           cell.style.borderBottomWidth = ((rowIndex + 1) % config.subgridRows === 0 && rowIndex !== config.size - 1) ? '4px' : '';
 
-          if (!isFixed) {
-            cell.addEventListener('click', () => {
-              state.selectedCell = { row: rowIndex, col: colIndex };
-              helperText.textContent = `已选第 ${rowIndex + 1} 行第 ${colIndex + 1} 列，点下面的数字填入。`;
-              renderBoard();
-              renderDigitBank();
-            });
-          } else {
-            cell.disabled = true;
-          }
-
           boardEl.appendChild(cell);
         }
       }
 
       boardHost.appendChild(boardEl);
+      updateBoardSize(config.size);
     }
 
     function renderDigitBank() {
       const config = getStageConfig(state.stageId);
       digitBank.innerHTML = '';
       digitBank.style.display = 'grid';
-      digitBank.style.setProperty('--bank-size', String(Math.min(config.size, 5)));
+      digitBank.style.setProperty('--bank-size', String(config.size > 6 ? 5 : config.size));
 
       for (let value = 1; value <= config.size; value += 1) {
         const button = document.createElement('button');
         button.type = 'button';
         button.className = 'digit-btn';
         button.textContent = String(value);
-        button.disabled = !state.selectedCell;
-        button.addEventListener('click', () => handleDigitInput(value));
+        button.dataset.value = String(value);
+        button.addEventListener('mousedown', (event) => startDrag(value, button, event));
+        button.addEventListener('touchstart', (event) => startDrag(value, button, event), { passive: false });
         digitBank.appendChild(button);
       }
+    }
+
+    function renderIntroCard(successMode) {
+      const config = getStageConfig(state.stageId);
+      const successClass = successMode ? ' success-card' : '';
+      const title = successMode ? `${config.label} 完成啦` : config.label;
+      const desc = successMode
+        ? `这一轮一共完成了 ${state.queue.length} 题，做得很棒！`
+        : config.intro;
+
+      boardHost.innerHTML = `
+        <div class="sudoku-intro-card${successClass}">
+          <div class="intro-emoji">${successMode ? '🏆' : config.icon}</div>
+          <div class="intro-title">${title}</div>
+          <div class="intro-desc">${desc}</div>
+          <div class="intro-rule">每一行、每一列、每个小宫格都不能重复。</div>
+        </div>
+      `;
+    }
+
+    function showStageIntro() {
+      const config = getStageConfig(state.stageId);
+      clearTimers();
+      clearDrag();
+      state.practiceMode = false;
+      state.queue = [];
+      state.puzzleIndex = 0;
+      state.currentPuzzle = null;
+      state.board = [];
+      state.activeCell = null;
+      updateStageTabs();
+      updateProgress();
+      renderIntroCard(false);
+      digitBank.innerHTML = '';
+      digitBank.style.display = 'none';
+      helperText.textContent = '先看规则，再开始做题。';
+      setFeedback('', '');
+      setPrompt('🧩', `${config.label}：把空格补完整`, `${config.label}。${config.intro}`);
+      showBottomAction('🎯 开始练习', startStagePractice, 'btn btn-green btn-lg');
     }
 
     function showStageComplete() {
       const config = getStageConfig(state.stageId);
       state.practiceMode = false;
-      state.selectedCell = null;
+      state.activeCell = null;
+      renderIntroCard(true);
       digitBank.innerHTML = '';
       digitBank.style.display = 'none';
       helperText.textContent = '这一阶段完成啦，可以再来一轮。';
       updateProgress();
-      boardHost.innerHTML = `
-        <div class="sudoku-intro-card success-card">
-          <div class="intro-emoji">🏆</div>
-          <div class="intro-title">${config.label} 完成啦</div>
-          <div class="intro-desc">这一轮一共完成了 ${state.queue.length} 题，做得很棒！</div>
-          <div class="intro-rule">再来一轮，继续把空格补完整吧。</div>
-        </div>
-      `;
       setFeedback('', '');
       setPrompt('🏆', `${config.label} 完成啦`, `${config.label} 完成啦，再来一轮吧。`);
       showBottomAction('🔄 再来一轮', startStagePractice, 'btn btn-blue btn-lg');
@@ -553,37 +595,68 @@
       state.puzzleIndex = index;
       state.currentPuzzle = state.queue[index];
       state.board = cloneGrid(state.currentPuzzle.givens);
-      state.selectedCell = findFirstEmptyCell(state.board);
+      state.activeCell = findFirstEmptyCell(state.board);
       updateProgress();
       hideBottomAction();
       renderBoard();
       renderDigitBank();
-      helperText.textContent = state.selectedCell
-        ? `已选第 ${state.selectedCell.row + 1} 行第 ${state.selectedCell.col + 1} 列，点下面的数字填入。`
-        : '所有格子都已经填好啦。';
+      helperText.textContent = '把下面的数字拖到空格里。';
       setFeedback('', '');
       setPrompt('🔢', `${getStageConfig(state.stageId).label}：把空格补完整`, `${getStageConfig(state.stageId).label}，第 ${index + 1} 题。把空格补完整。`);
     }
 
     function startStagePractice() {
-      clearTransientState();
+      clearTimers();
+      clearDrag();
       state.practiceMode = true;
       state.queue = buildSudokuQueue(state.stageId);
       if (state.queue.length === 0) {
-        renderIntroCard();
+        renderIntroCard(false);
         setFeedback('暂时还没有题目哦。', 'encourage');
         return;
       }
       loadPuzzle(0);
     }
 
-    function handleDigitInput(value) {
-      if (!state.selectedCell || !state.currentPuzzle) {
-        setFeedback('先点一个空格，再点数字。', 'encourage');
-        return;
+    function findEditableCellAt(point) {
+      const target = document.elementFromPoint(point.x, point.y);
+      if (!target) return null;
+      const cell = target.closest?.('.sudoku-cell');
+      if (!cell) return null;
+      const row = Number(cell.dataset.row);
+      const col = Number(cell.dataset.col);
+      if (Number.isNaN(row) || Number.isNaN(col)) return null;
+      if (!state.currentPuzzle || state.currentPuzzle.givens[row][col] !== 0 || state.board[row][col] !== 0) {
+        return null;
       }
+      return { row, col };
+    }
 
-      const { row, col } = state.selectedCell;
+    function updateActiveDropCell(point) {
+      const nextCell = findEditableCellAt(point);
+      const changed = !state.activeCell
+        || !nextCell
+        || nextCell.row !== state.activeCell.row
+        || nextCell.col !== state.activeCell.col;
+
+      if (changed) {
+        state.activeCell = nextCell;
+        renderBoard();
+      }
+    }
+
+    function showWrongCell(row, col, text) {
+      state.wrongCell = { row, col };
+      renderBoard();
+      clearTimeout(state.wrongTimer);
+      state.wrongTimer = setTimeout(() => {
+        state.wrongCell = null;
+        renderBoard();
+      }, 420);
+      setFeedback(text, 'encourage');
+    }
+
+    function handleDropValue(row, col, value) {
       const conflictReason = getConflictReason(state.board, row, col, value, state.stageId);
       const expectedValue = state.currentPuzzle.solution[row][col];
 
@@ -593,36 +666,88 @@
           col: `这一列里已经有 ${value} 了`,
           box: `这个小宫格里已经有 ${value} 了`,
         };
-
-        state.wrongCell = { row, col };
-        renderBoard();
-        clearTimeout(state.wrongTimer);
-        state.wrongTimer = setTimeout(() => {
-          state.wrongCell = null;
-          renderBoard();
-        }, 450);
-
-        setFeedback(`😺 ${reasonText[conflictReason] || '再看看这个格子该填多少'}`, 'encourage');
+        showWrongCell(row, col, `😺 ${reasonText[conflictReason] || '再看看这个格子该填多少'}`);
         return;
       }
 
       state.board[row][col] = value;
-      state.selectedCell = findFirstEmptyCell(state.board);
+      state.activeCell = findFirstEmptyCell(state.board);
       renderBoard();
-      renderDigitBank();
 
       if (countEmptyCells(state.board) === 0) {
         setFeedback('🎉 完成啦，去下一题！', 'correct');
         state.advanceTimer = setTimeout(() => {
           loadPuzzle(state.puzzleIndex + 1);
-        }, 1200);
+        }, 1100);
         return;
       }
 
-      helperText.textContent = state.selectedCell
-        ? `填对啦，继续看第 ${state.selectedCell.row + 1} 行第 ${state.selectedCell.col + 1} 列。`
-        : '继续把剩下的空格补完整。';
+      helperText.textContent = '填对啦，继续把数字拖到空格里。';
       setFeedback('✅ 填对啦，继续！', 'correct');
+    }
+
+    function startDrag(value, button, event) {
+      if (!state.practiceMode || !state.currentPuzzle) return;
+      event.preventDefault();
+      clearTimeout(state.wrongTimer);
+
+      const point = getPointerPoint(event);
+      const ghost = document.createElement('div');
+      ghost.className = 'drag-ghost';
+      ghost.textContent = String(value);
+      ghost.style.left = `${point.x}px`;
+      ghost.style.top = `${point.y}px`;
+      document.body.appendChild(ghost);
+
+      button.classList.add('dragging');
+      state.drag = {
+        value,
+        ghost,
+      };
+
+      updateActiveDropCell(point);
+
+      window.addEventListener('mousemove', onDragMove);
+      window.addEventListener('mouseup', onDragEnd);
+      window.addEventListener('touchmove', onDragMove, { passive: false });
+      window.addEventListener('touchend', onDragEnd);
+    }
+
+    function onDragMove(event) {
+      if (!state.drag) return;
+      event.preventDefault();
+      const point = getPointerPoint(event);
+      state.drag.ghost.style.left = `${point.x}px`;
+      state.drag.ghost.style.top = `${point.y}px`;
+      updateActiveDropCell(point);
+    }
+
+    function onDragEnd(event) {
+      if (!state.drag) return;
+      const point = getPointerPoint(event);
+      const dropCell = findEditableCellAt(point);
+      const value = state.drag.value;
+
+      window.removeEventListener('mousemove', onDragMove);
+      window.removeEventListener('mouseup', onDragEnd);
+      window.removeEventListener('touchmove', onDragMove);
+      window.removeEventListener('touchend', onDragEnd);
+
+      clearDrag();
+
+      if (!dropCell) {
+        helperText.textContent = '把数字拖到空白格子里。';
+        return;
+      }
+
+      handleDropValue(dropCell.row, dropCell.col, value);
+    }
+
+    function handleResize() {
+      const config = getStageConfig(state.stageId);
+      if (config) {
+        updateBoardSize(config.size);
+      }
     }
 
     stageTabs.forEach((tab) => {
@@ -632,6 +757,7 @@
       });
     });
 
+    window.addEventListener('resize', handleResize);
     showStageIntro();
 
     return {
