@@ -615,3 +615,31 @@
   font-weight: 700;
   color: var(--gray-300);
 }
+
+/* ========== Additions for Highlighting ========== */
+.neighbor-highlight {
+  background: var(--orange-light) !important;
+  color: var(--orange-dark) !important;
+  transform: scale(1.1);
+  z-index: 10;
+  box-shadow: 0 0 0 3px var(--orange);
+}
+.ninegrid-highlight {
+  background: var(--purple-light) !important;
+  color: var(--purple-dark) !important;
+  transform: scale(1.05);
+  z-index: 5;
+  box-shadow: 0 0 0 3px var(--purple);
+}
+.order-options {
+  display: flex !important;
+  flex-direction: row !important;
+  gap: 16px;
+  justify-content: center;
+  align-items: center;
+}
+.order-option {
+  width: 80px;
+  height: 80px;
+  font-size: 32px;
+}
