@@ -337,8 +337,6 @@
     const digitBank = $('#digitBank');
     const helperText = $('#helperText');
     const feedback = $('#feedback');
-    const progressText = $('#progressText');
-    const stageHint = $('#stageHint');
     const bottomActions = $('#bottomActions');
     const actionBtn = $('#actionBtn');
     const topbar = $('.topbar');
@@ -424,14 +422,6 @@
       });
     }
 
-    function updateProgress() {
-      const config = getStageConfig(state.stageId);
-      stageHint.textContent = `${config.icon} ${config.label}`;
-      progressText.textContent = state.practiceMode && state.queue.length
-        ? `第 ${state.puzzleIndex + 1} / ${state.queue.length} 题`
-        : '准备开始';
-    }
-
     function showBottomAction(text, callback, className) {
       bottomActions.style.display = 'flex';
       actionBtn.textContent = text;
@@ -447,11 +437,10 @@
     function updateBoardSize(size) {
       const topHeight = (topbar?.offsetHeight || 0) + (modeTabs?.offsetHeight || 0);
       const questionHeight = questionBar?.offsetHeight || 0;
-      const statusHeight = progressText?.parentElement?.offsetHeight || 0;
       const bankHeight = digitBank?.offsetHeight || 0;
       const helperHeight = (helperText?.offsetHeight || 0) + (feedback?.offsetHeight || 0);
       const bottomHeight = bottomActions?.offsetHeight || 0;
-      const chromeHeight = topHeight + questionHeight + statusHeight + bankHeight + helperHeight + bottomHeight + 92;
+      const chromeHeight = topHeight + questionHeight + bankHeight + helperHeight + bottomHeight + 92;
       const availableHeight = Math.max(window.innerHeight - chromeHeight, 180);
       const availableWidth = Math.max((content?.clientWidth || window.innerWidth) - 16, 180);
       const cap = size === 9 ? 430 : size === 6 ? 500 : 540;
@@ -562,7 +551,6 @@
       state.board = [];
       state.activeCell = null;
       updateStageTabs();
-      updateProgress();
       renderIntroCard(false);
       digitBank.innerHTML = '';
       digitBank.style.display = 'none';
@@ -580,7 +568,6 @@
       digitBank.innerHTML = '';
       digitBank.style.display = 'none';
       helperText.textContent = '这一阶段完成啦，可以再来一轮。';
-      updateProgress();
       setFeedback('', '');
       setPrompt('🏆', `${config.label} 完成啦`, `${config.label} 完成啦，再来一轮吧。`);
       showBottomAction('🔄 再来一轮', startStagePractice, 'btn btn-blue btn-lg');
@@ -596,7 +583,6 @@
       state.currentPuzzle = state.queue[index];
       state.board = cloneGrid(state.currentPuzzle.givens);
       state.activeCell = findFirstEmptyCell(state.board);
-      updateProgress();
       hideBottomAction();
       renderBoard();
       renderDigitBank();

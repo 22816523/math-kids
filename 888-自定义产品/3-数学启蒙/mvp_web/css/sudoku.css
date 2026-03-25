@@ -122,33 +122,6 @@
   box-shadow: 0 5px 0 var(--gray-100);
 }
 
-.sudoku-status {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  flex-shrink: 0;
-}
-
-.stage-hint,
-.progress-text {
-  padding: 8px 12px;
-  border-radius: var(--radius-full);
-  background: var(--white);
-  border: 2px solid var(--gray-100);
-  box-shadow: 0 4px 0 var(--gray-100);
-  font-size: 12px;
-  font-weight: 700;
-}
-
-.stage-hint {
-  color: var(--title);
-}
-
-.progress-text {
-  color: var(--gray-500);
-}
-
 .board-shell {
   flex: 1;
   min-height: 0;
