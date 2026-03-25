@@ -31,17 +31,21 @@
         <span class="tab-icon"><span class="iconify" data-icon="fluent-emoji:backhand-index-pointing-up"></span></span>
         <span class="tab-label">认数字</span>
       </button>
-      <button class="mode-tab" data-mode="fill">
-        <span class="tab-icon"><span class="iconify" data-icon="fluent-emoji:puzzle-piece"></span></span>
-        <span class="tab-label">填一填</span>
+      <button class="mode-tab" data-mode="neighbor">
+        <span class="tab-icon"><span class="iconify" data-icon="fluent-emoji:people-hugging"></span></span>
+        <span class="tab-label">找邻居</span>
       </button>
-      <button class="mode-tab" data-mode="skip">
-        <span class="tab-icon"><span class="iconify" data-icon="fluent-emoji:rabbit-face"></span></span>
-        <span class="tab-label">跳着数</span>
+      <button class="mode-tab" data-mode="ninegrid">
+        <span class="tab-icon"><span class="iconify" data-icon="fluent-emoji:white-square-button"></span></span>
+        <span class="tab-label">九宫格</span>
       </button>
-      <button class="mode-tab" data-mode="place">
-        <span class="tab-icon"><span class="iconify" data-icon="fluent-emoji:wood"></span></span>
-        <span class="tab-label">拆一拆</span>
+      <button class="mode-tab" data-mode="pattern">
+        <span class="tab-icon"><span class="iconify" data-icon="fluent-emoji:rocket"></span></span>
+        <span class="tab-label">找规律</span>
+      </button>
+      <button class="mode-tab" data-mode="treasure">
+        <span class="tab-icon"><span class="iconify" data-icon="fluent-emoji:gem-stone"></span></span>
+        <span class="tab-label">数字寻宝</span>
       </button>
     </div>
 
@@ -53,55 +57,6 @@
         <span class="question-icon" id="questionIcon">🎯</span>
         <span class="question-text" id="questionText"></span>
         <button type="button" id="questionSpeaker" class="question-speaker" hidden aria-label="播放题目语音">🔊</button>
-      </div>
-
-      <!-- 跳数模式控制栏 -->
-      <div id="skipControls" class="skip-controls" style="display:none;">
-        <div class="skip-steps">
-          <button class="btn btn-sm btn-ghost skip-step-btn active" data-step="2">2个一数</button>
-          <button class="btn btn-sm btn-ghost skip-step-btn" data-step="5">5个一数</button>
-          <button class="btn btn-sm btn-ghost skip-step-btn" data-step="10">10个一数</button>
-        </div>
-        <button class="btn btn-sm btn-blue" id="skipDirectionBtn">
-          <span id="skipDirText">顺数 ▶</span>
-        </button>
-      </div>
-
-      <!-- 跳数练习：选项区 -->
-      <div id="skipQuiz" class="skip-quiz" style="display:none;">
-        <div class="skip-quiz-hint" id="skipQuizHint"></div>
-        <div class="skip-quiz-options" id="skipQuizOptions"></div>
-      </div>
-
-      <!-- 数位认识卡片（练习模式：显示小棒让孩子找数字） -->
-      <div id="placeValueCard" class="place-value-card" style="display:none;">
-        <div class="pv-number" id="pvNumber">--</div>
-        <div class="pv-split">
-          <div class="pv-unit">
-            <div class="pv-rods" id="pvTens"></div>
-            <div class="pv-label">十位 <span id="pvTensDigit" class="pv-digit">0</span></div>
-          </div>
-          <div class="pv-plus">+</div>
-          <div class="pv-unit">
-            <div class="pv-rods" id="pvOnes"></div>
-            <div class="pv-label">个位 <span id="pvOnesDigit" class="pv-digit">0</span></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 认数字练习：听音选数卡片区 -->
-      <div id="orderQuiz" class="order-quiz" style="display:none;">
-        <div class="order-quiz-speaker" id="orderSpeaker">🔊</div>
-        <div class="order-quiz-hint" id="orderHint">听一听，选出正确的数字</div>
-        <div class="order-quiz-options" id="orderOptions">
-          <!-- JS动态生成4个大卡片 -->
-        </div>
-        <div class="order-quiz-progress" id="orderProgress"></div>
-      </div>
-
-      <div class="range-tabs" id="rangeTabs">
-        <button class="range-tab active" data-start="1">1-50</button>
-        <button class="range-tab" data-start="51">51-100</button>
       </div>
 
       <!-- 百数板网格 -->

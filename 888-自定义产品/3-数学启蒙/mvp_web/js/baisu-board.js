@@ -174,19 +174,14 @@
     setTimeout(() => { container.innerHTML = ''; }, 4000);
   }
 
-  // ========== 分段范围工具 ==========
-  function rangeEnd() { return state.rangeStart + 49; }
-
   function getCellByNum(num) {
     return grid.querySelector('[data-num="' + num + '"]');
   }
 
-  // ========== 生成百数板（当前分段20格） ==========
+  // ========== 生成百数板（1-100全局） ==========
   function buildGrid() {
     grid.innerHTML = '';
-    const start = state.rangeStart;
-    const end = rangeEnd();
-    for (let i = start; i <= end; i++) {
+    for (let i = 1; i <= 100; i++) {
       const cell = document.createElement('div');
       cell.className = 'cell';
       cell.dataset.num = i;
@@ -339,20 +334,17 @@
       return;
     }
 
-    // 随机目标数字（当前分段内）
-    const start = state.rangeStart;
-    state.orderTarget = start + Math.floor(Math.random() * 50);
+    // 随机目标数字（1-100）
+    state.orderTarget = Math.floor(Math.random() * 100) + 1;
     state.orderWrongCount = 0;
     const target = state.orderTarget;
 
-    // 生成3个干扰项（当前分段范围内）
+    // 生成3个干扰项（1-100范围内）
     const options = [target];
-    const rStart = state.rangeStart;
-    const rEnd = rangeEnd();
     while (options.length < 4) {
       const offset = (Math.floor(Math.random() * 10) - 5) || 1;
       const fake = target + offset;
-      if (fake >= rStart && fake <= rEnd && !options.includes(fake)) {
+      if (fake >= 1 && fake <= 100 && !options.includes(fake)) {
         options.push(fake);
       }
     }
@@ -425,12 +417,10 @@
     state.practicing = true;
     hideQuestion();
 
-    const start = state.rangeStart;
-    const end = rangeEnd();
-    const count = 5 + Math.floor(Math.random() * 4); // 5-8个空缺（50格里）
+    const count = 5 + Math.floor(Math.random() * 4); // 5-8个空缺（100格里）
     const positions = [];
     while (positions.length < count) {
-      const p = start + Math.floor(Math.random() * 50);
+      const p = Math.floor(Math.random() * 100) + 1;
       if (!positions.includes(p)) positions.push(p);
     }
 
@@ -605,8 +595,6 @@
     skipQuiz.style.display = 'none';
 
     const step = state.skipStep;
-    const start = state.rangeStart;
-    const end = rangeEnd();
     // 全量序列
     const allNumbers = [];
     if (state.skipForward) {
@@ -614,8 +602,8 @@
     } else {
       for (let i = 100; i >= step; i -= step) allNumbers.push(i);
     }
-    // 只高亮当前分段内的
-    const visible = allNumbers.filter(n => n >= start && n <= end);
+    // 全局序列
+    const visible = allNumbers;
 
     visible.forEach((num, idx) => {
       const cell = getCellByNum(num);
@@ -641,8 +629,6 @@
 
   function nextSkipQuestion() {
     const step = state.skipStep;
-    const start = state.rangeStart;
-    const end = rangeEnd();
     // 全量序列
     const allNumbers = [];
     if (state.skipForward) {
@@ -650,8 +636,8 @@
     } else {
       for (let i = 100; i >= step; i -= step) allNumbers.push(i);
     }
-    // 当前分段内的序列
-    const numbers = allNumbers.filter(n => n >= start && n <= end);
+    // 当前序列
+    const numbers = allNumbers;
 
     if (state.skipQuizIndex >= 5 || numbers.length < 3) {
       skipQuiz.style.display = 'none';
@@ -764,10 +750,8 @@
       c.classList.remove('place-selected', 'hint-glow');
     });
 
-    // 随机出题（当前分段内）
-    const pStart = state.rangeStart;
-    const pEnd = rangeEnd();
-    state.placeTarget = pStart + Math.floor(Math.random() * 50);
+    // 随机出题（1-100内）
+    state.placeTarget = Math.floor(Math.random() * 100) + 1;
     const num = state.placeTarget;
     const tens = Math.floor(num / 10);
     const ones = num % 10;
