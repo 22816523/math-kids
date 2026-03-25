@@ -210,8 +210,8 @@
 
 .sudoku-cell.empty {
   color: transparent;
-  background: linear-gradient(180deg, #F3F5F7 0%, #E7EBEF 100%);
-  box-shadow: inset 0 0 0 2px rgba(188, 196, 205, 0.72);
+  background: linear-gradient(180deg, #F5FCF8 0%, #E7F8EE 100%);
+  box-shadow: inset 0 0 0 2px rgba(118, 215, 196, 0.5);
 }
 
 .sudoku-board[data-size='6'] .sudoku-cell {
@@ -240,8 +240,8 @@
 }
 
 .sudoku-cell.drop-target {
-  background: linear-gradient(180deg, #F0FBF6 0%, var(--green-light) 100%);
-  box-shadow: inset 0 0 0 3px rgba(118, 215, 196, 0.55);
+  background: linear-gradient(180deg, #EFFBF5 0%, #D8F4E8 100%);
+  box-shadow: inset 0 0 0 3px rgba(82, 194, 171, 0.72);
 }
 
 .sudoku-cell.wrong {
