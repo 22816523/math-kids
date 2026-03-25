@@ -545,10 +545,12 @@
   gap: 20px;
 }
 .spatial-shelf {
-  display: grid;
+  display: inline-grid;
   grid-template-columns: repeat(3, 80px);
   grid-template-rows: repeat(3, 80px);
   gap: 8px;
+  width: fit-content;
+  margin: 0 auto;
   background: #DEB887; /* 木架颜色 */
   padding: 12px;
   border-radius: 12px;
