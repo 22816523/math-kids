@@ -23,7 +23,7 @@
 
   const TRACE_MIN_NUMBER = 1;
   const TRACE_MAX_NUMBER = 100;
-  const GUIDE_BAND_COLOR = 'rgba(203, 213, 225, 0.55)';
+  const GUIDE_BAND_COLOR = 'rgba(188, 198, 214, 0.88)';
   const GUIDE_STROKE_COLOR = '#8EA0B8';
   const DRAW_STROKE_COLOR = '#6C5CE7';
   const DIGIT_HEIGHT = 140;
@@ -566,6 +566,7 @@
 
   return {
     DIGIT_SKELETONS,
+    GUIDE_BAND_COLOR,
     pickRandomTraceNumber,
     pickNextTraceNumber,
     getNumberTraceLayout,

@@ -3,6 +3,7 @@ const assert = require('node:assert/strict');
 
 const {
   DIGIT_SKELETONS,
+  GUIDE_BAND_COLOR,
   getNumberTraceLayout,
   getTraceStrokeWidths,
   pickRandomTraceNumber,
@@ -44,6 +45,10 @@ test('getTraceStrokeWidths keeps the guide visually thicker than before', () => 
   assert.ok(widths.underlayLineWidth > widths.guideLineWidth);
   assert.ok(widths.maskLineWidth > widths.underlayLineWidth);
   assert.ok(widths.guideLineWidth >= 8);
+});
+
+test('guide band color stays visibly stronger than the previous faint underlay', () => {
+  assert.equal(GUIDE_BAND_COLOR, 'rgba(188, 198, 214, 0.88)');
 });
 
 test('evaluateTraceQuality returns strong pass feedback for high coverage and low overflow', () => {
