@@ -109,6 +109,18 @@ test('轻重练习会生成一组可见的托盘物品', () => {
   assert.ok(tray.every((item) => item.icon === '🍎'));
 });
 
+test('轻重选项始终包含一样', () => {
+  const { buildWeightChoiceOptions } = loadMeasureModule();
+
+  const options = buildWeightChoiceOptions({
+    a: { emoji: '🍉', label: '西瓜' },
+    b: { emoji: '🍎', label: '苹果' },
+  });
+
+  assert.equal(options.map((item) => item.key).join(','), 'a,b,same');
+  assert.equal(options[2].text, '一样');
+});
+
 test('日历月份数据会保留完整网格和 31 天', () => {
   const { CALENDAR_MONTH_INFO, getCalendarMonthCells } = loadMeasureModule();
 

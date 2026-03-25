@@ -137,6 +137,14 @@
     }));
   }
 
+  function buildWeightChoiceOptions(question) {
+    return [
+      { key: 'a', icon: question.a.emoji, text: question.a.label },
+      { key: 'b', icon: question.b.emoji, text: question.b.label },
+      { key: 'same', icon: '⚪', text: '一样' },
+    ];
+  }
+
   function getCalendarMonthCells(todayHighlight) {
     const cells = [];
     for (let i = 0; i < CALENDAR_MONTH_INFO.firstWeekday; i++) {
@@ -167,6 +175,7 @@
         .weight-pan-items{min-height:58px;}
         .weight-dropzone{min-width:120px;min-height:58px;padding:6px;border:2px dashed rgba(122,92,0,0.18);border-radius:18px;background:rgba(255,255,255,0.22);}
         .weight-tray{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;width:100%;}
+        .weight-options{display:flex;flex-direction:row;flex-wrap:wrap;justify-content:center;align-items:center;gap:12px;width:100%;}
         .weight-tray-item,.weight-pan-item{border:none;background:var(--white);border-radius:18px;box-shadow:0 6px 14px rgba(0,0,0,0.08);cursor:pointer;user-select:none;transition:transform 0.15s ease, box-shadow 0.15s ease;}
         .weight-tray-item{width:60px;height:60px;font-size:34px;}
         .weight-pan-item{width:46px;height:46px;font-size:28px;background:rgba(255,255,255,0.92);}
@@ -1488,13 +1497,7 @@
 
   function renderWeightOptions(question) {
     weightOptions.innerHTML = '';
-    const options = [
-      { key: 'a', icon: question.a.emoji, text: question.a.label },
-      { key: 'b', icon: question.b.emoji, text: question.b.label },
-    ];
-    if (question.answer === 'same') {
-      options.push({ key: 'same', icon: '⚪', text: '一样重' });
-    }
+    const options = buildWeightChoiceOptions(question);
 
     options.forEach((option) => {
       const node = document.createElement('div');
@@ -1599,6 +1602,7 @@
   if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
       CALENDAR_MONTH_INFO,
+      buildWeightChoiceOptions,
       createWeightTrayItems,
       getCalendarMonthCells,
       getComparePracticeTypes,
