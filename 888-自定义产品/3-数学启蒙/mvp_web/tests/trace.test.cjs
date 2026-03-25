@@ -4,6 +4,8 @@ const assert = require('node:assert/strict');
 const {
   DIGIT_SKELETONS,
   GUIDE_BAND_COLOR,
+  evaluateGlyphQuality,
+  evaluateTraceAttempt,
   getNumberTraceLayout,
   getTraceStrokeWidths,
   pickRandomTraceNumber,
@@ -37,6 +39,7 @@ test('getNumberTraceLayout lays out multi-digit skeletons within the board', () 
   assert.ok(layout.glyphs[0].x < layout.glyphs[1].x);
   assert.ok(layout.glyphs[1].x < layout.glyphs[2].x);
   assert.ok(layout.totalWidth <= 300);
+  assert.ok(layout.glyphs[0].width < 100);
 });
 
 test('getTraceStrokeWidths keeps the guide visually thicker than before', () => {
@@ -49,6 +52,34 @@ test('getTraceStrokeWidths keeps the guide visually thicker than before', () => 
 
 test('guide band color stays visibly stronger than the previous faint underlay', () => {
   assert.equal(GUIDE_BAND_COLOR, 'rgba(188, 198, 214, 0.88)');
+});
+
+test('evaluateGlyphQuality rejects a digit when key checkpoints are mostly missed', () => {
+  const result = evaluateGlyphQuality({
+    coveredPixels: 32,
+    totalMaskPixels: 100,
+    outsidePixels: 28,
+    totalDrawPixels: 68,
+    checkpointHitCount: 1,
+    checkpointTotal: 4,
+  });
+
+  assert.equal(result.isPass, false);
+  assert.equal(result.text, '这个数字还不太像，再试一次吧');
+});
+
+test('evaluateGlyphQuality accepts a digit when coverage and checkpoints are both solid', () => {
+  const result = evaluateGlyphQuality({
+    coveredPixels: 44,
+    totalMaskPixels: 100,
+    outsidePixels: 18,
+    totalDrawPixels: 54,
+    checkpointHitCount: 3,
+    checkpointTotal: 4,
+  });
+
+  assert.equal(result.isPass, true);
+  assert.equal(result.rank, 'A');
 });
 
 test('evaluateTraceQuality returns strong pass feedback for high coverage and low overflow', () => {
@@ -75,6 +106,17 @@ test('evaluateTraceQuality allows moderate overflow when main skeleton is covere
   assert.equal(result.rank, 'B');
   assert.equal(result.text, '写得很好！');
   assert.equal(result.emoji, '🎉');
+});
+
+test('evaluateTraceAttempt fails if any single digit fails even when others pass', () => {
+  const result = evaluateTraceAttempt([
+    { isPass: true, rank: 'A' },
+    { isPass: false, rank: 'C', text: '这个数字还不太像，再试一次吧' },
+  ]);
+
+  assert.equal(result.isPass, false);
+  assert.equal(result.text, '这个数字还不太像，再试一次吧');
+  assert.equal(result.emoji, '🤔');
 });
 
 test('evaluateTraceQuality returns retry feedback when drawing is too sparse', () => {

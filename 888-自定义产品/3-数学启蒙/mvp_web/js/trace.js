@@ -32,12 +32,23 @@
   const DIGIT_SKELETONS = Object.freeze({
     '0': {
       width: 100,
+      checkpoints: [
+        [50, 26],
+        [74, 70],
+        [50, 114],
+        [26, 70],
+      ],
       strokes: [
         { type: 'ellipse', cx: 50, cy: 70, rx: 26, ry: 48 },
       ],
     },
     '1': {
       width: 100,
+      checkpoints: [
+        [50, 30],
+        [50, 70],
+        [50, 110],
+      ],
       strokes: [
         {
           type: 'path',
@@ -50,6 +61,12 @@
     },
     '2': {
       width: 100,
+      checkpoints: [
+        [58, 22],
+        [68, 54],
+        [44, 84],
+        [68, 106],
+      ],
       strokes: [
         {
           type: 'path',
@@ -67,6 +84,11 @@
     },
     '3': {
       width: 100,
+      checkpoints: [
+        [58, 24],
+        [62, 66],
+        [62, 112],
+      ],
       strokes: [
         {
           type: 'path',
@@ -84,6 +106,12 @@
     },
     '4': {
       width: 100,
+      checkpoints: [
+        [68, 28],
+        [68, 74],
+        [68, 110],
+        [38, 74],
+      ],
       strokes: [
         {
           type: 'path',
@@ -110,6 +138,12 @@
     },
     '5': {
       width: 100,
+      checkpoints: [
+        [68, 24],
+        [34, 46],
+        [62, 64],
+        [58, 112],
+      ],
       strokes: [
         {
           type: 'path',
@@ -127,6 +161,12 @@
     },
     '6': {
       width: 100,
+      checkpoints: [
+        [56, 24],
+        [32, 72],
+        [52, 108],
+        [72, 86],
+      ],
       strokes: [
         {
           type: 'path',
@@ -144,6 +184,12 @@
     },
     '7': {
       width: 100,
+      checkpoints: [
+        [32, 24],
+        [70, 24],
+        [48, 74],
+        [38, 110],
+      ],
       strokes: [
         {
           type: 'path',
@@ -157,6 +203,12 @@
     },
     '8': {
       width: 100,
+      checkpoints: [
+        [50, 24],
+        [50, 66],
+        [50, 118],
+        [74, 94],
+      ],
       strokes: [
         { type: 'ellipse', cx: 50, cy: 46, rx: 22, ry: 26 },
         { type: 'ellipse', cx: 50, cy: 94, rx: 28, ry: 30 },
@@ -164,6 +216,12 @@
     },
     '9': {
       width: 100,
+      checkpoints: [
+        [54, 24],
+        [74, 54],
+        [52, 82],
+        [74, 108],
+      ],
       strokes: [
         {
           type: 'path',
@@ -200,36 +258,39 @@
     const paddingX = options.paddingX ?? 34;
     const paddingY = options.paddingY ?? 34;
     const digits = String(num).split('');
-
-    const totalBaseWidth = digits.reduce((sum, digit) => sum + DIGIT_SKELETONS[digit].width, 0) + DIGIT_GAP * Math.max(0, digits.length - 1);
-    const scaleX = (canvasWidth - paddingX * 2) / totalBaseWidth;
+    const contentWidth = canvasWidth - paddingX * 2;
+    const slotWidth = contentWidth / digits.length;
+    const slotPadding = Math.min(12, slotWidth * 0.08);
+    const maxDigitWidth = digits.reduce((maxWidth, digit) => Math.max(maxWidth, DIGIT_SKELETONS[digit].width), 0);
+    const scaleX = (slotWidth - slotPadding * 2) / maxDigitWidth;
     const scaleY = (canvasHeight - paddingY * 2) / DIGIT_HEIGHT;
     const scale = Math.min(scaleX, scaleY);
-    const totalWidth = totalBaseWidth * scale;
     const totalHeight = DIGIT_HEIGHT * scale;
-    const startX = (canvasWidth - totalWidth) / 2;
     const startY = (canvasHeight - totalHeight) / 2;
 
     const glyphs = [];
-    let cursorX = startX;
-
     digits.forEach((digit, index) => {
       const skeleton = DIGIT_SKELETONS[digit];
+      const width = skeleton.width * scale;
+      const slotX = paddingX + slotWidth * index;
+      const x = slotX + (slotWidth - width) / 2;
       glyphs.push({
         digit,
         index,
-        x: cursorX,
+        x,
         y: startY,
         scale,
-        width: skeleton.width * scale,
+        width,
         height: DIGIT_HEIGHT * scale,
+        slotX,
+        slotWidth,
         skeleton,
       });
-      cursorX += skeleton.width * scale;
-      if (index < digits.length - 1) {
-        cursorX += DIGIT_GAP * scale;
-      }
     });
+
+    const startX = glyphs[0]?.x ?? paddingX;
+    const endX = glyphs.length ? glyphs[glyphs.length - 1].x + glyphs[glyphs.length - 1].width : startX;
+    const totalWidth = endX - startX;
 
     return {
       glyphs,
@@ -246,6 +307,62 @@
       guideLineWidth: clamp(8, 9 * scale, 10),
       underlayLineWidth: clamp(14, 18 * scale, 20),
       maskLineWidth: clamp(22, 30 * scale, 32),
+    };
+  }
+
+  function evaluateGlyphQuality({
+    coveredPixels,
+    totalMaskPixels,
+    outsidePixels,
+    totalDrawPixels,
+    checkpointHitCount,
+    checkpointTotal,
+  }) {
+    const safeMaskPixels = totalMaskPixels > 0 ? totalMaskPixels : 1;
+    const safeDrawPixels = totalDrawPixels > 0 ? totalDrawPixels : 1;
+    const safeCheckpointTotal = checkpointTotal > 0 ? checkpointTotal : 1;
+
+    const coverage = coveredPixels / safeMaskPixels;
+    const outsideRatio = outsidePixels / safeMaskPixels;
+    const precision = coveredPixels / safeDrawPixels;
+    const checkpointRate = checkpointHitCount / safeCheckpointTotal;
+
+    let isPass = false;
+    let rank = 'C';
+    let text = '这个数字还不太像，再试一次吧';
+    let emoji = '🤔';
+
+    if (coverage >= 0.5 && precision >= 0.72 && checkpointRate >= 0.75 && outsideRatio <= 0.32) {
+      isPass = true;
+      rank = 'S';
+    } else if (coverage >= 0.36 && precision >= 0.56 && checkpointRate >= 0.6 && outsideRatio <= 0.58) {
+      isPass = true;
+      rank = 'A';
+    } else if (coverage >= 0.24 && precision >= 0.42 && checkpointRate >= 0.5 && outsideRatio <= 0.8) {
+      isPass = true;
+      rank = 'B';
+    }
+
+    if (isPass) {
+      text = rank === 'S' ? '完美！太漂亮了！' : '写得很好！';
+      emoji = rank === 'S' ? '🌟' : '🎉';
+    } else if (coverage < 0.12) {
+      text = '这个数字还没写满哦';
+    } else if (checkpointRate < 0.45 || precision < 0.32) {
+      text = '这个数字还不太像，再试一次吧';
+    } else if (outsideRatio > 0.95) {
+      text = '这个数字超出有点多，再收一收线条哦';
+    }
+
+    return {
+      coverage,
+      outsideRatio,
+      precision,
+      checkpointRate,
+      isPass,
+      rank,
+      text,
+      emoji,
     };
   }
 
@@ -289,6 +406,30 @@
     };
   }
 
+  function evaluateTraceAttempt(glyphResults) {
+    const failedGlyph = glyphResults.find((glyph) => !glyph.isPass);
+    if (failedGlyph) {
+      return {
+        isPass: false,
+        rank: 'C',
+        text: failedGlyph.text || '这个数字还不太像，再试一次吧',
+        emoji: '🤔',
+      };
+    }
+
+    const rankOrder = ['S', 'A', 'B'];
+    const rank = glyphResults.reduce((lowest, glyph) => {
+      return rankOrder.indexOf(glyph.rank) > rankOrder.indexOf(lowest) ? glyph.rank : lowest;
+    }, 'S');
+
+    return {
+      isPass: true,
+      rank,
+      text: rank === 'S' ? '完美！太漂亮了！' : '写得很好！',
+      emoji: rank === 'S' ? '🌟' : '🎉',
+    };
+  }
+
   function initTracePage() {
     if (typeof document === 'undefined' || typeof window === 'undefined') {
       return null;
@@ -319,6 +460,7 @@
       currentNum: pickRandomTraceNumber(),
       isDrawing: false,
       strokeCount: 0,
+      currentLayout: null,
     };
 
     function drawPathStroke(ctx, commands, offsetX, offsetY, scale) {
@@ -383,6 +525,7 @@
         canvasWidth: bgCanvas.width,
         canvasHeight: bgCanvas.height,
       });
+      state.currentLayout = layout;
       const strokeWidths = getTraceStrokeWidths(layout.scale);
 
       bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
@@ -492,29 +635,85 @@
       }, 1500);
     }
 
-    function collectDrawStats() {
-      const maskData = maskCtx.getImageData(0, 0, maskCanvas.width, maskCanvas.height).data;
-      const drawData = drawCtx.getImageData(0, 0, drawCanvas.width, drawCanvas.height).data;
+    function isCheckpointHit(drawData, checkpointX, checkpointY, radius) {
+      const width = drawCanvas.width;
+      const minX = Math.max(0, Math.floor(checkpointX - radius));
+      const maxX = Math.min(width - 1, Math.ceil(checkpointX + radius));
+      const minY = Math.max(0, Math.floor(checkpointY - radius));
+      const maxY = Math.min(drawCanvas.height - 1, Math.ceil(checkpointY + radius));
+      const squaredRadius = radius * radius;
 
-      let totalMaskPixels = 0;
-      let coveredPixels = 0;
-      let outsidePixels = 0;
+      for (let y = minY; y <= maxY; y += 1) {
+        for (let x = minX; x <= maxX; x += 1) {
+          const dx = x - checkpointX;
+          const dy = y - checkpointY;
+          if (dx * dx + dy * dy > squaredRadius) continue;
 
-      for (let i = 0; i < maskData.length; i += 4) {
-        const inMaskArea = maskData[i + 3] > 30;
-        const hasDrawn = drawData[i + 3] > 30;
-
-        if (inMaskArea) {
-          totalMaskPixels += 1;
-          if (hasDrawn) {
-            coveredPixels += 1;
+          const index = (y * width + x) * 4;
+          if (drawData[index + 3] > 30) {
+            return true;
           }
-        } else if (hasDrawn) {
-          outsidePixels += 1;
         }
       }
 
-      return { coveredPixels, totalMaskPixels, outsidePixels };
+      return false;
+    }
+
+    function collectGlyphStats(layout) {
+      const maskData = maskCtx.getImageData(0, 0, maskCanvas.width, maskCanvas.height).data;
+      const drawData = drawCtx.getImageData(0, 0, drawCanvas.width, drawCanvas.height).data;
+      const width = drawCanvas.width;
+
+      return layout.glyphs.map((glyph) => {
+        const padding = Math.max(18, Math.round(18 * glyph.scale));
+        const minX = Math.max(0, Math.floor(glyph.slotX - padding));
+        const maxX = Math.min(width - 1, Math.ceil(glyph.slotX + glyph.slotWidth + padding));
+        const minY = Math.max(0, Math.floor(glyph.y - padding));
+        const maxY = Math.min(drawCanvas.height - 1, Math.ceil(glyph.y + glyph.height + padding));
+
+        let totalMaskPixels = 0;
+        let coveredPixels = 0;
+        let outsidePixels = 0;
+        let totalDrawPixels = 0;
+
+        for (let y = minY; y <= maxY; y += 1) {
+          for (let x = minX; x <= maxX; x += 1) {
+            const index = (y * width + x) * 4;
+            const inMaskArea = maskData[index + 3] > 30;
+            const hasDrawn = drawData[index + 3] > 30;
+
+            if (hasDrawn) {
+              totalDrawPixels += 1;
+            }
+
+            if (inMaskArea) {
+              totalMaskPixels += 1;
+              if (hasDrawn) {
+                coveredPixels += 1;
+              }
+            } else if (hasDrawn) {
+              outsidePixels += 1;
+            }
+          }
+        }
+
+        const checkpointRadius = Math.max(11, 12 * glyph.scale);
+        const checkpointHitCount = glyph.skeleton.checkpoints.reduce((count, point) => {
+          const checkpointX = glyph.x + point[0] * glyph.scale;
+          const checkpointY = glyph.y + point[1] * glyph.scale;
+          return count + (isCheckpointHit(drawData, checkpointX, checkpointY, checkpointRadius) ? 1 : 0);
+        }, 0);
+
+        return {
+          digit: glyph.digit,
+          coveredPixels,
+          totalMaskPixels,
+          outsidePixels,
+          totalDrawPixels,
+          checkpointHitCount,
+          checkpointTotal: glyph.skeleton.checkpoints.length,
+        };
+      });
     }
 
     function checkDrawQuality() {
@@ -523,7 +722,9 @@
         return;
       }
 
-      const result = evaluateTraceQuality(collectDrawStats());
+      const glyphStats = collectGlyphStats(state.currentLayout);
+      const glyphResults = glyphStats.map((glyphStat) => evaluateGlyphQuality(glyphStat));
+      const result = evaluateTraceAttempt(glyphResults);
       showFeedback(result.isPass, result.emoji, result.text);
       speak(result.text);
 
@@ -567,6 +768,8 @@
   return {
     DIGIT_SKELETONS,
     GUIDE_BAND_COLOR,
+    evaluateGlyphQuality,
+    evaluateTraceAttempt,
     pickRandomTraceNumber,
     pickNextTraceNumber,
     getNumberTraceLayout,
