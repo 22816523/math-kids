@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+  <title>数学启蒙 · 数独</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/design-system.css?v=20260325s">
+  <link rel="stylesheet" href="css/sudoku.css?v=20260325s">
+  <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
+</head>
+<body>
+  <div class="bg-decoration">
+    <div class="cloud cloud-1"></div>
+    <div class="cloud cloud-2"></div>
+    <div class="cloud cloud-3"></div>
+  </div>
+
+  <div id="app">
+    <div class="topbar">
+      <div class="topbar-left">
+        <a href="index.html" class="back-btn">◀</a>
+        <span class="topbar-title">
+          <span class="iconify" data-icon="fluent-emoji:puzzle-piece" style="font-size:26px;vertical-align:text-bottom;"></span>
+          数独
+        </span>
+      </div>
+    </div>
+
+    <div class="mode-tabs">
+      <button class="mode-tab active" data-stage="4x4-easy">
+        <span class="tab-icon">🌱</span>
+        <span class="tab-label">4x4 入门</span>
+      </button>
+      <button class="mode-tab" data-stage="4x4-advanced">
+        <span class="tab-icon">🚀</span>
+        <span class="tab-label">4x4 进阶</span>
+      </button>
+      <button class="mode-tab" data-stage="6x6-easy">
+        <span class="tab-icon">🌼</span>
+        <span class="tab-label">6x6 入门</span>
+      </button>
+      <button class="mode-tab" data-stage="6x6-advanced">
+        <span class="tab-icon">✨</span>
+        <span class="tab-label">6x6 进阶</span>
+      </button>
+      <button class="mode-tab" data-stage="9x9-easy">
+        <span class="tab-icon">🌟</span>
+        <span class="tab-label">9x9 入门</span>
+      </button>
+      <button class="mode-tab" data-stage="9x9-advanced">
+        <span class="tab-icon">🏆</span>
+        <span class="tab-label">9x9 进阶</span>
+      </button>
+    </div>
+
+    <div class="content sudoku-content">
+      <div id="questionBar" class="question-bar" style="display:none;">
+        <span class="question-icon" id="questionIcon">🧩</span>
+        <span class="question-text" id="questionText"></span>
+        <button type="button" id="questionSpeaker" class="question-speaker" hidden aria-label="播放题目语音">🔊</button>
+      </div>
+
+      <div class="sudoku-status">
+        <div class="stage-hint" id="stageHint">🌱 4x4 入门</div>
+        <div class="progress-text" id="progressText">准备开始</div>
+      </div>
+
+      <div class="board-shell">
+        <div id="boardHost" class="board-host"></div>
+      </div>
+
+      <div id="digitBank" class="digit-bank" style="display:none;"></div>
+      <div id="helperText" class="helper-text">先观察规则，再开始做题。</div>
+      <div id="feedback" class="feedback"></div>
+    </div>
+
+    <div id="bottomActions" class="bottom-actions" style="display:none;">
+      <button class="btn btn-green btn-lg" id="actionBtn">🎯 开始练习</button>
+    </div>
+  </div>
+
+  <script src="js/timer.js?v=20260325s"></script>
+  <script src="js/practice-support.js?v=20260325s"></script>
+  <script src="js/sudoku.js?v=20260325s"></script>
+</body>
+</html>
