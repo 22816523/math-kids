@@ -40,9 +40,9 @@
   const boardWrapper = $('#boardWrapper');
   const orderQuiz = $('#orderQuiz');
   const orderOptions = $('#orderOptions');
-  const orderHint = $('#orderHint');
-  const orderSpeaker = $('#orderSpeaker');
-  const orderProgress = $('#orderProgress');
+  let orderHint = $('#orderHint') || {textContent:'', style:{}, classList:{add:()=>{},remove:()=>{},toggle:()=>{}}};
+  let orderSpeaker = $('#orderSpeaker') || {textContent:'', style:{}, classList:{add:()=>{},remove:()=>{},toggle:()=>{}}};
+  let orderProgress = $('#orderProgress') || {textContent:'', style:{}, classList:{add:()=>{},remove:()=>{},toggle:()=>{}}};
   const skipControls = $('#skipControls');
   const bubbleZone = $('#bubbleZone');
   const bottomActions = $('#bottomActions');

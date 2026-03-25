@@ -24,7 +24,7 @@
         <a href="index.html" class="back-btn">◀</a>
         <span class="topbar-title"><span class="iconify" data-icon="fluent-emoji:input-numbers" style="font-size: 26px; vertical-align: text-bottom;"></span> 百数板</span>
       </div>
-      <!-- Removed gamification elements -->
+      <!-- gamification --><span id="starCount" style="display:none;">0</span>
     </div>
     <div class="mode-tabs">
       <button class="mode-tab active" data-mode="order">
@@ -63,6 +63,10 @@
       <div id="orderQuiz" class="order-quiz" style="display:none; padding:20px; align-items:center; justify-content:center;">
         <div class="order-options" id="orderOptions" style="display:flex; flex-direction:row; gap:16px; flex-wrap:wrap; justify-content:center;">
           <!-- JS动态生成4张选项卡片 -->
+        <div id="orderHint" style="font-size:15px;color:#888;font-weight:700;text-align:center;margin-top:8px;"></div>
+        <div id="orderProgress" style="font-size:14px;color:var(--purple,#8A4CF2);font-weight:900;text-align:center;margin-top:4px;"></div>
+        <div style="display:none;"><span id="orderSpeaker"></span></div>
+      <!-- end injected
         </div>
       </div>
 
