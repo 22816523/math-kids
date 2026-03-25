@@ -595,8 +595,11 @@
   ];
 
   function enterFindExplore() {
-    state.practicing = false;
+    state.practicing = true;
     state.findScene = 0;
+    bottomActions.style.display = 'none';
+    startFindPractice();
+    return;
     renderScene(SCENES[0]);
     showQuestion('🔍', '这是' + SCENES[0].name + '，看看里面藏了什么图形');
     showBottomAction('🎯 开始找图形', () => startFindPractice());
@@ -639,6 +642,7 @@
     bottomActions.style.display = 'none';
 
     const scene = SCENES[state.findScene];
+    renderScene(scene);
     // 随机选一种图形作为目标
     const shapes = [...new Set(scene.items.map(i => i.shape))];
     const target = pickRandom(shapes);
@@ -671,6 +675,8 @@
           // 下一个场景或完成
           state.findScene++;
           if (state.findScene < SCENES.length) {
+            startFindPractice();
+            return;
             const next = SCENES[state.findScene];
             renderScene(next);
             showQuestion('🎉', '找到了！去' + next.name + '看看');
@@ -680,7 +686,6 @@
             showCelebration();
             showBottomAction('🔄 再来一轮', () => {
               state.findScene = 0;
-              renderScene(SCENES[0]);
               startFindPractice();
             });
           }

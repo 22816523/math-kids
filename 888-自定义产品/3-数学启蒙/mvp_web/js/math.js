@@ -26,6 +26,8 @@ const questionSpeaker = $('#questionSpeaker');
 const visualArea = $('#visualArea');
 const controlArea = $('#controlArea');
 const feedback = $('#feedback');
+const bottomActions = $('#bottomActions');
+const actionBtn = $('#actionBtn');
 
 function speak(text) {
   if (!('speechSynthesis' in window) || !text) return;
@@ -69,6 +71,10 @@ $$('.mode-tab').forEach((btn) => {
 function showStartScreen() {
   feedback.textContent = '';
   feedback.className = 'feedback';
+  bottomActions.style.display = 'flex';
+  actionBtn.textContent = '开始练习';
+  actionBtn.className = 'btn btn-green btn-lg';
+  actionBtn.onclick = startPractice;
   setPrompt('准备好了吗？', '准备好了吗？点击开始练习');
   visualArea.innerHTML = `
     <div style="text-align:center;padding:40px 0;">
@@ -76,6 +82,8 @@ function showStartScreen() {
       <div style="font-size:24px;color:var(--gray-500);margin-bottom:32px;">准备好开始练习了吗？</div>
     </div>
   `;
+  controlArea.innerHTML = '';
+  return;
   controlArea.innerHTML = '<button class="btn-green btn-lg" onclick="startPractice()">开始练习</button>';
 }
 
@@ -83,6 +91,7 @@ function startPractice() {
   state.practiceMode = true;
   state.currentQuestion = 0;
   state.correctCount = 0;
+  bottomActions.style.display = 'none';
   nextQuestion();
 }
 
@@ -190,6 +199,14 @@ function showCompleteScreen() {
       <div style="font-size:18px;color:var(--gray-400);">${encouragement}</div>
     </div>
   `;
+  controlArea.innerHTML = '';
+  bottomActions.style.display = 'flex';
+  actionBtn.textContent = '再来一组';
+  actionBtn.className = 'btn btn-blue btn-lg';
+  actionBtn.onclick = startPractice;
+  feedback.textContent = '';
+  feedback.className = 'feedback';
+  return;
 
   controlArea.innerHTML = '<button class="btn-blue btn-lg" onclick="startPractice()">再来一组</button>';
   feedback.textContent = '';

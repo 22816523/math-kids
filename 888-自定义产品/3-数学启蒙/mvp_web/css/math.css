@@ -59,6 +59,15 @@
   box-shadow: 0 2px 0 var(--gray-100);
 }
 
+.bottom-actions {
+  padding: 12px 20px calc(12px + env(safe-area-inset-bottom));
+  background: var(--white);
+  border-top: 2px solid var(--gray-50);
+  display: flex;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
 .topbar-left {
   display: flex;
   align-items: center;
