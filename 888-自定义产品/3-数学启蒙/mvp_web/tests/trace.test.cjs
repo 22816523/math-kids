@@ -28,6 +28,23 @@ test('digit 1 skeleton is a single vertical stroke', () => {
   ]);
 });
 
+test('digit 2 and 4 skeletons keep primary-school style baseline and stroke order', () => {
+  const two = DIGIT_SKELETONS['2'];
+  const four = DIGIT_SKELETONS['4'];
+
+  assert.deepEqual(two.strokes[0].commands.slice(-3), [
+    ['L', 82, 94],
+    ['L', 82, 108],
+    ['L', 24, 108],
+  ]);
+
+  assert.equal(four.strokes.length, 3);
+  assert.deepEqual(four.strokes[0].commands, [
+    ['M', 62, 18],
+    ['L', 62, 118],
+  ]);
+});
+
 test('getNumberTraceLayout lays out multi-digit skeletons within the board', () => {
   const layout = getNumberTraceLayout(100, {
     canvasWidth: 300,
