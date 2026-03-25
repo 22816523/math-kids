@@ -33,10 +33,11 @@ test('digit 2 and 4 skeletons keep primary-school style baseline and stroke orde
   const four = DIGIT_SKELETONS['4'];
 
   assert.deepEqual(two.strokes[0].commands.slice(-3), [
-    ['L', 82, 94],
+    ['L', 40, 92],
+    ['L', 28, 108],
     ['L', 82, 108],
-    ['L', 24, 108],
   ]);
+  assert.equal(two.strokes[0].commands.some((command) => command[1] === 82 && command[2] === 94), false);
 
   assert.equal(four.strokes.length, 3);
   assert.deepEqual(four.strokes[0].commands, [
