@@ -103,6 +103,7 @@
     findFound: 0,
     findScene: 0,
     tangramRound: 0,
+    tangramQueue: [],
     tangramFilled: 0,
     spatialRound: 0,
   };
@@ -699,41 +700,161 @@
     {
       name: '小红花',
       pieces: [
-        { shape: 'circle', color: '#FF8A8A', x: 30, y: 10, w: 40, h: 40 },
-        { shape: 'rectangle', color: '#6BCB77', x: 45, y: 55, w: 10, h: 40 },
-        { shape: 'oval', color: '#FFD166', x: 15, y: 50, w: 30, h: 20 },
-        { shape: 'oval', color: '#FFD166', x: 55, y: 50, w: 30, h: 20 }
+        { shape: 'circle', x: 30, y: 10, w: 40, h: 40 },
+        { shape: 'rectangle', x: 45, y: 55, w: 10, h: 40 },
+        { shape: 'oval', x: 15, y: 50, w: 30, h: 20 },
+        { shape: 'oval', x: 55, y: 50, w: 30, h: 20 }
       ]
     },
     {
       name: '小房子',
       pieces: [
-        { shape: 'triangle', color: '#FFD166', x: 15, y: 10, w: 70, h: 40 },
-        { shape: 'square', color: '#7BC8F6', x: 25, y: 50, w: 50, h: 50 },
-        { shape: 'rectangle', color: '#FF8A8A', x: 40, y: 70, w: 20, h: 30 }
+        { shape: 'triangle', x: 15, y: 10, w: 70, h: 40 },
+        { shape: 'square', x: 25, y: 50, w: 50, h: 50 },
+        { shape: 'rectangle', x: 40, y: 70, w: 20, h: 30 }
       ]
     },
     {
       name: '小火车',
       pieces: [
-        { shape: 'rectangle', color: '#8A9CF2', x: 10, y: 50, w: 40, h: 30 },
-        { shape: 'square', color: '#6CF2C8', x: 50, y: 30, w: 30, h: 50 },
-        { shape: 'circle', color: '#FF8A8A', x: 15, y: 80, w: 20, h: 20 },
-        { shape: 'circle', color: '#FF8A8A', x: 55, y: 80, w: 20, h: 20 },
-        { shape: 'rectangle', color: '#FFD166', x: 70, y: 10, w: 10, h: 20 }
+        { shape: 'rectangle', x: 10, y: 50, w: 40, h: 30 },
+        { shape: 'square', x: 50, y: 30, w: 30, h: 50 },
+        { shape: 'circle', x: 15, y: 80, w: 20, h: 20 },
+        { shape: 'circle', x: 55, y: 80, w: 20, h: 20 },
+        { shape: 'rectangle', x: 70, y: 10, w: 10, h: 20 }
+      ]
+    },
+    {
+      name: '小树',
+      pieces: [
+        { shape: 'triangle', x: 20, y: 8, w: 60, h: 38 },
+        { shape: 'triangle', x: 25, y: 26, w: 50, h: 34 },
+        { shape: 'rectangle', x: 43, y: 62, w: 14, h: 26 },
+        { shape: 'oval', x: 10, y: 40, w: 22, h: 14 },
+        { shape: 'oval', x: 68, y: 40, w: 22, h: 14 }
+      ]
+    },
+    {
+      name: '小汽车',
+      pieces: [
+        { shape: 'rectangle', x: 18, y: 50, w: 52, h: 22 },
+        { shape: 'trapezoid', x: 28, y: 28, w: 34, h: 24 },
+        { shape: 'circle', x: 20, y: 72, w: 18, h: 18 },
+        { shape: 'circle', x: 56, y: 72, w: 18, h: 18 },
+        { shape: 'square', x: 63, y: 48, w: 14, h: 14 }
+      ]
+    },
+    {
+      name: '小鱼',
+      pieces: [
+        { shape: 'oval', x: 18, y: 30, w: 42, h: 26 },
+        { shape: 'triangle', x: 56, y: 30, w: 24, h: 26 },
+        { shape: 'circle', x: 28, y: 38, w: 8, h: 8 },
+        { shape: 'triangle', x: 22, y: 58, w: 18, h: 14 }
+      ]
+    },
+    {
+      name: '小船',
+      pieces: [
+        { shape: 'parallelogram', x: 18, y: 62, w: 56, h: 18 },
+        { shape: 'triangle', x: 46, y: 18, w: 26, h: 36 },
+        { shape: 'rectangle', x: 43, y: 28, w: 4, h: 40 },
+        { shape: 'semicircle', x: 12, y: 78, w: 24, h: 10 }
+      ]
+    },
+    {
+      name: '冰淇淋',
+      pieces: [
+        { shape: 'triangle', x: 34, y: 46, w: 32, h: 38 },
+        { shape: 'circle', x: 28, y: 14, w: 22, h: 22 },
+        { shape: 'circle', x: 50, y: 14, w: 22, h: 22 },
+        { shape: 'circle', x: 39, y: 4, w: 22, h: 22 }
+      ]
+    },
+    {
+      name: '火箭',
+      pieces: [
+        { shape: 'rectangle', x: 40, y: 26, w: 20, h: 40 },
+        { shape: 'triangle', x: 36, y: 6, w: 28, h: 24 },
+        { shape: 'triangle', x: 26, y: 54, w: 16, h: 22 },
+        { shape: 'triangle', x: 58, y: 54, w: 16, h: 22 },
+        { shape: 'circle', x: 44, y: 40, w: 12, h: 12 }
+      ]
+    },
+    {
+      name: '机器人',
+      pieces: [
+        { shape: 'square', x: 34, y: 10, w: 32, h: 24 },
+        { shape: 'rectangle', x: 32, y: 38, w: 36, h: 30 },
+        { shape: 'rectangle', x: 26, y: 68, w: 10, h: 20 },
+        { shape: 'rectangle', x: 64, y: 68, w: 10, h: 20 },
+        { shape: 'circle', x: 40, y: 18, w: 6, h: 6 },
+        { shape: 'circle', x: 54, y: 18, w: 6, h: 6 }
+      ]
+    },
+    {
+      name: '小雪人',
+      pieces: [
+        { shape: 'circle', x: 36, y: 8, w: 20, h: 20 },
+        { shape: 'circle', x: 28, y: 28, w: 36, h: 36 },
+        { shape: 'circle', x: 18, y: 58, w: 56, h: 30 },
+        { shape: 'rectangle', x: 43, y: 0, w: 6, h: 12 }
+      ]
+    },
+    {
+      name: '小蝴蝶',
+      pieces: [
+        { shape: 'heart', x: 16, y: 18, w: 26, h: 28 },
+        { shape: 'heart', x: 58, y: 18, w: 26, h: 28 },
+        { shape: 'heart', x: 18, y: 48, w: 24, h: 26 },
+        { shape: 'heart', x: 58, y: 48, w: 24, h: 26 },
+        { shape: 'rectangle', x: 47, y: 22, w: 6, h: 42 }
+      ]
+    },
+    {
+      name: '小礼物',
+      pieces: [
+        { shape: 'square', x: 24, y: 28, w: 52, h: 44 },
+        { shape: 'rectangle', x: 47, y: 28, w: 6, h: 44 },
+        { shape: 'rectangle', x: 24, y: 46, w: 52, h: 6 },
+        { shape: 'heart', x: 32, y: 8, w: 18, h: 18 },
+        { shape: 'heart', x: 50, y: 8, w: 18, h: 18 }
       ]
     }
   ];
+  const TANGRAM_ROUNDS_PER_SESSION = 6;
+
+  function buildTangramQueue(randomFn) {
+    const rand = typeof randomFn === 'function' ? randomFn : Math.random;
+    const pool = [...TANGRAM_PUZZLES];
+
+    for (let i = pool.length - 1; i > 0; i--) {
+      const j = Math.floor(rand() * (i + 1));
+      [pool[i], pool[j]] = [pool[j], pool[i]];
+    }
+
+    return pool.slice(0, Math.min(TANGRAM_ROUNDS_PER_SESSION, pool.length)).map((puzzle) => {
+      const colorPool = shuffle(SOFT_COLORS);
+      return {
+        name: puzzle.name,
+        pieces: puzzle.pieces.map((piece, index) => ({
+          ...piece,
+          color: colorPool[index % colorPool.length],
+        })),
+      };
+    });
+  }
 
   function enterTangramExplore() {
     state.practicing = true;
     state.tangramRound = 0;
+    state.tangramQueue = buildTangramQueue();
     bottomActions.style.display = 'none';
     prepareTangramLevel();
   }
 
   function prepareTangramLevel() {
-    if (state.tangramRound >= TANGRAM_PUZZLES.length) {
+    if (state.tangramRound >= state.tangramQueue.length) {
        showQuestion('🏆', '所有拼图都拼完啦！太棒了！');
        showCelebration();
        showBottomAction('🔄 再玩一次', () => enterTangramExplore());
@@ -741,7 +862,7 @@
        return;
     }
 
-    const puzzle = TANGRAM_PUZZLES[state.tangramRound];
+    const puzzle = state.tangramQueue[state.tangramRound];
     state.tangramPiecesFound = 0;
     showQuestion('🧩', '拖动图形，拼出一个' + puzzle.name + '吧！');
 
@@ -840,7 +961,7 @@
            state.tangramPiecesFound++;
            piece.remove();
            showFeedback(true);
-           if(state.tangramPiecesFound >= TANGRAM_PUZZLES[state.tangramRound].pieces.length) {
+           if(state.tangramPiecesFound >= state.tangramQueue[state.tangramRound].pieces.length) {
                showQuestion('🎉', '拼图完成！');
                showCelebration();
                state.tangramRound++;
@@ -1091,5 +1212,13 @@
     document.addEventListener('DOMContentLoaded', init);
   } else {
     init();
+  }
+
+  if (typeof module !== 'undefined' && module.exports) {
+    module.exports = {
+      TANGRAM_PUZZLES,
+      TANGRAM_ROUNDS_PER_SESSION,
+      buildTangramQueue,
+    };
   }
 })();

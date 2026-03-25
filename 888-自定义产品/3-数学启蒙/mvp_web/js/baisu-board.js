@@ -135,6 +135,24 @@
     promptController.hidePrompt();
   }
 
+  function resetBoardCellsForPractice() {
+    $$('.cell').forEach((cell) => {
+      cell.classList.remove(
+        'tapped',
+        'neighbor-highlight',
+        'ninegrid-highlight',
+        'skip-highlight',
+        'skip-animate',
+        'place-selected',
+        'blank',
+        'filled',
+        'hidden-num'
+      );
+      delete cell.dataset.blank;
+      cell.textContent = cell.dataset.num;
+    });
+  }
+
   function scheduleAdvance(callback, delay) {
     clearTimeout(state._advanceTimer);
     state._advanceTimer = setTimeout(callback, delay);
@@ -400,6 +418,7 @@
   function startNeighborPractice() {
     state.practicing = true;
     hideQuestion();
+    resetBoardCellsForPractice();
 
     // 类型0: 连续段 (如 23, ?, 25, ?)
     // 类型1: 左右邻居 (如 ?, 45, ?)
@@ -441,9 +460,6 @@
       const cell = cells[i];
       const num = parseInt(cell.dataset.num);
       
-      cell.classList.remove('blank', 'filled', 'hidden-num');
-      delete cell.dataset.blank;
-
       if (visibleNums.includes(num)) {
         if (blankNums.includes(num)) {
           cell.textContent = '?';
@@ -496,6 +512,7 @@
   function startNinegridPractice() {
     state.practicing = true;
     hideQuestion();
+    resetBoardCellsForPractice();
 
     // 随机一个中心点 (不能在第一行、最后一行、第一列、最后一列)
     // 即：范围 12..89, 个位不能是 1 或 0
@@ -534,9 +551,6 @@
       const cell = cells[i];
       const num = parseInt(cell.dataset.num);
       
-      cell.classList.remove('blank', 'filled', 'hidden-num');
-      delete cell.dataset.blank;
-
       if (nineCells.includes(num)) {
         if (blankNums.includes(num)) {
           cell.textContent = '?';
@@ -740,6 +754,7 @@
     state.practicing = true;
     state.skipQuizIndex = 0;
     bottomActions.style.display = 'none';
+    resetBoardCellsForPractice();
     nextPatternQuestion();
   }
 
@@ -876,9 +891,9 @@
 
     bottomActions.style.display = 'none';
     boardWrapper.style.display = '';
+    resetBoardCellsForPractice();
     $$('.cell').forEach(c => {
-      c.classList.remove('hidden-num', 'treasure', 'tapped', 'matched', 'skip-highlight');
-      c.textContent = c.dataset.num;
+      c.classList.remove('treasure', 'matched');
       c.onclick = () => onTreasureCellClick(parseInt(c.dataset.num), c);
     });
     

@@ -49,6 +49,7 @@
   const calendarArea = $('#calendarArea');
   const calendarGrid = $('#calendarGrid');
   const calMonthTitle = $('#calMonthTitle');
+  const measureContent = $('.measure-content');
 
   const state = {
     mode: 'clock',
@@ -70,7 +71,16 @@
     lengthRound: 0,
     weightAnswer: null,
     weightRound: 0,
+    rightItems: 0,
     calendarRound: 0,
+  };
+
+  const CALENDAR_MONTH_INFO = {
+    monthLabel: '五月',
+    englishLabel: 'May',
+    firstWeekday: 3,
+    daysInMonth: 31,
+    weekdays: ['日', '一', '二', '三', '四', '五', '六'],
   };
 
   function speak(text) {
@@ -114,6 +124,90 @@
   }
 
   function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+  function getComparePracticeTypes() {
+    return ['length', 'height', 'count', 'size', 'thick'];
+  }
+
+  function createWeightTrayItems(question, extraCount) {
+    const trayCount = Math.max(question.target + (extraCount ?? 2), 6);
+    return Array.from({ length: trayCount }, (_, index) => ({
+      id: `${question.rightIcon}-${index}`,
+      icon: question.rightIcon,
+    }));
+  }
+
+  function getCalendarMonthCells(todayHighlight) {
+    const cells = [];
+    for (let i = 0; i < CALENDAR_MONTH_INFO.firstWeekday; i++) {
+      cells.push({ empty: true });
+    }
+    for (let day = 1; day <= CALENDAR_MONTH_INFO.daysInMonth; day++) {
+      cells.push({
+        day,
+        isToday: day === todayHighlight,
+      });
+    }
+    return cells;
+  }
+
+  function ensureMeasureStaticUi() {
+    if (!document.getElementById('measureFixStyles')) {
+      const style = document.createElement('style');
+      style.id = 'measureFixStyles';
+      style.textContent = `
+        .compare-intro{display:flex;flex-direction:column;gap:14px;width:100%;padding:18px;}
+        .compare-intro-card{background:rgba(255,255,255,0.92);border-radius:18px;border:3px solid rgba(255,255,255,0.95);box-shadow:0 8px 18px rgba(0,0,0,0.06);padding:16px;}
+        .compare-intro-title{font-size:16px;font-weight:800;color:var(--title);margin-bottom:12px;}
+        .compare-intro-row{display:flex;align-items:center;justify-content:space-between;gap:12px;}
+        .compare-intro-icons{font-size:28px;}
+        .weight-intro{display:flex;flex-direction:column;align-items:center;gap:14px;}
+        .weight-intro-text,.weight-status,.weight-instruction{font-size:16px;font-weight:800;color:var(--purple-dark);text-align:center;}
+        .weight-scale-board{margin-top:20px;margin-bottom:16px;transform:scale(1.05);}
+        .weight-pan-items{min-height:58px;}
+        .weight-dropzone{min-width:120px;min-height:58px;padding:6px;border:2px dashed rgba(122,92,0,0.18);border-radius:18px;background:rgba(255,255,255,0.22);}
+        .weight-tray{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;width:100%;}
+        .weight-tray-item,.weight-pan-item{border:none;background:var(--white);border-radius:18px;box-shadow:0 6px 14px rgba(0,0,0,0.08);cursor:pointer;user-select:none;transition:transform 0.15s ease, box-shadow 0.15s ease;}
+        .weight-tray-item{width:60px;height:60px;font-size:34px;}
+        .weight-pan-item{width:46px;height:46px;font-size:28px;background:rgba(255,255,255,0.92);}
+        .weight-tray-item:active,.weight-pan-item:active{transform:scale(0.94);}
+        .weight-equation{font-size:30px;font-weight:900;background:var(--white);padding:4px 12px;border-radius:12px;border:4px solid var(--blue);color:var(--blue-dark);box-shadow:0 4px 0 var(--blue-light);}
+        .calendar-helper{width:100%;max-width:380px;background:rgba(255,249,230,0.95);border:2px dashed #FFD166;border-radius:16px;padding:12px 16px;margin-bottom:14px;}
+        .calendar-helper-title{font-size:16px;font-weight:900;color:#7A5C00;}
+        .calendar-helper-text{font-size:14px;font-weight:700;color:#9A6E1D;margin-top:4px;}
+      `;
+      document.head.appendChild(style);
+    }
+
+    const weightTabLabel = document.querySelector('.mode-tab[data-mode="weight"] .tab-label');
+    if (weightTabLabel) {
+      weightTabLabel.textContent = '轻重';
+    }
+
+    if (measureContent && calendarArea && calendarArea.parentElement !== measureContent) {
+      measureContent.appendChild(calendarArea);
+    }
+
+    const weekdays = calendarArea?.querySelector('.calendar-weekdays');
+    if (weekdays) {
+      weekdays.innerHTML = CALENDAR_MONTH_INFO.weekdays.map((day) => `<span>${day}</span>`).join('');
+    }
+
+    if (calMonthTitle) {
+      calMonthTitle.textContent = `${CALENDAR_MONTH_INFO.monthLabel} ${CALENDAR_MONTH_INFO.englishLabel}`;
+    }
+
+    if (calendarArea && !document.getElementById('calendarHelper')) {
+      const helper = document.createElement('div');
+      helper.id = 'calendarHelper';
+      helper.className = 'calendar-helper';
+      helper.innerHTML = `
+        <div class="calendar-helper-title" id="calendarHelperTitle">看日历找日期</div>
+        <div class="calendar-helper-text" id="calendarHelperText">先看黄色的今天，再点出题目要找的日期。</div>
+      `;
+      calendarArea.insertBefore(helper, calendarArea.firstChild);
+    }
+  }
 
   function addStar(n) {
     state.stars += n;
@@ -172,6 +266,7 @@
   });
 
   function switchMode() {
+    ensureMeasureStaticUi();
     clockArea.style.display = 'none';
     moneyArea.style.display = 'none';
     compareArea.style.display = 'none';
@@ -1035,6 +1130,297 @@
         }
       };
     });
+  }
+
+  function updateCalendarHelper(title, text) {
+    const titleEl = document.getElementById('calendarHelperTitle');
+    const textEl = document.getElementById('calendarHelperText');
+    if (titleEl) titleEl.textContent = title;
+    if (textEl) textEl.textContent = text;
+  }
+
+  function addWeightItem(question) {
+    state.rightItems += 1;
+    speak(`右边放了${state.rightItems}个`);
+    renderBalanceScale(question);
+  }
+
+  function removeWeightItem(question) {
+    if (state.rightItems <= 0) return;
+    state.rightItems -= 1;
+    speak('拿走一个');
+    renderBalanceScale(question);
+  }
+
+  function bindWeightTray(question) {
+    const dropzone = document.getElementById('rightPanItems');
+    if (dropzone) {
+      dropzone.addEventListener('dragover', (event) => {
+        event.preventDefault();
+      });
+      dropzone.addEventListener('drop', (event) => {
+        event.preventDefault();
+        addWeightItem(question);
+      });
+    }
+
+    $$('.weight-tray-item').forEach((item) => {
+      item.addEventListener('dragstart', (event) => {
+        event.dataTransfer?.setData('text/plain', question.rightIcon);
+      });
+      item.addEventListener('click', () => addWeightItem(question));
+    });
+
+    $$('.weight-pan-item').forEach((item) => {
+      item.addEventListener('click', () => removeWeightItem(question));
+    });
+  }
+
+  function initCompare() {
+    state.compareRound = 0;
+    bottomActions.style.display = 'flex';
+    actionBtn.textContent = '开始练习';
+    actionBtn.className = 'btn btn-green btn-lg';
+    actionBtn.onclick = startComparePractice;
+    compareScene.innerHTML = `
+      <div class="compare-intro">
+        <div class="compare-intro-card">
+          <div class="compare-intro-title">比长短</div>
+          <div class="compare-intro-row">
+            <div class="pencil" style="width:150px;background:#FF8A8A;border-left-color:#FF8A8A;">&nbsp;</div>
+            <div class="pencil" style="width:90px;background:#7BC8F6;border-left-color:#7BC8F6;">&nbsp;</div>
+          </div>
+        </div>
+        <div class="compare-intro-card">
+          <div class="compare-intro-title">比多少</div>
+          <div class="compare-intro-row compare-intro-icons">
+            <span>🍎🍎🍎🍎</span>
+            <span>🍌🍌</span>
+          </div>
+        </div>
+      </div>`;
+    compareOptions.innerHTML = '';
+    showQuestion('📏', '比一比长短、高矮、多少、大小和粗细。');
+  }
+
+  function nextCompareQuestion() {
+    state.compareRound++;
+    if (state.compareRound > 15) {
+      showFeedback('🎉', '比较大师！', 2000);
+      showConfetti();
+      addStar(3);
+      setTimeout(initCompare, 2500);
+      return;
+    }
+
+    const types = getComparePracticeTypes();
+    const type = types[(state.compareRound - 1) % types.length];
+    state.compareType = type;
+    const pool = COMPARE_QUESTIONS[type];
+    const q = pool[randInt(0, pool.length - 1)];
+
+    const reverse = Math.random() < 0.5;
+    const questionMap = {
+      length: { normal: '哪支铅笔更长？', reverse: '哪支铅笔更短？' },
+      height: { normal: '谁更高？', reverse: '谁更矮？' },
+      count: { normal: '哪个更多？', reverse: '哪个更少？' },
+      size: { normal: '哪个更大？', reverse: '哪个更小？' },
+      thick: { normal: '哪根树干更粗？', reverse: '哪根树干更细？' },
+    };
+
+    const questionTextValue = reverse ? questionMap[type].reverse : (q.q || questionMap[type].normal);
+    state.compareAnswer = reverse && q.answer !== 'same' ? (q.answer === 'a' ? 'b' : 'a') : q.answer;
+
+    showQuestion('📏', `第${state.compareRound}题：${questionTextValue}`, `第${state.compareRound}题，${questionTextValue}`);
+
+    if (type === 'length') renderLengthScene(q);
+    else if (type === 'height') renderHeightScene(q);
+    else if (type === 'count') renderCountScene(q);
+    else if (type === 'size') renderSizeScene(q);
+    else renderThickScene(q);
+
+    renderCompareOptions(q);
+  }
+
+  function initWeight() {
+    state.weightRound = 0;
+    state.rightItems = 0;
+    bottomActions.style.display = 'flex';
+    actionBtn.textContent = '开始练习';
+    actionBtn.className = 'btn btn-purple btn-lg';
+    actionBtn.onclick = nextWeightQuestion;
+
+    scaleDisplay.innerHTML = `
+      <div class="weight-intro">
+        <div class="scale-container weight-scale-demo">
+          <div class="scale-beam" style="transform:rotate(-8deg);">
+            <div class="scale-pan scale-pan-left">
+              <div class="scale-pan-items"><span style="font-size:38px;">🍉</span></div>
+              <div class="scale-pan-plate" style="width:120px;"></div>
+            </div>
+            <div class="scale-pan scale-pan-right">
+              <div class="scale-pan-items"><span style="font-size:38px;">🍎🍎🍎</span></div>
+              <div class="scale-pan-plate" style="width:120px;"></div>
+            </div>
+          </div>
+          <div class="scale-pillar" style="height:80px;width:16px;"></div>
+          <div class="scale-base" style="width:120px;height:16px;"></div>
+        </div>
+        <div class="weight-intro-text">看天平比轻重，把下面的物品拖到右边托盘里。</div>
+      </div>
+    `;
+    weightOptions.innerHTML = `
+      <div class="weight-instruction">开始后会出现可以拖动的物品，也可以直接点一下放上去。</div>
+    `;
+    showQuestion('⚖️', '看天平比轻重，把物品拖到托盘里。');
+  }
+
+  function nextWeightQuestion() {
+    if (state.weightRound >= BALANCE_QUESTIONS.length) {
+      showFeedback('🎉', '轻重大师！', 2000);
+      showConfetti();
+      addStar(5);
+      setTimeout(initWeight, 2500);
+      return;
+    }
+
+    const question = BALANCE_QUESTIONS[state.weightRound];
+    state.rightItems = 0;
+    showQuestion('⚖️', `第${state.weightRound + 1}关：${question.q}`, question.q);
+    renderBalanceScale(question);
+  }
+
+  function renderBalanceScale(question) {
+    const leftWeight = question.target * 10;
+    const rightWeight = state.rightItems * 10;
+    const diff = rightWeight - leftWeight;
+    let tilt = (diff / leftWeight) * 25;
+    if (tilt < -25) tilt = -25;
+    if (tilt > 25) tilt = 25;
+
+    const leftHTML = question.type === 'equation'
+      ? `<div class="weight-equation">${question.leftText}</div>`
+      : Array(question.leftCount).fill(`<span style="font-size:40px;">${question.leftIcon}</span>`).join('');
+
+    const rightHTML = Array(state.rightItems)
+      .fill(`<button type="button" class="weight-pan-item">${question.rightIcon}</button>`)
+      .join('');
+
+    scaleDisplay.innerHTML = `
+      <div class="scale-container weight-scale-board">
+        <div class="scale-beam" style="transform:rotate(${tilt}deg);transition:transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);">
+          <div class="scale-pan scale-pan-left">
+            <div class="scale-pan-items weight-pan-items">${leftHTML}</div>
+            <div class="scale-pan-plate" style="width:120px;"></div>
+          </div>
+          <div class="scale-pan scale-pan-right">
+            <div class="scale-pan-items weight-pan-items weight-dropzone" id="rightPanItems">${rightHTML}</div>
+            <div class="scale-pan-plate" style="width:120px;"></div>
+          </div>
+        </div>
+        <div class="scale-pillar" style="height:80px;width:16px;"></div>
+        <div class="scale-base" style="width:120px;height:16px;"></div>
+      </div>
+      <div class="weight-status">${diff === 0 && state.rightItems > 0 ? '天平平衡啦' : '把物品拖到右边托盘里'}</div>
+    `;
+
+    if (diff === 0 && state.rightItems > 0) {
+      weightOptions.innerHTML = '';
+      setTimeout(() => {
+        showFeedback('🎉', '平衡成功！', 1500);
+        addStar(2);
+        state.weightRound++;
+        scheduleAdvance(nextWeightQuestion, 1800);
+      }, 400);
+      return;
+    }
+
+    const trayItems = createWeightTrayItems(question)
+      .map((item) => `<button type="button" class="weight-tray-item" draggable="true" data-id="${item.id}">${item.icon}</button>`)
+      .join('');
+
+    weightOptions.innerHTML = `
+      <div class="weight-instruction">拖动或点按下面的物品，放到右边托盘里。</div>
+      <div class="weight-tray">${trayItems}</div>
+    `;
+
+    bindWeightTray(question);
+  }
+
+  function initCalendar() {
+    calendarArea.style.display = 'flex';
+    state.calendarRound = 0;
+    bottomActions.style.display = 'flex';
+    actionBtn.textContent = '开始练习';
+    actionBtn.className = 'btn btn-purple btn-lg';
+    actionBtn.onclick = nextCalendarQuestion;
+
+    renderMonth(null);
+    updateCalendarHelper('看日历找日期', '黄色会标出“今天”，再按题目找出目标日期。');
+    showQuestion('🗓️', '先看清是几月，再根据题目点出正确日期。');
+  }
+
+  function renderMonth(todayHighlight) {
+    if (calMonthTitle) {
+      calMonthTitle.textContent = `${CALENDAR_MONTH_INFO.monthLabel} ${CALENDAR_MONTH_INFO.englishLabel}`;
+    }
+
+    const cells = getCalendarMonthCells(todayHighlight);
+    calendarGrid.innerHTML = cells.map((cell) => {
+      if (cell.empty) {
+        return '<div class="cal-day empty"></div>';
+      }
+      const classes = ['cal-day'];
+      if (cell.isToday) classes.push('today');
+      return `<button type="button" class="${classes.join(' ')}" data-day="${cell.day}">${cell.day}</button>`;
+    }).join('');
+  }
+
+  function nextCalendarQuestion() {
+    if (state.calendarRound >= CALENDAR_QUESTIONS.length) {
+      showFeedback('🎉', '日历小达人！', 2000);
+      showConfetti();
+      addStar(5);
+      setTimeout(initCalendar, 2500);
+      return;
+    }
+
+    bottomActions.style.display = 'none';
+    const question = CALENDAR_QUESTIONS[state.calendarRound];
+    showQuestion('🗓️', `第${state.calendarRound + 1}关：${question.q}`, question.q);
+    updateCalendarHelper(`今天是 ${question.today} 日`, question.q);
+    renderMonth(question.today);
+
+    const days = calendarGrid.querySelectorAll('.cal-day:not(.empty)');
+    days.forEach((day) => {
+      day.onclick = () => {
+        if (day.classList.contains('selected')) return;
+        const dayNumber = parseInt(day.dataset.day, 10);
+        if (dayNumber === question.target) {
+          day.classList.add('selected');
+          speak('找对啦');
+          setTimeout(() => {
+            showFeedback('🎉', '日期找对了！', 1200);
+            state.calendarRound++;
+            addStar(2);
+            scheduleAdvance(nextCalendarQuestion, 1600);
+          }, 350);
+        } else {
+          day.classList.add('wrong');
+          speak('再看一看今天和星期');
+          setTimeout(() => day.classList.remove('wrong'), 500);
+        }
+      };
+    });
+  }
+
+  if (typeof module !== 'undefined' && module.exports) {
+    module.exports = {
+      CALENDAR_MONTH_INFO,
+      createWeightTrayItems,
+      getCalendarMonthCells,
+      getComparePracticeTypes,
+    };
   }
 
   switchMode();
