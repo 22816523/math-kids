@@ -1,6 +1,6 @@
 /* ============================================
    数独启蒙 · 核心逻辑
-   支持 4x4 / 6x6 / 9x9 阶段、题库、拖动填数
+   支持 4乘4 / 6乘6 / 9乘9 阶段、题库、拖动填数
    ============================================ */
 (function (global, factory) {
   const api = factory();
@@ -33,7 +33,7 @@
   const SUDOKU_STAGE_CONFIGS = Object.freeze({
     '4x4-easy': {
       id: '4x4-easy',
-      label: '4x4入门',
+      label: '4乘4入门',
       icon: '🌱',
       size: 4,
       subgridRows: 2,
@@ -43,7 +43,7 @@
     },
     '4x4-advanced': {
       id: '4x4-advanced',
-      label: '4x4进阶',
+      label: '4乘4进阶',
       icon: '🚀',
       size: 4,
       subgridRows: 2,
@@ -53,7 +53,7 @@
     },
     '6x6-easy': {
       id: '6x6-easy',
-      label: '6x6入门',
+      label: '6乘6入门',
       icon: '🌼',
       size: 6,
       subgridRows: 2,
@@ -63,7 +63,7 @@
     },
     '6x6-advanced': {
       id: '6x6-advanced',
-      label: '6x6进阶',
+      label: '6乘6进阶',
       icon: '✨',
       size: 6,
       subgridRows: 2,
@@ -73,7 +73,7 @@
     },
     '9x9-easy': {
       id: '9x9-easy',
-      label: '9x9入门',
+      label: '9乘9入门',
       icon: '🌟',
       size: 9,
       subgridRows: 3,
@@ -83,7 +83,7 @@
     },
     '9x9-advanced': {
       id: '9x9-advanced',
-      label: '9x9进阶',
+      label: '9乘9进阶',
       icon: '🏆',
       size: 9,
       subgridRows: 3,
@@ -480,6 +480,7 @@
           cell.dataset.row = String(rowIndex);
           cell.dataset.col = String(colIndex);
           if (isFixed) cell.classList.add('fixed');
+          if (cellValue === 0) cell.classList.add('empty');
           if (!isFixed && cellValue !== 0) cell.classList.add('filled');
           if (getRelatedState(rowIndex, colIndex, state.activeCell, config) && !isActive) {
             cell.classList.add('related');

@@ -22,14 +22,17 @@ test('数独阶段配置包含 6 个梯度', () => {
   assert.equal(SUDOKU_STAGE_CONFIGS['4x4-easy'].size, 4);
   assert.equal(SUDOKU_STAGE_CONFIGS['4x4-easy'].subgridRows, 2);
   assert.equal(SUDOKU_STAGE_CONFIGS['4x4-easy'].subgridCols, 2);
+  assert.equal(SUDOKU_STAGE_CONFIGS['4x4-easy'].label, '4乘4入门');
 
   assert.equal(SUDOKU_STAGE_CONFIGS['6x6-easy'].size, 6);
   assert.equal(SUDOKU_STAGE_CONFIGS['6x6-easy'].subgridRows, 2);
   assert.equal(SUDOKU_STAGE_CONFIGS['6x6-easy'].subgridCols, 3);
+  assert.equal(SUDOKU_STAGE_CONFIGS['6x6-easy'].label, '6乘6入门');
 
   assert.equal(SUDOKU_STAGE_CONFIGS['9x9-easy'].size, 9);
   assert.equal(SUDOKU_STAGE_CONFIGS['9x9-easy'].subgridRows, 3);
   assert.equal(SUDOKU_STAGE_CONFIGS['9x9-easy'].subgridCols, 3);
+  assert.equal(SUDOKU_STAGE_CONFIGS['9x9-easy'].label, '9乘9入门');
 });
 
 test('候选数字会同时考虑行、列和宫格规则', () => {
