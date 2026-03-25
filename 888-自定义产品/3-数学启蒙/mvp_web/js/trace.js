@@ -1,6 +1,6 @@
 /* ============================================
    数字描红 · 核心逻辑
-   随机 1-100 出题、参考虚线渲染与准确度判定
+   使用 0-9 骨架路径渲染 1-100 描红，并按比例宽松判定
    ============================================ */
 (function (global, factory) {
   const api = factory();
@@ -23,9 +23,164 @@
 
   const TRACE_MIN_NUMBER = 1;
   const TRACE_MAX_NUMBER = 100;
-  const TRACE_FONT_FAMILY = '"Nunito", sans-serif';
   const GUIDE_STROKE_COLOR = '#94A3B8';
   const DRAW_STROKE_COLOR = '#6C5CE7';
+  const DIGIT_HEIGHT = 140;
+  const DIGIT_GAP = 22;
+
+  const DIGIT_SKELETONS = Object.freeze({
+    '0': {
+      width: 100,
+      strokes: [
+        { type: 'ellipse', cx: 50, cy: 70, rx: 26, ry: 48 },
+      ],
+    },
+    '1': {
+      width: 100,
+      strokes: [
+        {
+          type: 'path',
+          commands: [
+            ['M', 50, 22],
+            ['L', 50, 118],
+          ],
+        },
+      ],
+    },
+    '2': {
+      width: 100,
+      strokes: [
+        {
+          type: 'path',
+          commands: [
+            ['M', 24, 36],
+            ['Q', 38, 18, 60, 18],
+            ['Q', 82, 20, 78, 46],
+            ['Q', 74, 62, 54, 76],
+            ['L', 28, 104],
+            ['L', 80, 104],
+          ],
+        },
+      ],
+    },
+    '3': {
+      width: 100,
+      strokes: [
+        {
+          type: 'path',
+          commands: [
+            ['M', 24, 28],
+            ['Q', 42, 18, 60, 18],
+            ['Q', 80, 20, 76, 46],
+            ['Q', 72, 62, 50, 68],
+            ['Q', 76, 72, 78, 94],
+            ['Q', 80, 118, 52, 118],
+            ['Q', 34, 118, 24, 108],
+          ],
+        },
+      ],
+    },
+    '4': {
+      width: 100,
+      strokes: [
+        {
+          type: 'path',
+          commands: [
+            ['M', 72, 18],
+            ['L', 72, 118],
+          ],
+        },
+        {
+          type: 'path',
+          commands: [
+            ['M', 24, 72],
+            ['L', 80, 72],
+          ],
+        },
+        {
+          type: 'path',
+          commands: [
+            ['M', 24, 72],
+            ['L', 58, 18],
+          ],
+        },
+      ],
+    },
+    '5': {
+      width: 100,
+      strokes: [
+        {
+          type: 'path',
+          commands: [
+            ['M', 78, 22],
+            ['L', 32, 22],
+            ['L', 28, 64],
+            ['L', 58, 64],
+            ['Q', 82, 68, 78, 96],
+            ['Q', 74, 118, 50, 118],
+            ['Q', 32, 118, 22, 108],
+          ],
+        },
+      ],
+    },
+    '6': {
+      width: 100,
+      strokes: [
+        {
+          type: 'path',
+          commands: [
+            ['M', 72, 28],
+            ['Q', 56, 18, 42, 28],
+            ['Q', 20, 44, 24, 82],
+            ['Q', 28, 118, 56, 118],
+            ['Q', 80, 118, 80, 92],
+            ['Q', 80, 64, 54, 64],
+            ['Q', 32, 66, 28, 84],
+          ],
+        },
+      ],
+    },
+    '7': {
+      width: 100,
+      strokes: [
+        {
+          type: 'path',
+          commands: [
+            ['M', 22, 24],
+            ['L', 80, 24],
+            ['L', 42, 118],
+          ],
+        },
+      ],
+    },
+    '8': {
+      width: 100,
+      strokes: [
+        { type: 'ellipse', cx: 50, cy: 46, rx: 22, ry: 26 },
+        { type: 'ellipse', cx: 50, cy: 94, rx: 28, ry: 30 },
+      ],
+    },
+    '9': {
+      width: 100,
+      strokes: [
+        {
+          type: 'path',
+          commands: [
+            ['M', 72, 80],
+            ['Q', 58, 92, 42, 88],
+            ['Q', 18, 82, 24, 50],
+            ['Q', 30, 18, 58, 22],
+            ['Q', 82, 26, 80, 62],
+            ['L', 76, 118],
+          ],
+        },
+      ],
+    },
+  });
+
+  function clamp(min, value, max) {
+    return Math.min(Math.max(value, min), max);
+  }
 
   function pickRandomTraceNumber(randomFn = Math.random) {
     return Math.floor(randomFn() * TRACE_MAX_NUMBER) + TRACE_MIN_NUMBER;
@@ -33,28 +188,62 @@
 
   function pickNextTraceNumber(currentNum, randomFn = Math.random) {
     const candidate = pickRandomTraceNumber(randomFn);
-
-    if (candidate !== currentNum) {
-      return candidate;
-    }
-
+    if (candidate !== currentNum) return candidate;
     return currentNum >= TRACE_MAX_NUMBER ? TRACE_MIN_NUMBER : currentNum + 1;
   }
 
-  function getTraceFontSize(num) {
-    const digits = String(num).length;
+  function getNumberTraceLayout(num, options = {}) {
+    const canvasWidth = options.canvasWidth ?? 300;
+    const canvasHeight = options.canvasHeight ?? 360;
+    const paddingX = options.paddingX ?? 34;
+    const paddingY = options.paddingY ?? 34;
+    const digits = String(num).split('');
 
-    if (digits >= 3) return 176;
-    if (digits === 2) return 224;
-    return 280;
+    const totalBaseWidth = digits.reduce((sum, digit) => sum + DIGIT_SKELETONS[digit].width, 0) + DIGIT_GAP * Math.max(0, digits.length - 1);
+    const scaleX = (canvasWidth - paddingX * 2) / totalBaseWidth;
+    const scaleY = (canvasHeight - paddingY * 2) / DIGIT_HEIGHT;
+    const scale = Math.min(scaleX, scaleY);
+    const totalWidth = totalBaseWidth * scale;
+    const totalHeight = DIGIT_HEIGHT * scale;
+    const startX = (canvasWidth - totalWidth) / 2;
+    const startY = (canvasHeight - totalHeight) / 2;
+
+    const glyphs = [];
+    let cursorX = startX;
+
+    digits.forEach((digit, index) => {
+      const skeleton = DIGIT_SKELETONS[digit];
+      glyphs.push({
+        digit,
+        index,
+        x: cursorX,
+        y: startY,
+        scale,
+        width: skeleton.width * scale,
+        height: DIGIT_HEIGHT * scale,
+        skeleton,
+      });
+      cursorX += skeleton.width * scale;
+      if (index < digits.length - 1) {
+        cursorX += DIGIT_GAP * scale;
+      }
+    });
+
+    return {
+      glyphs,
+      scale,
+      totalWidth,
+      totalHeight,
+      startX,
+      startY,
+    };
   }
 
-  function getTraceMaskLineWidth(num) {
-    const digits = String(num).length;
-
-    if (digits >= 3) return 22;
-    if (digits === 2) return 28;
-    return 32;
+  function getTraceStrokeWidths(scale) {
+    return {
+      guideLineWidth: clamp(4, 6 * scale, 7),
+      maskLineWidth: clamp(18, 24 * scale, 26),
+    };
   }
 
   function evaluateTraceQuality({ coveredPixels, totalMaskPixels, outsidePixels }) {
@@ -67,10 +256,13 @@
     let text = '有点出界了，再试一次吧';
     let emoji = '🤔';
 
-    if (coverage > 0.25 && outsideRatio < 0.6) {
+    if (coverage >= 0.5 && outsideRatio <= 0.25) {
       isPass = true;
-      rank = coverage > 0.5 && outsideRatio < 0.2 ? 'S' : 'A';
-    } else if (coverage > 0.15 && outsideRatio < 0.8) {
+      rank = 'S';
+    } else if (coverage >= 0.32 && outsideRatio <= 0.65) {
+      isPass = true;
+      rank = 'A';
+    } else if (coverage >= 0.18 && outsideRatio <= 0.9) {
       isPass = true;
       rank = 'B';
     }
@@ -80,8 +272,8 @@
       emoji = rank === 'S' ? '🌟' : '🎉';
     } else if (coverage < 0.1) {
       text = '还没写满哦，再涂满一点';
-    } else if (outsideRatio > 1.0) {
-      text = '乱涂乱画可不行哦！';
+    } else if (outsideRatio > 1.2) {
+      text = '超出有点多，再收一收线条哦';
     }
 
     return {
@@ -126,35 +318,83 @@
       strokeCount: 0,
     };
 
-    function applyTextStyle(ctx, fontSize) {
-      ctx.font = `900 ${fontSize}px ${TRACE_FONT_FAMILY}`;
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.lineJoin = 'round';
+    function drawPathStroke(ctx, commands, offsetX, offsetY, scale) {
+      ctx.beginPath();
+
+      commands.forEach((command) => {
+        const type = command[0];
+        if (type === 'M') {
+          ctx.moveTo(offsetX + command[1] * scale, offsetY + command[2] * scale);
+        } else if (type === 'L') {
+          ctx.lineTo(offsetX + command[1] * scale, offsetY + command[2] * scale);
+        } else if (type === 'Q') {
+          ctx.quadraticCurveTo(
+            offsetX + command[1] * scale,
+            offsetY + command[2] * scale,
+            offsetX + command[3] * scale,
+            offsetY + command[4] * scale
+          );
+        }
+      });
+
+      ctx.stroke();
+    }
+
+    function drawEllipseStroke(ctx, stroke, offsetX, offsetY, scale) {
+      ctx.beginPath();
+      ctx.ellipse(
+        offsetX + stroke.cx * scale,
+        offsetY + stroke.cy * scale,
+        stroke.rx * scale,
+        stroke.ry * scale,
+        0,
+        0,
+        Math.PI * 2
+      );
+      ctx.stroke();
+    }
+
+    function drawGlyphs(ctx, layout, options) {
+      ctx.save();
       ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      ctx.strokeStyle = options.strokeStyle;
+      ctx.lineWidth = options.lineWidth;
+      ctx.setLineDash(options.dash ?? []);
+
+      layout.glyphs.forEach((glyph) => {
+        glyph.skeleton.strokes.forEach((stroke) => {
+          if (stroke.type === 'ellipse') {
+            drawEllipseStroke(ctx, stroke, glyph.x, glyph.y, glyph.scale);
+          } else {
+            drawPathStroke(ctx, stroke.commands, glyph.x, glyph.y, glyph.scale);
+          }
+        });
+      });
+
+      ctx.restore();
     }
 
     function renderReferenceNumber(num) {
-      const text = String(num);
-      const cx = bgCanvas.width / 2;
-      const cy = bgCanvas.height / 2 + 20;
-      const fontSize = getTraceFontSize(num);
-      const maskLineWidth = getTraceMaskLineWidth(num);
+      const layout = getNumberTraceLayout(num, {
+        canvasWidth: bgCanvas.width,
+        canvasHeight: bgCanvas.height,
+      });
+      const strokeWidths = getTraceStrokeWidths(layout.scale);
 
       bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
       maskCtx.clearRect(0, 0, maskCanvas.width, maskCanvas.height);
 
-      applyTextStyle(maskCtx, fontSize);
-      maskCtx.lineWidth = maskLineWidth;
-      maskCtx.strokeStyle = '#000000';
-      maskCtx.strokeText(text, cx, cy);
+      drawGlyphs(maskCtx, layout, {
+        strokeStyle: '#000000',
+        lineWidth: strokeWidths.maskLineWidth,
+      });
 
-      applyTextStyle(bgCtx, fontSize);
-      bgCtx.lineWidth = 5;
-      bgCtx.strokeStyle = GUIDE_STROKE_COLOR;
-      bgCtx.setLineDash([12, 10]);
-      bgCtx.strokeText(text, cx, cy);
-      bgCtx.setLineDash([]);
+      drawGlyphs(bgCtx, layout, {
+        strokeStyle: GUIDE_STROKE_COLOR,
+        lineWidth: strokeWidths.guideLineWidth,
+        dash: [12, 10],
+      });
     }
 
     function clearDrawCanvas() {
@@ -317,10 +557,11 @@
   }
 
   return {
+    DIGIT_SKELETONS,
     pickRandomTraceNumber,
     pickNextTraceNumber,
-    getTraceFontSize,
-    getTraceMaskLineWidth,
+    getNumberTraceLayout,
+    getTraceStrokeWidths,
     evaluateTraceQuality,
     initTracePage,
   };
