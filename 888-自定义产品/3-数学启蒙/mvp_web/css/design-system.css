@@ -471,14 +471,14 @@ html, body {
 
 .verify-options {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
   margin-bottom: 16px;
 }
 
 .verify-option-btn {
-  padding: 20px;
-  font-size: 24px;
+  padding: 14px 4px;
+  font-size: 22px;
   font-weight: 700;
   background: var(--white);
   border: 3px solid var(--gray-200);
@@ -486,6 +486,7 @@ html, body {
   border-radius: var(--radius-lg);
   cursor: pointer;
   transition: all 0.2s;
+  font-family: var(--font);
 }
 
 .verify-option-btn:hover {
@@ -497,6 +498,52 @@ html, body {
 .verify-option-btn:active {
   transform: translateY(3px);
   border-bottom-width: 2px;
+}
+
+.verify-option-btn.used {
+  background: var(--green-light);
+  border-color: var(--green);
+  border-bottom-color: var(--green-dark);
+  opacity: 0.6;
+  cursor: default;
+}
+
+/* 验证码数字显示区 */
+.verify-code {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin: 20px 0 8px;
+}
+
+.verify-digit {
+  width: 64px;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+  font-weight: 700;
+  border: 3px solid var(--gray-200);
+  border-bottom: 5px solid var(--gray-300);
+  border-radius: var(--radius-lg);
+  background: var(--white);
+  color: var(--title);
+  transition: all 0.2s;
+}
+
+.verify-digit.filled {
+  background: linear-gradient(180deg, #F0F8FD 0%, var(--blue) 100%);
+  border-color: var(--blue-dark);
+  border-bottom-color: var(--blue-dark);
+  color: var(--title);
+  animation: bounceIn 0.3s ease-out;
+}
+
+.verify-hint {
+  font-size: 13px;
+  color: var(--gray-400);
+  margin-bottom: 16px;
 }
 
 .verify-input {

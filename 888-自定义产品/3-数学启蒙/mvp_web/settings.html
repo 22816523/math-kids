@@ -87,48 +87,65 @@
     </div>
 
     <div class="settings-container">
-    <div class="setting-item">
-      <div class="setting-label">⏰ 学习时长控制</div>
-      <div class="duration-options">
-        <button class="duration-btn" data-duration="0">不限制</button>
-        <button class="duration-btn" data-duration="10">10分钟</button>
-        <button class="duration-btn" data-duration="15">15分钟</button>
-        <button class="duration-btn" data-duration="20">20分钟</button>
-        <button class="duration-btn" data-duration="30">30分钟</button>
-        <button class="duration-btn" data-duration="60">60分钟</button>
-      </div>
-      <div style="margin-top:12px;font-size:14px;color:var(--gray-400);">
-        超过设定时长后需要家长验证才能继续使用
+      <div class="setting-item">
+        <div class="setting-label">⏰ 学习时长控制</div>
+        <div class="duration-options">
+          <button class="duration-btn" data-duration="0">不限制</button>
+          <button class="duration-btn" data-duration="10">10分钟</button>
+          <button class="duration-btn" data-duration="15">15分钟</button>
+          <button class="duration-btn" data-duration="20">20分钟</button>
+          <button class="duration-btn" data-duration="30">30分钟</button>
+          <button class="duration-btn" data-duration="60">60分钟</button>
+        </div>
+        <div style="margin-top:12px;font-size:14px;color:var(--gray-400);">
+          超过设定时长后需要家长验证才能继续使用
+        </div>
       </div>
     </div>
-  </div>
   </div>
 
   <script src="js/timer.js"></script>
   <script>
-    const buttons = document.querySelectorAll('.duration-btn');
-    const settings = ParentalControl.getSettings();
+    // 进入家长设置前先验证，先隐藏页面内容
+    document.getElementById('app').style.visibility = 'hidden';
 
-    // 显示当前设置
-    buttons.forEach(btn => {
-      if (parseInt(btn.dataset.duration) === settings.duration) {
-        btn.classList.add('active');
-      }
-    });
+    ParentalControl.requireVerification(() => {
+      // 验证通过，显示页面内容并初始化设置
+      document.getElementById('app').style.visibility = 'visible';
 
-    // 点击设置
-    buttons.forEach(btn => {
-      btn.addEventListener('click', () => {
-        const duration = parseInt(btn.dataset.duration);
-        localStorage.setItem('parentalSettings', JSON.stringify({ duration }));
-        ParentalControl.resetTimer();
+      const buttons = document.querySelectorAll('.duration-btn');
+      const settings = ParentalControl.getSettings();
 
-        buttons.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
+      // 显示当前设置
+      buttons.forEach(btn => {
+        if (parseInt(btn.dataset.duration) === settings.duration) {
+          btn.classList.add('active');
+        }
+      });
 
-        alert('✅ 设置已保存');
+      // 点击设置
+      buttons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const duration = parseInt(btn.dataset.duration);
+          localStorage.setItem('parentalSettings', JSON.stringify({ duration }));
+          ParentalControl.resetTimer();
+
+          buttons.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+
+          alert('✅ 设置已保存');
+        });
       });
     });
+
+    // 监听弹窗关闭（点取消）：若未通过验证则返回首页
+    const _cancelObserver = new MutationObserver(() => {
+      if (!document.getElementById('verifyModal') &&
+          document.getElementById('app').style.visibility === 'hidden') {
+        window.location.href = 'index.html';
+      }
+    });
+    _cancelObserver.observe(document.body, { childList: true });
   </script>
 </body>
 </html>
