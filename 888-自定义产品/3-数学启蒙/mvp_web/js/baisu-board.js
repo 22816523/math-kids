@@ -175,7 +175,7 @@
   }
 
   // ========== 分段范围工具 ==========
-  function rangeEnd() { return state.rangeStart + 19; }
+  function rangeEnd() { return state.rangeStart + 49; }
 
   function getCellByNum(num) {
     return grid.querySelector('[data-num="' + num + '"]');
@@ -341,7 +341,7 @@
 
     // 随机目标数字（当前分段内）
     const start = state.rangeStart;
-    state.orderTarget = start + Math.floor(Math.random() * 20);
+    state.orderTarget = start + Math.floor(Math.random() * 50);
     state.orderWrongCount = 0;
     const target = state.orderTarget;
 
@@ -427,10 +427,10 @@
 
     const start = state.rangeStart;
     const end = rangeEnd();
-    const count = 3 + Math.floor(Math.random() * 3); // 3-5个空缺（20格里）
+    const count = 5 + Math.floor(Math.random() * 4); // 5-8个空缺（50格里）
     const positions = [];
     while (positions.length < count) {
-      const p = start + Math.floor(Math.random() * 20);
+      const p = start + Math.floor(Math.random() * 50);
       if (!positions.includes(p)) positions.push(p);
     }
 
@@ -767,7 +767,7 @@
     // 随机出题（当前分段内）
     const pStart = state.rangeStart;
     const pEnd = rangeEnd();
-    state.placeTarget = pStart + Math.floor(Math.random() * 20);
+    state.placeTarget = pStart + Math.floor(Math.random() * 50);
     const num = state.placeTarget;
     const tens = Math.floor(num / 10);
     const ones = num % 10;
