@@ -141,6 +141,33 @@
   margin-top: 16px;
 }
 
+.control-area > .btn-green.btn-lg,
+.control-area > .btn-blue.btn-lg {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 2px solid var(--white);
+  font-family: var(--font);
+  font-weight: 700;
+  cursor: pointer;
+  position: relative;
+  transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.15s;
+}
+
+.control-area > .btn-green.btn-lg::before {
+  content: '🎯';
+}
+
+.control-area > .btn-blue.btn-lg::before {
+  content: '🔄';
+}
+
+.control-area > .btn-green.btn-lg:active,
+.control-area > .btn-blue.btn-lg:active {
+  transform: translateY(calc(var(--btn-depth) - 2px));
+}
+
 .answer-options {
   display: grid;
   grid-template-columns: repeat(4, 1fr);

@@ -71,7 +71,7 @@ $$('.mode-tab').forEach((btn) => {
 function showStartScreen() {
   feedback.textContent = '';
   feedback.className = 'feedback';
-  bottomActions.style.display = 'flex';
+  bottomActions.style.display = 'none';
   actionBtn.textContent = '开始练习';
   actionBtn.className = 'btn btn-green btn-lg';
   actionBtn.onclick = startPractice;
@@ -82,8 +82,7 @@ function showStartScreen() {
       <div style="font-size:24px;color:var(--gray-500);margin-bottom:32px;">准备好开始练习了吗？</div>
     </div>
   `;
-  controlArea.innerHTML = '';
-  return;
+  controlArea.innerHTML = '<button class="btn btn-green btn-lg" onclick="startPractice()">🎯 开始练习</button>';
   controlArea.innerHTML = '<button class="btn-green btn-lg" onclick="startPractice()">开始练习</button>';
 }
 
@@ -199,8 +198,8 @@ function showCompleteScreen() {
       <div style="font-size:18px;color:var(--gray-400);">${encouragement}</div>
     </div>
   `;
-  controlArea.innerHTML = '';
-  bottomActions.style.display = 'flex';
+  controlArea.innerHTML = '<button class="btn btn-blue btn-lg" onclick="startPractice()">🔄 再来一组</button>';
+  bottomActions.style.display = 'none';
   actionBtn.textContent = '再来一组';
   actionBtn.className = 'btn btn-blue btn-lg';
   actionBtn.onclick = startPractice;
