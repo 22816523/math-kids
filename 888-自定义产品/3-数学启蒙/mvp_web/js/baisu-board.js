@@ -210,11 +210,38 @@
         break;
 
       case 'neighbor':
+        $$('.cell.neighbor-highlight').forEach(c => c.classList.remove('neighbor-highlight'));
         speak(String(num));
+        let leftNum = num - 1;
+        let rightNum = num + 1;
+        if (num % 10 === 1) leftNum = null;
+        if (num % 10 === 0) rightNum = null;
+        if (leftNum) {
+          const lCell = getCellByNum(leftNum);
+          if (lCell) lCell.classList.add('neighbor-highlight');
+        }
+        if (rightNum) {
+          const rCell = getCellByNum(rightNum);
+          if (rCell) rCell.classList.add('neighbor-highlight');
+        }
         break;
 
       case 'ninegrid':
+        $$('.cell.ninegrid-highlight').forEach(c => c.classList.remove('ninegrid-highlight'));
         speak(String(num));
+        const row = Math.floor((num - 1) / 10);
+        const col = (num - 1) % 10;
+        for (let r = row - 1; r <= row + 1; r++) {
+          for (let c = col - 1; c <= col + 1; c++) {
+            if (r >= 0 && r <= 9 && c >= 0 && c <= 9) {
+              const n = r * 10 + c + 1;
+              if (n !== num) {
+                const cell = getCellByNum(n);
+                if (cell) cell.classList.add('ninegrid-highlight');
+              }
+            }
+          }
+        }
         break;
 
       case 'pattern':
@@ -280,11 +307,7 @@
     orderQuiz.style.display = 'flex';
     bottomActions.style.display = 'none';
 
-    // 点击喇叭重新播放
-    orderSpeaker.onclick = () => {
-      if (state.orderTarget !== null) speak(String(state.orderTarget));
-    };
-
+    // 点击喇叭重新播放移除，改用 promptController 自带按钮
     nextOrderQuestion();
   }
 
@@ -330,11 +353,7 @@
     hideQuestion();
 
     // 播放语音
-    speak(String(target));
-
-    // 4秒没操作再读一遍
-    clearTimeout(state._orderTimer);
-    state._orderTimer = setTimeout(() => speak(String(target)), 4000);
+    showQuestion('👆', '听一听，选出正确的数字', String(target), {autoSpeak: true, allowReplay: true});
   }
 
   function onOrderCardClick(num, card) {
@@ -724,17 +743,15 @@
 
   function nextPatternQuestion() {
     const step = state.skipStep;
-    // 全量序列
     const allNumbers = [];
     if (state.skipForward) {
       for (let i = step; i <= 100; i += step) allNumbers.push(i);
     } else {
       for (let i = 100; i >= step; i -= step) allNumbers.push(i);
     }
-    const numbers = allNumbers;
 
-    if (state.skipQuizIndex >= 5 || numbers.length < 5) {
-      skipQuiz.style.display = 'none';
+    if (state.skipQuizIndex >= 5 || allNumbers.length < 5) {
+      if(typeof skipQuiz !== 'undefined' && skipQuiz) skipQuiz.style.display = 'none';
       bubbleZone.style.display = 'none';
       showQuestion('🎉', '找规律练习完成！');
       $$('.cell.hidden-num').forEach(c => c.classList.remove('hidden-num'));
@@ -746,246 +763,141 @@
       return;
     }
 
-    // 随机选取连续的 3-5 个数字作为题面
-    const len = 3 + Math.floor(Math.random() * 3); // 3,4,5
-    // 确保能够截取这么多数字
-    const maxStartIdx = numbers.length - len;
-    const startIdx = Math.floor(Math.random() * (maxStartIdx + 1));
-    const questionSeries = numbers.slice(startIdx, startIdx + len);
+    const len = 3 + Math.floor(Math.random() * 3);
+    const maxStartIndex = allNumbers.length - len;
+    const startIdx = Math.floor(Math.random() * maxStartIndex);
+    const visibleNums = allNumbers.slice(startIdx, startIdx + len);
 
-    // 在这几个里挖空 1-2个（不能全挖空，至少留2个数字来显示规律）
-    let blankCount = len === 5 ? 2 : 1;
-    const blankNums = [];
-    const availableIndices = [];
-    for (let i = 0; i < len; i++) availableIndices.push(i);
-    
-    while(blankNums.length < blankCount && availableIndices.length > 0) {
-      const rIdx = Math.floor(Math.random() * availableIndices.length);
-      const selIdx = availableIndices.splice(rIdx, 1)[0];
-      blankNums.push(questionSeries[selIdx]);
-    }
-
-    state.skipQuizAnswer = blankNums; // 用于老版跳数逻辑判定，不过这里我们复用拖拽系统更好
-    state.blanks = blankNums.map(num => ({ position: num, value: num, filled: false }));
-
-    // 重置并隐藏不在序列里的网格
     $$('.cell').forEach(c => {
+      const n = parseInt(c.dataset.num);
       c.classList.remove('skip-highlight', 'skip-animate', 'blank', 'filled', 'hidden-num');
       delete c.dataset.blank;
-      const num = parseInt(c.dataset.num);
-      
-      if (questionSeries.includes(num)) {
-        if (blankNums.includes(num)) {
-          c.textContent = '?';
-          c.classList.add('blank');
-          c.dataset.blank = num;
+      if (allNumbers.includes(n)) {
+        if (visibleNums.includes(n)) {
+           c.textContent = n;
         } else {
-          c.textContent = num;
+           c.textContent = n;
+           c.classList.add('hidden-num');
         }
       } else {
+        c.textContent = n;
         c.classList.add('hidden-num');
       }
     });
 
-    // 题目展示文本，例如：5，10，?，20
-    const hintTextStr = questionSeries.map(n => blankNums.includes(n) ? '?' : n).join('，');
-
-    // 气泡选项：包含正确答案 + 干扰项
-    const options = [...blankNums];
-    while(options.length < blankCount + 2) {
-       // 干扰项从整个序列里挑，或者稍微大点小点
-       const fake = numbers[Math.floor(Math.random() * numbers.length)] || (Math.floor(Math.random()*100)+1);
-       if (!options.includes(fake)) {
-         options.push(fake);
-       }
+    const blankCount = len === 5 ? 2 : 1;
+    const blankNums = [];
+    while (blankNums.length < blankCount) {
+      const candidate = visibleNums[Math.floor(Math.random() * (len - 1)) + 1];
+      if (candidate && !blankNums.includes(candidate)) {
+        blankNums.push(candidate);
+      }
     }
-    options.sort(() => Math.random() - 0.5);
-
-    skipQuiz.style.display = 'block';
-    skipQuizOptions.innerHTML = '';
-    skipQuizHint.textContent = `规律：${step}个一数。排列：` + hintTextStr;
     
+    state.blanks = blankNums.map(num => ({ position: num, value: num, filled: false }));
+    blankNums.forEach(num => {
+      const cell = getCellByNum(num);
+      if (cell) {
+        cell.textContent = '?';
+        cell.classList.add('blank', 'skip-highlight');
+        cell.dataset.blank = num;
+      }
+    });
+
+    visibleNums.forEach(num => {
+      if(!blankNums.includes(num)) {
+        const cell = getCellByNum(num);
+        if(cell) cell.classList.add('skip-highlight');
+      }
+    });
+
     bubbleZone.innerHTML = '';
-    options.forEach((opt, idx) => {
+    const shuffled = [...state.blanks].sort(() => Math.random() - 0.5);
+    shuffled.forEach((b, idx) => {
       const bubble = document.createElement('div');
       bubble.className = 'bubble';
-      bubble.textContent = opt;
-      bubble.dataset.value = opt;
+      bubble.textContent = b.value;
+      bubble.dataset.value = b.value;
       bubble.style.animationDelay = (idx * 0.08) + 's';
       setupDrag(bubble);
       bubbleZone.appendChild(bubble);
     });
 
     bubbleZone.style.display = 'flex';
-    showQuestion('🎯', '按规律，问号处应该填几？', '按规律，拖动正确的数字填入问号');
+    showQuestion('🚀', '能找到规律并拖入缺失的数字吗？', '能找到规律并拖入缺失的数字吗');
   }
 
   function checkPatternComplete() {
     if (state.blanks.every(b => b.filled)) {
-      showQuestion('✅', '恭喜你，找对规律了！');
+      showQuestion('🎉', '填对啦！');
       state.skipQuizIndex++;
-      
-      setTimeout(() => {
-        nextPatternQuestion();
-      }, 1500);
+      scheduleAdvance(nextPatternQuestion, 2000);
     }
   }
-
   // ====================================================
   //  模式5：数字寻宝（多条件线索推理）
   // ====================================================
   function startTreasurePractice() {
     state.practicing = true;
-    hideQuestion();
-
-    // 随机一个目标数字 (避免太靠边的边角料让线索太容易)
-    state.treasureTarget = Math.floor(Math.random() * 80) + 11; 
-    const target = state.treasureTarget;
-    
-    // 生成3条线索
-    const clues = [];
-    const tens = Math.floor(target / 10);
-    const ones = target % 10;
-    const row = tens + (ones === 0 ? 0 : 1); // 1-10行
-    
-    // 线索1：行或列 (包含)
-    if (Math.random() > 0.5) {
-      clues.push(`在第 ${row} 行`);
-    } else {
-      clues.push(`个位是 ${ones}`);
-    }
-
-    // 线索2：大小范围 (排除法)
-    const offset = Math.floor(Math.random() * 5) + 5; // 5-9的偏移
-    if (Math.random() > 0.5) {
-       // 大于 X
-       const lowerBound = Math.max(1, target - offset);
-       clues.push(`比 ${lowerBound} 大`);
-    } else {
-       // 小于 X
-       const upperBound = Math.min(100, target + offset);
-       clues.push(`比 ${upperBound} 小`);
-    }
-
-    // 线索3：特定数值特征或其他
-    if (clues.some(c => c.includes('个位'))) {
-       // 已经有个位线索了，就给十位或者范围
-       clues.push(Math.random() > 0.5 ? `十位是 ${tens}` : `它的相邻数字有 ${target - 1}`);
-    } else {
-       clues.push(`个位是 ${ones}`);
-    }
-
-    state.treasureClues = clues.sort(() => Math.random() - 0.5);
     state.treasureStep = 0;
+    state.treasureTarget = Math.floor(Math.random() * 80) + 11;
+    state.treasureHints = [
+      { text: "海盗把宝藏藏在了大于 50 的数字区域！(请点击满足条件的任意格子)", condition: (n) => n > 50, act: () => $$('.cell').forEach(c => {if(parseInt(c.dataset.num)<=50) c.classList.add('hidden-num')}) },
+      { text: "他最喜欢绿色，宝藏是个双数 (偶数)！(点击偶数格子)", condition: (n) => n % 2 === 0, act: () => $$('.cell:not(.hidden-num)').forEach(c => {if(parseInt(c.dataset.num)%2!==0) c.classList.add('hidden-num')}) },
+      { text: "他的幸运数字在个位，而且是 8！找到它！", condition: (n) => n % 10 === 8, act: () => $$('.cell:not(.hidden-num)').forEach(c => {if(parseInt(c.dataset.num)%10!==8) c.classList.add('hidden-num')}) }
+    ];
 
-    // UI 显示
+    bottomActions.style.display = 'none';
+    boardWrapper.style.display = '';
     $$('.cell').forEach(c => {
-      c.classList.remove('hidden-num', 'skip-highlight', 'blank', 'filled');
+      c.classList.remove('hidden-num', 'treasure', 'tapped', 'matched', 'skip-highlight');
       c.textContent = c.dataset.num;
+      c.onclick = () => onTreasureCellClick(parseInt(c.dataset.num), c);
     });
-
-    bottomActions.style.display = 'flex';
-    actionBtn.onclick = revealNextTreasureClue;
-    actionBtn.textContent = '📜 查看线索';
-
-    showQuestion('🗺️', '海盗把大钻石藏在了一个数字下面！', '海盗把大钻石藏在了一个数字下面，看看线索吧');
+    
+    nextTreasureStep();
   }
 
-  function revealNextTreasureClue() {
-    if (state.treasureStep >= state.treasureClues.length) return;
-    
-    const clue = state.treasureClues[state.treasureStep];
-    state.treasureStep++;
-
-    const target = state.treasureTarget;
-    const tens = Math.floor(target / 10);
-    const ones = target % 10;
-    const row = tens + (ones === 0 ? 0 : 1);
-
-    // 解析当前所有已揭示线索对应的存活数字
-    const activeClues = state.treasureClues.slice(0, state.treasureStep);
-    
-    $$('.cell').forEach((cell) => {
-      if (cell.classList.contains('hidden-num')) return; // 已经被淘汰了
-      
-      const num = parseInt(cell.dataset.num);
-      let isAlive = true;
-      const cTens = Math.floor(num / 10);
-      const cOnes = num % 10;
-      const cRow = cTens + (cOnes === 0 ? 0 : 1);
-
-      activeClues.forEach(c => {
-        if (c.includes('行')) {
-           const r = parseInt(c.match(/\d+/)[0]);
-           if (cRow !== r) isAlive = false;
-        } else if (c.includes('个位')) {
-           const o = parseInt(c.match(/\d+/)[0]);
-           if (cOnes !== o && num !== 100) isAlive = false;
-           if (cOnes !== o && num === 100 && o !== 0) isAlive = false; // 100的个位是0
-        } else if (c.includes('十位')) {
-           const t = parseInt(c.match(/\d+/)[0]);
-           if (cTens !== t && num !== 100) isAlive = false;
-        } else if (c.includes('大')) {
-           const val = parseInt(c.match(/\d+/)[0]);
-           if (num <= val) isAlive = false;
-        } else if (c.includes('小')) {
-           const val = parseInt(c.match(/\d+/)[0]);
-           if (num >= val) isAlive = false;
-        } else if (c.includes('相邻')) {
-           // 它的相邻数字有 target-1, 说明 num 是 target
-           if (num !== target) isAlive = false;
-        }
-      });
-
-      if (!isAlive) {
-         cell.classList.add('hidden-num');
+  function nextTreasureStep() {
+    if (state.treasureStep >= state.treasureHints.length) {
+      showQuestion('💎', '恭喜！找到了终极宝藏！！！', '恭喜找到了终极宝藏');
+      const remains = Array.from($$('.cell:not(.hidden-num)')).map(c=>parseInt(c.dataset.num));
+      if(remains.length > 0) {
+        const winner = getCellByNum(remains[0]);
+        winner.classList.add('animate-jelly');
+        winner.innerHTML = '💎';
       }
-    });
+      showCelebration();
+      showBottomAction('🔄 再寻一次', () => startTreasurePractice());
+      return;
+    }
+    const hint = state.treasureHints[state.treasureStep];
+    showQuestion('🏴‍☠️', `线索 ${state.treasureStep + 1}：${hint.text}`, hint.text, {autoSpeak:true});
+  }
 
-    showQuestion('📜', `线索 ${state.treasureStep}: ${clue}`);
+  function onTreasureCellClick(num, cell) {
+    if(state.mode !== 'treasure' || !state.practicing) {
+      onExploreClick(num, cell);
+      return;
+    }
+    
+    if (cell.classList.contains('hidden-num')) {
+      speak('不对哦');
+      return;
+    }
 
-    if (state.treasureStep === state.treasureClues.length) {
-      actionBtn.textContent = '🔍 我猜对了！';
-      actionBtn.onclick = () => {
-         const remaining = $$('.cell:not(.hidden-num)');
-         if (remaining.length === 1 && parseInt(remaining[0].dataset.num) === state.treasureTarget) {
-            checkTreasureComplete(remaining[0]);
-         } else {
-            // 点击格子的交互
-            showQuestion('🤔', '只剩这些数字了，点击那是哪个！');
-            bottomActions.style.display = 'none';
-            $$('.cell:not(.hidden-num)').forEach(c => {
-               c.onclick = () => {
-                  if (parseInt(c.dataset.num) === state.treasureTarget) {
-                    checkTreasureComplete(c);
-                  } else {
-                    c.classList.add('hidden-num');
-                    showFeedback(false);
-                  }
-               };
-            });
-         }
-      };
+    const hint = state.treasureHints[state.treasureStep];
+    if (hint.condition(num)) {
+      speak('找对啦！');
+      hint.act(); 
+      state.treasureStep++;
+      scheduleAdvance(nextTreasureStep, 1000);
+    } else {
+      speak('好像不是这个');
+      cell.classList.add('animate-shake');
+      setTimeout(() => cell.classList.remove('animate-shake'), 400);
     }
   }
-
-  function checkTreasureComplete(cell) {
-     cell.textContent = '💎';
-     cell.classList.add('skip-highlight'); // 让它亮起来
-     showFeedback(true);
-     showQuestion('🎉', `找到了！藏在 ${state.treasureTarget} 号下面！`);
-     showCelebration();
-     
-     // 延迟几秒后全盘亮起并重置事件
-     setTimeout(() => {
-       $$('.cell.hidden-num').forEach(c => c.classList.remove('hidden-num'));
-       $$('.cell').forEach(c => {
-          c.onclick = () => onCellClick(parseInt(c.dataset.num), c);
-       });
-       showBottomAction('🔄 再玩一次', () => startTreasurePractice());
-     }, 1000);
-  }
-
 
   // ========== 底部按钮工具 ==========
   function showBottomAction(text, callback) {
@@ -1030,18 +942,14 @@
         $$('.skip-step-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         state.skipStep = parseInt(btn.dataset.step);
-        if (!state.practicing) {
-          showPatternExplorePattern();
-        }
+        showPatternExplorePattern();
       });
     });
 
     $('#skipDirectionBtn').addEventListener('click', () => {
       state.skipForward = !state.skipForward;
       $('#skipDirText').textContent = state.skipForward ? '顺数 ▶' : '◀ 倒数';
-      if (!state.practicing) {
-        showPatternExplorePattern();
-      }
+      showPatternExplorePattern();
     });
 
     // 初始进入认数字探索模式
