@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI伴读平台AI创新能力图-暖色版</title>
+  <style>
+    :root {
+      --panel: #fffaf5;
+      --text: #442b22;
+      --muted: #8c6d61;
+      --deep: #2f1d16;
+      --brown: #cf9a84;
+      --brown-soft: #f7ece8;
+      --brown-line: #e0c2b5;
+      --gold: #f08a5b;
+      --gold-soft: #fff0eb;
+      --gold-line: #ea8b68;
+      --core-top: #bf6d56;
+      --core-bottom: #8d4a3a;
+      --line: #eadbce;
+      --shadow: 0 14px 28px rgba(76, 47, 33, 0.12);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+      background:
+        radial-gradient(circle at 50% 16%, rgba(240, 138, 91, 0.12), transparent 24%),
+        linear-gradient(180deg, #fbf4ed 0%, #f5ece4 100%);
+      color: var(--text);
+    }
+
+    .page {
+      width: min(1600px, calc(100vw - 24px));
+      margin: 12px auto;
+      padding: 20px;
+      background: rgba(255, 252, 248, 0.95);
+      border: 1px solid #eadcd0;
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      margin: 0 0 4px;
+      font-size: 38px;
+      color: #a45e38;
+      letter-spacing: 0.4px;
+    }
+
+    .subtitle {
+      margin: 0;
+      font-size: 17px;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    .badge {
+      padding: 10px 14px;
+      border: 1px solid #e2d3c6;
+      border-radius: 999px;
+      background: rgba(255, 249, 243, 0.96);
+      color: var(--muted);
+      font-size: 15px;
+      white-space: nowrap;
+    }
+
+    .legend {
+      display: flex;
+      gap: 18px;
+      align-items: center;
+      margin-bottom: 18px;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: 1px solid #d9c6b8;
+    }
+
+    .dot.current { background: #e4d1c1; }
+
+    .dot.future {
+      background: var(--gold-soft);
+      border-color: var(--gold-line);
+      box-shadow: 0 0 0 4px rgba(240, 138, 91, 0.14);
+    }
+
+    .board {
+      position: relative;
+      padding: 28px 22px 22px;
+      border: 1px solid #eadcd0;
+      border-radius: 12px;
+      background:
+        radial-gradient(circle at 50% 10%, rgba(240, 138, 91, 0.08), transparent 24%),
+        linear-gradient(180deg, #fffdf9 0%, #f9f1ea 100%);
+      overflow: hidden;
+    }
+
+    .board::before {
+      content: "";
+      position: absolute;
+      top: 122px;
+      left: 8%;
+      right: 8%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(240, 138, 91, 0.28), transparent);
+      pointer-events: none;
+    }
+
+    .core {
+      width: 420px;
+      margin: 0 auto 28px;
+      padding: 22px 24px 18px;
+      border-radius: 24px;
+      background: linear-gradient(180deg, var(--core-top) 0%, var(--core-bottom) 100%);
+      box-shadow: 0 16px 32px rgba(118, 74, 49, 0.16);
+      text-align: center;
+      color: #fff8f3;
+      position: relative;
+      z-index: 2;
+    }
+
+    .core h2 {
+      margin: 0 0 10px;
+      font-size: 34px;
+      letter-spacing: 0.4px;
+    }
+
+    .core p {
+      margin: 0;
+      font-size: 16px;
+      line-height: 1.65;
+      color: rgba(255, 248, 243, 0.9);
+    }
+
+    .core-tags {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .core-chip {
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 232, 226, 0.28);
+      background: rgba(255, 255, 255, 0.10);
+      color: #fff1e6;
+      font-size: 14px;
+      line-height: 1.2;
+    }
+
+    .lane {
+      display: grid;
+      grid-template-columns: 1fr 180px 1fr;
+      gap: 18px;
+      align-items: center;
+      margin-bottom: 18px;
+      position: relative;
+    }
+
+    .lane::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 18%;
+      right: 18%;
+      height: 2px;
+      background: linear-gradient(90deg, rgba(207, 154, 132, 0.12), rgba(240, 138, 91, 0.24), rgba(207, 154, 132, 0.12));
+      transform: translateY(-50%);
+      z-index: 0;
+    }
+
+    .card {
+      position: relative;
+      padding: 14px 14px 12px;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: var(--panel);
+      box-shadow: 0 10px 18px rgba(118, 74, 49, 0.08);
+      z-index: 1;
+    }
+
+    .card.current {
+      background: linear-gradient(180deg, #fffdfb 0%, var(--brown-soft) 100%);
+      border-color: var(--brown-line);
+    }
+
+    .card.future {
+      background: linear-gradient(180deg, #fffaf4 0%, var(--gold-soft) 100%);
+      border-color: var(--gold-line);
+      box-shadow: 0 0 0 1px rgba(240, 138, 91, 0.14), 0 10px 20px rgba(240, 138, 91, 0.10);
+    }
+
+    .card-label {
+      display: inline-block;
+      margin-bottom: 10px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .card.current .card-label {
+      background: #f2e2d4;
+      color: #9e5d3c;
+    }
+
+    .card.future .card-label {
+      background: #ffe6dd;
+      color: #b65f3c;
+    }
+
+    .card h3 {
+      margin: 0 0 8px;
+      font-size: 22px;
+      color: var(--deep);
+    }
+
+    .card p {
+      margin: 0 0 8px;
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--muted);
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .chip {
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid #e2d2c5;
+      background: rgba(255, 255, 255, 0.82);
+      font-size: 14px;
+      color: #6d5144;
+      line-height: 1.2;
+    }
+
+    .card.future .chip {
+      border-color: #b77b42;
+      background: rgba(240, 138, 91, 0.10);
+      color: #a55938;
+    }
+
+    .pivot {
+      position: relative;
+      z-index: 2;
+      width: 180px;
+      justify-self: center;
+    }
+
+    .pivot-shell {
+      padding: 14px 12px;
+      border-radius: 999px;
+      border: 1px solid #e3d4c6;
+      background: rgba(255, 250, 244, 0.96);
+      text-align: center;
+      box-shadow: 0 8px 16px rgba(118, 74, 49, 0.08);
+    }
+
+    .pivot-title {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+      color: #a15c34;
+      font-size: 19px;
+      font-weight: 700;
+    }
+
+    .pivot-title::before {
+      content: "";
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--gold);
+      box-shadow: 0 0 0 5px rgba(240, 138, 91, 0.14);
+    }
+
+    .pivot p {
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.45;
+      color: var(--muted);
+    }
+
+    .note {
+      margin-top: 24px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px solid #e5d7cb;
+      background: rgba(255, 251, 246, 0.94);
+      text-align: center;
+      font-size: 15px;
+      color: var(--muted);
+    }
+
+    @media (max-width: 1400px) {
+      .core {
+        width: 100%;
+      }
+
+      .lane {
+        grid-template-columns: 1fr;
+      }
+
+      .lane::before {
+        display: none;
+      }
+
+      .pivot {
+        width: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div>
+        <h1>AI伴读平台AI创新能力图</h1>
+        <p class="subtitle">突出 AI 在学生端、老师端、管理端的应用落点，并区分当前能力与后续升级。</p>
+      </div>
+      <div class="badge">AI能力专属图-暖色版</div>
+    </div>
+
+    <div class="legend">
+      <div class="legend-item">
+        <span class="dot current"></span>
+        <span>现状 AI 能力</span>
+      </div>
+      <div class="legend-item">
+        <span class="dot future"></span>
+        <span>未来 AI 升级</span>
+      </div>
+    </div>
+
+    <div class="board">
+      <div class="core">
+        <h2>AI伴读能力引擎</h2>
+        <p>以内容生成、阅读陪伴、测评分析、成长洞察为核心，向三端持续释放 AI 能力。</p>
+        <div class="core-tags">
+          <span class="core-chip">内容生成</span>
+          <span class="core-chip">阅读陪伴</span>
+          <span class="core-chip">测评分析</span>
+          <span class="core-chip">成长洞察</span>
+        </div>
+      </div>
+
+      <div class="lane">
+        <div class="card current">
+          <div class="card-label">现状</div>
+          <h3>阅读引导与反馈</h3>
+          <p>帮助学生完成阅读任务并获得反馈。</p>
+          <div class="chips">
+            <span class="chip">AI导语</span>
+            <span class="chip">导读视频</span>
+            <span class="chip">测评分析</span>
+            <span class="chip">成长反馈</span>
+          </div>
+        </div>
+        <div class="pivot">
+          <div class="pivot-shell">
+            <div class="pivot-title">学生端</div>
+            <p>从引导到陪伴</p>
+          </div>
+        </div>
+        <div class="card future">
+          <div class="card-label">未来</div>
+          <h3>互动式阅读陪伴</h3>
+          <p>从看内容升级为可交流、可互动的阅读体验。</p>
+          <div class="chips">
+            <span class="chip">AI数字人</span>
+            <span class="chip">阅读助手</span>
+            <span class="chip">听书互动</span>
+            <span class="chip">对话陪伴</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="lane">
+        <div class="card current">
+          <div class="card-label">现状</div>
+          <h3>结果分析支持</h3>
+          <p>帮助老师查看结果和跟进活动。</p>
+          <div class="chips">
+            <span class="chip">结果分析</span>
+            <span class="chip">阅读反馈</span>
+            <span class="chip">数据查看</span>
+          </div>
+        </div>
+        <div class="pivot">
+          <div class="pivot-shell">
+            <div class="pivot-title">老师端</div>
+            <p>从查看到辅助</p>
+          </div>
+        </div>
+        <div class="card future">
+          <div class="card-label">未来</div>
+          <h3>教学辅助增强</h3>
+          <p>从看数据升级到 AI 报告和 AI 点评。</p>
+          <div class="chips">
+            <span class="chip">AI报告</span>
+            <span class="chip">AI点评</span>
+            <span class="chip">成果总结</span>
+            <span class="chip">复盘辅助</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="lane">
+        <div class="card current">
+          <div class="card-label">现状</div>
+          <h3>基础数据沉淀</h3>
+          <p>为运营分析和推广建立基础数据。</p>
+          <div class="chips">
+            <span class="chip">数据汇总</span>
+            <span class="chip">结果沉淀</span>
+            <span class="chip">初步分析</span>
+          </div>
+        </div>
+        <div class="pivot">
+          <div class="pivot-shell">
+            <div class="pivot-title">管理端</div>
+            <p>从统计到洞察</p>
+          </div>
+        </div>
+        <div class="card future">
+          <div class="card-label">未来</div>
+          <h3>运营分析与成果展示</h3>
+          <p>从基础统计升级到可展示、可比较的运营洞察。</p>
+          <div class="chips">
+            <span class="chip">成果分析</span>
+            <span class="chip">运营看板</span>
+            <span class="chip">推广洞察</span>
+            <span class="chip">报表联动</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="note">项目将优先在学生阅读场景中落地AI能力，后续逐步拓展至老师端的教学辅助和管理端的数据洞察场景，以提升平台差异化竞争力和用户留存水平。</div>
+    </div>
+  </div>
+</body>
+</html>

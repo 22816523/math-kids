@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ERP升级-生产模块全景架构图-系统架构版</title>
+  <style>
+    :root {
+      --bg: #edf2f7;
+      --paper: #ffffff;
+      --line: #a8bdd2;
+      --line-strong: #5e7893;
+      --text: #1f3042;
+      --muted: #5d7186;
+      --primary: #234f79;
+      --blue-1: #f3f8fe;
+      --blue-2: #e8f1fb;
+      --blue-3: #d7e5f4;
+      --blue-4: #bfd4ea;
+      --blue-5: #9fbfdd;
+      --core-top: #d9e9f8;
+      --core-bottom: #8fb2d4;
+      --radius: 6px;
+      --shadow: 0 12px 30px rgba(31, 47, 72, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Microsoft YaHei", "PingFang SC", "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at 15% 10%, rgba(68, 104, 145, 0.08), transparent 24%),
+        linear-gradient(180deg, #f4f8fc 0%, #e9f0f6 100%);
+      color: var(--text);
+    }
+
+    .page {
+      width: min(1520px, calc(100vw - 28px));
+      margin: 14px auto;
+      padding: 20px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.97);
+      border: 1px solid #d7e2ed;
+      box-shadow: 0 18px 42px rgba(33, 50, 78, 0.09);
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 18px;
+      margin-bottom: 16px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 33px;
+      line-height: 1.15;
+      color: var(--primary);
+    }
+
+    .subtitle {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .badge {
+      padding: 10px 14px;
+      border-radius: 4px;
+      border: 1px solid #d6e0eb;
+      background: #f9fbfd;
+      color: var(--muted);
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    .board {
+      position: relative;
+      overflow: hidden;
+      padding: 18px;
+      border-radius: 6px;
+      border: 1px solid #dbe4ee;
+      background:
+        linear-gradient(180deg, rgba(249, 251, 253, 0.98), rgba(241, 246, 250, 0.98)),
+        repeating-linear-gradient(90deg, rgba(175, 191, 207, 0.10), rgba(175, 191, 207, 0.10) 1px, transparent 1px, transparent 110px),
+        repeating-linear-gradient(0deg, rgba(175, 191, 207, 0.10), rgba(175, 191, 207, 0.10) 1px, transparent 1px, transparent 110px);
+    }
+
+    .layer {
+      border: 1px solid #d8e1ea;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.72);
+      padding: 18px;
+      margin-bottom: 16px;
+      position: relative;
+    }
+
+    .layer:last-child {
+      margin-bottom: 0;
+    }
+
+    .layer-label {
+      position: absolute;
+      top: -11px;
+      left: 18px;
+      padding: 5px 10px;
+      border-radius: 4px;
+      background: #ffffff;
+      border: 1px solid #d8e2ec;
+      color: var(--muted);
+      font-size: 12px;
+      letter-spacing: 0.05em;
+    }
+
+    .grid-6,
+    .grid-5,
+    .grid-4 {
+      display: grid;
+      gap: 14px;
+    }
+
+    .grid-6 { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+    .grid-5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+    .grid-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+    .node,
+    .domain,
+    .core,
+    .output {
+      position: relative;
+      border-radius: var(--radius);
+      border: 1px solid #d4dfea;
+      background: var(--paper);
+      box-shadow: var(--shadow);
+    }
+
+    .node,
+    .output {
+      padding: 14px 12px;
+      text-align: center;
+    }
+
+    .domain {
+      padding: 16px;
+    }
+
+    .core {
+      padding: 22px 24px;
+      background: linear-gradient(180deg, var(--core-top) 0%, var(--core-bottom) 100%);
+      border-color: #8fb0cf;
+      box-shadow: 0 16px 36px rgba(33, 57, 89, 0.14);
+    }
+
+    .core h2,
+    .domain h3,
+    .output h3 {
+      margin: 0 0 10px;
+      color: var(--primary);
+      line-height: 1.2;
+    }
+
+    .core h2 {
+      font-size: 24px;
+      margin-bottom: 12px;
+      color: #153b60;
+    }
+
+    .domain h3,
+    .output h3 {
+      font-size: 17px;
+    }
+
+    .node strong,
+    .output strong {
+      display: block;
+      font-size: 15px;
+      line-height: 1.35;
+      color: #24496d;
+    }
+
+    .node span,
+    .core p,
+    .domain p,
+    .output p {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+      margin: 0;
+    }
+
+    .domain ul {
+      margin: 0;
+      padding-left: 18px;
+    }
+
+    .domain li {
+      margin: 6px 0;
+      font-size: 13px;
+      line-height: 1.5;
+      color: #35506d;
+    }
+
+    .tone-a { background: linear-gradient(180deg, #fafcff, var(--blue-1)); }
+    .tone-b { background: linear-gradient(180deg, #f6faff, var(--blue-2)); }
+    .tone-c { background: linear-gradient(180deg, #f2f7fd, var(--blue-3)); }
+    .tone-d { background: linear-gradient(180deg, #eef5fc, var(--blue-4)); }
+    .tone-e { background: linear-gradient(180deg, #eaf2fb, var(--blue-5)); }
+
+    .center-row {
+      display: grid;
+      grid-template-columns: 1.05fr 2.3fr 1.05fr;
+      gap: 14px;
+      align-items: stretch;
+    }
+
+    .side-stack {
+      display: grid;
+      gap: 14px;
+    }
+
+    .connector {
+      height: 22px;
+      margin: -4px 0 8px;
+      position: relative;
+    }
+
+    .connector::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 10px;
+      border-top: 2px dashed #94a8bd;
+    }
+
+    @media (max-width: 1280px) {
+      .grid-6 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .grid-5 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .center-row { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 760px) {
+      .page {
+        width: calc(100vw - 12px);
+        padding: 12px;
+      }
+
+      .header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .grid-6,
+      .grid-5,
+      .grid-4 {
+        grid-template-columns: 1fr;
+      }
+
+      h1 {
+        font-size: 28px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div>
+        <h1>ERP升级-生产模块全景架构图</h1>
+        <p class="subtitle">系统架构版更强调“层次、边界、对接和输出”，通过蓝色深浅来强化视觉主次。</p>
+      </div>
+      <div class="badge">系统架构版 · 颜色层级强化</div>
+    </div>
+
+    <div class="board">
+      <section class="layer">
+        <div class="layer-label">业务入口层</div>
+        <div class="grid-6">
+          <div class="node tone-a"><strong>印务 / 生产管理</strong><span>生产订单、发布、跟单、封签、报表</span></div>
+          <div class="node tone-a"><strong>仓储 / 物料人员</strong><span>提纸、退纸、同行单、收发协同</span></div>
+          <div class="node tone-a"><strong>出版社业务</strong><span>发稿资料、委印申请、合作规则</span></div>
+          <div class="node tone-a"><strong>财务 / 结算人员</strong><span>审核、付款、发票、回款跟踪</span></div>
+          <div class="node tone-a"><strong>供应商 / 印厂</strong><span>接收单据、上传附件、结算协同</span></div>
+          <div class="node tone-a"><strong>H5移动端</strong><span>提纸、送货、样书、图片上传</span></div>
+        </div>
+      </section>
+
+      <div class="connector"></div>
+
+      <section class="layer">
+        <div class="layer-label">业务域层</div>
+        <div class="center-row">
+          <div class="side-stack">
+            <div class="domain tone-b">
+              <h3>生产流程管理</h3>
+              <ul>
+                <li>生产订单、预约送货、未入库管理</li>
+                <li>样书管理、生产进度、封签打印</li>
+                <li>施工单、送货单、合同及附件管理</li>
+              </ul>
+            </div>
+            <div class="domain tone-b">
+              <h3>物料协同管理</h3>
+              <ul>
+                <li>提纸单、退纸单、随货同行单</li>
+                <li>物料领用、调拨、状态流转</li>
+                <li>PC与H5端现场协同处理</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="core">
+            <h2>ERP生产模块中心</h2>
+            <p>
+              以生产流程、物料流转、出版社结算、生产结算和规则控制为核心，
+              形成统一的生产业务支撑平台，持续承接 V1.0.0 至 V1.6.0 的多轮迭代建设成果。
+            </p>
+            <div class="grid-4" style="margin-top: 14px;">
+              <div class="node tone-d"><strong>流程引擎</strong><span>发布、接收、入库、送货、样书</span></div>
+              <div class="node tone-d"><strong>规则引擎</strong><span>压单、入库、状态、校验、默认值</span></div>
+              <div class="node tone-d"><strong>结算引擎</strong><span>加工费、合作费、推广费、生产结算</span></div>
+              <div class="node tone-d"><strong>统计引擎</strong><span>报表导出、明细查询、异常处理</span></div>
+            </div>
+          </div>
+
+          <div class="side-stack">
+            <div class="domain tone-c">
+              <h3>出版社结算管理</h3>
+              <ul>
+                <li>基础配置、发稿资料、委印申请</li>
+                <li>加工预算、合作费、加工费、推广费</li>
+                <li>出版社结算单、回款与业务规则</li>
+              </ul>
+            </div>
+            <div class="domain tone-c">
+              <h3>生产结算管理</h3>
+              <ul>
+                <li>供应待核对明细、供应结算单</li>
+                <li>印厂待结算明细、印厂全部明细</li>
+                <li>印厂结算单、扣款费用、状态处理</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="connector"></div>
+
+      <section class="layer">
+        <div class="layer-label">系统对接层</div>
+        <div class="grid-5">
+          <div class="domain tone-d">
+            <h3>产品模块</h3>
+            <p>获取产品、书号、产品属性、封签等基础信息，支撑生产与结算规则执行。</p>
+          </div>
+          <div class="domain tone-d">
+            <h3>稿件 / 发稿相关系统</h3>
+            <p>承接发稿资料、样书申请、委印申请、状态同步等上游业务数据。</p>
+          </div>
+          <div class="domain tone-d">
+            <h3>供应商 / 印厂协同</h3>
+            <p>对接印厂接收、附件上传、送货、结算确认等执行侧动作。</p>
+          </div>
+          <div class="domain tone-d">
+            <h3>财务 / 发票 / 付款环节</h3>
+            <p>支撑审核、发票绑定、发起付款、回款追踪和结算状态闭环。</p>
+          </div>
+          <div class="domain tone-d">
+            <h3>移动端与现场操作</h3>
+            <p>通过 H5 承接提纸、送货、样书、图片上传等现场即时操作需求。</p>
+          </div>
+        </div>
+      </section>
+
+      <div class="connector"></div>
+
+      <section class="layer">
+        <div class="layer-label">能力输出层</div>
+        <div class="grid-5">
+          <div class="output tone-a">
+            <h3>流程线上化</h3>
+            <p>生产全流程逐步在线闭环，减少线下转单与重复沟通。</p>
+          </div>
+          <div class="output tone-a">
+            <h3>物料协同化</h3>
+            <p>现场、仓储、印厂之间的物料动作可追踪、可回溯。</p>
+          </div>
+          <div class="output tone-a">
+            <h3>结算规范化</h3>
+            <p>出版社结算和生产结算实现规则化、明细化、状态化管理。</p>
+          </div>
+          <div class="output tone-a">
+            <h3>规则系统化</h3>
+            <p>压单、入库、费用、审核、权限等复杂规则持续沉淀进系统。</p>
+          </div>
+          <div class="output tone-a">
+            <h3>管理可视化</h3>
+            <p>通过明细、报表、导出和统计分析提升管理透明度和决策效率。</p>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</body>
+</html>

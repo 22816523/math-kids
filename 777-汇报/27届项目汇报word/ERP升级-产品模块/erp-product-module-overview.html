@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ERP升级-产品模块架构示意图</title>
+  <style>
+    :root {
+      --bg: #eef3f8;
+      --paper: #ffffff;
+      --line: #b9c7d8;
+      --line-strong: #6f8298;
+      --text: #1e2a39;
+      --muted: #647489;
+      --primary: #355c86;
+      --primary-soft: #e6eef7;
+      --green-soft: #edf6f1;
+      --orange-soft: #fcf3e8;
+      --purple-soft: #f3effb;
+      --shadow: 0 10px 28px rgba(33, 49, 78, 0.08);
+      --radius: 16px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Microsoft YaHei", "PingFang SC", "Segoe UI", sans-serif;
+      background: linear-gradient(180deg, #f5f8fc 0%, #edf2f7 100%);
+      color: var(--text);
+    }
+
+    .page {
+      width: min(1440px, calc(100vw - 32px));
+      margin: 18px auto;
+      padding: 22px;
+      background: var(--paper);
+      border: 1px solid #dce5ef;
+      border-radius: 24px;
+      box-shadow: 0 18px 44px rgba(27, 44, 73, 0.08);
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .title-wrap h1 {
+      margin: 0 0 8px;
+      font-size: 32px;
+      line-height: 1.15;
+      color: var(--primary);
+    }
+
+    .title-wrap p {
+      margin: 0;
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .badge {
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 1px solid #d8e3ef;
+      background: #f7faff;
+      color: var(--muted);
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    .diagram {
+      position: relative;
+      min-height: 860px;
+      padding: 22px;
+      border-radius: 22px;
+      border: 1px solid #dbe4ef;
+      background:
+        linear-gradient(180deg, rgba(248, 251, 255, 0.95), rgba(241, 246, 251, 0.95)),
+        repeating-linear-gradient(
+          90deg,
+          rgba(185, 199, 216, 0.12),
+          rgba(185, 199, 216, 0.12) 1px,
+          transparent 1px,
+          transparent 120px
+        ),
+        repeating-linear-gradient(
+          0deg,
+          rgba(185, 199, 216, 0.10),
+          rgba(185, 199, 216, 0.10) 1px,
+          transparent 1px,
+          transparent 120px
+        );
+      overflow: hidden;
+    }
+
+    .layer-title {
+      position: absolute;
+      z-index: 2;
+      padding: 7px 12px;
+      border-radius: 999px;
+      border: 1px solid #d5dfeb;
+      background: rgba(255, 255, 255, 0.95);
+      color: var(--muted);
+      font-size: 12px;
+      letter-spacing: 0.04em;
+    }
+
+    .left-title {
+      left: 28px;
+      top: 18px;
+    }
+
+    .center-title {
+      left: 50%;
+      top: 18px;
+      transform: translateX(-50%);
+    }
+
+    .right-title {
+      right: 28px;
+      top: 18px;
+    }
+
+    .bottom-title {
+      left: 50%;
+      bottom: 212px;
+      transform: translateX(-50%);
+    }
+
+    .svg-layer {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .column {
+      position: absolute;
+      top: 72px;
+      width: 320px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      z-index: 1;
+    }
+
+    .column.left {
+      left: 28px;
+    }
+
+    .column.right {
+      right: 28px;
+    }
+
+    .card,
+    .core,
+    .capability {
+      background: var(--paper);
+      border: 1px solid #d8e3ef;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .card {
+      padding: 18px 18px 16px;
+    }
+
+    .column.left .card {
+      background: linear-gradient(180deg, #f8fcfa, var(--green-soft));
+    }
+
+    .column.right .card {
+      background: linear-gradient(180deg, #fffaf4, var(--orange-soft));
+    }
+
+    .card h3,
+    .core h2,
+    .capability h3 {
+      margin: 0 0 12px;
+      font-size: 18px;
+      line-height: 1.2;
+    }
+
+    .card h3 {
+      color: var(--primary);
+    }
+
+    .card ul {
+      margin: 0;
+      padding-left: 18px;
+    }
+
+    .card li {
+      margin: 7px 0;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .core {
+      position: absolute;
+      top: 190px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 420px;
+      padding: 24px 26px 22px;
+      background:
+        linear-gradient(180deg, #f6faff 0%, #edf4fb 100%);
+      z-index: 2;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 11px;
+      margin-bottom: 12px;
+      border-radius: 999px;
+      background: var(--primary-soft);
+      color: var(--primary);
+      font-size: 12px;
+      letter-spacing: 0.06em;
+    }
+
+    .core h2 {
+      margin-bottom: 10px;
+      font-size: 28px;
+      color: var(--primary);
+    }
+
+    .core p {
+      margin: 0 0 14px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.65;
+    }
+
+    .core-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .core-item {
+      padding: 11px 12px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid #d6e1ec;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .capabilities {
+      position: absolute;
+      left: 28px;
+      right: 28px;
+      bottom: 26px;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+      z-index: 1;
+    }
+
+    .capability {
+      padding: 16px 16px 14px;
+      background: linear-gradient(180deg, #faf8ff, var(--purple-soft));
+    }
+
+    .capability h3 {
+      color: #5b4b86;
+      font-size: 17px;
+    }
+
+    .capability p {
+      margin: 0;
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--muted);
+    }
+
+    @media (max-width: 1200px) {
+      .diagram {
+        min-height: auto;
+      }
+
+      .svg-layer {
+        display: none;
+      }
+
+      .layer-title,
+      .column,
+      .core,
+      .capabilities {
+        position: static;
+        transform: none;
+      }
+
+      .layer-title {
+        display: inline-flex;
+        margin: 0 0 10px;
+      }
+
+      .header {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .column {
+        width: auto;
+        margin-bottom: 16px;
+      }
+
+      .core {
+        width: auto;
+        margin-bottom: 16px;
+      }
+
+      .capabilities {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .page {
+        width: calc(100vw - 14px);
+        margin: 7px auto;
+        padding: 14px;
+        border-radius: 18px;
+      }
+
+      .title-wrap h1 {
+        font-size: 26px;
+      }
+
+      .core h2 {
+        font-size: 24px;
+      }
+
+      .core-grid,
+      .capabilities {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div class="title-wrap">
+        <h1>ERP升级-产品模块架构示意图</h1>
+        <p>以产品中心为核心，展示内部功能模块、系统对接关系以及向业务输出的关键能力</p>
+      </div>
+      <div class="badge">适合汇报截图 / Word 插图 / PPT 页面</div>
+    </div>
+
+    <div class="diagram">
+      <div class="layer-title left-title">内部功能层</div>
+      <div class="layer-title center-title">产品中心核心层</div>
+      <div class="layer-title right-title">系统对接层</div>
+      <div class="layer-title bottom-title">关键输出能力</div>
+
+      <svg class="svg-layer" viewBox="0 0 1440 860" preserveAspectRatio="none" aria-hidden="true">
+        <defs>
+          <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto" markerUnits="strokeWidth">
+            <path d="M0,0 L10,5 L0,10 Z" fill="#758aa2"></path>
+          </marker>
+        </defs>
+
+        <path d="M350 155 L560 155 L560 220" fill="none" stroke="#8fb3a0" stroke-width="2.2" />
+        <path d="M350 340 L560 340 L560 300" fill="none" stroke="#8fb3a0" stroke-width="2.2" />
+        <path d="M350 525 L560 525 L560 380" fill="none" stroke="#8fb3a0" stroke-width="2.2" />
+
+        <path d="M880 220 L1020 220 L1020 155 L1090 155" fill="none" stroke="#d7a06c" stroke-width="2.2" marker-end="url(#arrow)" />
+        <path d="M880 300 L1020 300 L1020 340 L1090 340" fill="none" stroke="#d7a06c" stroke-width="2.2" marker-end="url(#arrow)" />
+        <path d="M880 380 L1020 380 L1020 525 L1090 525" fill="none" stroke="#d7a06c" stroke-width="2.2" marker-end="url(#arrow)" />
+
+        <path d="M720 470 L720 620" fill="none" stroke="#8b7cb7" stroke-width="2.2" />
+        <path d="M720 620 L235 620 L235 685" fill="none" stroke="#8b7cb7" stroke-width="2.2" />
+        <path d="M720 620 L560 620 L560 685" fill="none" stroke="#8b7cb7" stroke-width="2.2" />
+        <path d="M720 620 L885 620 L885 685" fill="none" stroke="#8b7cb7" stroke-width="2.2" />
+        <path d="M720 620 L1205 620 L1205 685" fill="none" stroke="#8b7cb7" stroke-width="2.2" />
+      </svg>
+
+      <div class="column left">
+        <div class="card">
+          <h3>产品主数据管理</h3>
+          <ul>
+            <li>产品分类、产品档案、产品属性</li>
+            <li>部件管理、套系管理、关联产品</li>
+            <li>批量立项、批量修改、导入导出</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h3>规则配置与校验</h3>
+          <ul>
+            <li>赠送规则、项目尾注模板、可用库存设置</li>
+            <li>封面配置、彩页生成、使用类型控制</li>
+            <li>匹配定价、发行公司与开票规则校验</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h3>经营要素管理</h3>
+          <ul>
+            <li>书名书号管理、查看书号、税率设置</li>
+            <li>可开票机构、事业群、法人公司管理</li>
+            <li>供应商、出版社、基础定价信息维护</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="core">
+        <div class="eyebrow">ERP PRODUCT CENTER</div>
+        <h2>产品模块核心中台</h2>
+        <p>
+          统一承接产品主数据、业务规则、生产参数和对外同步逻辑，
+          支撑产品从创建、维护、发布到跨系统协同的全过程管理。
+        </p>
+        <div class="core-grid">
+          <div class="core-item">主数据统一入口</div>
+          <div class="core-item">规则前置控制</div>
+          <div class="core-item">生产参数沉淀</div>
+          <div class="core-item">状态联动与同步</div>
+        </div>
+      </div>
+
+      <div class="column right">
+        <div class="card">
+          <h3>稿件系统</h3>
+          <ul>
+            <li>销售状态同步稿件状态</li>
+            <li>停销对应稿件暂停</li>
+            <li>影响出片相关统计</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h3>生产管理系统</h3>
+          <ul>
+            <li>重量、捆扎数、工艺描述</li>
+            <li>重量维护、封签打印</li>
+            <li>无纸场景与生产参数联动</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h3>外部及基础系统</h3>
+          <ul>
+            <li>供应商档案、出版社、开票机构</li>
+            <li>聚水潭推送、电商相关字段同步</li>
+            <li>储运清仓处理、换届重量回写</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="capabilities">
+        <div class="capability">
+          <h3>主数据规范</h3>
+          <p>统一产品基础档案口径，减少重复维护和信息不一致问题。</p>
+        </div>
+        <div class="capability">
+          <h3>规则系统化</h3>
+          <p>将业务规则从人工判断转为系统校验和配置控制。</p>
+        </div>
+        <div class="capability">
+          <h3>跨系统协同</h3>
+          <p>连接稿件、生产、供应商与经营要素，形成数据协同链路。</p>
+        </div>
+        <div class="capability">
+          <h3>业务效率提升</h3>
+          <p>支撑批量维护、快速发布和稳定联动，提升日常操作效率。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

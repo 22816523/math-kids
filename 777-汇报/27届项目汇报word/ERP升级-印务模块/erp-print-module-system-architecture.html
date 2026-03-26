@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ERP升级-印务模块全景架构图</title>
+  <style>
+    :root {
+      --text: #1e3347;
+      --muted: #627689;
+      --primary: #1f507c;
+      --line: #bed0e2;
+      --line-strong: #7d9dbc;
+      --blue-1: #f6fafe;
+      --blue-2: #e9f2fb;
+      --blue-3: #d8e7f5;
+      --blue-4: #bfd5eb;
+      --blue-5: #8fb4d8;
+      --core-top: #dcebfa;
+      --core-bottom: #7da8d2;
+      --shadow: 0 12px 28px rgba(31, 52, 79, 0.08);
+      --radius: 6px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Microsoft YaHei", "PingFang SC", "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 12% 10%, rgba(73, 111, 152, 0.08), transparent 24%),
+        linear-gradient(180deg, #f5f8fc 0%, #e9f0f6 100%);
+    }
+
+    .page {
+      width: min(1540px, calc(100vw - 28px));
+      margin: 14px auto;
+      padding: 20px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.97);
+      border: 1px solid #d7e2ed;
+      box-shadow: 0 18px 42px rgba(33, 50, 78, 0.09);
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    h1 {
+      margin: 0 0 6px;
+      font-size: 32px;
+      line-height: 1.15;
+      color: var(--primary);
+    }
+
+    .subtitle {
+      margin: 0;
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .badge {
+      padding: 10px 14px;
+      border: 1px solid #d6e0eb;
+      border-radius: 4px;
+      background: #f9fbfd;
+      color: var(--muted);
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    .board {
+      padding: 18px;
+      border-radius: 6px;
+      border: 1px solid #dbe4ee;
+      background:
+        linear-gradient(180deg, rgba(249, 251, 253, 0.98), rgba(241, 246, 250, 0.98)),
+        repeating-linear-gradient(90deg, rgba(175, 191, 207, 0.10), rgba(175, 191, 207, 0.10) 1px, transparent 1px, transparent 110px),
+        repeating-linear-gradient(0deg, rgba(175, 191, 207, 0.10), rgba(175, 191, 207, 0.10) 1px, transparent 1px, transparent 110px);
+    }
+
+    .card,
+    .mini,
+    .ability,
+    .core {
+      border: 1px solid #d4dfea;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .card,
+    .mini,
+    .ability {
+      background: #fff;
+    }
+
+    .tone-a { background: linear-gradient(180deg, #fbfdff, var(--blue-1)); }
+    .tone-b { background: linear-gradient(180deg, #f7fbff, var(--blue-2)); }
+    .tone-c { background: linear-gradient(180deg, #f1f7fd, var(--blue-3)); }
+    .tone-d { background: linear-gradient(180deg, #ebf3fb, var(--blue-4)); }
+    .tone-e { background: linear-gradient(180deg, #e5eff9, var(--blue-5)); }
+
+    .top {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .card {
+      padding: 14px 16px;
+    }
+
+    .tag {
+      display: inline-block;
+      margin-bottom: 8px;
+      padding: 4px 8px;
+      border-radius: 4px;
+      border: 1px solid #cfdeeb;
+      background: rgba(255,255,255,0.75);
+      color: #4d6882;
+      font-size: 12px;
+    }
+
+    .card h3,
+    .ability h3 {
+      margin: 0 0 8px;
+      color: var(--primary);
+      font-size: 16px;
+    }
+
+    .card p,
+    .ability p,
+    .mini p,
+    .core p {
+      margin: 0;
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--muted);
+    }
+
+    .core {
+      padding: 20px 24px;
+      text-align: center;
+      background: linear-gradient(180deg, var(--core-top) 0%, var(--core-bottom) 100%);
+      border-color: #88aecd;
+      box-shadow: 0 16px 36px rgba(33, 57, 89, 0.14);
+    }
+
+    .core h2 {
+      margin: 0 0 8px;
+      font-size: 25px;
+      color: #153b60;
+    }
+
+    .flow-wrap {
+      position: relative;
+      margin-bottom: 18px;
+      padding: 12px 0 4px;
+    }
+
+    .flow-title {
+      margin: 0 0 14px;
+      text-align: center;
+      font-size: 15px;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+    }
+
+    .flow-note {
+      margin: 0 0 14px;
+      text-align: center;
+      font-size: 13px;
+      color: #54708a;
+    }
+
+    .flow-line {
+      position: absolute;
+      left: 9%;
+      right: 9%;
+      top: 92px;
+      height: 3px;
+      background: linear-gradient(90deg, #8eb0cf 0%, #bed3e7 100%);
+      border-radius: 2px;
+    }
+
+    .flow {
+      position: relative;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .stage {
+      position: relative;
+      padding-top: 18px;
+    }
+
+    .stage-no {
+      position: absolute;
+      left: 50%;
+      top: 0;
+      width: 34px;
+      height: 34px;
+      margin-left: -17px;
+      border-radius: 50%;
+      border: 2px solid #7c9fbe;
+      background: linear-gradient(180deg, #ffffff, #dce9f6);
+      color: #1f4d76;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 10px 18px rgba(31, 52, 79, 0.12);
+      z-index: 2;
+    }
+
+    .mini {
+      min-height: 220px;
+      padding: 26px 16px 16px;
+    }
+
+    .mini h3 {
+      margin: 0 0 10px;
+      text-align: center;
+      color: var(--primary);
+      font-size: 18px;
+      line-height: 1.25;
+    }
+
+    .bullet {
+      display: grid;
+      gap: 8px;
+    }
+
+    .bullet span {
+      display: block;
+      padding: 8px 10px;
+      border-radius: 4px;
+      border: 1px solid #d7e2ed;
+      background: rgba(255,255,255,0.72);
+      color: #34506d;
+      font-size: 13px;
+      line-height: 1.35;
+      text-align: center;
+    }
+
+    .side-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .side-grid .card ul {
+      margin: 0;
+      padding-left: 18px;
+    }
+
+    .side-grid .card li {
+      margin: 6px 0;
+      color: #35506d;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .ability-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .ability {
+      padding: 14px 12px;
+      text-align: center;
+    }
+
+    @media (max-width: 1360px) {
+      .top,
+      .side-grid,
+      .ability-grid,
+      .flow {
+        grid-template-columns: 1fr;
+      }
+
+      .flow-line {
+        display: none;
+      }
+
+      .mini {
+        min-height: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div>
+        <h1>ERP升级-印务模块全景架构图</h1>
+        <p class="subtitle">以工艺规则为核心，横向呈现印务模块从参数配置、生产计划、领料入库到费用结算的业务主链路。</p>
+      </div>
+      <div class="badge">横向主链路版</div>
+    </div>
+
+    <div class="board">
+      <section class="top">
+        <div class="core">
+          <h2>ERP印务模块中心</h2>
+          <p>工艺规则驱动生产执行，加工费用形成结算闭环。</p>
+        </div>
+      </section>
+
+      <section class="flow-wrap">
+        <h3 class="flow-title">印务核心业务主链路</h3>
+        <p class="flow-note">生产计划位于生产订单上游，承接工艺规则并向生产执行环节输出。</p>
+        <div class="flow-line"></div>
+        <div class="flow" style="grid-template-columns: repeat(6, minmax(0, 1fr));">
+          <div class="stage">
+            <div class="stage-no">1</div>
+            <div class="mini tone-a">
+              <h3>工艺规则</h3>
+              <div class="bullet">
+                <span>计量单位</span>
+                <span>印制开本</span>
+                <span>工艺模板</span>
+                <span>单品工艺</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="stage">
+            <div class="stage-no">2</div>
+            <div class="mini tone-b">
+              <h3>生产计划</h3>
+              <div class="bullet">
+                <span>计划编制</span>
+                <span>批量导入</span>
+                <span>计划调整</span>
+                <span>生成生产订单</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="stage">
+            <div class="stage-no">3</div>
+            <div class="mini tone-c">
+              <h3>施工执行</h3>
+              <div class="bullet">
+                <span>施工单下达</span>
+                <span>工艺明细</span>
+                <span>原料信息</span>
+                <span>执行跟踪</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="stage">
+            <div class="stage-no">4</div>
+            <div class="mini tone-d">
+              <h3>物料领用</h3>
+              <div class="bullet">
+                <span>纸张领用</span>
+                <span>物料出库</span>
+                <span>仓储联动</span>
+                <span>原材料库存减少</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="stage">
+            <div class="stage-no">5</div>
+            <div class="mini tone-d">
+              <h3>产成品入库</h3>
+              <div class="bullet">
+                <span>入库单</span>
+                <span>成品入库</span>
+                <span>产成品库存增加</span>
+                <span>费用明细</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="stage">
+            <div class="stage-no">6</div>
+            <div class="mini tone-e">
+              <h3>核对结算</h3>
+              <div class="bullet">
+                <span>生产核对</span>
+                <span>加工单价</span>
+                <span>印厂结算</span>
+                <span>出版社结算</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="side-grid">
+        <div class="card tone-b">
+          <span class="tag">上游协同</span>
+          <ul>
+            <li>产品模块：承接产品、部件和基础属性</li>
+            <li>出版社数据：承接委印与出版社费用处理</li>
+            <li>基础主数据：承接印务参数与工艺配置</li>
+          </ul>
+        </div>
+
+        <div class="card tone-c">
+          <span class="tag">下游协同</span>
+          <ul>
+            <li>生产模块：承接生产订单执行与业务流转</li>
+            <li>仓储 / 库存管理：承接纸张出库与产成品入库</li>
+            <li>供应商 / 印厂：承接施工对象与结算对象</li>
+            <li>结算与报表：承接费用核算与统计输出</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="ability-grid">
+        <div class="ability tone-a">
+          <h3>工艺标准化</h3>
+          <p>先统一规则，再进入执行。</p>
+        </div>
+        <div class="ability tone-b">
+          <h3>计划可执行</h3>
+          <p>让工艺要求真正落到生产计划与施工执行。</p>
+        </div>
+        <div class="ability tone-c">
+          <h3>领料入库可追踪</h3>
+          <p>围绕纸张领用、入库和库存变化形成追踪。</p>
+        </div>
+        <div class="ability tone-d">
+          <h3>结算可核清</h3>
+          <p>以加工单价和施工结果做费用核算。</p>
+        </div>
+      </section>
+    </div>
+  </div>
+</body>
+</html>

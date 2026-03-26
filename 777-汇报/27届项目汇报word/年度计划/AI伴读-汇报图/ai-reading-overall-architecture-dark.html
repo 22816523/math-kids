@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI伴读平台整体产品架构图-深色科技版</title>
+  <style>
+    :root {
+      --page-bg: #0d1722;
+      --panel-bg: #121f2c;
+      --panel-bg-soft: #182837;
+      --text: #eaf4fb;
+      --muted: #98b0c5;
+      --primary: #82c6ff;
+      --primary-deep: #d8efff;
+      --current-bg: #18293a;
+      --current-accent: #29465f;
+      --current-border: #3c617f;
+      --future-bg: #102a31;
+      --future-accent: #153c45;
+      --future-border: #46c9d6;
+      --core-bg: #173a5b;
+      --core-border: #2e6d9e;
+      --line: #263c50;
+      --chip-bg: rgba(255,255,255,0.05);
+      --chip-border: #36546d;
+      --chip-future-bg: rgba(70, 201, 214, 0.08);
+      --chip-future-border: #2bb7c2;
+      --shadow: 0 16px 34px rgba(0, 0, 0, 0.28);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+      background:
+        radial-gradient(circle at 50% 10%, rgba(70, 201, 214, 0.10), transparent 24%),
+        linear-gradient(180deg, #101b27 0%, #0b131c 100%);
+      color: var(--text);
+    }
+
+    .page {
+      width: min(1540px, calc(100vw - 24px));
+      margin: 12px auto;
+      padding: 20px;
+      background: rgba(12, 20, 29, 0.92);
+      border: 1px solid #203446;
+      border-radius: 6px;
+      box-shadow: var(--shadow);
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    h1 {
+      margin: 0 0 4px;
+      font-size: 38px;
+      color: var(--primary);
+      letter-spacing: 0.4px;
+    }
+
+    .subtitle {
+      margin: 0;
+      font-size: 17px;
+      line-height: 1.55;
+      color: var(--muted);
+    }
+
+    .tag {
+      padding: 10px 14px;
+      border: 1px solid #2a4358;
+      border-radius: 4px;
+      background: rgba(19, 34, 47, 0.92);
+      color: var(--muted);
+      font-size: 15px;
+      white-space: nowrap;
+    }
+
+    .board {
+      padding: 18px;
+      border: 1px solid #21384c;
+      border-radius: 4px;
+      background:
+        radial-gradient(circle at 50% 12%, rgba(70, 201, 214, 0.06), transparent 22%),
+        linear-gradient(180deg, #132230 0%, #0f1b27 100%);
+    }
+
+    .legend {
+      display: flex;
+      gap: 18px;
+      align-items: center;
+      margin-bottom: 14px;
+      font-size: 15px;
+      color: var(--muted);
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .swatch {
+      width: 18px;
+      height: 18px;
+      border-radius: 2px;
+      border: 1px solid #335068;
+    }
+
+    .current-swatch { background: var(--current-accent); }
+    .future-swatch { background: var(--future-accent); border-color: var(--future-border); }
+
+    .core {
+      margin-bottom: 18px;
+      padding: 18px 22px;
+      text-align: center;
+      border: 1px solid var(--core-border);
+      border-radius: 4px;
+      background: linear-gradient(180deg, #1d476d 0%, var(--core-bg) 100%);
+      box-shadow: inset 0 0 0 1px rgba(137, 209, 255, 0.08);
+    }
+
+    .core h2 {
+      margin: 0 0 8px;
+      font-size: 32px;
+      color: var(--primary-deep);
+    }
+
+    .core p {
+      margin: 0;
+      font-size: 17px;
+      line-height: 1.6;
+      color: #b8d5ea;
+    }
+
+    .row-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 0 0 10px;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .row-title::before {
+      content: "";
+      width: 3px;
+      height: 16px;
+      background: var(--future-border);
+      box-shadow: 0 0 12px rgba(70, 201, 214, 0.32);
+    }
+
+    .three-col,
+    .flow-row,
+    .goal-grid,
+    .grid-two {
+      display: grid;
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .three-col { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .flow-row { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+    .grid-two { grid-template-columns: 1fr 1fr; }
+    .goal-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+    .domain,
+    .flow,
+    .goal,
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      background: var(--panel-bg);
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.16);
+    }
+
+    .domain::before,
+    .flow::before,
+    .goal::before,
+    .panel::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: rgba(130, 198, 255, 0.10);
+    }
+
+    .domain-head {
+      padding: 13px 15px 10px;
+      border-bottom: 1px solid var(--line);
+      background: var(--panel-bg-soft);
+    }
+
+    .domain-head h3 {
+      margin: 0 0 4px;
+      font-size: 24px;
+      color: var(--primary);
+    }
+
+    .domain-head p {
+      margin: 0;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .segment {
+      padding: 12px 15px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .segment:last-child { border-bottom: none; }
+
+    .segment.current {
+      background: var(--current-bg);
+      border-left: 3px solid var(--current-border);
+    }
+
+    .segment.future {
+      background: var(--future-bg);
+      border-left: 3px solid var(--future-border);
+    }
+
+    .segment h4 {
+      margin: 0 0 8px;
+      font-size: 18px;
+      color: var(--primary-deep);
+    }
+
+    .tags,
+    .chip-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .chip {
+      padding: 6px 10px;
+      border: 1px solid var(--chip-border);
+      border-radius: 999px;
+      background: var(--chip-bg);
+      font-size: 14px;
+      color: #dbe8f4;
+      line-height: 1.2;
+    }
+
+    .segment.future .chip,
+    .flow.future .chip,
+    .panel .chip,
+    .goal.future .chip {
+      border-color: var(--chip-future-border);
+      background: var(--chip-future-bg);
+      color: #90f7f5;
+    }
+
+    .flow {
+      padding: 14px 12px;
+      text-align: center;
+    }
+
+    .flow.current {
+      background: var(--current-bg);
+      border-top: 3px solid var(--current-border);
+    }
+
+    .flow.future {
+      background: var(--future-bg);
+      border-color: var(--future-border);
+      border-top: 3px solid var(--future-border);
+      box-shadow: 0 0 0 1px rgba(70, 201, 214, 0.08), 0 8px 18px rgba(0, 0, 0, 0.20);
+    }
+
+    .flow:not(:last-child)::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      right: -10px;
+      width: 20px;
+      height: 2px;
+      background: #46aeb7;
+      box-shadow: 0 0 8px rgba(70, 201, 214, 0.24);
+    }
+
+    .flow h3 {
+      margin: 0 0 6px;
+      font-size: 20px;
+      color: var(--primary);
+    }
+
+    .flow p {
+      margin: 0 0 8px;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .flow .chip-wrap {
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .panel {
+      padding: 15px;
+    }
+
+    .panel h3 {
+      margin: 0 0 10px;
+      font-size: 22px;
+      color: var(--primary);
+    }
+
+    .panel p {
+      margin: 0 0 10px;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .goal {
+      padding: 14px;
+      text-align: center;
+    }
+
+    .goal.current {
+      background: var(--current-bg);
+      border-top: 3px solid var(--current-border);
+    }
+
+    .goal.future {
+      background: var(--future-bg);
+      border-color: var(--future-border);
+      border-top: 3px solid var(--future-border);
+      box-shadow: 0 0 0 1px rgba(70, 201, 214, 0.08), 0 8px 18px rgba(0, 0, 0, 0.20);
+    }
+
+    .goal h3 {
+      margin: 0 0 6px;
+      font-size: 20px;
+      color: var(--primary);
+    }
+
+    .goal p {
+      margin: 0;
+      font-size: 15px;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    @media (max-width: 1300px) {
+      .three-col,
+      .flow-row,
+      .grid-two,
+      .goal-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .flow:not(:last-child)::after {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div>
+        <h1>AI伴读平台整体产品架构图</h1>
+        <p class="subtitle">先呈现当前已具备的产品基础，再区分后续年度重点规划，兼顾现状说明与未来方向。</p>
+      </div>
+      <div class="tag">总图建议-深色科技版</div>
+    </div>
+
+    <div class="board">
+      <div class="legend">
+        <div class="legend-item">
+          <span class="swatch current-swatch"></span>
+          <span>现状基础 / 一期能力</span>
+        </div>
+        <div class="legend-item">
+          <span class="swatch future-swatch"></span>
+          <span>未来规划 / 年度重点</span>
+        </div>
+      </div>
+
+      <div class="core">
+        <h2>校校读吧 AI伴读平台</h2>
+        <p>围绕“平台配置内容、老师组织班级、学生完成任务、系统沉淀数据”的主链路建设，当前已形成三端基础能力，后续重点推进报表升级、AI场景升级、激励体系和销售转化。</p>
+      </div>
+
+      <div class="row-title">三端产品架构</div>
+      <div class="three-col">
+        <div class="domain">
+          <div class="domain-head">
+            <h3>管理平台</h3>
+            <p>负责内容配置、用户管理、运营分析</p>
+          </div>
+          <div class="segment current">
+            <h4>当前基础</h4>
+            <div class="tags">
+              <span class="chip">学校 / 班级 / 用户</span>
+              <span class="chip">阅读计划</span>
+              <span class="chip">书籍资源库</span>
+              <span class="chip">导读单 / 题库</span>
+            </div>
+          </div>
+          <div class="segment future">
+            <h4>后续规划</h4>
+            <div class="tags">
+              <span class="chip">学校维度报表</span>
+              <span class="chip">班级维度报表</span>
+              <span class="chip">成果性报告</span>
+              <span class="chip">运营看板</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="domain">
+          <div class="domain-head">
+            <h3>老师端</h3>
+            <p>负责活动组织、过程跟踪、结果查看</p>
+          </div>
+          <div class="segment current">
+            <h4>当前基础</h4>
+            <div class="tags">
+              <span class="chip">阅读计划报名</span>
+              <span class="chip">班级组织</span>
+              <span class="chip">进度跟踪</span>
+              <span class="chip">测评统计</span>
+            </div>
+          </div>
+          <div class="segment future">
+            <h4>后续规划</h4>
+            <div class="tags">
+              <span class="chip">班级成果展示</span>
+              <span class="chip">AI智能报告</span>
+              <span class="chip">AI智能点评</span>
+              <span class="chip">活动复盘支撑</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="domain">
+          <div class="domain-head">
+            <h3>学生端</h3>
+            <p>负责阅读参与、互动反馈、激励呈现</p>
+          </div>
+          <div class="segment current">
+            <h4>当前基础</h4>
+            <div class="tags">
+              <span class="chip">AI导语</span>
+              <span class="chip">AI导读视频</span>
+              <span class="chip">阅读打卡 / 测评</span>
+              <span class="chip">成长图谱 / 班级广场</span>
+            </div>
+          </div>
+          <div class="segment future">
+            <h4>后续规划</h4>
+            <div class="tags">
+              <span class="chip">AI数字人</span>
+              <span class="chip">AI阅读助手</span>
+              <span class="chip">积分等级</span>
+              <span class="chip">证书 / 权益</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row-title">业务主链路</div>
+      <div class="flow-row">
+        <div class="flow current">
+          <h3>内容配置</h3>
+          <p>平台侧统一配置</p>
+          <div class="chip-wrap">
+            <span class="chip">计划</span>
+            <span class="chip">资源</span>
+            <span class="chip">题库</span>
+          </div>
+        </div>
+        <div class="flow current">
+          <h3>老师组织</h3>
+          <p>老师侧发起与跟进</p>
+          <div class="chip-wrap">
+            <span class="chip">报名</span>
+            <span class="chip">组织</span>
+            <span class="chip">跟进</span>
+          </div>
+        </div>
+        <div class="flow current">
+          <h3>学生参与</h3>
+          <p>学生侧完成任务</p>
+          <div class="chip-wrap">
+            <span class="chip">阅读</span>
+            <span class="chip">打卡</span>
+            <span class="chip">测评</span>
+          </div>
+        </div>
+        <div class="flow future">
+          <h3>AI深化</h3>
+          <p>增强差异化体验</p>
+          <div class="chip-wrap">
+            <span class="chip">数字人</span>
+            <span class="chip">助手</span>
+            <span class="chip">报告</span>
+          </div>
+        </div>
+        <div class="flow future">
+          <h3>转化闭环</h3>
+          <p>承接留存与销售</p>
+          <div class="chip-wrap">
+            <span class="chip">激励</span>
+            <span class="chip">推荐</span>
+            <span class="chip">商城</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-two">
+        <div class="panel">
+          <h3>年度重点工作</h3>
+          <p>聚焦接下来要落地的四项重点任务</p>
+          <div class="tags">
+            <span class="chip">报表升级</span>
+            <span class="chip">AI场景升级</span>
+            <span class="chip">激励体系建设</span>
+            <span class="chip">销售转化路径</span>
+          </div>
+        </div>
+        <div class="panel">
+          <h3>升级方向</h3>
+          <p>从基础阅读工具逐步升级为校园阅读运营平台</p>
+          <div class="tags">
+            <span class="chip">数据化运营</span>
+            <span class="chip">成果展示</span>
+            <span class="chip">用户留存</span>
+            <span class="chip">商业闭环</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="row-title">预期结果</div>
+      <div class="goal-grid">
+        <div class="goal current">
+          <h3>基础更稳</h3>
+          <p>三端主链路更完整。</p>
+        </div>
+        <div class="goal future">
+          <h3>数据更清晰</h3>
+          <p>成果展示与分析能力增强。</p>
+        </div>
+        <div class="goal future">
+          <h3>留存更强</h3>
+          <p>AI 与激励共同提升参与。</p>
+        </div>
+        <div class="goal future">
+          <h3>转化更顺</h3>
+          <p>阅读服务与销售路径打通。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
