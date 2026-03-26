@@ -69,7 +69,7 @@
       subgridRows: 2,
       subgridCols: 3,
       roundsPerSession: 5,
-      intro: '继续观察行、列和小宫格，慢慢多想几步。',
+      intro: '继续观察每一排、每一列和小宫格，慢慢多想几步。',
     },
     '9x9-easy': {
       id: '9x9-easy',
@@ -492,7 +492,7 @@
           }
 
           cell.textContent = cellValue === 0 ? '' : String(cellValue);
-          cell.setAttribute('aria-label', `第${rowIndex + 1}行第${colIndex + 1}列`);
+          cell.setAttribute('aria-label', `第${rowIndex + 1}排第${colIndex + 1}列`);
           cell.style.borderRightWidth = ((colIndex + 1) % config.subgridCols === 0 && colIndex !== config.size - 1) ? '4px' : '';
           cell.style.borderBottomWidth = ((rowIndex + 1) % config.subgridRows === 0 && rowIndex !== config.size - 1) ? '4px' : '';
 
@@ -534,7 +534,7 @@
           <div class="intro-emoji">${successMode ? '🏆' : config.icon}</div>
           <div class="intro-title">${title}</div>
           <div class="intro-desc">${desc}</div>
-          <div class="intro-rule">每一行、每一列、每个小宫格都不能重复。</div>
+          <div class="intro-rule">每一排、每一列、每个小宫格都不能重复。</div>
         </div>
       `;
     }
@@ -650,7 +650,7 @@
 
       if (conflictReason || value !== expectedValue) {
         const reasonText = {
-          row: `这一行里已经有 ${value} 了`,
+          row: `这一排里已经有 ${value} 了`,
           col: `这一列里已经有 ${value} 了`,
           box: `这个小宫格里已经有 ${value} 了`,
         };

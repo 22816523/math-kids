@@ -28,6 +28,7 @@ test('数独阶段配置包含 6 个梯度', () => {
   assert.equal(SUDOKU_STAGE_CONFIGS['6x6-easy'].subgridRows, 2);
   assert.equal(SUDOKU_STAGE_CONFIGS['6x6-easy'].subgridCols, 3);
   assert.equal(SUDOKU_STAGE_CONFIGS['6x6-easy'].label, '6乘6入门');
+  assert.equal(SUDOKU_STAGE_CONFIGS['6x6-advanced'].intro.includes('每一排'), true);
 
   assert.equal(SUDOKU_STAGE_CONFIGS['9x9-easy'].size, 9);
   assert.equal(SUDOKU_STAGE_CONFIGS['9x9-easy'].subgridRows, 3);
