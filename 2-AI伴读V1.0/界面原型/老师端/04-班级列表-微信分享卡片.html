@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>班级邀请分享示意 - 微信小程序</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", Arial, sans-serif;
+            background: #EDEDED;
+            width: 375px;
+            margin: 0 auto;
+            min-height: 100vh;
+            color: #111;
+        }
+        .note {
+            background: #FFF7E8;
+            color: #8C5A00;
+            padding: 12px 16px;
+            font-size: 12px;
+            line-height: 1.6;
+            border-bottom: 1px solid #F5D9A6;
+        }
+        .note strong {
+            display: block;
+            margin-bottom: 4px;
+            font-size: 13px;
+        }
+        .wechat-header {
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 14px;
+            background: #EDEDED;
+            border-bottom: 1px solid #D8D8D8;
+        }
+        .wechat-header .left,
+        .wechat-header .right {
+            width: 40px;
+            font-size: 20px;
+            color: #222;
+        }
+        .wechat-header .title {
+            flex: 1;
+            text-align: center;
+            font-size: 17px;
+            font-weight: 500;
+            color: #111;
+        }
+        .chat-area {
+            padding: 14px 12px 90px;
+        }
+        .time {
+            text-align: center;
+            margin: 6px 0 16px;
+        }
+        .time span {
+            display: inline-block;
+            background: rgba(0,0,0,0.15);
+            color: #fff;
+            font-size: 11px;
+            padding: 3px 8px;
+            border-radius: 4px;
+        }
+        .tips {
+            margin: 0 0 14px;
+            text-align: center;
+        }
+        .tips span {
+            display: inline-block;
+            background: rgba(0,0,0,0.12);
+            color: #fff;
+            font-size: 11px;
+            padding: 3px 10px;
+            border-radius: 4px;
+        }
+        .msg-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        .msg-row.self {
+            flex-direction: row-reverse;
+        }
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 4px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .avatar.teacher { background: linear-gradient(135deg, #2E5BFF, #457B9D); }
+        .avatar.parent1 { background: #E39B73; }
+        .avatar.parent2 { background: #69B5A4; }
+        .text-bubble {
+            max-width: 250px;
+            padding: 10px 12px;
+            border-radius: 4px;
+            font-size: 15px;
+            line-height: 1.5;
+            word-break: break-word;
+            background: #fff;
+            color: #111;
+        }
+        .msg-row.self .text-bubble {
+            background: #95EC69;
+        }
+
+        /* 微信小程序真实分享风格示意 */
+        .mini-card-wrap {
+            max-width: 250px;
+        }
+        .mini-card {
+            width: 250px;
+            background: #fff;
+            border-radius: 4px;
+            overflow: hidden;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+        }
+        .mini-card-cover {
+            height: 136px;
+            background: linear-gradient(135deg, #8FD3F4 0%, #84FAB0 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        .mini-card-cover::before {
+            content: "";
+            position: absolute;
+            right: -10px;
+            top: 16px;
+            width: 92px;
+            height: 92px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.18);
+        }
+        .mini-card-cover::after {
+            content: "";
+            position: absolute;
+            left: -18px;
+            bottom: -18px;
+            width: 86px;
+            height: 86px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.14);
+        }
+        .cover-content {
+            position: relative;
+            z-index: 1;
+            height: 100%;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .cover-tag {
+            align-self: flex-start;
+            background: rgba(255,255,255,0.24);
+            color: #fff;
+            font-size: 11px;
+            padding: 4px 8px;
+            border-radius: 12px;
+            backdrop-filter: blur(4px);
+        }
+        .cover-main {
+            color: #fff;
+        }
+        .cover-main h3 {
+            font-size: 20px;
+            line-height: 1.35;
+            font-weight: 700;
+            margin-bottom: 6px;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.12);
+        }
+        .cover-main p {
+            font-size: 12px;
+            line-height: 1.5;
+            color: rgba(255,255,255,0.92);
+        }
+        .mini-card-body {
+            padding: 10px 12px 8px;
+        }
+        .mini-card-title {
+            font-size: 15px;
+            color: #111;
+            line-height: 1.45;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .mini-card-footer {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px 10px;
+        }
+        .miniapp-badge {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+            background: linear-gradient(135deg, #2E5BFF, #1E4BEF);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: 700;
+        }
+        .miniapp-name {
+            font-size: 12px;
+            color: #8A8A8A;
+        }
+
+        .design-panel {
+            margin-top: 18px;
+            background: #fff;
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .design-panel h3 {
+            font-size: 15px;
+            margin-bottom: 12px;
+            color: #111;
+        }
+        .design-panel ul {
+            padding-left: 18px;
+        }
+        .design-panel li {
+            font-size: 13px;
+            line-height: 1.7;
+            color: #555;
+            margin-bottom: 6px;
+        }
+        .design-panel .label {
+            color: #111;
+            font-weight: 600;
+        }
+        .input-bar {
+            position: fixed;
+            bottom: 0;
+            width: 375px;
+            background: #F7F7F7;
+            border-top: 1px solid #D8D8D8;
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .input-icon {
+            font-size: 22px;
+            color: #444;
+        }
+        .fake-input {
+            flex: 1;
+            height: 36px;
+            background: #fff;
+            border: 1px solid #DADADA;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+            font-size: 14px;
+            color: #B2B2B2;
+        }
+    </style>
+</head>
+<body>
+    <div class="note">
+        <strong>微信小程序分享示意</strong>
+        这一页按微信小程序真实机制设计
+        聊天里的卡片样式由微信控制，产品侧主要设计的是分享标题、封面图和跳转路径
+    </div>
+
+    <div class="wechat-header">
+        <div class="left">‹</div>
+        <div class="title">一年级(1)班家长群</div>
+        <div class="right">···</div>
+    </div>
+
+    <div class="chat-area">
+        <div class="time"><span>下午 3:42</span></div>
+        <div class="tips"><span>以下为接近真实微信效果的示意，不是完全可自定义UI</span></div>
+
+        <div class="msg-row self">
+            <div class="avatar teacher">王</div>
+            <div class="mini-card-wrap">
+                <div class="mini-card">
+                    <div class="mini-card-cover">
+                        <div class="cover-content">
+                            <div class="cover-tag">班级邀请</div>
+                            <div class="cover-main">
+                                <h3>邀请加入<br>一年级(1)班</h3>
+                                <p>和同学们一起参加阅读计划
+                                每日阅读打卡更轻松</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mini-card-body">
+                        <div class="mini-card-title">王老师邀请你加入一年级(1)班</div>
+                    </div>
+                    <div class="mini-card-footer">
+                        <div class="miniapp-badge">小</div>
+                        <div class="miniapp-name">校校读吧</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="msg-row self">
+            <div class="avatar teacher">王</div>
+            <div class="text-bubble">各位家长好，请点击上方卡片帮孩子加入班级，加入后就可以参与班级阅读计划和阅读打卡</div>
+        </div>
+
+        <div class="msg-row">
+            <div class="avatar parent1">陈</div>
+            <div class="text-bubble">收到，我现在去加入</div>
+        </div>
+
+        <div class="msg-row">
+            <div class="avatar parent2">李</div>
+            <div class="text-bubble">这个卡片点开后就是加入班级吧</div>
+        </div>
+
+        <div class="design-panel">
+            <h3>这个页面对应的小程序分享参数</h3>
+            <ul>
+                <li><span class="label">分享标题</span> 王老师邀请你加入一年级(1)班</li>
+                <li><span class="label">分享路径</span> /pages/join-class/index?classId=1&amp;inviteCode=xxx</li>
+                <li><span class="label">分享封面图</span> 重点设计大字主标题和阅读氛围，不设计聊天卡片内部布局</li>
+                <li><span class="label">交互结果</span> 家长点击卡片后直接进入小程序的加入班级页</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="input-bar">
+        <div class="input-icon">🎤</div>
+        <div class="fake-input">请输入消息</div>
+        <div class="input-icon">😊</div>
+        <div class="input-icon">⊕</div>
+    </div>
+</body>
+</html>

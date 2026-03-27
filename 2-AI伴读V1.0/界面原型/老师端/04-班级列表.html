@@ -216,12 +216,7 @@
 
         // 邀请学生加入班级（直接调用微信分享）
         function inviteToClass(classId, className) {
-            // 调用微信小程序分享接口
-            // wx.miniProgram.postMessage 或 wx.shareAppMessage
-            // 分享内容：班级名称 + 邀请链接
-            // 实际开发中会调用微信JS-SDK的分享接口
-
-            alert('[原型演示] 点击后直接唤起微信分享界面，分享内容包含班级邀请链接，学生点击链接即可加入班级');
+            window.location.href = '04-班级列表-微信分享卡片.html';
         }
 
         // 页面加载时渲染班级列表

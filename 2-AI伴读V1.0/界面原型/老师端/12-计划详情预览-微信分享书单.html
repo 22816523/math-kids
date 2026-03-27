@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>分享书单微信示意 - 微信小程序</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", Arial, sans-serif;
+            background: #EDEDED;
+            width: 375px;
+            margin: 0 auto;
+            min-height: 100vh;
+            color: #111;
+        }
+
+        /* 页面说明 */
+        .note {
+            background: #FFF7E8;
+            color: #8C5A00;
+            padding: 12px 16px;
+            font-size: 12px;
+            line-height: 1.6;
+            border-bottom: 1px solid #F5D9A6;
+        }
+        .note strong { display: block; margin-bottom: 4px; font-size: 13px; }
+
+        /* 微信导航栏 */
+        .wechat-header {
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 14px;
+            background: #EDEDED;
+            border-bottom: 1px solid #D8D8D8;
+        }
+        .wechat-header .left,
+        .wechat-header .right { width: 40px; font-size: 20px; color: #222; }
+        .wechat-header .title { flex: 1; text-align: center; font-size: 17px; font-weight: 500; color: #111; }
+
+        /* 聊天区域 */
+        .chat-area { padding: 14px 12px 90px; }
+
+        .time { text-align: center; margin: 6px 0 16px; }
+        .time span {
+            display: inline-block;
+            background: rgba(0,0,0,0.15);
+            color: #fff;
+            font-size: 11px;
+            padding: 3px 8px;
+            border-radius: 4px;
+        }
+
+        .scene-label { text-align: center; margin: 20px 0 14px; }
+        .scene-label span {
+            display: inline-block;
+            background: rgba(0,0,0,0.12);
+            color: #fff;
+            font-size: 11px;
+            padding: 3px 10px;
+            border-radius: 4px;
+        }
+
+        /* 消息行 */
+        .msg-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        .msg-row.self { flex-direction: row-reverse; }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 4px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .avatar.teacher { background: linear-gradient(135deg, #2E5BFF, #457B9D); }
+        .avatar.parent1 { background: #E39B73; }
+        .avatar.parent2 { background: #69B5A4; }
+        .avatar.teacher2 { background: #8B7EC8; }
+
+        .text-bubble {
+            max-width: 250px;
+            padding: 10px 12px;
+            border-radius: 4px;
+            font-size: 15px;
+            line-height: 1.5;
+            word-break: break-word;
+            background: #fff;
+            color: #111;
+        }
+        .msg-row.self .text-bubble { background: #95EC69; }
+
+        /* ===== 微信小程序分享卡片 ===== */
+        .mini-card-wrap { max-width: 250px; }
+        .mini-card {
+            width: 250px;
+            background: #fff;
+            border-radius: 4px;
+            overflow: hidden;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+        }
+
+        /* 封面图区域 */
+        .mini-card-cover {
+            width: 250px;
+            height: 140px;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, #F8E8D0 0%, #E8D4B8 40%, #D4B896 100%);
+        }
+
+        /* 计划封面图展示 */
+        .plan-cover-image {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, #2E5BFF 0%, #5B8CFF 45%, #8FD3FF 100%);
+        }
+        .plan-cover-image::before {
+            content: "";
+            position: absolute;
+            right: -24px;
+            top: -18px;
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.14);
+        }
+        .plan-cover-image::after {
+            content: "";
+            position: absolute;
+            left: -20px;
+            bottom: -24px;
+            width: 92px;
+            height: 92px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.12);
+        }
+        .plan-cover-content {
+            position: absolute;
+            inset: 0;
+            z-index: 2;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .plan-cover-top {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+        }
+        .plan-cover-tag {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 10px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.18);
+            color: rgba(255,255,255,0.95);
+            font-size: 11px;
+            backdrop-filter: blur(4px);
+        }
+        .plan-cover-brand {
+            color: rgba(255,255,255,0.9);
+            font-size: 11px;
+        }
+        .plan-cover-text {
+            color: #fff;
+            max-width: 170px;
+        }
+        .plan-cover-text .plan-name {
+            font-size: 18px;
+            font-weight: 700;
+            line-height: 1.35;
+            margin-bottom: 6px;
+        }
+        .plan-cover-text .plan-sub {
+            font-size: 12px;
+            line-height: 1.5;
+            color: rgba(255,255,255,0.92);
+        }
+        .plan-cover-bottom {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 12px;
+        }
+        .plan-cover-count {
+            font-size: 22px;
+            font-weight: 700;
+            color: #fff;
+        }
+        .plan-cover-count span {
+            font-size: 12px;
+            font-weight: 400;
+            margin-left: 3px;
+            color: rgba(255,255,255,0.9);
+        }
+        .plan-cover-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            background: rgba(255,255,255,0.18);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 24px;
+            backdrop-filter: blur(4px);
+        }
+
+        /* 卡片标题区 */
+        .mini-card-body { padding: 10px 12px 8px; }
+        .mini-card-title {
+            font-size: 15px;
+            color: #111;
+            line-height: 1.45;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        /* 卡片底部小程序标识 */
+        .mini-card-footer {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px 10px;
+        }
+        .miniapp-badge {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+            background: linear-gradient(135deg, #2E5BFF, #1E4BEF);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 9px;
+            font-weight: 700;
+        }
+        .miniapp-name { font-size: 12px; color: #8A8A8A; }
+
+        /* 设计标注面板 */
+        .design-panel {
+            margin: 18px 12px 0;
+            background: #fff;
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .design-panel h3 { font-size: 15px; margin-bottom: 12px; color: #111; }
+        .design-panel ul { padding-left: 18px; }
+        .design-panel li { font-size: 13px; line-height: 1.7; color: #555; margin-bottom: 6px; }
+        .design-panel .label { color: #111; font-weight: 600; }
+
+        /* 底部输入栏 */
+        .input-bar {
+            position: fixed;
+            bottom: 0;
+            width: 375px;
+            background: #F7F7F7;
+            border-top: 1px solid #D8D8D8;
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .input-icon { font-size: 22px; color: #444; }
+        .fake-input {
+            flex: 1;
+            height: 36px;
+            background: #fff;
+            border: 1px solid #DADADA;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+            font-size: 14px;
+            color: #B2B2B2;
+        }
+    </style>
+</head>
+<body>
+    <div class="note">
+        <strong>原型说明：分享书单 - 微信小程序分享卡片示意</strong>
+        老师在计划详情页点击「分享书单」→ 选择微信好友/群聊后，对方在聊天中看到的效果如下
+        卡片样式由微信控制，产品侧设计的是：分享标题、封面图、跳转路径
+    </div>
+
+    <div class="wechat-header">
+        <div class="left">‹</div>
+        <div class="title">一年级(1)班家长群</div>
+        <div class="right">···</div>
+    </div>
+
+    <div class="chat-area">
+        <div class="time"><span>下午 4:15</span></div>
+
+        <!-- 老师发出的书单分享卡片 -->
+        <div class="msg-row self">
+            <div class="avatar teacher">王</div>
+            <div class="mini-card-wrap">
+                <div class="mini-card">
+                    <div class="mini-card-cover">
+                        <div class="plan-cover-image"></div>
+                        <div class="plan-cover-content">
+                            <div class="plan-cover-top">
+                                <div class="plan-cover-tag">阅读计划</div>
+                                <div class="plan-cover-brand">校校读吧</div>
+                            </div>
+                            <div class="plan-cover-bottom">
+                                <div class="plan-cover-text">
+                                    <div class="plan-name">2026年春季阅读计划</div>
+                                    <div class="plan-sub">5本精选好书 · 60天阅读安排</div>
+                                </div>
+                                <div class="plan-cover-icon">📚</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mini-card-body">
+                        <div class="mini-card-title">3年级春季阅读计划｜5本精选书单</div>
+                    </div>
+                    <div class="mini-card-footer">
+                        <div class="miniapp-badge">小</div>
+                        <div class="miniapp-name">校校读吧</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 老师补充话术 -->
+        <div class="msg-row self">
+            <div class="avatar teacher">王</div>
+            <div class="text-bubble">给大家分享一下本学期推荐的阅读书单，家长可以先了解一下，后续会安排孩子们参加</div>
+        </div>
+
+        <!-- 家长回复 -->
+        <div class="msg-row">
+            <div class="avatar parent1">陈</div>
+            <div class="text-bubble">好的王老师，我点进去看看</div>
+        </div>
+        <div class="msg-row">
+            <div class="avatar parent2">李</div>
+            <div class="text-bubble">收到，回头给孩子看一下</div>
+        </div>
+
+        <!-- 设计标注 -->
+        <div class="design-panel">
+            <h3>小程序分享参数标注</h3>
+            <ul>
+                <li><span class="label">分享标题（title）</span><br>3年级春季阅读计划｜5本精选书单</li>
+                <li><span class="label">分享封面图（imageUrl）</span><br>直接使用阅读计划本身的封面图，无需额外设计分享专用图，尺寸 5:4</li>
+                <li><span class="label">分享路径（path）</span><br>/pages/plan-share/index?planId=2</li>
+                <li><span class="label">点击后跳转</span><br>进入「书单分享落地页」（家长视角），展示计划介绍和书目列表</li>
+            </ul>
+        </div>
+
+        <div style="height: 80px;"></div>
+    </div>
+
+    <!-- 底部输入栏 -->
+    <div class="input-bar">
+        <div class="input-icon">🎤</div>
+        <div class="fake-input">请输入消息</div>
+        <div class="input-icon">😊</div>
+        <div class="input-icon">⊕</div>
+    </div>
+</body>
+</html>

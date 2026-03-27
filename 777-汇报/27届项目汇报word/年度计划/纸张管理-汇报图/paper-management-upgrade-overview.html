@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>纸张管理扫码出入库整体升级图</title>
+  <style>
+    :root {
+      --bg: #eef4f9;
+      --panel: #ffffff;
+      --ink: #18324b;
+      --muted: #61778f;
+      --line: #d7e2ec;
+      --deep: #214f7c;
+      --mid: #3e739f;
+      --soft: #edf5fc;
+      --cyan: #27b8cf;
+      --cyan-soft: #e9fafd;
+      --warn: #6f87a0;
+      --warn-soft: #f2f6fa;
+      --good: #2f8b7c;
+      --good-soft: #edf8f5;
+      --shadow: 0 14px 28px rgba(28, 57, 88, 0.07);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+      background:
+        radial-gradient(circle at top right, rgba(39, 184, 207, 0.07), transparent 26%),
+        linear-gradient(180deg, #f8fbfe 0%, var(--bg) 100%);
+      color: var(--ink);
+    }
+
+    .canvas {
+      width: 1600px;
+      margin: 0 auto;
+      padding: 20px 32px 32px;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.45fr 0.55fr;
+      gap: 14px;
+      align-items: stretch;
+      margin-bottom: 16px;
+    }
+
+    .hero-main,
+    .hero-side {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+    }
+
+    .hero-main {
+      padding: 18px 24px 16px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-main::after {
+      content: "";
+      position: absolute;
+      right: -60px;
+      top: -60px;
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(46, 197, 223, 0.18) 0%, rgba(46, 197, 223, 0) 72%);
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 15px;
+      color: var(--mid);
+      margin-bottom: 10px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 6px;
+      height: 18px;
+      background: linear-gradient(180deg, var(--cyan), var(--deep));
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 32px;
+      line-height: 1.15;
+      color: #173758;
+    }
+
+    .subtitle {
+      margin: 0;
+      font-size: 16px;
+      line-height: 1.6;
+      color: var(--muted);
+      max-width: 760px;
+    }
+
+    .hero-side {
+      padding: 14px 14px 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background: linear-gradient(180deg, #fbfdff 0%, #f1f6fb 100%);
+    }
+
+    .side-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .side-title::before {
+      content: "";
+      width: 5px;
+      height: 18px;
+      background: var(--cyan);
+    }
+
+    .target-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+
+    .target {
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.92);
+      padding: 10px 10px;
+      min-height: 0;
+    }
+
+    .target strong {
+      display: inline;
+      font-size: 15px;
+      color: var(--deep);
+      margin-right: 8px;
+      line-height: 1.4;
+    }
+
+    .target span {
+      display: inline;
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--muted);
+    }
+
+    .flow {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr auto 1fr;
+      gap: 14px;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    .block {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      min-height: 500px;
+      padding: 22px 22px 18px;
+      position: relative;
+    }
+
+    .block.pain {
+      border-top: 5px solid var(--warn);
+    }
+
+    .block.build {
+      border-top: 5px solid var(--deep);
+      background: linear-gradient(180deg, #fcfeff 0%, #f2f8fd 100%);
+    }
+
+    .block.value {
+      border-top: 5px solid var(--good);
+    }
+
+    .block-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 18px;
+      font-size: 28px;
+      font-weight: 800;
+    }
+
+    .block-title::before {
+      content: "";
+      width: 8px;
+      height: 26px;
+    }
+
+    .pain .block-title::before {
+      background: var(--warn);
+    }
+
+    .build .block-title::before {
+      background: var(--deep);
+    }
+
+    .value .block-title::before {
+      background: var(--good);
+    }
+
+    .stack {
+      display: grid;
+      gap: 12px;
+    }
+
+    .card {
+      border: 1px solid var(--line);
+      background: #fff;
+      padding: 14px 14px 12px;
+      min-height: 88px;
+    }
+
+    .pain .card {
+      background: var(--warn-soft);
+      border-color: #d5e0e9;
+    }
+
+    .build .card {
+      background: var(--soft);
+      border-color: #d0dfed;
+    }
+
+    .value .card {
+      background: var(--good-soft);
+      border-color: #cfe6de;
+    }
+
+    .card h3 {
+      margin: 0 0 6px;
+      font-size: 20px;
+      color: var(--ink);
+    }
+
+    .card p {
+      margin: 0;
+      font-size: 16px;
+      line-height: 1.6;
+      color: var(--muted);
+    }
+
+    .arrow {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      border: 2px solid #b7d6ea;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--mid);
+      font-size: 28px;
+      box-shadow: var(--shadow);
+    }
+
+    .bottom-strip {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+    }
+
+    .chip {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      padding: 16px 14px;
+      text-align: center;
+      font-size: 19px;
+      color: var(--ink);
+      box-shadow: var(--shadow);
+      position: relative;
+    }
+
+    .chip::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--deep), var(--cyan));
+    }
+  </style>
+</head>
+<body>
+  <div class="canvas">
+    <section class="hero">
+      <div class="hero-main">
+        <div class="eyebrow">Paper Management Upgrade</div>
+        <h1>纸张管理扫码出入库整体升级图</h1>
+        <p class="subtitle">
+          以 <strong>库位管理、一物一码、扫码出入库、移动作业</strong> 为核心，
+          推动纸张仓储管理向精细化、可追溯方向升级。
+        </p>
+      </div>
+      <div class="hero-side">
+        <div class="side-title">建设导向</div>
+        <div class="target-grid">
+          <div class="target">
+            <strong>空间利用</strong>
+            <span>仓储空间利用优化</span>
+          </div>
+          <div class="target">
+            <strong>作业效率</strong>
+            <span>出入库效率提升</span>
+          </div>
+          <div class="target">
+            <strong>盘点流程</strong>
+            <span>盘点流程更顺畅</span>
+          </div>
+          <div class="target">
+            <strong>库存准确</strong>
+            <span>账实一致性提升</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="flow">
+      <div class="block pain">
+        <div class="block-title">现状痛点</div>
+        <div class="stack">
+          <div class="card">
+            <h3>人工操作负担重</h3>
+            <p>录入、核对、盘点耗时长，且易出错。</p>
+          </div>
+          <div class="card">
+            <h3>缺少库位管理</h3>
+            <p>找货依赖经验，定位和利用率不高。</p>
+          </div>
+          <div class="card">
+            <h3>缺少一物一码</h3>
+            <p>仅能按规格管理，无法件级追踪。</p>
+          </div>
+          <div class="card">
+            <h3>流转追溯不足</h3>
+            <p>关键单据环节缺少件级核验与追踪。</p>
+          </div>
+          <div class="card">
+            <h3>移动作业不足</h3>
+            <p>扫码、盘点、查找无法高效现场完成。</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="arrow">→</div>
+
+      <div class="block build">
+        <div class="block-title">核心建设</div>
+        <div class="stack">
+          <div class="card">
+            <h3>库位管理</h3>
+            <p>完成库位规划、标识和库存初始化。</p>
+          </div>
+          <div class="card">
+            <h3>一物一码</h3>
+            <p>建立件级条码标识，支撑单件追踪。</p>
+          </div>
+          <div class="card">
+            <h3>扫码出入库</h3>
+            <p>在关键业务环节引入扫码校验与记录。</p>
+          </div>
+          <div class="card">
+            <h3>移动作业</h3>
+            <p>支持手机/PDA 扫码、盘点、查询和寻航。</p>
+          </div>
+          <div class="card">
+            <h3>持续迭代</h3>
+            <p>逐步建设趋势分析和安全预警能力。</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="arrow">→</div>
+
+      <div class="block value">
+        <div class="block-title">预期效果</div>
+        <div class="stack">
+          <div class="card">
+            <h3>空间管理更清晰</h3>
+            <p>从经验找货转向规范定位。</p>
+          </div>
+          <div class="card">
+            <h3>现场效率更高</h3>
+            <p>出入库、盘点、查询更高效。</p>
+          </div>
+          <div class="card">
+            <h3>库存数据更准确</h3>
+            <p>账实对应更清晰，差错风险降低。</p>
+          </div>
+          <div class="card">
+            <h3>流转过程可追溯</h3>
+            <p>入库、流转、退回形成完整记录。</p>
+          </div>
+          <div class="card">
+            <h3>支撑精细化管理</h3>
+            <p>为后续预警与分析打下基础。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="bottom-strip">
+      <div class="chip">库位化管理</div>
+      <div class="chip">件级条码追踪</div>
+      <div class="chip">扫码替代手工录入</div>
+      <div class="chip">移动作业现场落地</div>
+      <div class="chip">纸张流转全过程可追溯</div>
+    </section>
+  </div>
+</body>
+</html>
