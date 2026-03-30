@@ -225,11 +225,11 @@
 }
 
 .sudoku-board[data-size='9'] {
-  background: transparent;
-  border: 0;
-  border-radius: 0;
-  overflow: visible;
-  box-shadow: none;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  overflow: visible !important;
+  box-shadow: none !important;
 }
 
 .sudoku-board[data-size='9'] .sudoku-cell.empty {
