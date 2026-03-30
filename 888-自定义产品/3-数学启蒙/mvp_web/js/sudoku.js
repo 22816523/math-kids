@@ -468,6 +468,13 @@
       boardEl.className = 'sudoku-board';
       boardEl.style.setProperty('--grid-size', config.size);
       boardEl.dataset.size = String(config.size);
+      if (config.size === 9) {
+        boardEl.style.background = 'transparent';
+        boardEl.style.border = 'none';
+        boardEl.style.borderRadius = '0';
+        boardEl.style.overflow = 'visible';
+        boardEl.style.boxShadow = 'none';
+      }
 
       for (let rowIndex = 0; rowIndex < config.size; rowIndex += 1) {
         for (let colIndex = 0; colIndex < config.size; colIndex += 1) {
