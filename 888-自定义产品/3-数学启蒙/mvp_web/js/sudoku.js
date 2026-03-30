@@ -440,12 +440,12 @@
       const bankHeight = digitBank?.offsetHeight || 0;
       const helperHeight = (helperText?.offsetHeight || 0) + (feedback?.offsetHeight || 0);
       const bottomHeight = bottomActions?.offsetHeight || 0;
-      const sizePadding = size === 9 ? 116 : 92;
+      const sizePadding = size === 9 ? 96 : 92;
       const chromeHeight = topHeight + questionHeight + bankHeight + helperHeight + bottomHeight + sizePadding;
       const availableHeight = Math.max(window.innerHeight - chromeHeight, 180);
       const availableWidth = Math.max((content?.clientWidth || window.innerWidth) - 16, 180);
-      const cap = size === 9 ? 388 : size === 6 ? 500 : 540;
-      const boardSize = Math.max(Math.min(availableWidth, availableHeight, cap), size === 9 ? 228 : 260);
+      const cap = size === 9 ? 430 : size === 6 ? 500 : 540;
+      const boardSize = Math.max(Math.min(availableWidth, availableHeight, cap), size === 9 ? 252 : 260);
 
       boardHost.style.setProperty('--board-size', `${boardSize}px`);
     }
@@ -515,7 +515,8 @@
       const config = getStageConfig(state.stageId);
       digitBank.innerHTML = '';
       digitBank.style.display = 'grid';
-      digitBank.style.setProperty('--bank-size', String(config.size > 6 ? 5 : config.size));
+      digitBank.dataset.size = String(config.size);
+      digitBank.style.setProperty('--bank-size', String(config.size === 9 ? 9 : config.size > 6 ? 5 : config.size));
 
       for (let value = 1; value <= config.size; value += 1) {
         const button = document.createElement('button');

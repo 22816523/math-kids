@@ -294,6 +294,12 @@
   flex-shrink: 0;
 }
 
+.digit-bank[data-size='9'] {
+  grid-template-columns: repeat(9, minmax(0, 1fr));
+  gap: 6px;
+  width: min(100%, 430px);
+}
+
 .digit-btn {
   width: min(100%, 64px);
   aspect-ratio: 1;
@@ -309,6 +315,13 @@
   cursor: grab;
   user-select: none;
   touch-action: none;
+}
+
+.digit-bank[data-size='9'] .digit-btn {
+  width: min(100%, 38px);
+  border-width: 2px;
+  font-size: 18px;
+  box-shadow: 0 4px 0 var(--yellow-dark), 0 4px 8px rgba(248, 196, 113, 0.16);
 }
 
 .digit-btn:active,
