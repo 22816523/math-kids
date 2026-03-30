@@ -219,15 +219,17 @@
 }
 
 .sudoku-board[data-size='9'] .sudoku-cell {
-  font-size: clamp(13px, 2.35vw, 20px);
+  font-size: clamp(14px, 2.55vw, 20px);
   border-width: 1px;
   box-shadow: none;
 }
 
 .sudoku-board[data-size='9'] {
-  border-width: 2px;
-  border-radius: 18px;
-  box-shadow: 0 4px 0 rgba(206, 214, 224, 0.9), 0 8px 14px rgba(0, 0, 0, 0.04);
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  overflow: visible;
+  box-shadow: none;
 }
 
 .sudoku-board[data-size='9'] .sudoku-cell.empty {
