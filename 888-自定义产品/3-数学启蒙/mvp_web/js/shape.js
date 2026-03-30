@@ -85,6 +85,23 @@
     return SHAPES[key].makeSvg(nextColor());
   }
 
+  function mountSvgMarkup(container, markup, options = {}) {
+    container.innerHTML = markup;
+    const svg = container.querySelector('svg');
+    if (!svg) return;
+
+    const width = options.width || '100%';
+    const height = options.height || '100%';
+    svg.setAttribute('width', width);
+    svg.setAttribute('height', height);
+    svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+    svg.style.display = 'block';
+    svg.style.width = width;
+    svg.style.height = height;
+    svg.style.overflow = 'visible';
+    svg.style.pointerEvents = 'none';
+  }
+
   const SHAPE_KEYS = Object.keys(SHAPES);
 
   // ========== 状态 ==========
@@ -883,14 +900,14 @@
        slot.style.top = p.y + '%';
        slot.style.width = p.w + '%';
        slot.style.height = p.h + '%';
-       slot.innerHTML = SHAPES[p.shape].makeSvg('#E2E8F0'); 
+       mountSvgMarkup(slot, SHAPES[p.shape].makeSvg('#E2E8F0'));
        puzzleArea.appendChild(slot);
 
        const piece = document.createElement('div');
        piece.className = 'puzzle-piece';
        piece.dataset.idx = idx;
        piece.dataset.shape = p.shape;
-       piece.innerHTML = SHAPES[p.shape].makeSvg(p.color);
+       mountSvgMarkup(piece, SHAPES[p.shape].makeSvg(p.color));
        
        piece.style.position = 'relative';
        piece.style.width = '60px';
@@ -960,7 +977,7 @@
 
         if(cx > sRect.left - 40 && cx < sRect.right + 40 && cy > sRect.top - 40 && cy < sRect.bottom + 40) {
            speak('对了！');
-           targetSlot.innerHTML = SHAPES[pData.shape].makeSvg(pData.color);
+           mountSvgMarkup(targetSlot, SHAPES[pData.shape].makeSvg(pData.color));
            targetSlot.classList.add('animate-jelly');
            targetSlot.style.filter = 'none';
            state.tangramPiecesFound++;
@@ -1044,7 +1061,7 @@
         const toy = document.createElement('div');
         toy.className = 'spatial-toy';
         toy.dataset.shape = task.shape;
-        toy.innerHTML = SHAPES[task.shape].makeSvg(task.color);
+        mountSvgMarkup(toy, SHAPES[task.shape].makeSvg(task.color));
         setupSpatialDrag(toy, task, tray);
         tray.appendChild(toy);
     });
@@ -1128,7 +1145,7 @@
            
            if(isRightToy && isRightCell) {
               speak('放对了！真能干！');
-              droppedCell.innerHTML = SHAPES[taskData.shape].makeSvg(taskData.color);
+              mountSvgMarkup(droppedCell, SHAPES[taskData.shape].makeSvg(taskData.color), { width: '72%', height: '72%' });
               droppedCell.classList.add('animate-jelly');
               toy.remove();
               showFeedback(true);

@@ -534,6 +534,15 @@
   cursor: grab;
   filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
 }
+
+.puzzle-piece svg,
+.puzzle-slot svg,
+.spatial-toy svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
 .puzzle-piece:active { cursor: grabbing; }
 
 /* ========== 追加：听指令 (方位九宫格) 样式 ========== */
@@ -564,6 +573,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.shelf-cell svg {
+  display: block;
+  width: 72%;
+  height: 72%;
+  pointer-events: none;
 }
 .spatial-tray {
   display: flex;
