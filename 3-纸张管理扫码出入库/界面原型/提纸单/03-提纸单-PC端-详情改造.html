@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>提纸单-PC端详情改造原型</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+      background: #f5f7fa;
+      color: #303133;
+    }
+    .page {
+      width: 1440px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    .title { font-size: 24px; font-weight: 700; }
+    .btns { display: flex; gap: 10px; }
+    .btn {
+      height: 36px;
+      padding: 0 16px;
+      border-radius: 4px;
+      border: 1px solid #dcdfe6;
+      background: #fff;
+      color: #606266;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+    .btn.primary { background: #409eff; border-color: #409eff; color: #fff; }
+    .btn.danger { background: #f56c6c; border-color: #f56c6c; color: #fff; }
+    .card {
+      background: #fff;
+      border: 1px solid #ebeef5;
+      border-radius: 4px;
+      margin-bottom: 16px;
+      overflow: hidden;
+    }
+    .card-title {
+      padding: 14px 18px;
+      border-bottom: 1px solid #ebeef5;
+      font-weight: 700;
+      font-size: 16px;
+      background: #fafafa;
+    }
+    .base-info {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+    }
+    .info-item {
+      display: flex;
+      border-right: 1px solid #f2f3f5;
+      border-bottom: 1px solid #f2f3f5;
+      min-height: 48px;
+    }
+    .info-item:nth-child(4n) { border-right: none; }
+    .label {
+      width: 120px;
+      padding: 14px 12px;
+      background: #fafafa;
+      color: #909399;
+      border-right: 1px solid #f2f3f5;
+      font-size: 14px;
+    }
+    .value {
+      flex: 1;
+      padding: 14px 12px;
+      font-size: 14px;
+      color: #303133;
+    }
+    .tag {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 12px;
+      background: #ecf5ff;
+      color: #409eff;
+      font-size: 12px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    th, td {
+      border: 1px solid #ebeef5;
+      padding: 10px 12px;
+      text-align: left;
+      vertical-align: middle;
+    }
+    th {
+      background: #fafafa;
+      color: #606266;
+      font-weight: 700;
+    }
+    .subbar {
+      padding: 14px 18px;
+      border-bottom: 1px solid #ebeef5;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #fcfcfc;
+      font-size: 14px;
+    }
+    .number { color: #409eff; font-weight: 700; }
+    .warn { color: #e6a23c; }
+    .blue-link { color: #409eff; }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .placeholder {
+      height: 120px;
+      border: 1px dashed #dcdfe6;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #909399;
+      background: #fafafa;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="topbar">
+      <div class="title">提纸单详情</div>
+      <div class="btns">
+        <div class="btn">返回</div>
+        <div class="btn">导出</div>
+        <div class="btn">打印</div>
+        <div class="btn danger">返单</div>
+        <div class="btn primary">确认提纸</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">单据概览</div>
+      <div class="base-info">
+        <div class="info-item"><div class="label">单据编号</div><div class="value">TP20260330001</div></div>
+        <div class="info-item"><div class="label">单据状态</div><div class="value"><span class="tag">待调出仓确认发纸</span></div></div>
+        <div class="info-item"><div class="label">调入地点</div><div class="value">长沙仓-待收货区</div></div>
+        <div class="info-item"><div class="label">调出地点</div><div class="value">岳阳仓-A区</div></div>
+        <div class="info-item"><div class="label">申请件数</div><div class="value">10 件</div></div>
+        <div class="info-item"><div class="label">已扫件数</div><div class="value"><span class="number">6 件</span></div></div>
+        <div class="info-item"><div class="label">汇总调拨数量</div><div class="value"><span class="number">320</span></div></div>
+        <div class="info-item"><div class="label">物料分类</div><div class="value">纸张</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">实际出库件明细</div>
+      <div class="subbar">
+        <div>当前阶段：扫码发纸后形成实际出库件明细，调拨数量按明细汇总计算</div>
+        <div>
+          <span class="blue-link">扫码发纸</span>
+          &nbsp;&nbsp;|&nbsp;&nbsp;
+          <span class="blue-link">手工录码</span>
+        </div>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 60px;">序号</th>
+            <th>唯一编号</th>
+            <th>纸张名称/规格</th>
+            <th>吨数</th>
+            <th>调拨数量</th>
+            <th>当前仓库</th>
+            <th>当前库位</th>
+            <th>状态</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td class="blue-link">2026000123</td>
+            <td>双胶纸 65g 870*1230</td>
+            <td>1.25</td>
+            <td>32</td>
+            <td>岳阳仓</td>
+            <td>A-01-03</td>
+            <td>在库</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td class="blue-link">2026000124</td>
+            <td>双胶纸 65g 870*1230</td>
+            <td>1.22</td>
+            <td>31</td>
+            <td>岳阳仓</td>
+            <td>A-01-05</td>
+            <td>在库</td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td class="blue-link">2026000125</td>
+            <td>双胶纸 65g 870*1230</td>
+            <td>1.28</td>
+            <td>33</td>
+            <td>岳阳仓</td>
+            <td>A-02-01</td>
+            <td>在库</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="card-title">单据信息</div>
+      <div class="base-info">
+        <div class="info-item"><div class="label">提纸人员</div><div class="value">李师傅</div></div>
+        <div class="info-item"><div class="label">联系电话</div><div class="value">138****0021</div></div>
+        <div class="info-item"><div class="label">提纸日期</div><div class="value">2026-03-30</div></div>
+        <div class="info-item"><div class="label">提交时间</div><div class="value">2026-03-30 09:10</div></div>
+        <div class="info-item"><div class="label">管理员核对</div><div class="value">王主管</div></div>
+        <div class="info-item"><div class="label">当前异常</div><div class="value warn">仍有 4 件未扫码，不允许确认发纸</div></div>
+        <div class="info-item"><div class="label">出库图片</div><div class="value">已上传 2 张</div></div>
+        <div class="info-item"><div class="label">备注</div><div class="value">搬仓优先批次</div></div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">扫码记录</div>
+        <table>
+          <thead>
+            <tr>
+              <th>时间</th>
+              <th>操作人</th>
+              <th>动作</th>
+              <th>结果</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>10:11:02</td><td>岳阳仓管</td><td>扫码发纸</td><td>成功</td></tr>
+            <tr><td>10:12:18</td><td>岳阳仓管</td><td>扫码发纸</td><td>成功</td></tr>
+            <tr><td>10:15:41</td><td>岳阳仓管</td><td>扫码发纸</td><td>编号不存在</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card">
+        <div class="card-title">附件与图片</div>
+        <div style="padding: 16px;">
+          <div class="placeholder">出库图片 / 单据附件预览区域</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
