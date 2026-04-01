@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>随货同行单-PC端-详情改造</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    :root {
+      --bg: #f5f7fa;
+      --panel: #ffffff;
+      --line: #e4e7ed;
+      --text: #303133;
+      --sub: #606266;
+      --hint: #909399;
+      --primary: #409eff;
+      --primary-soft: #ecf5ff;
+      --font-base: 12px;
+      --font-title: 14px;
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: var(--font-base);
+    }
+
+    .app-shell {
+      min-width: 1440px;
+    }
+
+    .topbar {
+      height: 56px;
+      background: #fff;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: flex-end;
+      gap: 16px;
+      padding: 0 16px;
+    }
+
+    .brand {
+      font-size: var(--font-title);
+      font-weight: 600;
+      align-self: center;
+    }
+
+    .tabs-nav {
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+      margin-bottom: -1px;
+    }
+
+    .home-tab {
+      height: 34px;
+      padding: 0 16px;
+      border: 1px solid var(--line);
+      border-radius: 4px 4px 0 0;
+      background: #f7f8fa;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: var(--font-base);
+      color: var(--sub);
+      line-height: 1;
+    }
+
+    .page-tab {
+      height: 34px;
+      padding: 0 16px;
+      border: 1px solid var(--line);
+      border-bottom-color: #fff;
+      border-radius: 4px 4px 0 0;
+      background: #fff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      font-size: var(--font-base);
+      color: var(--text);
+      line-height: 1;
+      font-weight: 500;
+    }
+
+    .tab-close {
+      color: var(--hint);
+      font-size: var(--font-base);
+      line-height: 1;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .main-layout {
+      display: flex;
+      min-height: calc(100vh - 56px);
+    }
+
+    .sidebar {
+      width: 120px;
+      background: #fff;
+      border-right: 1px solid var(--line);
+      padding: 10px 0;
+    }
+
+    .menu-item {
+      height: 34px;
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+      font-size: var(--font-base);
+      color: var(--text);
+    }
+
+    .menu-item.active {
+      background: var(--primary-soft);
+      color: var(--primary);
+      border-right: 2px solid var(--primary);
+    }
+
+    .content {
+      flex: 1;
+      padding: 0 12px 20px;
+    }
+
+    .page {
+      width: 100%;
+      border-top: 1px solid var(--line);
+      padding-top: 10px;
+    }
+
+    .toolbar {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .btn {
+      height: 30px;
+      padding: 0 12px;
+      border: 1px solid #dcdfe6;
+      border-radius: 4px;
+      background: #fff;
+      color: var(--sub);
+      font-size: var(--font-base);
+      cursor: pointer;
+    }
+
+    .section {
+      border: 1px solid var(--line);
+      background: #fff;
+      margin-bottom: 10px;
+    }
+
+    .section-title {
+      height: 36px;
+      display: flex;
+      align-items: center;
+      padding: 0 10px;
+      border-bottom: 1px solid var(--line);
+      background: #fafbfc;
+      font-size: var(--font-title);
+      font-weight: 600;
+    }
+
+    .section-title .arrow {
+      margin-right: 8px;
+      color: var(--hint);
+      font-size: var(--font-base);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 6px 14px;
+      padding: 10px;
+    }
+
+    .field {
+      display: grid;
+      grid-template-columns: 72px 1fr;
+      align-items: center;
+      column-gap: 6px;
+    }
+
+    .field label {
+      text-align: right;
+      font-size: var(--font-base);
+      color: var(--text);
+    }
+
+    .field .value,
+    .field .select-like {
+      height: 28px;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      background: #f5f7fa;
+      padding: 0 8px;
+      display: flex;
+      align-items: center;
+      font-size: var(--font-base);
+      color: var(--text);
+    }
+
+    .field.span-2 {
+      grid-column: span 2;
+    }
+
+    .image-box {
+      width: 70px;
+      height: 94px;
+      border: 1px solid var(--line);
+      background:
+        linear-gradient(45deg, transparent 48%, #d9d9d9 49%, #d9d9d9 51%, transparent 52%),
+        linear-gradient(-45deg, transparent 48%, #d9d9d9 49%, #d9d9d9 51%, transparent 52%),
+        #f5f7fa;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--sub);
+      font-size: var(--font-base);
+    }
+
+    .sub-title {
+      display: flex;
+      align-items: center;
+      margin: 0 10px 10px;
+      padding-top: 10px;
+      font-size: var(--font-title);
+      font-weight: 600;
+    }
+
+    .table-wrap {
+      padding: 0 10px 10px;
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--font-base);
+      min-width: 1080px;
+      table-layout: fixed;
+    }
+
+    th, td {
+      border: 1px solid var(--line);
+      padding: 6px 7px;
+      text-align: left;
+      vertical-align: middle;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    th {
+      background: #fafbfc;
+      font-weight: 600;
+    }
+
+    .tfoot-row td {
+      background: #fcfcfc;
+      font-weight: 600;
+    }
+
+    .accordion-list {
+      padding: 0 10px 10px;
+    }
+
+    .accordion-item {
+      border: 1px solid var(--line);
+      margin-bottom: 10px;
+      background: #fff;
+    }
+
+    .accordion-header {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 28px 1fr 90px;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 12px;
+      border: none;
+      background: #f5f7fa;
+      cursor: pointer;
+      text-align: left;
+      color: var(--text);
+      font-size: var(--font-base);
+    }
+
+    .accordion-item.collapsed .accordion-header {
+      background: #fafafa;
+    }
+
+    .toggle-icon {
+      width: 18px;
+      text-align: center;
+      font-size: var(--font-base);
+      color: var(--sub);
+    }
+
+    .material-name {
+      font-weight: 600;
+      white-space: normal;
+      line-height: 1.4;
+    }
+
+    .metric {
+      color: var(--sub);
+      font-size: var(--font-base);
+    }
+
+    .metric strong {
+      color: var(--text);
+      font-size: var(--font-base);
+    }
+
+    .accordion-body {
+      padding: 10px 12px 12px;
+      border-top: 1px solid var(--line);
+      display: block;
+    }
+
+    .accordion-item.collapsed .accordion-body {
+      display: none;
+    }
+
+    .photo-thumb {
+      width: 38px;
+      height: 38px;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      background:
+        linear-gradient(135deg, #d7d7d7 0%, #bdbdbd 35%, #efefef 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .photo-thumb::before {
+      content: "";
+      position: absolute;
+      left: 6px;
+      top: 9px;
+      width: 23px;
+      height: 14px;
+      border: 1px solid rgba(255,255,255,0.75);
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.8), rgba(255,255,255,0.15)),
+        linear-gradient(135deg, transparent 0 36%, rgba(255,255,255,0.45) 36% 64%, transparent 64% 100%);
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <div class="topbar">
+      <div class="brand">ERP门户</div>
+      <div class="tabs-nav">
+        <div class="home-tab">首页</div>
+        <div class="page-tab">
+          <span>随货同行单详情</span>
+          <span class="tab-close">×</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="main-layout">
+      <aside class="sidebar">
+        <div class="menu-item active">生产</div>
+      </aside>
+
+      <main class="content">
+        <div class="page">
+          <div class="toolbar">
+            <button class="btn">一键下载全部图片</button>
+            <button class="btn">查看进度明细</button>
+          </div>
+
+          <div class="section">
+            <div class="section-title"><span class="arrow">⌄</span>单据信息</div>
+            <div class="form-grid">
+              <div class="field"><label>供应商</label><div class="value">福建省沙县青州纸厂供应站</div></div>
+              <div class="field"><label>纸厂</label><div class="value">福建省沙县青州纸厂供应站</div></div>
+              <div class="field"><label>入库单号</label><div class="value">RK00069230</div></div>
+              <div class="field"><label>采购单位</label><div class="value">江西易而采物联有限公司</div></div>
+
+              <div class="field"><label>入库时间</label><div class="value">2025-08-21 15:57</div></div>
+              <div class="field"><label>入库形式</label><div class="value">公司</div></div>
+              <div class="field"><label>到货日期</label><div class="value">2025-08-21</div></div>
+              <div class="field"><label>收货仓库</label><div class="value">美达易而采仓库</div></div>
+
+              <div class="field"><label>纸厂联系人</label><div class="value">李安琪</div></div>
+              <div class="field"><label>合同号</label><div class="value">HT202504280001</div></div>
+              <div class="field"><label>随货同行单号</label><div class="value">SH202508210001</div></div>
+              <div class="field"><label>收货地点</label><div class="value">美达仓库</div></div>
+
+              <div class="field"><label>采购订单号</label><div class="value">CGDD202505090003</div></div>
+              <div class="field"><label>单据编号</label><div class="value">SZD202508210002-1</div></div>
+              <div class="field"><label>状态</label><div class="value">编辑中</div></div>
+              <div class="field"><label>库位</label><div class="select-like">美达仓库-1号库位 ▼</div></div>
+
+              <div class="field"><label>备注</label><div class="value"></div></div>
+              <div class="field"><label>需求名称</label><div class="value">集成测试-纸张类</div></div>
+              <div class="field span-2">
+                <label>随货同行单图片</label>
+                <div style="display:flex; align-items:center; gap:12px;">
+                  <div class="image-box">图片预览</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="section-title"><span class="arrow">⌄</span>纸张信息</div>
+            <div class="sub-title"><span>物料汇总表</span></div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th style="width:52px;">序号</th>
+                    <th style="width:180px;">物料名称</th>
+                    <th style="width:60px;">品牌</th>
+                    <th style="width:60px;">机型</th>
+                    <th style="width:82px;">吨数</th>
+                    <th style="width:82px;">采购单价</th>
+                    <th style="width:72px;">金额</th>
+                    <th style="width:82px;">转换率</th>
+                    <th style="width:92px;">入库数量</th>
+                    <th style="width:66px;">存储单位</th>
+                    <th style="width:60px;">件数</th>
+                    <th>每件数量</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>1</td>
+                    <td>55克870*1230平板书写</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>0.300000</td>
+                    <td>500</td>
+                    <td>150.000</td>
+                    <td>33.982000</td>
+                    <td>10.195</td>
+                    <td>令</td>
+                    <td>3</td>
+                    <td>3.398 / 3.398 / 3.399</td>
+                  </tr>
+                  <tr>
+                    <td>2</td>
+                    <td>70克900*1200双胶纸</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>0.420000</td>
+                    <td>530</td>
+                    <td>222.600</td>
+                    <td>32.100000</td>
+                    <td>13.482</td>
+                    <td>令</td>
+                    <td>4</td>
+                    <td>3.370 / 3.370 / 3.371 / 3.371</td>
+                  </tr>
+                  <tr class="tfoot-row">
+                    <td>合计</td>
+                    <td colspan="3"></td>
+                    <td>0.720000</td>
+                    <td></td>
+                    <td>372.600</td>
+                    <td></td>
+                    <td>23.677</td>
+                    <td></td>
+                    <td>7</td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="sub-title"><span>件明细</span></div>
+            <div class="accordion-list">
+              <div class="accordion-item" data-open="true">
+                <button class="accordion-header" type="button">
+                  <span class="toggle-icon">▼</span>
+                  <span class="material-name">物料1：55克870*1230平板书写</span>
+                  <span class="metric">件数 <strong>3</strong></span>
+                </button>
+                <div class="accordion-body">
+                  <div class="table-wrap" style="padding:0;">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th style="width:56px;">件序号</th>
+                          <th style="width:120px;">唯一编号</th>
+                          <th style="width:86px;">入库数量</th>
+                          <th style="width:70px;">吨数</th>
+                          <th style="width:92px;">出厂编码</th>
+                          <th style="width:90px;">照片</th>
+                          <th style="width:86px;">当前库位</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>1</td>
+                          <td>2026000001</td>
+                          <td>3.398</td>
+                          <td>0.100</td>
+                          <td>FC-001</td>
+                          <td><div class="photo-thumb" title="照片预览"></div></td>
+                          <td>1号库位</td>
+                        </tr>
+                        <tr>
+                          <td>2</td>
+                          <td>2026000002</td>
+                          <td>3.398</td>
+                          <td>0.100</td>
+                          <td>FC-002</td>
+                          <td><div class="photo-thumb" title="照片预览"></div></td>
+                          <td>1号库位</td>
+                        </tr>
+                        <tr>
+                          <td>3</td>
+                          <td>2026000003</td>
+                          <td>3.399</td>
+                          <td>0.100</td>
+                          <td>FC-003</td>
+                          <td></td>
+                          <td>1号库位</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+
+              <div class="accordion-item collapsed" data-open="false">
+                <button class="accordion-header" type="button">
+                  <span class="toggle-icon">▶</span>
+                  <span class="material-name">物料2：70克900*1200双胶纸</span>
+                  <span class="metric">件数 <strong>4</strong></span>
+                </button>
+                <div class="accordion-body">
+                  <div class="table-wrap" style="padding:0;">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th style="width:56px;">件序号</th>
+                          <th style="width:120px;">唯一编号</th>
+                          <th style="width:86px;">入库数量</th>
+                          <th style="width:70px;">吨数</th>
+                          <th style="width:92px;">出厂编码</th>
+                          <th style="width:90px;">照片</th>
+                          <th style="width:86px;">当前库位</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>1</td>
+                          <td>2026000101</td>
+                          <td>3.370</td>
+                          <td>0.105</td>
+                          <td>FC-101</td>
+                          <td><div class="photo-thumb" title="照片预览"></div></td>
+                          <td>1号库位</td>
+                        </tr>
+                        <tr>
+                          <td>2</td>
+                          <td>2026000102</td>
+                          <td>3.370</td>
+                          <td>0.105</td>
+                          <td>FC-102</td>
+                          <td><div class="photo-thumb" title="照片预览"></div></td>
+                          <td>1号库位</td>
+                        </tr>
+                        <tr>
+                          <td>3</td>
+                          <td>2026000103</td>
+                          <td>3.371</td>
+                          <td>0.105</td>
+                          <td>FC-103</td>
+                          <td><div class="photo-thumb" title="照片预览"></div></td>
+                          <td>1号库位</td>
+                        </tr>
+                        <tr>
+                          <td>4</td>
+                          <td>2026000104</td>
+                          <td>3.371</td>
+                          <td>0.105</td>
+                          <td>FC-104</td>
+                          <td><div class="photo-thumb" title="照片预览"></div></td>
+                          <td>1号库位</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    const accordionItems = document.querySelectorAll('.accordion-item');
+
+    accordionItems.forEach((item) => {
+      const header = item.querySelector('.accordion-header');
+      const icon = item.querySelector('.toggle-icon');
+
+      header.addEventListener('click', () => {
+        const isCollapsed = item.classList.contains('collapsed');
+
+        accordionItems.forEach((other) => {
+          other.classList.add('collapsed');
+          other.querySelector('.toggle-icon').textContent = '▶';
+        });
+
+        if (isCollapsed) {
+          item.classList.remove('collapsed');
+          icon.textContent = '▼';
+        }
+      });
+    });
+  </script>
+</body>
+</html>

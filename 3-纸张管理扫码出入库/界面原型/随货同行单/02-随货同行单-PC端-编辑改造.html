@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>随货同行单-PC端-编辑改造</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    :root {
+      --bg: #f5f7fa;
+      --panel: #ffffff;
+      --panel-soft: #fafafa;
+      --line: #e4e7ed;
+      --text: #303133;
+      --sub: #606266;
+      --hint: #909399;
+      --primary: #409eff;
+      --primary-soft: #ecf5ff;
+      --font-base: 12px;
+      --font-title: 14px;
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: var(--font-base);
+    }
+
+    .app-shell {
+      min-width: 1440px;
+    }
+
+    .topbar {
+      height: 56px;
+      background: #fff;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: flex-end;
+      gap: 16px;
+      padding: 0 16px;
+    }
+
+    .brand {
+      font-size: var(--font-title);
+      font-weight: 600;
+      align-self: center;
+    }
+
+    .tabs-nav {
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+      height: auto;
+      margin-bottom: -1px;
+    }
+
+    .home-tab {
+      height: 34px;
+      padding: 0 16px;
+      border: 1px solid var(--line);
+      border-bottom-color: var(--line);
+      border-radius: 4px 4px 0 0;
+      background: #f7f8fa;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: var(--font-base);
+      color: var(--sub);
+      line-height: 1;
+    }
+
+    .page-tab {
+      height: 34px;
+      padding: 0 16px;
+      border: 1px solid var(--line);
+      border-bottom-color: #fff;
+      border-radius: 4px 4px 0 0;
+      background: #fff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: var(--font-base);
+      color: var(--text);
+      font-weight: 500;
+      gap: 10px;
+      line-height: 1;
+    }
+
+    .tab-close {
+      color: var(--hint);
+      font-size: var(--font-base);
+      line-height: 1;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .content {
+      flex: 1;
+      padding: 0 12px 20px;
+    }
+
+    .main-layout {
+      display: flex;
+      min-height: calc(100vh - 52px);
+    }
+
+    .sidebar {
+      width: 120px;
+      background: #fff;
+      border-right: 1px solid var(--line);
+      padding: 10px 0;
+    }
+
+    .menu-item {
+      height: 34px;
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+      font-size: var(--font-base);
+      color: var(--text);
+    }
+
+    .menu-item.active {
+      background: var(--primary-soft);
+      color: var(--primary);
+      border-right: 2px solid var(--primary);
+    }
+
+    .page {
+      width: 100%;
+      border-top: 1px solid var(--line);
+      padding-top: 10px;
+    }
+
+    .toolbar {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .btn {
+      min-width: 78px;
+      height: 30px;
+      padding: 0 12px;
+      border-radius: 4px;
+      border: 1px solid #dcdfe6;
+      background: #fff;
+      color: var(--sub);
+      font-size: var(--font-base);
+      cursor: pointer;
+    }
+
+    .btn.primary {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+    }
+
+    .section {
+      background: var(--panel);
+      border: 1px solid #ebeef5;
+      margin-bottom: 10px;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      height: 36px;
+      padding: 0 10px;
+      border-bottom: 1px solid #ebeef5;
+      background: #fafbfc;
+      font-size: var(--font-title);
+      font-weight: 600;
+    }
+
+    .section-title .arrow {
+      color: var(--hint);
+      font-size: 12px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 6px 14px;
+      padding: 10px;
+    }
+
+    .field {
+      display: grid;
+      grid-template-columns: 72px 1fr;
+      align-items: start;
+      gap: 6px;
+    }
+
+    .field label {
+      text-align: right;
+      line-height: 28px;
+      font-size: var(--font-base);
+      color: var(--text);
+    }
+
+    .control,
+    .textarea,
+    .date-box {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      background: #fff;
+      color: var(--text);
+      font-size: var(--font-base);
+    }
+
+    .control,
+    .date-box {
+      height: 28px;
+      padding: 0 8px;
+      display: flex;
+      align-items: center;
+      font-size: var(--font-base);
+    }
+
+    .control.readonly {
+      background: #f5f7fa;
+    }
+
+    .control.select::after {
+      content: "▼";
+      margin-left: auto;
+      color: #c0c4cc;
+      font-size: 12px;
+    }
+
+    .date-box::before {
+      content: "📅";
+      margin-right: 8px;
+      font-size: 12px;
+      opacity: 0.7;
+    }
+
+    .textarea {
+      min-height: 66px;
+      padding: 8px 10px;
+      resize: none;
+      font-size: 12px;
+    }
+
+    .field.span-2 {
+      grid-column: span 2;
+    }
+
+    .image-preview {
+      width: 70px;
+      height: 94px;
+      border: 1px solid var(--line);
+      background:
+        linear-gradient(45deg, transparent 48%, #d9d9d9 49%, #d9d9d9 51%, transparent 52%),
+        linear-gradient(-45deg, transparent 48%, #d9d9d9 49%, #d9d9d9 51%, transparent 52%),
+        #f5f7fa;
+    }
+
+    .table-wrap {
+      padding: 8px 10px 10px;
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--font-base);
+      min-width: 1320px;
+      table-layout: fixed;
+    }
+
+    th, td {
+      border: 1px solid var(--line);
+      padding: 6px 6px;
+      text-align: left;
+      vertical-align: middle;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    th {
+      background: #fafbfc;
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .sum-row td {
+      background: #fcfcfc;
+      font-weight: 600;
+    }
+
+    .seq-cell {
+      background: #f5f7fa;
+      color: var(--sub);
+      text-align: center;
+      font-weight: 600;
+    }
+
+    .input-cell {
+      width: 100%;
+      height: 26px;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      padding: 0 6px;
+      background: #fff;
+      font-size: var(--font-base);
+      color: var(--text);
+    }
+
+    .input-cell.readonly {
+      background: #f5f7fa;
+      color: var(--sub);
+    }
+
+    .expand-btn {
+      height: 26px;
+      padding: 0 8px;
+      border: 1px solid #dcdfe6;
+      border-radius: 4px;
+      background: #fff;
+      color: var(--sub);
+      font-size: var(--font-base);
+      cursor: pointer;
+    }
+
+    .expand-btn.active {
+      border-color: var(--primary);
+      color: var(--primary);
+      background: var(--primary-soft);
+    }
+
+    .child-row {
+      display: none;
+    }
+
+    .child-row.open {
+      display: table-row;
+    }
+
+    .child-cell {
+      padding: 0;
+      background: #fbfdff;
+    }
+
+    .detail-panel {
+      padding: 8px;
+    }
+
+    .detail-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+      gap: 12px;
+    }
+
+    .detail-title {
+      font-size: var(--font-base);
+      font-weight: 600;
+    }
+
+    .detail-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .mini-btn {
+      height: 26px;
+      padding: 0 8px;
+      border: 1px solid #dcdfe6;
+      border-radius: 4px;
+      background: #fff;
+      color: var(--sub);
+      font-size: var(--font-base);
+      cursor: pointer;
+    }
+
+    .mini-btn.primary {
+      border-color: var(--primary);
+      color: var(--primary);
+      background: #fff;
+    }
+
+    .sub-table {
+      min-width: 1060px;
+    }
+
+    .photo-cell {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .photo-thumb {
+      width: 38px;
+      height: 38px;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      background:
+        linear-gradient(135deg, #d7d7d7 0%, #bdbdbd 35%, #efefef 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .photo-thumb::before {
+      content: "";
+      position: absolute;
+      left: 6px;
+      top: 9px;
+      width: 23px;
+      height: 14px;
+      border: 1px solid rgba(255,255,255,0.75);
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.8), rgba(255,255,255,0.15)),
+        linear-gradient(135deg, transparent 0 36%, rgba(255,255,255,0.45) 36% 64%, transparent 64% 100%);
+    }
+
+    .upload-link {
+      color: var(--primary);
+      font-size: var(--font-base);
+      cursor: pointer;
+    }
+
+    .col-index { width: 48px; }
+    .col-material { width: 170px; }
+    .col-brand { width: 62px; }
+    .col-model { width: 62px; }
+    .col-weight { width: 82px; }
+    .col-price { width: 86px; }
+    .col-amount { width: 72px; }
+    .col-rate { width: 86px; }
+    .col-stock { width: 96px; }
+    .col-unit { width: 68px; }
+    .col-count { width: 68px; }
+    .col-each { width: 116px; }
+    .col-detail { width: 82px; }
+
+    .sub-col-index { width: 56px; }
+    .sub-col-code { width: 128px; }
+    .sub-col-qty { width: 90px; }
+    .sub-col-ton { width: 72px; }
+    .sub-col-factory { width: 96px; }
+    .sub-col-photo { width: 110px; }
+    .sub-col-loc { width: 90px; }
+
+    .hint {
+      color: var(--hint);
+      font-size: var(--font-base);
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <div class="topbar">
+      <div class="brand">ERP门户</div>
+      <div class="tabs-nav">
+        <div class="home-tab">首页</div>
+        <div class="page-tab">
+          <span>随货同行单编辑</span>
+          <span class="tab-close">×</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="main-layout">
+      <aside class="sidebar">
+        <div class="menu-item active">生产</div>
+      </aside>
+
+      <main class="content">
+        <div class="page">
+          <div class="toolbar">
+            <button class="btn primary">提交审核</button>
+            <button class="btn">暂存</button>
+            <button class="btn">一键下载全部图片</button>
+            <button class="btn">查看进度明细</button>
+            <button class="btn">取消</button>
+          </div>
+
+          <div class="section">
+            <div class="section-title"><span class="arrow">⌄</span>单据信息</div>
+            <div class="form-grid">
+              <div class="field"><label>供应商</label><div class="control readonly">福州金泰和环保科技有限公司</div></div>
+              <div class="field"><label>纸厂</label><div class="control readonly">福州金泰和环保科技有限公司</div></div>
+              <div class="field"><label>入库单号</label><div class="control"></div></div>
+              <div class="field"><label>采购单位</label><div class="control readonly select">江西金旭文化传媒有限公司</div></div>
+
+              <div class="field"><label>入库时间</label><div class="control readonly"></div></div>
+              <div class="field"><label>入库形式</label><div class="control select">公司</div></div>
+              <div class="field"><label>到货日期</label><div class="date-box">2026-04-01</div></div>
+              <div class="field"><label>收货仓库</label><div class="control select hint">请选择</div></div>
+
+              <div class="field"><label>纸厂联系人</label><div class="control readonly">陈</div></div>
+              <div class="field"><label>合同号</label><div class="control readonly">HT202505190001</div></div>
+              <div class="field"><label>随货同行单号</label><div class="control"></div></div>
+              <div class="field"><label>收货地点</label><div class="control readonly">公司原料仓库</div></div>
+
+              <div class="field"><label>采购订单号</label><div class="control readonly">CGDD202505240009</div></div>
+              <div class="field"><label>单据编号</label><div class="control readonly">SZD202508070001-1</div></div>
+              <div class="field"><label>状态</label><div class="control readonly">待提交</div></div>
+              <div class="field"><label>库位</label><div class="control select hint">请选择</div></div>
+
+              <div class="field"><label>备注</label><textarea class="textarea"></textarea></div>
+              <div class="field"><label>需求名称</label><div class="control readonly">集成测试-纸张类</div></div>
+              <div class="field span-2">
+                <label>随货同行单图片</label>
+                <div class="image-preview"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="section-title"><span class="arrow">⌄</span>纸张信息</div>
+            <div class="table-wrap">
+              <table>
+          <thead>
+            <tr>
+              <th class="col-index">序号</th>
+              <th class="col-material">物料名称</th>
+              <th class="col-brand">品牌</th>
+              <th class="col-model">机型</th>
+              <th class="col-weight">*吨数</th>
+              <th class="col-price">采购单价</th>
+              <th class="col-amount">金额</th>
+              <th class="col-rate">转换率</th>
+              <th class="col-stock">*入库数量</th>
+              <th class="col-unit">存储单位</th>
+              <th class="col-count">件数</th>
+              <th class="col-each">每件数量</th>
+              <th class="col-detail">件明细</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="seq-cell">1</td>
+              <td>55克870*1230平板书写</td>
+              <td></td>
+              <td></td>
+              <td><input class="input-cell" value="0.300000" /></td>
+              <td>5000</td>
+              <td>0.000</td>
+              <td>33.982000</td>
+              <td><input class="input-cell" value="10.195" /></td>
+              <td>令</td>
+              <td><input class="input-cell" value="3" /></td>
+              <td><input class="input-cell" placeholder="请输入每件数量" /></td>
+              <td><button class="expand-btn active" data-target="detail-1">收起</button></td>
+            </tr>
+            <tr id="detail-1" class="child-row open">
+              <td colspan="13" class="child-cell">
+                <div class="detail-panel">
+                  <div class="detail-head">
+                    <div class="detail-title">件明细</div>
+                    <div class="detail-actions">
+                      <button class="mini-btn">新增件明细</button>
+                      <button class="mini-btn primary">打印二维码</button>
+                    </div>
+                  </div>
+                  <table class="sub-table">
+                    <thead>
+                      <tr>
+                        <th class="sub-col-index">件序号</th>
+                        <th class="sub-col-code">唯一编号</th>
+                        <th class="sub-col-qty">入库数量</th>
+                        <th class="sub-col-ton">吨数</th>
+                        <th class="sub-col-factory">出厂编码</th>
+                        <th class="sub-col-photo">照片</th>
+                        <th class="sub-col-loc">当前库位</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td class="seq-cell">1</td>
+                        <td><input class="input-cell readonly" value="2026000001" readonly /></td>
+                        <td><input class="input-cell" value="3.398" /></td>
+                        <td><input class="input-cell" value="0.100" /></td>
+                        <td><input class="input-cell" value="FC-001" /></td>
+                        <td>
+                          <div class="photo-cell">
+                            <div class="photo-thumb" title="照片预览"></div>
+                            <span class="upload-link">重新上传</span>
+                          </div>
+                        </td>
+                        <td><input class="input-cell readonly" value="1号库位" readonly /></td>
+                      </tr>
+                      <tr>
+                        <td class="seq-cell">2</td>
+                        <td><input class="input-cell readonly" value="2026000002" readonly /></td>
+                        <td><input class="input-cell" value="3.398" /></td>
+                        <td><input class="input-cell" value="0.100" /></td>
+                        <td><input class="input-cell" value="FC-002" /></td>
+                        <td>
+                          <div class="photo-cell">
+                            <div class="photo-thumb" title="照片预览"></div>
+                            <span class="upload-link">重新上传</span>
+                          </div>
+                        </td>
+                        <td><input class="input-cell readonly" value="1号库位" readonly /></td>
+                      </tr>
+                      <tr>
+                        <td class="seq-cell">3</td>
+                        <td><input class="input-cell readonly" value="2026000003" readonly /></td>
+                        <td><input class="input-cell" value="3.399" /></td>
+                        <td><input class="input-cell" value="0.100" /></td>
+                        <td><input class="input-cell" value="FC-003" /></td>
+                        <td>
+                          <div class="photo-cell">
+                            <span class="upload-link">上传照片</span>
+                          </div>
+                        </td>
+                        <td><input class="input-cell readonly" value="1号库位" readonly /></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </td>
+            </tr>
+
+            <tr>
+              <td class="seq-cell">2</td>
+              <td>70克900*1200双胶纸</td>
+              <td></td>
+              <td></td>
+              <td><input class="input-cell" value="0.420000" /></td>
+              <td>5200</td>
+              <td>0.000</td>
+              <td>32.100000</td>
+              <td><input class="input-cell" value="13.482" /></td>
+              <td>令</td>
+              <td><input class="input-cell" value="4" /></td>
+              <td><input class="input-cell" placeholder="请输入每件数量" /></td>
+              <td><button class="expand-btn" data-target="detail-2">展开</button></td>
+            </tr>
+            <tr id="detail-2" class="child-row">
+              <td colspan="13" class="child-cell">
+                <div class="detail-panel">
+                  <div class="detail-head">
+                    <div class="detail-title">件明细</div>
+                    <div class="detail-actions">
+                      <button class="mini-btn">新增件明细</button>
+                      <button class="mini-btn primary">打印二维码</button>
+                    </div>
+                  </div>
+                  <table class="sub-table">
+                    <thead>
+                      <tr>
+                        <th class="sub-col-index">件序号</th>
+                        <th class="sub-col-code">唯一编号</th>
+                        <th class="sub-col-qty">入库数量</th>
+                        <th class="sub-col-ton">吨数</th>
+                        <th class="sub-col-factory">出厂编码</th>
+                        <th class="sub-col-photo">照片</th>
+                        <th class="sub-col-loc">当前库位</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td class="seq-cell">1</td>
+                        <td><input class="input-cell readonly" value="2026000101" readonly /></td>
+                        <td><input class="input-cell" value="3.370" /></td>
+                        <td><input class="input-cell" value="0.105" /></td>
+                        <td><input class="input-cell" value="FC-101" /></td>
+                        <td><div class="photo-cell"><div class="photo-thumb"></div><span class="upload-link">重新上传</span></div></td>
+                        <td><input class="input-cell readonly" value="2号库位" readonly /></td>
+                      </tr>
+                      <tr>
+                        <td class="seq-cell">2</td>
+                        <td><input class="input-cell readonly" value="2026000102" readonly /></td>
+                        <td><input class="input-cell" value="3.370" /></td>
+                        <td><input class="input-cell" value="0.105" /></td>
+                        <td><input class="input-cell" value="FC-102" /></td>
+                        <td><div class="photo-cell"><div class="photo-thumb"></div><span class="upload-link">重新上传</span></div></td>
+                        <td><input class="input-cell readonly" value="2号库位" readonly /></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </td>
+            </tr>
+
+            <tr class="sum-row">
+              <td>合计</td>
+              <td colspan="5"></td>
+              <td>0.000</td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+          </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    const buttons = document.querySelectorAll('.expand-btn');
+
+    function collapseAll() {
+      document.querySelectorAll('.child-row').forEach((row) => row.classList.remove('open'));
+      buttons.forEach((btn) => {
+        btn.classList.remove('active');
+        btn.textContent = '展开';
+      });
+    }
+
+    buttons.forEach((button) => {
+      button.addEventListener('click', () => {
+        const targetId = button.getAttribute('data-target');
+        const target = document.getElementById(targetId);
+        const isOpen = target.classList.contains('open');
+
+        collapseAll();
+
+        if (!isOpen) {
+          target.classList.add('open');
+          button.classList.add('active');
+          button.textContent = '收起';
+        }
+      });
+    });
+  </script>
+</body>
+</html>
