@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>随货同行单-手机端-详情加件明细</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+      background: #f2f3f5;
+      color: #1d2129;
+    }
+    .phone {
+      width: 390px;
+      margin: 24px auto;
+      border: 1px solid #dcdfe6;
+      border-radius: 24px;
+      overflow: hidden;
+      background: #f2f3f5;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    }
+    .header {
+      background: linear-gradient(180deg, #3975c6 0%, #4a8ee8 100%);
+      color: #fff;
+      padding: 18px 16px 62px;
+      position: relative;
+    }
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 15px;
+      margin-bottom: 10px;
+    }
+    .nav-title {
+      font-size: 17px;
+      font-weight: 700;
+    }
+    .status-card {
+      position: absolute;
+      left: 16px;
+      right: 16px;
+      bottom: -28px;
+      background: #fff;
+      border-radius: 14px;
+      padding: 12px 14px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .status-main {
+      font-size: 16px;
+      font-weight: 700;
+      color: #1979ff;
+    }
+    .status-sub {
+      font-size: 12px;
+      color: #86909c;
+      margin-top: 4px;
+    }
+    .status-link {
+      color: #1979ff;
+      font-size: 13px;
+      white-space: nowrap;
+    }
+    .content {
+      padding: 40px 12px 88px;
+    }
+    .section {
+      margin-bottom: 12px;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #fff;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+    }
+    .section-title {
+      padding: 10px 12px;
+      background: #e8f5ff;
+      color: #3975c6;
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .block {
+      padding: 12px;
+      border-top: 1px solid #f2f3f5;
+    }
+    .row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 7px 0;
+      font-size: 14px;
+    }
+    .label {
+      min-width: 92px;
+      color: #86909c;
+    }
+    .value {
+      flex: 1;
+      text-align: right;
+      color: #1d2129;
+      word-break: break-all;
+    }
+    .value.blue {
+      color: #1979ff;
+      font-weight: 600;
+    }
+    .gallery {
+      border-top: 1px solid #f2f3f5;
+      padding: 12px;
+    }
+    .gallery-card {
+      border: 1px solid #edf0f5;
+      border-radius: 10px;
+      padding: 10px;
+      background: #fbfcfe;
+    }
+    .preview {
+      height: 88px;
+      border-radius: 8px;
+      background:
+        linear-gradient(0deg, rgba(255,255,255,0.55), rgba(255,255,255,0.55)),
+        linear-gradient(135deg, #d8e7ff 0%, #b6d1ff 100%);
+      border: 1px solid #d9e6fb;
+      position: relative;
+      overflow: hidden;
+    }
+    .preview::before {
+      content: "";
+      position: absolute;
+      left: 12px;
+      top: 14px;
+      width: 126px;
+      height: 60px;
+      border-radius: 6px;
+      background:
+        repeating-linear-gradient(180deg, #e8eef8 0 5px, #cfdcf0 5px 6px);
+      border: 1px solid #c6d5ec;
+    }
+    .accordion {
+      border-top: 1px solid #f2f3f5;
+    }
+    .accordion-toggle {
+      width: 100%;
+      padding: 12px;
+      border: 0;
+      background: #fbfcfe;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 14px;
+      font-weight: 700;
+      color: #1d2129;
+      cursor: pointer;
+    }
+    .accordion-toggle-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .toggle-icon {
+      width: 16px;
+      text-align: center;
+      color: #86909c;
+      font-size: 12px;
+    }
+    .count-tag {
+      font-size: 12px;
+      color: #3975c6;
+      background: #edf5ff;
+      border-radius: 999px;
+      padding: 2px 8px;
+    }
+    .accordion.collapsed .accordion-body {
+      display: none;
+    }
+    .piece-card {
+      margin: 0 12px 12px;
+      padding: 12px;
+      border-radius: 10px;
+      background: #fafbfc;
+      border: 1px solid #edf0f5;
+    }
+    .piece-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+    .piece-title {
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .piece-thumb {
+      width: 44px;
+      height: 44px;
+      border: 1px solid #d9e6fb;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #d7d7d7 0%, #efefef 100%);
+    }
+    .piece-media {
+      display: flex;
+      justify-content: flex-end;
+      padding-top: 6px;
+    }
+    .footer {
+      position: sticky;
+      bottom: 0;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
+      background: #fff;
+      border-top: 1px solid #e5e6eb;
+    }
+    .footer-btn {
+      height: 42px;
+      border-radius: 22px;
+      border: 1px solid #cfd6e4;
+      background: #fff;
+      color: #4e5969;
+      font-size: 14px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .footer-btn.primary {
+      background: #1979ff;
+      border-color: #1979ff;
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <div class="phone">
+    <div class="header">
+      <div class="nav">
+        <span>←</span>
+        <span class="nav-title">随货同行单</span>
+        <span>⋯</span>
+      </div>
+      <div class="status-card">
+        <div>
+          <div class="status-main">已处理（待审核）</div>
+        </div>
+        <div class="status-link">进度</div>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="section">
+        <div class="section-title">随货同行单图片</div>
+        <div class="gallery">
+          <div class="gallery-card">
+            <div class="preview"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">原料明细（1）</div>
+        <div class="block">
+          <div class="row"><div class="label">卷料名称：</div><div class="value">100克1600*1280静电双胶307</div></div>
+          <div class="row"><div class="label">纸型：</div><div class="value">-</div></div>
+          <div class="row"><div class="label">机型：</div><div class="value">-</div></div>
+          <div class="row"><div class="label">采购单价：</div><div class="value">20</div></div>
+          <div class="row"><div class="label">总量：</div><div class="value">20</div></div>
+          <div class="row"><div class="label">调拨吨数：</div><div class="value blue">30</div></div>
+          <div class="row"><div class="label">每件数量：</div><div class="value">60</div></div>
+          <div class="row"><div class="label">件数：</div><div class="value">2</div></div>
+          <div class="row"><div class="label">中转数量：</div><div class="value">-</div></div>
+          <div class="row"><div class="label">存储单位：</div><div class="value">令</div></div>
+        </div>
+
+        <div class="accordion" id="piece-accordion">
+          <button class="accordion-toggle" type="button">
+            <span class="accordion-toggle-left">
+              <span class="toggle-icon">▼</span>
+              <span>件明细</span>
+            </span>
+            <span class="count-tag">2件</span>
+          </button>
+          <div class="accordion-body">
+            <div class="piece-card">
+              <div class="row"><div class="label">件序号：</div><div class="value">1</div></div>
+              <div class="row"><div class="label">唯一编号：</div><div class="value">SH20250403000101</div></div>
+              <div class="row"><div class="label">入库数量：</div><div class="value">60</div></div>
+              <div class="row"><div class="label">吨数：</div><div class="value">15</div></div>
+              <div class="row"><div class="label">出厂编码：</div><div class="value">FC-001</div></div>
+              <div class="row"><div class="label">当前库位：</div><div class="value">WWYLC-01</div></div>
+              <div class="piece-media"><div class="piece-thumb"></div></div>
+            </div>
+
+            <div class="piece-card">
+              <div class="row"><div class="label">件序号：</div><div class="value">2</div></div>
+              <div class="row"><div class="label">唯一编号：</div><div class="value">SH20250403000102</div></div>
+              <div class="row"><div class="label">入库数量：</div><div class="value">60</div></div>
+              <div class="row"><div class="label">吨数：</div><div class="value">15</div></div>
+              <div class="row"><div class="label">出厂编码：</div><div class="value">FC-002</div></div>
+              <div class="row"><div class="label">当前库位：</div><div class="value">WWYLC-01-B</div></div>
+              <div class="piece-media"><div class="piece-thumb"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">单据信息</div>
+        <div class="block">
+          <div class="row"><div class="label">供应单位：</div><div class="value">福建省沙县鑫业湾南纸厂供应站</div></div>
+          <div class="row"><div class="label">纸厂：</div><div class="value">福建省沙县鑫业湾南纸厂供应站</div></div>
+          <div class="row"><div class="label">入库单号：</div><div class="value">-</div></div>
+          <div class="row"><div class="label">采购公司：</div><div class="value">江西晨旭文化发展有限公司</div></div>
+          <div class="row"><div class="label">入库时间：</div><div class="value">2026-04-03 15:29</div></div>
+          <div class="row"><div class="label">入库形式：</div><div class="value">公司</div></div>
+          <div class="row"><div class="label">到货日期：</div><div class="value">2026-04-03</div></div>
+          <div class="row"><div class="label">收货仓库：</div><div class="value">万纬候战仓</div></div>
+          <div class="row"><div class="label">纸厂联系人：</div><div class="value">李文斌</div></div>
+          <div class="row"><div class="label">合同号：</div><div class="value">HT202503100002</div></div>
+          <div class="row"><div class="label">随货同行单号：</div><div class="value">12356</div></div>
+          <div class="row"><div class="label">收货地点：</div><div class="value">万纬候战仓</div></div>
+          <div class="row"><div class="label">备注：</div><div class="value">抽检</div></div>
+          <div class="row"><div class="label">提交时间：</div><div class="value">2026-04-03 15:29</div></div>
+          <div class="row"><div class="label">物料分类：</div><div class="value">双胶纸</div></div>
+          <div class="row"><div class="label">单据编号：</div><div class="value">SZD202604030001-1</div></div>
+          <div class="row"><div class="label">采购订单号：</div><div class="value">CGDD202503120001</div></div>
+          <div class="row"><div class="label">库位：</div><div class="value">WWYLC-001</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <div class="footer-btn">返单</div>
+      <div class="footer-btn primary">通过</div>
+    </div>
+  </div>
+
+  <script>
+    const sections = document.querySelectorAll('.section');
+    const materialBlock = sections[1]?.querySelector('.block');
+
+    if (materialBlock) {
+      materialBlock.innerHTML = `
+        <div class="row"><div class="label">物料名称：</div><div class="value">100克1600*1280静普双胶307</div></div>
+        <div class="row"><div class="label">品牌：</div><div class="value">-</div></div>
+        <div class="row"><div class="label">机型：</div><div class="value">-</div></div>
+        <div class="row"><div class="label">吨数：</div><div class="value">2</div></div>
+        <div class="row"><div class="label">采购单价：</div><div class="value">2</div></div>
+        <div class="row"><div class="label">金额：</div><div class="value">20</div></div>
+        <div class="row"><div class="label">转换率：</div><div class="value">30.000000</div></div>
+        <div class="row"><div class="label">调拨数量：</div><div class="value">60</div></div>
+        <div class="row"><div class="label">件数：</div><div class="value">-</div></div>
+        <div class="row"><div class="label">每件数量：</div><div class="value">-</div></div>
+        <div class="row"><div class="label">存储数量：</div><div class="value">卷</div></div>
+      `;
+    }
+
+    const accordion = document.getElementById('piece-accordion');
+    const toggle = accordion.querySelector('.accordion-toggle');
+    const icon = accordion.querySelector('.toggle-icon');
+
+    toggle.addEventListener('click', () => {
+      const collapsed = accordion.classList.toggle('collapsed');
+      icon.textContent = collapsed ? '▶' : '▼';
+    });
+  </script>
+</body>
+</html>

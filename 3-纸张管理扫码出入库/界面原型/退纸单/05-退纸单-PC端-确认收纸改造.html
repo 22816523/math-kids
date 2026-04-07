@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>退纸单-PC端-确认收纸改造</title>
+  <style>
+    * { box-sizing: border-box; }
+    :root {
+      --bg: #f5f7fa;
+      --panel: #ffffff;
+      --line: #e4e7ed;
+      --line-soft: #ebeef5;
+      --text: #303133;
+      --sub: #606266;
+      --hint: #909399;
+      --primary: #409eff;
+      --primary-soft: #ecf5ff;
+      --danger: #f56c6c;
+      --font-base: 12px;
+      --font-title: 14px;
+    }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: var(--font-base);
+    }
+    .app-shell { min-width: 1440px; }
+    .topbar {
+      height: 56px;
+      display: flex;
+      align-items: flex-end;
+      gap: 16px;
+      padding: 0 16px;
+      background: #fff;
+      border-bottom: 1px solid var(--line);
+    }
+    .brand {
+      align-self: center;
+      font-size: var(--font-title);
+      font-weight: 600;
+    }
+    .tabs-nav {
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+      margin-bottom: -1px;
+    }
+    .home-tab,
+    .page-tab {
+      height: 34px;
+      padding: 0 16px;
+      border: 1px solid var(--line);
+      border-radius: 4px 4px 0 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+    }
+    .home-tab {
+      background: #f7f8fa;
+      color: var(--sub);
+    }
+    .page-tab {
+      gap: 10px;
+      background: #fff;
+      border-bottom-color: #fff;
+      font-weight: 500;
+    }
+    .tab-close { color: var(--hint); }
+    .main-layout { display: flex; min-height: calc(100vh - 56px); }
+    .sidebar {
+      width: 120px;
+      padding: 10px 0;
+      background: #fff;
+      border-right: 1px solid var(--line);
+    }
+    .menu-item {
+      height: 34px;
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+    }
+    .menu-item.active {
+      color: var(--primary);
+      background: var(--primary-soft);
+      border-right: 2px solid var(--primary);
+    }
+    .content {
+      flex: 1;
+      padding: 0 12px 20px;
+    }
+    .page {
+      border-top: 1px solid var(--line);
+      padding-top: 10px;
+    }
+    .toolbar {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+    .btn {
+      height: 30px;
+      padding: 0 16px;
+      border: 1px solid #dcdfe6;
+      border-radius: 4px;
+      background: #fff;
+      color: var(--sub);
+      cursor: pointer;
+      font-size: var(--font-base);
+    }
+    .btn.primary {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+    }
+    .btn.danger {
+      background: #fff0f0;
+      border-color: #f3c5c5;
+      color: var(--danger);
+    }
+    .btn:disabled {
+      color: var(--hint);
+      background: #f5f7fa;
+      border-color: var(--line);
+      cursor: not-allowed;
+    }
+    .section {
+      margin-bottom: 10px;
+      background: var(--panel);
+      border: 1px solid var(--line-soft);
+    }
+    .section-title {
+      height: 36px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 10px;
+      border-bottom: 1px solid var(--line-soft);
+      background: #fafbfc;
+      font-size: var(--font-title);
+      font-weight: 600;
+    }
+    .arrow {
+      color: var(--hint);
+      font-size: 12px;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px 18px;
+      padding: 12px 10px 14px;
+    }
+    .field {
+      display: grid;
+      grid-template-columns: 92px 1fr;
+      gap: 8px;
+      align-items: start;
+    }
+    .field label {
+      line-height: 28px;
+      text-align: right;
+    }
+    .readonly,
+    .control {
+      width: 100%;
+      min-height: 28px;
+      padding: 6px 8px;
+      display: flex;
+      align-items: center;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      font-size: var(--font-base);
+    }
+    .readonly {
+      background: #f5f7fa;
+      color: var(--sub);
+    }
+    .control {
+      background: #fff;
+      color: var(--text);
+    }
+    .date-control {
+      width: 100%;
+      height: 28px;
+      padding: 0 8px;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      font-size: var(--font-base);
+    }
+    .upload-box {
+      width: 118px;
+      height: 118px;
+      border: 1px dashed #dcdfe6;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #fafafa;
+      color: var(--hint);
+      font-size: 40px;
+      line-height: 1;
+    }
+    .upload-tip {
+      margin-top: 6px;
+      color: var(--hint);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+    }
+    th, td {
+      border: 1px solid var(--line-soft);
+      padding: 8px 10px;
+      font-size: var(--font-base);
+      vertical-align: middle;
+    }
+    th {
+      background: #fafafa;
+      font-weight: 600;
+    }
+    .accordion-item + .accordion-item {
+      border-top: 1px solid var(--line-soft);
+    }
+    .accordion-header {
+      width: 100%;
+      height: 40px;
+      padding: 0 10px;
+      border: 0;
+      border-bottom: 1px solid var(--line-soft);
+      background: #fcfcfd;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+    }
+    .accordion-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 600;
+    }
+    .toggle-icon {
+      width: 18px;
+      flex: 0 0 18px;
+      text-align: center;
+      color: var(--hint);
+    }
+    .metric {
+      color: var(--sub);
+      white-space: nowrap;
+    }
+    .metric strong {
+      margin-left: 4px;
+      color: var(--primary);
+    }
+    .accordion-item.collapsed .accordion-body {
+      display: none;
+    }
+    .thumb {
+      width: 38px;
+      height: 38px;
+      margin: 0 auto;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      background: linear-gradient(135deg, #d7d7d7 0%, #efefef 100%);
+    }
+    .status {
+      color: var(--hint);
+    }
+    .status.done {
+      color: var(--primary);
+    }
+    .review-cell {
+      text-align: center;
+    }
+    .review-btn {
+      min-width: 74px;
+      height: 26px;
+      padding: 0 10px;
+      border: 1px solid #dcdfe6;
+      border-radius: 4px;
+      background: #fff;
+      color: var(--primary);
+      cursor: pointer;
+      font-size: var(--font-base);
+    }
+    .review-btn.done {
+      color: var(--danger);
+      border-color: #f3c5c5;
+      background: #fff0f0;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <div class="topbar">
+      <div class="brand">ERP门户</div>
+      <div class="tabs-nav">
+        <div class="home-tab">首页</div>
+        <div class="page-tab"><span>退纸单仓管确认收纸</span><span class="tab-close">×</span></div>
+      </div>
+    </div>
+    <div class="main-layout">
+      <aside class="sidebar">
+        <div class="menu-item active">生产</div>
+      </aside>
+      <main class="content">
+        <div class="page">
+          <div class="toolbar">
+            <button class="btn primary" id="submit-btn" disabled>提交</button>
+            <button class="btn danger">返单</button>
+            <button class="btn">查看进度明细</button>
+            <button class="btn">取消</button>
+          </div>
+
+          <section class="section">
+            <div class="section-title"><span class="arrow">▼</span><span>单据信息</span></div>
+            <div class="form-grid">
+              <div class="field"><label>单据编号</label><div class="readonly">RP202502260001-2</div></div>
+              <div class="field"><label>状态</label><div class="readonly">印厂已确认</div></div>
+              <div class="field"><label>提交时间</label><div class="readonly">2025-02-26 15:50</div></div>
+              <div class="field"><label>印厂</label><div class="readonly">十二厂</div></div>
+              <div class="field"><label>调出地点</label><div class="readonly">十二厂仓库</div></div>
+              <div class="field"><label>调入地点</label><div class="readonly">宏达仓库</div></div>
+              <div class="field"><label>调入库位</label><div class="readonly">HD-RK-01-01</div></div>
+              <div class="field"><label>物料分类</label><div class="readonly">纸张</div></div>
+              <div class="field"><label>备注</label><div class="readonly">777</div></div>
+              <div class="field"><label>附件</label><div class="readonly">-</div></div>
+            </div>
+          </section>
+
+          <section class="section">
+            <div class="section-title"><span class="arrow">▼</span><span>明细</span></div>
+            <table>
+              <thead>
+                <tr>
+                  <th style="width:70px;">序号</th>
+                  <th>物料名称</th>
+                  <th style="width:120px;">库存</th>
+                  <th style="width:120px;">件数</th>
+                  <th style="width:140px;">调拨吨数</th>
+                  <th style="width:140px;">调拨数量</th>
+                  <th style="width:110px;">存储单位</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>1</td>
+                  <td>80克880*1230平板双胶纸牡丹</td>
+                  <td>-</td>
+                  <td>2</td>
+                  <td>-</td>
+                  <td>3.000</td>
+                  <td>令</td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+
+          <section class="section">
+            <div class="section-title"><span class="arrow">▼</span><span>件明细</span></div>
+
+            <div class="accordion-item">
+              <button class="accordion-header" type="button">
+                <span class="accordion-title"><span class="toggle-icon">▼</span><span>80克880*1230平板双胶纸牡丹</span></span>
+                <span class="metric">件数<strong>2</strong></span>
+              </button>
+              <div class="accordion-body">
+                <table>
+                  <thead>
+                    <tr>
+                      <th style="width:70px;">件序号</th>
+                      <th style="width:160px;">唯一编号</th>
+                      <th style="width:110px;">调拨数量</th>
+                      <th style="width:90px;">吨数</th>
+                      <th style="width:120px;">调入仓库</th>
+                      <th style="width:100px;">图片</th>
+                      <th style="width:120px;">调入库位</th>
+                      <th style="width:100px;">收纸状态</th>
+                      <th style="width:120px;">收纸操作</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>1</td>
+                      <td>RP-20250226-001</td>
+                      <td>1.500</td>
+                      <td>0.750</td>
+                      <td>宏达仓库</td>
+                      <td><div class="thumb"></div></td>
+                      <td>HD-RK-01-01</td>
+                      <td><span class="status">待收纸</span></td>
+                      <td class="review-cell"><button class="review-btn" data-review>确认收纸</button></td>
+                    </tr>
+                    <tr>
+                      <td>2</td>
+                      <td>RP-20250226-002</td>
+                      <td>1.500</td>
+                      <td>0.750</td>
+                      <td>宏达仓库</td>
+                      <td><div class="thumb"></div></td>
+                      <td>HD-RK-01-02</td>
+                      <td><span class="status">待收纸</span></td>
+                      <td class="review-cell"><button class="review-btn" data-review>确认收纸</button></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </section>
+
+          <section class="section">
+            <div class="section-title"><span class="arrow">▼</span><span>确认（当前操作：仓管确认收纸）</span></div>
+            <div class="form-grid">
+              <div class="field"><label>纸张到库时间</label><input class="date-control" type="date" value="2026-04-03" /></div>
+              <div class="field" style="grid-column: span 2;">
+                <label>纸张到库图片</label>
+                <div>
+                  <div class="upload-box">+</div>
+                  <div class="upload-tip">提示：请上传图片格式，每张不超过15M</div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    const accordionItems = document.querySelectorAll('.accordion-item');
+    const submitButton = document.getElementById('submit-btn');
+
+    accordionItems.forEach((item) => {
+      const header = item.querySelector('.accordion-header');
+      const icon = item.querySelector('.toggle-icon');
+      header.addEventListener('click', () => {
+        const isCollapsed = item.classList.contains('collapsed');
+        accordionItems.forEach((other) => {
+          other.classList.add('collapsed');
+          other.querySelector('.toggle-icon').textContent = '▶';
+        });
+        if (isCollapsed) {
+          item.classList.remove('collapsed');
+          icon.textContent = '▼';
+        }
+      });
+    });
+
+    function refreshSubmitState() {
+      const allDone = Array.from(document.querySelectorAll('.status')).every((node) => node.classList.contains('done'));
+      submitButton.disabled = !allDone;
+    }
+
+    document.querySelectorAll('[data-review]').forEach((button) => {
+      button.addEventListener('click', () => {
+        const row = button.closest('tr');
+        const status = row.querySelector('.status');
+        const done = status.classList.contains('done');
+        status.classList.toggle('done', !done);
+        status.textContent = done ? '待收纸' : '已收纸';
+        button.classList.toggle('done', !done);
+        button.textContent = done ? '确认收纸' : '取消收纸';
+        refreshSubmitState();
+      });
+    });
+
+    refreshSubmitState();
+  </script>
+</body>
+</html>

@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>退纸单-PC端-确认退纸改造</title>
+  <style>
+    * { box-sizing: border-box; }
+    :root {
+      --bg: #f5f7fa;
+      --panel: #ffffff;
+      --line: #e4e7ed;
+      --line-soft: #ebeef5;
+      --text: #303133;
+      --sub: #606266;
+      --hint: #909399;
+      --primary: #409eff;
+      --primary-soft: #ecf5ff;
+      --danger: #f56c6c;
+      --font-base: 12px;
+      --font-title: 14px;
+    }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: var(--font-base);
+    }
+    .app-shell { min-width: 1440px; }
+    .topbar {
+      height: 56px;
+      display: flex;
+      align-items: flex-end;
+      gap: 16px;
+      padding: 0 16px;
+      background: #fff;
+      border-bottom: 1px solid var(--line);
+    }
+    .brand {
+      align-self: center;
+      font-size: var(--font-title);
+      font-weight: 600;
+    }
+    .tabs-nav {
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+      margin-bottom: -1px;
+    }
+    .home-tab,
+    .page-tab {
+      height: 34px;
+      padding: 0 16px;
+      border: 1px solid var(--line);
+      border-radius: 4px 4px 0 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+    }
+    .home-tab {
+      background: #f7f8fa;
+      color: var(--sub);
+    }
+    .page-tab {
+      gap: 10px;
+      background: #fff;
+      border-bottom-color: #fff;
+      font-weight: 500;
+    }
+    .tab-close { color: var(--hint); }
+    .main-layout { display: flex; min-height: calc(100vh - 56px); }
+    .sidebar {
+      width: 120px;
+      padding: 10px 0;
+      background: #fff;
+      border-right: 1px solid var(--line);
+    }
+    .menu-item {
+      height: 34px;
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+    }
+    .menu-item.active {
+      color: var(--primary);
+      background: var(--primary-soft);
+      border-right: 2px solid var(--primary);
+    }
+    .content {
+      flex: 1;
+      padding: 0 12px 20px;
+    }
+    .page {
+      border-top: 1px solid var(--line);
+      padding-top: 10px;
+    }
+    .toolbar {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+    .btn {
+      height: 30px;
+      padding: 0 16px;
+      border: 1px solid #dcdfe6;
+      border-radius: 4px;
+      background: #fff;
+      color: var(--sub);
+      cursor: pointer;
+      font-size: var(--font-base);
+    }
+    .btn.primary {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+    }
+    .btn.danger {
+      background: #fff0f0;
+      border-color: #f3c5c5;
+      color: var(--danger);
+    }
+    .btn:disabled {
+      color: var(--hint);
+      background: #f5f7fa;
+      border-color: var(--line);
+      cursor: not-allowed;
+    }
+    .section {
+      margin-bottom: 10px;
+      background: var(--panel);
+      border: 1px solid var(--line-soft);
+    }
+    .section-title {
+      height: 36px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 10px;
+      border-bottom: 1px solid var(--line-soft);
+      background: #fafbfc;
+      font-size: var(--font-title);
+      font-weight: 600;
+    }
+    .arrow {
+      color: var(--hint);
+      font-size: 12px;
+    }
+    .sub-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 34px;
+      padding: 0 10px;
+      color: var(--sub);
+      font-weight: 600;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px 18px;
+      padding: 12px 10px 14px;
+    }
+    .field {
+      display: grid;
+      grid-template-columns: 92px 1fr;
+      gap: 8px;
+      align-items: start;
+    }
+    .field label {
+      line-height: 28px;
+      text-align: right;
+    }
+    .readonly,
+    .control,
+    .select-control select,
+    .cell-input,
+    .cell-select {
+      width: 100%;
+      min-height: 28px;
+      padding: 0 8px;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      font-size: var(--font-base);
+      color: var(--text);
+      background: #fff;
+    }
+    .readonly {
+      display: flex;
+      align-items: center;
+      background: #f5f7fa;
+      color: var(--sub);
+    }
+    .control {
+      height: 28px;
+    }
+    .select-control select,
+    .cell-select {
+      height: 28px;
+    }
+    .field.textarea {
+      grid-column: span 2;
+    }
+    .field.textarea .control {
+      min-height: 60px;
+      padding: 6px 8px;
+      resize: none;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+    }
+    th, td {
+      border: 1px solid var(--line-soft);
+      padding: 8px 10px;
+      font-size: var(--font-base);
+      vertical-align: middle;
+    }
+    th {
+      background: #fafafa;
+      font-weight: 600;
+    }
+    .summary-input {
+      width: 100%;
+      height: 28px;
+      padding: 0 8px;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      background: #fff;
+      font-size: var(--font-base);
+    }
+    .summary-input.readonly {
+      background: #f5f7fa;
+      color: var(--sub);
+    }
+    .accordion-item + .accordion-item {
+      border-top: 1px solid var(--line-soft);
+    }
+    .accordion-header {
+      width: 100%;
+      height: 40px;
+      padding: 0 10px;
+      border: 0;
+      border-bottom: 1px solid var(--line-soft);
+      background: #fcfcfd;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+    }
+    .accordion-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 600;
+    }
+    .toggle-icon {
+      width: 18px;
+      flex: 0 0 18px;
+      text-align: center;
+      color: var(--hint);
+    }
+    .group-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .metric {
+      color: var(--sub);
+      white-space: nowrap;
+    }
+    .metric strong {
+      margin-left: 4px;
+      color: var(--primary);
+    }
+    .mini-btn {
+      height: 28px;
+      padding: 0 10px;
+      border: 1px solid #dcdfe6;
+      border-radius: 4px;
+      background: #fff;
+      color: var(--sub);
+      cursor: pointer;
+      font-size: var(--font-base);
+    }
+    .mini-btn.primary {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+    }
+    .mini-btn:disabled {
+      color: var(--hint);
+      background: #f5f7fa;
+      border-color: var(--line);
+      cursor: not-allowed;
+    }
+    .accordion-item.collapsed .accordion-body {
+      display: none;
+    }
+    .thumb-list {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .thumb-item {
+      position: relative;
+      width: 38px;
+      height: 38px;
+      flex: 0 0 38px;
+    }
+    .thumb {
+      width: 38px;
+      height: 38px;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      background: linear-gradient(135deg, #d7d7d7 0%, #efefef 100%);
+    }
+    .thumb-remove {
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      width: 14px;
+      height: 14px;
+      border: 1px solid #c8c8c8;
+      border-radius: 50%;
+      background: #fff;
+      color: #8a8a8a;
+      font-size: 10px;
+      line-height: 12px;
+      text-align: center;
+      cursor: pointer;
+    }
+    .upload-link {
+      color: var(--primary);
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .row-delete {
+      color: var(--danger);
+      cursor: pointer;
+      white-space: nowrap;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <div class="topbar">
+      <div class="brand">ERP门户</div>
+      <div class="tabs-nav">
+        <div class="home-tab">首页</div>
+        <div class="page-tab"><span>退纸单确认退纸</span><span class="tab-close">×</span></div>
+      </div>
+    </div>
+    <div class="main-layout">
+      <aside class="sidebar">
+        <div class="menu-item active">生产</div>
+      </aside>
+      <main class="content">
+        <div class="page">
+          <div class="toolbar">
+            <button class="btn primary" id="submit-btn" disabled>提交</button>
+            <button class="btn danger">返单</button>
+            <button class="btn">查看进度明细</button>
+            <button class="btn">取消</button>
+          </div>
+
+          <section class="section">
+            <div class="section-title"><span class="arrow">▼</span><span>单据信息（当前操作：印厂确认退纸）</span></div>
+            <div class="form-grid">
+              <div class="field"><label>单据编号</label><div class="readonly">RP202602050002</div></div>
+              <div class="field"><label>状态</label><div class="readonly">待确认</div></div>
+              <div class="field"><label>提交时间</label><div class="readonly">2026-02-05 14:33</div></div>
+              <div class="field"><label>印厂</label><div class="readonly">十二厂</div></div>
+              <div class="field"><label>调出地点</label><div class="readonly">十二厂仓库</div></div>
+              <div class="field"><label>调入地点</label><div class="readonly">白水湖仓库</div></div>
+              <div class="field"><label>调入库位</label><div class="select-control"><select id="document-location"><option value="BSH-RK-01-01" selected>BSH-RK-01-01</option><option value="BSH-RK-01-02">BSH-RK-01-02</option><option value="BSH-RK-02-01">BSH-RK-02-01</option></select></div></div>
+              <div class="field"><label>物料分类</label><div class="readonly">纸张</div></div>
+              <div class="field textarea"><label>备注</label><textarea class="control">退纸件明细由本环节维护形成。</textarea></div>
+              <div class="field"><label>附件</label><div class="readonly">-</div></div>
+            </div>
+          </section>
+
+          <section class="section">
+            <div class="section-title"><span class="arrow">▼</span><span>明细</span></div>
+            <table>
+              <thead>
+                <tr>
+                  <th style="width:70px;">序号</th>
+                  <th>物料名称</th>
+                  <th style="width:120px;">件数</th>
+                  <th style="width:140px;">调拨吨数</th>
+                  <th style="width:140px;">调拨数量</th>
+                  <th style="width:110px;">存储单位</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>1</td>
+                  <td>150克889*1240平板铜版纸</td>
+                  <td><input class="summary-input readonly" value="2" readonly /></td>
+                  <td><input class="summary-input readonly" value="2.350" readonly /></td>
+                  <td><input class="summary-input readonly" value="28.423" readonly /></td>
+                  <td>令</td>
+                </tr>
+                <tr>
+                  <td>2</td>
+                  <td>55克787*1092平板书写纸晨鸣</td>
+                  <td><input class="summary-input readonly" value="3" readonly /></td>
+                  <td><input class="summary-input readonly" value="23.000" readonly /></td>
+                  <td><input class="summary-input readonly" value="1000.000" readonly /></td>
+                  <td>令</td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+
+          <section class="section">
+            <div class="section-title"><span class="arrow">▼</span><span>件明细</span></div>
+
+            <div class="accordion-item">
+              <button class="accordion-header" type="button">
+                <span class="accordion-title"><span class="toggle-icon">▼</span><span>150克889*1240平板铜版纸</span></span>
+                <span class="group-actions">
+                  <span class="metric">应退<strong>2</strong> / 已录<strong data-count="material-1">1</strong></span>
+                  <button class="mini-btn primary" type="button" data-add-row="material-1">新增件明细</button>
+                </span>
+              </button>
+              <div class="accordion-body">
+                <table>
+                  <thead>
+                    <tr>
+                      <th style="width:70px;">件序号</th>
+                      <th style="width:160px;">唯一编号</th>
+                      <th style="width:110px;">调拨数量</th>
+                      <th style="width:90px;">吨数</th>
+                      <th style="width:120px;">调入仓库</th>
+                      <th style="width:120px;">图片</th>
+                      <th style="width:120px;">调入库位</th>
+                      <th style="width:70px;">操作</th>
+                    </tr>
+                  </thead>
+                  <tbody id="material-1" data-expected-count="2">
+                    <tr>
+                      <td><input class="cell-input" value="1" readonly /></td>
+                      <td><input class="cell-input" value="TP-20260205-001" placeholder="请输入唯一编号" data-code-field /></td>
+                      <td><input class="cell-input" value="14.211" readonly data-qty-field /></td>
+                      <td><input class="cell-input" value="1.175" readonly data-ton-field /></td>
+                      <td><input class="cell-input" value="白水湖仓库" readonly data-warehouse-field /></td>
+                      <td>
+                        <div class="thumb-list">
+                          <div class="thumb-item">
+                            <div class="thumb"></div>
+                            <div class="thumb-remove" data-remove-photo>×</div>
+                          </div>
+                          <span class="upload-link">继续上传</span>
+                        </div>
+                      </td>
+                      <td>
+                        <select class="cell-select" data-location>
+                          <option value="BSH-RK-01-01" selected>BSH-RK-01-01</option>
+                          <option value="BSH-RK-01-02">BSH-RK-01-02</option>
+                          <option value="BSH-RK-02-01">BSH-RK-02-01</option>
+                        </select>
+                      </td>
+                      <td><span class="row-delete" data-delete-row>删除</span></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="accordion-item collapsed">
+              <button class="accordion-header" type="button">
+                <span class="accordion-title"><span class="toggle-icon">▶</span><span>55克787*1092平板书写纸晨鸣</span></span>
+                <span class="group-actions">
+                  <span class="metric">应退<strong>3</strong> / 已录<strong data-count="material-2">0</strong></span>
+                  <button class="mini-btn primary" type="button" data-add-row="material-2">新增件明细</button>
+                </span>
+              </button>
+              <div class="accordion-body">
+                <table>
+                  <thead>
+                    <tr>
+                      <th style="width:70px;">件序号</th>
+                      <th style="width:160px;">唯一编号</th>
+                      <th style="width:110px;">调拨数量</th>
+                      <th style="width:90px;">吨数</th>
+                      <th style="width:120px;">调入仓库</th>
+                      <th style="width:120px;">图片</th>
+                      <th style="width:120px;">调入库位</th>
+                      <th style="width:70px;">操作</th>
+                    </tr>
+                  </thead>
+                  <tbody id="material-2" data-expected-count="3"></tbody>
+                </table>
+              </div>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    const accordionItems = document.querySelectorAll('.accordion-item');
+    const submitButton = document.getElementById('submit-btn');
+    const documentLocation = document.getElementById('document-location');
+    const pieceLookups = {
+      'material-1': {
+        'TP-20260205-001': { qty: '14.211', ton: '1.175', warehouse: '白水湖仓库' },
+        'TP-20260205-002': { qty: '14.212', ton: '1.175', warehouse: '白水湖仓库' }
+      },
+      'material-2': {
+        'TP-20260205-101': { qty: '333.333', ton: '7.667', warehouse: '白水湖仓库' },
+        'TP-20260205-102': { qty: '333.333', ton: '7.666', warehouse: '白水湖仓库' },
+        'TP-20260205-103': { qty: '333.334', ton: '7.667', warehouse: '白水湖仓库' }
+      }
+    };
+
+    accordionItems.forEach((item) => {
+      const header = item.querySelector('.accordion-header');
+      const icon = item.querySelector('.toggle-icon');
+      header.addEventListener('click', () => {
+        const isCollapsed = item.classList.contains('collapsed');
+        accordionItems.forEach((other) => {
+          other.classList.add('collapsed');
+          other.querySelector('.toggle-icon').textContent = '▶';
+        });
+        if (isCollapsed) {
+          item.classList.remove('collapsed');
+          icon.textContent = '▼';
+        }
+      });
+    });
+
+    function createRow(groupId, index) {
+      const lookup = pieceLookups[groupId];
+      const selectedLocation = documentLocation.value;
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td><input class="cell-input" value="${index}" readonly /></td>
+        <td><input class="cell-input" placeholder="请输入唯一编号" data-code-field /></td>
+        <td><input class="cell-input" readonly data-qty-field /></td>
+        <td><input class="cell-input" readonly data-ton-field /></td>
+        <td><input class="cell-input" value="${lookup[Object.keys(lookup)[0]].warehouse}" readonly data-warehouse-field /></td>
+        <td>
+          <div class="thumb-list">
+            <div class="thumb-item">
+              <div class="thumb"></div>
+              <div class="thumb-remove" data-remove-photo>×</div>
+            </div>
+            <span class="upload-link">继续上传</span>
+          </div>
+        </td>
+        <td>
+          <select class="cell-select" data-location>
+            <option value="BSH-RK-01-01">BSH-RK-01-01</option>
+            <option value="BSH-RK-01-02">BSH-RK-01-02</option>
+            <option value="BSH-RK-02-01">BSH-RK-02-01</option>
+          </select>
+        </td>
+        <td><span class="row-delete" data-delete-row>删除</span></td>
+      `;
+      row.querySelector('[data-location]').value = selectedLocation;
+      bindRow(row, groupId);
+      return row;
+    }
+
+    function bindRow(row, groupId) {
+      const codeField = row.querySelector('[data-code-field]');
+      const qtyField = row.querySelector('[data-qty-field]');
+      const tonField = row.querySelector('[data-ton-field]');
+      const warehouseField = row.querySelector('[data-warehouse-field]');
+      const photoRemove = row.querySelector('[data-remove-photo]');
+      const deleteRow = row.querySelector('[data-delete-row]');
+
+      codeField.addEventListener('input', () => {
+        const matched = pieceLookups[groupId][codeField.value.trim()];
+        qtyField.value = matched ? matched.qty : '';
+        tonField.value = matched ? matched.ton : '';
+        warehouseField.value = matched ? matched.warehouse : '白水湖仓库';
+        refreshSubmitState();
+      });
+
+      photoRemove.addEventListener('click', () => {
+        photoRemove.closest('.thumb-item').remove();
+      });
+
+      deleteRow.addEventListener('click', () => {
+        const tbody = row.closest('tbody');
+        row.remove();
+        reorderRows(tbody);
+        updateGroupState(tbody);
+        refreshSubmitState();
+      });
+    }
+
+    function reorderRows(tbody) {
+      Array.from(tbody.children).forEach((row, index) => {
+        row.querySelector('.cell-input').value = index + 1;
+      });
+    }
+
+    function updateGroupState(tbody) {
+      const countNode = document.querySelector(`[data-count="${tbody.id}"]`);
+      const addButton = document.querySelector(`[data-add-row="${tbody.id}"]`);
+      const currentCount = tbody.querySelectorAll('tr').length;
+      const expectedCount = Number(tbody.dataset.expectedCount);
+      countNode.textContent = String(currentCount);
+      addButton.disabled = currentCount >= expectedCount;
+    }
+
+    function refreshSubmitState() {
+      const bodies = Array.from(document.querySelectorAll('tbody[data-expected-count]'));
+      const valid = bodies.every((tbody) => {
+        const expectedCount = Number(tbody.dataset.expectedCount);
+        const rows = Array.from(tbody.querySelectorAll('tr'));
+        if (rows.length !== expectedCount) {
+          return false;
+        }
+        return rows.every((row) => row.querySelector('[data-code-field]').value.trim() !== '');
+      });
+      submitButton.disabled = !valid;
+    }
+
+    document.querySelectorAll('[data-add-row]').forEach((button) => {
+      button.addEventListener('click', () => {
+        const tbody = document.getElementById(button.dataset.addRow);
+        const expectedCount = Number(tbody.dataset.expectedCount);
+        if (tbody.children.length >= expectedCount) {
+          return;
+        }
+        const row = createRow(button.dataset.addRow, tbody.children.length + 1);
+        tbody.appendChild(row);
+        updateGroupState(tbody);
+        refreshSubmitState();
+      });
+    });
+
+    document.querySelectorAll('tbody[data-expected-count]').forEach((tbody) => {
+      Array.from(tbody.querySelectorAll('tr')).forEach((row) => bindRow(row, tbody.id));
+      updateGroupState(tbody);
+    });
+
+    documentLocation.addEventListener('change', () => {
+      document.querySelectorAll('[data-location]').forEach((select) => {
+        if (!select.dataset.modified) {
+          select.value = documentLocation.value;
+        }
+      });
+    });
+
+    document.addEventListener('change', (event) => {
+      if (event.target.matches('[data-location]')) {
+        event.target.dataset.modified = 'true';
+      }
+    });
+
+    refreshSubmitState();
+  </script>
+</body>
+</html>

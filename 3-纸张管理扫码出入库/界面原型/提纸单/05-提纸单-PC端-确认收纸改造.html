@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>提纸单-PC端-详情改造</title>
+  <title>提纸单-PC端-确认收纸改造</title>
   <style>
     * { box-sizing: border-box; }
     :root {
@@ -15,6 +15,7 @@
       --hint: #909399;
       --primary: #409eff;
       --primary-soft: #ecf5ff;
+      --danger: #f56c6c;
       --font-base: 12px;
       --font-title: 14px;
     }
@@ -35,19 +36,9 @@
       gap: 16px;
       padding: 0 16px;
     }
-    .brand {
-      font-size: var(--font-title);
-      font-weight: 600;
-      align-self: center;
-    }
-    .tabs-nav {
-      display: flex;
-      align-items: flex-end;
-      gap: 8px;
-      margin-bottom: -1px;
-    }
-    .home-tab,
-    .page-tab {
+    .brand { font-size: var(--font-title); font-weight: 600; align-self: center; }
+    .tabs-nav { display: flex; align-items: flex-end; gap: 8px; margin-bottom: -1px; }
+    .home-tab, .page-tab {
       height: 34px;
       padding: 0 16px;
       border: 1px solid var(--line);
@@ -58,16 +49,8 @@
       font-size: var(--font-base);
       line-height: 1;
     }
-    .home-tab {
-      background: #f7f8fa;
-      color: var(--sub);
-    }
-    .page-tab {
-      background: #fff;
-      border-bottom-color: #fff;
-      gap: 10px;
-      font-weight: 500;
-    }
+    .home-tab { background: #f7f8fa; color: var(--sub); }
+    .page-tab { background: #fff; border-bottom-color: #fff; gap: 10px; font-weight: 500; }
     .tab-close { color: var(--hint); }
     .main-layout { display: flex; min-height: calc(100vh - 56px); }
     .sidebar {
@@ -87,19 +70,9 @@
       color: var(--primary);
       border-right: 2px solid var(--primary);
     }
-    .content {
-      flex: 1;
-      padding: 0 12px 20px;
-    }
-    .page {
-      border-top: 1px solid var(--line);
-      padding-top: 10px;
-    }
-    .toolbar {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 8px;
-    }
+    .content { flex: 1; padding: 0 12px 20px; }
+    .page { border-top: 1px solid var(--line); padding-top: 10px; }
+    .toolbar { display: flex; gap: 10px; margin-bottom: 8px; }
     .btn {
       min-width: 74px;
       height: 30px;
@@ -111,6 +84,8 @@
       font-size: var(--font-base);
       cursor: pointer;
     }
+    .btn.primary { background: var(--primary); border-color: var(--primary); color: #fff; }
+    .btn:disabled { background: #f5f7fa; border-color: var(--line); color: var(--hint); cursor: not-allowed; }
     .section {
       background: #fff;
       border: 1px solid var(--line-soft);
@@ -127,10 +102,7 @@
       font-size: var(--font-title);
       font-weight: 600;
     }
-    .arrow {
-      color: var(--hint);
-      font-size: 12px;
-    }
+    .arrow { color: var(--hint); font-size: 12px; }
     .sub-title {
       display: flex;
       align-items: center;
@@ -151,13 +123,8 @@
       vertical-align: middle;
       font-size: var(--font-base);
     }
-    th {
-      background: #fafafa;
-      font-weight: 600;
-    }
-    .sum-row td {
-      background: #fafafa;
-    }
+    th { background: #fafafa; font-weight: 600; }
+    .sum-row td { background: #fafafa; }
     .form-grid {
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -166,15 +133,13 @@
     }
     .field {
       display: grid;
-      grid-template-columns: 72px 1fr;
+      grid-template-columns: 84px 1fr;
       align-items: center;
       gap: 6px;
     }
-    .field label {
-      text-align: right;
-      line-height: 28px;
-    }
-    .readonly {
+    .field label { text-align: right; line-height: 28px; }
+    .readonly,
+    .select-like {
       width: 100%;
       height: 28px;
       padding: 0 8px;
@@ -182,8 +147,14 @@
       align-items: center;
       border: 1px solid var(--line);
       border-radius: 4px;
+      font-size: var(--font-base);
       background: #f5f7fa;
       color: var(--sub);
+    }
+    .select-like {
+      justify-content: space-between;
+      background: #fff;
+      color: var(--text);
     }
     .image-preview {
       width: 86px;
@@ -193,9 +164,15 @@
       background:
         linear-gradient(135deg, #7d8ed9 0%, #6e78b8 45%, #d7ecff 100%);
     }
-    .accordion-item {
-      border-top: 1px solid var(--line-soft);
+    .photo-thumb {
+      width: 38px;
+      height: 38px;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      background: linear-gradient(135deg, #d7d7d7 0%, #bdbdbd 35%, #efefef 100%);
+      margin: 0 auto;
     }
+    .accordion-item { border-top: 1px solid var(--line-soft); }
     .accordion-header {
       width: 100%;
       height: 40px;
@@ -230,17 +207,24 @@
       color: var(--primary);
       margin-left: 4px;
     }
-    .accordion-item.collapsed .accordion-body {
-      display: none;
-    }
-    .photo-thumb {
-      width: 38px;
-      height: 38px;
-      border: 1px solid var(--line);
+    .accordion-item.collapsed .accordion-body { display: none; }
+    .status { color: var(--hint); }
+    .status.done { color: var(--primary); }
+    .review-cell { text-align: center; }
+    .review-btn {
+      min-width: 64px;
+      height: 26px;
+      border: 1px solid #dcdfe6;
       border-radius: 4px;
-      background:
-        linear-gradient(135deg, #d7d7d7 0%, #bdbdbd 35%, #efefef 100%);
-      margin: 0 auto;
+      background: #fff;
+      color: var(--primary);
+      font-size: var(--font-base);
+      cursor: pointer;
+    }
+    .review-btn.done {
+      color: var(--danger);
+      border-color: #f3c5c5;
+      background: #fff0f0;
     }
   </style>
 </head>
@@ -250,33 +234,31 @@
       <div class="brand">ERP门户</div>
       <div class="tabs-nav">
         <div class="home-tab">首页</div>
-        <div class="page-tab"><span>提纸单详情</span><span class="tab-close">×</span></div>
+        <div class="page-tab"><span>提纸单确认收纸</span><span class="tab-close">×</span></div>
       </div>
     </div>
     <div class="main-layout">
-      <aside class="sidebar">
-        <div class="menu-item active">生产</div>
-      </aside>
+      <aside class="sidebar"><div class="menu-item active">生产</div></aside>
       <main class="content">
         <div class="page">
           <div class="toolbar">
+            <button class="btn primary" id="submit-btn" disabled>提交</button>
             <button class="btn">一键下载全部图片</button>
             <button class="btn">查看进度明细</button>
+            <button class="btn">取消</button>
           </div>
 
           <section class="section">
             <div class="section-title"><span class="arrow">▼</span><span>单据信息</span></div>
             <div class="form-grid">
-              <div class="field"><label>单据编号</label><div class="readonly">TZD202507190001</div></div>
-              <div class="field"><label>状态</label><div class="readonly">完结</div></div>
-              <div class="field"><label>提交时间</label><div class="readonly">2025-07-19 11:03</div></div>
-              <div class="field"><label>实际提纸日期</label><div class="readonly">2025-07-19</div></div>
-              <div class="field"><label>调出地点</label><div class="readonly">公司原料仓库</div></div>
+              <div class="field"><label>单据编号</label><div class="readonly">TZD202507210002</div></div>
+              <div class="field"><label>状态</label><div class="readonly">初审通过</div></div>
+              <div class="field"><label>提交时间</label><div class="readonly">2025-07-21 19:12</div></div>
+              <div class="field"><label>调出地点</label><div class="readonly">宏达仓库</div></div>
               <div class="field"><label>调入地点</label><div class="readonly">美达仓库</div></div>
               <div class="field"><label>调入库位</label><div class="readonly">W0001</div></div>
               <div class="field"><label>物料分类</label><div class="readonly">纸张</div></div>
-              <div class="field"><label>提纸人员</label><div class="readonly">测试</div></div>
-              <div class="field"><label>纸张出库图片</label><div class="image-preview"></div></div>
+              <div class="field" style="grid-column: span 2;"><label>纸张出库图片</label><div class="image-preview"></div></div>
             </div>
           </section>
 
@@ -301,47 +283,9 @@
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>1</td>
-                  <td>55克870*1230平板书写</td>
-                  <td>-</td>
-                  <td>2</td>
-                  <td>1</td>
-                  <td>-</td>
-                  <td>2.000</td>
-                  <td>-</td>
-                  <td>33.982</td>
-                  <td>-</td>
-                  <td>-</td>
-                  <td>测试</td>
-                </tr>
-                <tr>
-                  <td>2</td>
-                  <td>60克890*1240平板双胶</td>
-                  <td>-</td>
-                  <td>3</td>
-                  <td>1</td>
-                  <td>-</td>
-                  <td>3.000</td>
-                  <td>-</td>
-                  <td>31.500</td>
-                  <td>-</td>
-                  <td>-</td>
-                  <td>测试</td>
-                </tr>
-                <tr class="sum-row">
-                  <td>合计</td>
-                  <td colspan="2"></td>
-                  <td>5.000</td>
-                  <td></td>
-                  <td></td>
-                  <td>5.000</td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
+                <tr><td>1</td><td>115克889*1194平板铜版纸</td><td>-</td><td>2</td><td>2</td><td>-</td><td>4</td><td>-</td><td>16.384</td><td>-</td><td>-</td><td>测试</td></tr>
+                <tr><td>2</td><td>55克870*1230平板书写</td><td>-</td><td>2</td><td>1</td><td>-</td><td>2</td><td>-</td><td>33.982</td><td>-</td><td>-</td><td>测试</td></tr>
+                <tr class="sum-row"><td>合计</td><td colspan="2"></td><td>4.000</td><td></td><td></td><td>6.000</td><td></td><td></td><td></td><td></td><td></td></tr>
               </tbody>
             </table>
 
@@ -349,7 +293,7 @@
 
             <div class="accordion-item">
               <button class="accordion-header" type="button">
-                <span class="accordion-title"><span class="toggle-icon">▼</span><span>55克870*1230平板书写</span></span>
+                <span class="accordion-title"><span class="toggle-icon">▼</span><span>115克889*1194平板铜版纸</span></span>
                 <span class="metric">件数 <strong>2</strong></span>
               </button>
               <div class="accordion-body">
@@ -363,11 +307,13 @@
                       <th style="width:90px;">调入仓库</th>
                       <th style="width:120px;">图片</th>
                       <th style="width:100px;">调入库位</th>
+                      <th style="width:100px;">收纸状态</th>
+                      <th style="width:100px;">收纸操作</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr><td>1</td><td>2026001201</td><td>1.000</td><td>0.333</td><td>美达仓库</td><td><div class="photo-thumb"></div></td><td>M-01-03</td></tr>
-                    <tr><td>2</td><td>2026001202</td><td>1.000</td><td>0.334</td><td>美达仓库</td><td><div class="photo-thumb"></div></td><td>M-01-05</td></tr>
+                    <tr><td>1</td><td>2026003201</td><td>2.000</td><td>8.192</td><td>美达仓库</td><td><div class="photo-thumb"></div></td><td>M-01-01</td><td><span class="status">待收纸</span></td><td class="review-cell"><button class="review-btn" data-review>确认收纸</button></td></tr>
+                    <tr><td>2</td><td>2026003202</td><td>2.000</td><td>8.192</td><td>美达仓库</td><td><div class="photo-thumb"></div></td><td>M-01-02</td><td><span class="status">待收纸</span></td><td class="review-cell"><button class="review-btn" data-review>确认收纸</button></td></tr>
                   </tbody>
                 </table>
               </div>
@@ -375,8 +321,8 @@
 
             <div class="accordion-item collapsed">
               <button class="accordion-header" type="button">
-                <span class="accordion-title"><span class="toggle-icon">▶</span><span>60克890*1240平板双胶</span></span>
-                <span class="metric">件数 <strong>3</strong></span>
+                <span class="accordion-title"><span class="toggle-icon">▶</span><span>55克870*1230平板书写</span></span>
+                <span class="metric">件数 <strong>2</strong></span>
               </button>
               <div class="accordion-body">
                 <table>
@@ -389,18 +335,25 @@
                       <th style="width:90px;">调入仓库</th>
                       <th style="width:120px;">图片</th>
                       <th style="width:100px;">调入库位</th>
+                      <th style="width:100px;">收纸状态</th>
+                      <th style="width:100px;">收纸操作</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr><td>1</td><td>2026001301</td><td>1.000</td><td>0.450</td><td>美达仓库</td><td><div class="photo-thumb"></div></td><td>M-02-01</td></tr>
-                    <tr><td>2</td><td>2026001302</td><td>1.000</td><td>0.450</td><td>美达仓库</td><td><div class="photo-thumb"></div></td><td>M-02-02</td></tr>
-                    <tr><td>3</td><td>2026001303</td><td>1.000</td><td>0.450</td><td>美达仓库</td><td><div class="photo-thumb"></div></td><td>M-02-03</td></tr>
+                    <tr><td>1</td><td>2026003301</td><td>1.000</td><td>0.333</td><td>美达仓库</td><td><div class="photo-thumb"></div></td><td>M-02-01</td><td><span class="status">待收纸</span></td><td class="review-cell"><button class="review-btn" data-review>确认收纸</button></td></tr>
+                    <tr><td>2</td><td>2026003302</td><td>1.000</td><td>0.334</td><td>美达仓库</td><td><div class="photo-thumb"></div></td><td>M-02-02</td><td><span class="status">待收纸</span></td><td class="review-cell"><button class="review-btn" data-review>确认收纸</button></td></tr>
                   </tbody>
                 </table>
               </div>
             </div>
           </section>
 
+          <section class="section">
+            <div class="section-title"><span class="arrow">▼</span><span>确认调拨</span></div>
+            <div class="form-grid">
+              <div class="field"><label>是否通过</label><div class="select-like"><span>通过</span><span>▼</span></div></div>
+            </div>
+          </section>
         </div>
       </main>
     </div>
@@ -408,6 +361,8 @@
 
   <script>
     const accordionItems = document.querySelectorAll('.accordion-item');
+    const submitButton = document.getElementById('submit-btn');
+
     accordionItems.forEach((item) => {
       const header = item.querySelector('.accordion-header');
       const icon = item.querySelector('.toggle-icon');
@@ -423,6 +378,26 @@
         }
       });
     });
+
+    function refreshSubmitState() {
+      const allDone = Array.from(document.querySelectorAll('.status')).every((node) => node.classList.contains('done'));
+      submitButton.disabled = !allDone;
+    }
+
+    document.querySelectorAll('[data-review]').forEach((button) => {
+      button.addEventListener('click', () => {
+        const row = button.closest('tr');
+        const status = row.querySelector('.status');
+        const done = status.classList.contains('done');
+        status.classList.toggle('done', !done);
+        status.textContent = done ? '待收纸' : '已收纸';
+        button.classList.toggle('done', !done);
+        button.textContent = done ? '确认收纸' : '取消收纸';
+        refreshSubmitState();
+      });
+    });
+
+    refreshSubmitState();
   </script>
 </body>
 </html>

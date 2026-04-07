@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>随货同行单-PC端-印厂确认到货改造</title>
+  <style>
+    * { box-sizing: border-box; }
+    :root { --bg:#f5f7fa; --line:#e4e7ed; --line-soft:#ebeef5; --text:#303133; --sub:#606266; --hint:#909399; --primary:#409eff; --primary-soft:#ecf5ff; --success:#67c23a; --danger:#f56c6c; --font-base:12px; --font-title:14px; }
+    body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei",sans-serif; background:var(--bg); color:var(--text); font-size:var(--font-base); }
+    .app-shell { min-width:1440px; }
+    .topbar { height:56px; background:#fff; border-bottom:1px solid var(--line); display:flex; align-items:flex-end; gap:16px; padding:0 16px; }
+    .brand { font-size:var(--font-title); font-weight:600; align-self:center; }
+    .tabs-nav { display:flex; align-items:flex-end; gap:8px; margin-bottom:-1px; }
+    .home-tab,.page-tab { height:34px; padding:0 16px; border:1px solid var(--line); border-radius:4px 4px 0 0; display:inline-flex; align-items:center; justify-content:center; font-size:var(--font-base); line-height:1; }
+    .home-tab { background:#f7f8fa; color:var(--sub); }
+    .page-tab { background:#fff; border-bottom-color:#fff; gap:10px; font-weight:500; }
+    .tab-close { color:var(--hint); }
+    .main-layout { display:flex; min-height:calc(100vh - 56px); }
+    .sidebar { width:120px; background:#fff; border-right:1px solid var(--line); padding:10px 0; }
+    .menu-item { height:34px; display:flex; align-items:center; padding:0 16px; }
+    .menu-item.active { background:var(--primary-soft); color:var(--primary); border-right:2px solid var(--primary); }
+    .content { flex:1; padding:0 12px 20px; }
+    .page { border-top:1px solid var(--line); padding-top:10px; }
+    .toolbar { display:flex; gap:10px; margin-bottom:8px; }
+    .btn { min-width:74px; height:30px; padding:0 12px; border-radius:4px; border:1px solid #dcdfe6; background:#fff; color:var(--sub); font-size:var(--font-base); cursor:pointer; }
+    .btn.primary { background:var(--primary); border-color:var(--primary); color:#fff; }
+    .btn.danger { background:var(--danger); border-color:var(--danger); color:#fff; }
+    .btn[disabled] { background:#f5f7fa; border-color:#e4e7ed; color:#c0c4cc; cursor:not-allowed; }
+    .section { background:#fff; border:1px solid var(--line-soft); margin-bottom:10px; }
+    .section-title { height:36px; display:flex; align-items:center; gap:8px; padding:0 10px; border-bottom:1px solid var(--line-soft); background:#fafbfc; font-size:var(--font-title); font-weight:600; }
+    .arrow { color:var(--hint); font-size:12px; }
+    .form-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:6px 14px; padding:10px; }
+    .field { display:grid; grid-template-columns:72px 1fr; align-items:center; gap:6px; }
+    .field label { text-align:right; line-height:28px; }
+    .value { height:28px; border:1px solid var(--line); border-radius:4px; background:#f5f7fa; padding:0 8px; display:flex; align-items:center; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
+    .image-box { width:110px; height:126px; border:1px solid var(--line); border-radius:6px; background:linear-gradient(45deg,transparent 48%,#d9d9d9 49%,#d9d9d9 51%,transparent 52%),linear-gradient(-45deg,transparent 48%,#d9d9d9 49%,#d9d9d9 51%,transparent 52%),#f5f7fa; margin-top:8px; }
+    .sub-title { display:flex; align-items:center; height:34px; padding:0 10px; color:var(--sub); font-size:var(--font-base); font-weight:600; }
+    table { width:100%; border-collapse:collapse; table-layout:fixed; }
+    th,td { border:1px solid var(--line-soft); padding:8px 10px; vertical-align:middle; }
+    th { background:#fafafa; font-weight:600; }
+    .sum-row td { background:#fafafa; }
+    .accordion-item { border-top:1px solid var(--line-soft); }
+    .accordion-header { width:100%; height:40px; display:flex; align-items:center; gap:8px; padding:0 10px; background:#fcfcfd; border:0; border-bottom:1px solid var(--line-soft); font-weight:600; cursor:pointer; color:var(--text); }
+    .toggle-icon { width:18px; text-align:center; color:var(--hint); font-size:var(--font-base); flex:0 0 18px; }
+    .accordion-item.collapsed .accordion-body { display:none; }
+    .review-cell { text-align:center; }
+    .review-btn { min-width:60px; height:28px; padding:0 10px; border:1px solid var(--primary); border-radius:4px; display:inline-flex; align-items:center; justify-content:center; background:#fff; color:var(--primary); cursor:pointer; font-size:var(--font-base); }
+    .review-btn.done { background:var(--primary-soft); }
+    .status { color:var(--sub); }
+    .status.done { color:var(--success); }
+    .photo-thumb { width:46px; height:46px; border:1px solid var(--line); border-radius:4px; background:linear-gradient(45deg,transparent 48%,#d9d9d9 49%,#d9d9d9 51%,transparent 52%),linear-gradient(-45deg,transparent 48%,#d9d9d9 49%,#d9d9d9 51%,transparent 52%),#f5f7fa; }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <div class="topbar">
+      <div class="brand">ERP门户</div>
+      <div class="tabs-nav">
+        <div class="home-tab">首页</div>
+        <div class="page-tab"><span>印厂确认到货</span><span class="tab-close">×</span></div>
+      </div>
+    </div>
+    <div class="main-layout">
+      <aside class="sidebar"><div class="menu-item active">生产</div></aside>
+      <main class="content">
+        <div class="page">
+          <div class="toolbar">
+            <button class="btn primary" id="submitBtn" disabled>提交</button>
+            <button class="btn danger">退回</button>
+            <button class="btn">一键下载全部图片</button>
+            <button class="btn">查看进度明细</button>
+            <button class="btn">取消</button>
+          </div>
+          <section class="section">
+            <div class="section-title"><span class="arrow">▼</span><span>单据信息</span></div>
+            <div class="form-grid">
+              <div class="field"><label>供应商</label><div class="value">上海星泽贸易有限公司</div></div>
+              <div class="field"><label>纸厂</label><div class="value">上海星泽贸易有限公司</div></div>
+              <div class="field"><label>入库单号</label><div class="value"></div></div>
+              <div class="field"><label>采购单位</label><div class="value">江西慧谷文化传播有限公司</div></div>
+              <div class="field"><label>入库时间</label><div class="value"></div></div>
+              <div class="field"><label>入库形式</label><div class="value">直送印厂</div></div>
+              <div class="field"><label>到货日期</label><div class="value">2024-10-21</div></div>
+              <div class="field"><label>收货仓库</label><div class="value">公司原料仓</div></div>
+              <div class="field"><label>纸厂联系人</label><div class="value">张大勇</div></div>
+              <div class="field"><label>合同号</label><div class="value">25-ZZHT-22</div></div>
+              <div class="field"><label>随货同行单号</label><div class="value">XSDD2410070(1)</div></div>
+              <div class="field"><label>收货地点</label><div class="value">公司原料仓</div></div>
+              <div class="field"><label>采购订单号</label><div class="value">BD00000741</div></div>
+              <div class="field"><label>单据编号</label><div class="value">SZD202410220004-1</div></div>
+              <div class="field"><label>状态</label><div class="value">待印厂确认</div></div>
+              <div class="field"><label>库位</label><div class="value"></div></div>
+              <div class="field"><label>备注</label><div class="value">总部 采购单位：江西慧谷文化</div></div>
+              <div class="field"><label>需求名称</label><div class="value">null</div></div>
+              <div class="field"><label>随货同行单图片</label><div class="image-box"></div></div>
+            </div>
+          </section>
+          <section class="section">
+            <div class="section-title"><span class="arrow">▼</span><span>纸张信息</span></div>
+            <div class="sub-title"><span>物料汇总表</span></div>
+            <table>
+              <thead>
+                <tr><th style="width:64px;">序号</th><th>物料名称</th><th style="width:120px;">品牌</th><th style="width:120px;">机型</th><th style="width:110px;">吨数</th><th style="width:110px;">转换率</th><th style="width:120px;">入库数量</th><th style="width:100px;">存储单位</th><th style="width:90px;">件数</th><th style="width:120px;">每件数量</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>1</td><td>45克770*1092卷筒新闻纸康达博格</td><td>-</td><td>-</td><td>31.426</td><td>52.857</td><td>1661.084</td><td>件</td><td>6</td><td>-</td></tr>
+                <tr><td>2</td><td>55克870*1230平板书写</td><td>-</td><td>-</td><td>8.640</td><td>33.982</td><td>293.604</td><td>件</td><td>3</td><td>-</td></tr>
+                <tr class="sum-row"><td>合计</td><td colspan="3"></td><td>40.066000</td><td></td><td>1954.688</td><td></td><td>9.000</td><td></td></tr>
+              </tbody>
+            </table>
+            <div class="sub-title"><span>件明细</span></div>
+            <div class="accordion-item">
+              <button class="accordion-header" type="button"><span class="toggle-icon">▼</span><span>45克770*1092卷筒新闻纸康达博格</span></button>
+              <div class="accordion-body">
+              <table>
+                <thead>
+                  <tr><th style="width:70px;">件序号</th><th style="width:160px;">唯一编号</th><th>物料名称/规格</th><th style="width:90px;">入库数量</th><th style="width:90px;">吨数</th><th style="width:120px;">出厂编码</th><th style="width:80px;">照片</th><th style="width:90px;">库位</th><th style="width:100px;">复核状态</th><th style="width:90px;">复核操作</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>1</td><td>2025010831</td><td>45克770*1092卷筒新闻纸康达博格</td><td>16.923</td><td>0.498</td><td>FC-001</td><td><div class="photo-thumb"></div></td><td>-</td><td><span class="status">待复核</span></td><td class="review-cell"><button class="review-btn" data-review>复核</button></td></tr>
+                  <tr><td>2</td><td>2025010832</td><td>45克770*1092卷筒新闻纸康达博格</td><td>16.923</td><td>0.498</td><td>FC-002</td><td><div class="photo-thumb"></div></td><td>-</td><td><span class="status">待复核</span></td><td class="review-cell"><button class="review-btn" data-review>复核</button></td></tr>
+                  <tr><td>3</td><td>2025010833</td><td>45克770*1092卷筒新闻纸康达博格</td><td>16.923</td><td>0.498</td><td>FC-003</td><td><div class="photo-thumb"></div></td><td>-</td><td><span class="status">待复核</span></td><td class="review-cell"><button class="review-btn" data-review>复核</button></td></tr>
+                  <tr><td>4</td><td>2025010834</td><td>45克770*1092卷筒新闻纸康达博格</td><td>16.957</td><td>0.499</td><td>FC-004</td><td><div class="photo-thumb"></div></td><td>-</td><td><span class="status">待复核</span></td><td class="review-cell"><button class="review-btn" data-review>复核</button></td></tr>
+                  <tr><td>5</td><td>2025010835</td><td>45克770*1092卷筒新闻纸康达博格</td><td>16.957</td><td>0.499</td><td>FC-005</td><td><div class="photo-thumb"></div></td><td>-</td><td><span class="status">待复核</span></td><td class="review-cell"><button class="review-btn" data-review>复核</button></td></tr>
+                  <tr><td>6</td><td>2025010836</td><td>45克770*1092卷筒新闻纸康达博格</td><td>16.957</td><td>0.499</td><td>FC-006</td><td><div class="photo-thumb"></div></td><td>-</td><td><span class="status">待复核</span></td><td class="review-cell"><button class="review-btn" data-review>复核</button></td></tr>
+                </tbody>
+              </table>
+              </div>
+            </div>
+            <div class="accordion-item collapsed">
+              <button class="accordion-header" type="button"><span class="toggle-icon">▶</span><span>55克870*1230平板书写</span></button>
+              <div class="accordion-body">
+              <table>
+                <thead>
+                  <tr><th style="width:70px;">件序号</th><th style="width:160px;">唯一编号</th><th>物料名称/规格</th><th style="width:90px;">入库数量</th><th style="width:90px;">吨数</th><th style="width:120px;">出厂编码</th><th style="width:80px;">照片</th><th style="width:90px;">库位</th><th style="width:100px;">复核状态</th><th style="width:90px;">复核操作</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>1</td><td>2025010901</td><td>55克870*1230平板书写</td><td>97.868</td><td>2.880</td><td>FC-101</td><td><div class="photo-thumb"></div></td><td>-</td><td><span class="status">待复核</span></td><td class="review-cell"><button class="review-btn" data-review>复核</button></td></tr>
+                  <tr><td>2</td><td>2025010902</td><td>55克870*1230平板书写</td><td>97.868</td><td>2.880</td><td>FC-102</td><td><div class="photo-thumb"></div></td><td>-</td><td><span class="status">待复核</span></td><td class="review-cell"><button class="review-btn" data-review>复核</button></td></tr>
+                  <tr><td>3</td><td>2025010903</td><td>55克870*1230平板书写</td><td>97.868</td><td>2.880</td><td>FC-103</td><td><div class="photo-thumb"></div></td><td>-</td><td><span class="status">待复核</span></td><td class="review-cell"><button class="review-btn" data-review>复核</button></td></tr>
+                </tbody>
+              </table>
+              </div>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+  </div>
+  <script>
+    const accordionItems = document.querySelectorAll('.accordion-item');
+    accordionItems.forEach((item) => {
+      const header = item.querySelector('.accordion-header');
+      const icon = item.querySelector('.toggle-icon');
+      header.addEventListener('click', () => {
+        const isCollapsed = item.classList.contains('collapsed');
+        accordionItems.forEach((other) => {
+          other.classList.add('collapsed');
+          other.querySelector('.toggle-icon').textContent = '▶';
+        });
+        if (isCollapsed) {
+          item.classList.remove('collapsed');
+          icon.textContent = '▼';
+        }
+      });
+    });
+    const reviewBtns = Array.from(document.querySelectorAll("[data-review]"));
+    const submitBtn = document.getElementById("submitBtn");
+    function refresh() {
+      const done = reviewBtns.filter((item) => item.classList.contains("done")).length;
+      submitBtn.disabled = done !== reviewBtns.length;
+    }
+    reviewBtns.forEach((button) => {
+      button.addEventListener("click", () => {
+        button.classList.toggle("done");
+        const reviewed = button.classList.contains("done");
+        button.textContent = reviewed ? "取消复核" : "复核";
+        const status = button.closest("tr").querySelector(".status");
+        status.classList.toggle("done", reviewed);
+        status.textContent = reviewed ? "已复核" : "待复核";
+        refresh();
+      });
+    });
+    refresh();
+  </script>
+</body>
+</html>

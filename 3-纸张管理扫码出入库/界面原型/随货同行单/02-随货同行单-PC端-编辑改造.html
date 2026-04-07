@@ -6,21 +6,19 @@
   <title>随货同行单-PC端-编辑改造</title>
   <style>
     * { box-sizing: border-box; }
-
     :root {
       --bg: #f5f7fa;
-      --panel: #ffffff;
-      --panel-soft: #fafafa;
       --line: #e4e7ed;
+      --line-soft: #ebeef5;
       --text: #303133;
       --sub: #606266;
       --hint: #909399;
       --primary: #409eff;
       --primary-soft: #ecf5ff;
+      --danger: #f56c6c;
       --font-base: 12px;
       --font-title: 14px;
     }
-
     body {
       margin: 0;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif;
@@ -28,11 +26,7 @@
       color: var(--text);
       font-size: var(--font-base);
     }
-
-    .app-shell {
-      min-width: 1440px;
-    }
-
+    .app-shell { min-width: 1440px; }
     .topbar {
       height: 56px;
       background: #fff;
@@ -42,107 +36,45 @@
       gap: 16px;
       padding: 0 16px;
     }
-
-    .brand {
-      font-size: var(--font-title);
-      font-weight: 600;
-      align-self: center;
-    }
-
-    .tabs-nav {
-      display: flex;
-      align-items: flex-end;
-      gap: 8px;
-      height: auto;
-      margin-bottom: -1px;
-    }
-
-    .home-tab {
+    .brand { font-size: var(--font-title); font-weight: 600; align-self: center; }
+    .tabs-nav { display: flex; align-items: flex-end; gap: 8px; margin-bottom: -1px; }
+    .home-tab, .page-tab {
       height: 34px;
       padding: 0 16px;
       border: 1px solid var(--line);
-      border-bottom-color: var(--line);
       border-radius: 4px 4px 0 0;
-      background: #f7f8fa;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       font-size: var(--font-base);
-      color: var(--sub);
       line-height: 1;
     }
-
-    .page-tab {
-      height: 34px;
-      padding: 0 16px;
-      border: 1px solid var(--line);
-      border-bottom-color: #fff;
-      border-radius: 4px 4px 0 0;
-      background: #fff;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-size: var(--font-base);
-      color: var(--text);
-      font-weight: 500;
-      gap: 10px;
-      line-height: 1;
-    }
-
-    .tab-close {
-      color: var(--hint);
-      font-size: var(--font-base);
-      line-height: 1;
-      display: inline-flex;
-      align-items: center;
-    }
-
-    .content {
-      flex: 1;
-      padding: 0 12px 20px;
-    }
-
-    .main-layout {
-      display: flex;
-      min-height: calc(100vh - 52px);
-    }
-
+    .home-tab { background: #f7f8fa; color: var(--sub); }
+    .page-tab { background: #fff; border-bottom-color: #fff; gap: 10px; font-weight: 500; }
+    .tab-close { color: var(--hint); }
+    .main-layout { display: flex; min-height: calc(100vh - 56px); }
     .sidebar {
       width: 120px;
       background: #fff;
       border-right: 1px solid var(--line);
       padding: 10px 0;
     }
-
     .menu-item {
       height: 34px;
       display: flex;
       align-items: center;
       padding: 0 16px;
-      font-size: var(--font-base);
-      color: var(--text);
     }
-
     .menu-item.active {
       background: var(--primary-soft);
       color: var(--primary);
       border-right: 2px solid var(--primary);
     }
-
-    .page {
-      width: 100%;
-      border-top: 1px solid var(--line);
-      padding-top: 10px;
-    }
-
-    .toolbar {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 8px;
-    }
-
+    .content { flex: 1; padding: 0 12px 20px; }
+    .page { border-top: 1px solid var(--line); padding-top: 10px; }
+    .toolbar { display: flex; gap: 10px; margin-bottom: 8px; }
     .btn {
-      min-width: 78px;
+      min-width: 74px;
       height: 30px;
       padding: 0 12px;
       border-radius: 4px;
@@ -152,106 +84,99 @@
       font-size: var(--font-base);
       cursor: pointer;
     }
-
-    .btn.primary {
-      background: var(--primary);
-      border-color: var(--primary);
-      color: #fff;
-    }
-
-    .section {
-      background: var(--panel);
-      border: 1px solid #ebeef5;
-      margin-bottom: 10px;
-    }
-
+    .btn.primary { background: var(--primary); border-color: var(--primary); color: #fff; }
+    .btn.danger { background: var(--danger); border-color: var(--danger); color: #fff; }
+    .section { background: #fff; border: 1px solid var(--line-soft); margin-bottom: 10px; }
     .section-title {
+      height: 36px;
       display: flex;
       align-items: center;
       gap: 8px;
-      height: 36px;
       padding: 0 10px;
-      border-bottom: 1px solid #ebeef5;
+      border-bottom: 1px solid var(--line-soft);
       background: #fafbfc;
       font-size: var(--font-title);
       font-weight: 600;
     }
-
-    .section-title .arrow {
-      color: var(--hint);
-      font-size: 12px;
-    }
-
+    .arrow { color: var(--hint); font-size: 12px; }
     .form-grid {
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 6px 14px;
       padding: 10px;
     }
-
     .field {
       display: grid;
       grid-template-columns: 72px 1fr;
-      align-items: start;
+      align-items: center;
       gap: 6px;
     }
-
-    .field label {
-      text-align: right;
-      line-height: 28px;
-      font-size: var(--font-base);
-      color: var(--text);
-    }
-
-    .control,
-    .textarea,
-    .date-box {
+    .field label { text-align: right; line-height: 28px; }
+    .control, .readonly, .textarea {
       width: 100%;
       border: 1px solid var(--line);
       border-radius: 4px;
-      background: #fff;
-      color: var(--text);
       font-size: var(--font-base);
     }
-
-    .control,
-    .date-box {
+    .control, .readonly {
       height: 28px;
       padding: 0 8px;
       display: flex;
       align-items: center;
-      font-size: var(--font-base);
+      background: #fff;
     }
-
-    .control.readonly {
-      background: #f5f7fa;
-    }
-
-    .control.select::after {
-      content: "▼";
-      margin-left: auto;
-      color: #c0c4cc;
-      font-size: 12px;
-    }
-
-    .date-box::before {
-      content: "📅";
-      margin-right: 8px;
-      font-size: 12px;
-      opacity: 0.7;
-    }
-
+    .readonly { background: #f5f7fa; color: var(--sub); }
     .textarea {
       min-height: 66px;
       padding: 8px 10px;
       resize: none;
-      font-size: 12px;
+      background: #fff;
     }
-
-    .field.span-2 {
-      grid-column: span 2;
+    .select-control,
+    .table-select {
+      position: relative;
+      width: 100%;
     }
-
+    .select-input,
+    .cell-select {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      font-size: var(--font-base);
+      color: var(--text);
+      background: #fff;
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+    }
+    .select-input {
+      height: 28px;
+      padding: 0 24px 0 8px;
+    }
+    .cell-select {
+      height: 26px;
+      padding: 0 20px 0 6px;
+    }
+    .select-control::after,
+    .table-select::after {
+      content: "▼";
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--hint);
+      font-size: 10px;
+      pointer-events: none;
+    }
+    .sub-title {
+      display: flex;
+      align-items: center;
+      height: 34px;
+      padding: 0 10px;
+      color: var(--sub);
+      font-size: var(--font-base);
+      font-weight: 600;
+    }
     .image-preview {
       width: 70px;
       height: 94px;
@@ -261,116 +186,47 @@
         linear-gradient(-45deg, transparent 48%, #d9d9d9 49%, #d9d9d9 51%, transparent 52%),
         #f5f7fa;
     }
-
-    .table-wrap {
-      padding: 8px 10px 10px;
-      overflow-x: auto;
-    }
-
     table {
       width: 100%;
       border-collapse: collapse;
-      font-size: var(--font-base);
-      min-width: 1320px;
       table-layout: fixed;
     }
-
     th, td {
-      border: 1px solid var(--line);
-      padding: 6px 6px;
-      text-align: left;
+      border: 1px solid var(--line-soft);
+      padding: 8px 10px;
       vertical-align: middle;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
     }
-
-    th {
-      background: #fafbfc;
-      color: var(--text);
-      font-weight: 600;
-    }
-
-    .sum-row td {
-      background: #fcfcfc;
-      font-weight: 600;
-    }
-
-    .seq-cell {
-      background: #f5f7fa;
-      color: var(--sub);
-      text-align: center;
-      font-weight: 600;
-    }
-
-    .input-cell {
+    th { background: #fafafa; font-weight: 600; }
+    .sum-row td { background: #fafafa; }
+    .accordion-item { border-top: 1px solid var(--line-soft); }
+    .accordion-header {
       width: 100%;
-      height: 26px;
-      border: 1px solid var(--line);
-      border-radius: 4px;
-      padding: 0 6px;
-      background: #fff;
-      font-size: var(--font-base);
-      color: var(--text);
-    }
-
-    .input-cell.readonly {
-      background: #f5f7fa;
-      color: var(--sub);
-    }
-
-    .expand-btn {
-      height: 26px;
-      padding: 0 8px;
-      border: 1px solid #dcdfe6;
-      border-radius: 4px;
-      background: #fff;
-      color: var(--sub);
-      font-size: var(--font-base);
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 10px;
+      background: #fcfcfd;
+      border: 0;
+      border-bottom: 1px solid var(--line-soft);
       cursor: pointer;
     }
-
-    .expand-btn.active {
-      border-color: var(--primary);
-      color: var(--primary);
-      background: var(--primary-soft);
-    }
-
-    .child-row {
-      display: none;
-    }
-
-    .child-row.open {
-      display: table-row;
-    }
-
-    .child-cell {
-      padding: 0;
-      background: #fbfdff;
-    }
-
-    .detail-panel {
-      padding: 8px;
-    }
-
-    .detail-head {
+    .accordion-title {
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      margin-bottom: 6px;
-      gap: 12px;
-    }
-
-    .detail-title {
-      font-size: var(--font-base);
-      font-weight: 600;
-    }
-
-    .detail-actions {
-      display: flex;
       gap: 8px;
+      font-weight: 600;
+      color: var(--text);
     }
-
+    .toggle-icon {
+      width: 18px;
+      text-align: center;
+      color: var(--hint);
+      font-size: var(--font-base);
+      flex: 0 0 18px;
+    }
+    .group-actions { display: flex; gap: 8px; }
+    .accordion-item.collapsed .accordion-body { display: none; }
     .mini-btn {
       height: 26px;
       padding: 0 8px;
@@ -381,23 +237,29 @@
       font-size: var(--font-base);
       cursor: pointer;
     }
-
-    .mini-btn.primary {
-      border-color: var(--primary);
-      color: var(--primary);
+    .mini-btn.primary { border-color: var(--primary); color: var(--primary); }
+    .row-action {
+      color: var(--danger);
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .cell-input {
+      width: 100%;
+      height: 26px;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      padding: 0 6px;
+      font-size: var(--font-base);
       background: #fff;
+      color: var(--text);
     }
-
-    .sub-table {
-      min-width: 1060px;
+    .cell-input.readonly {
+      background: #f5f7fa;
+      color: var(--sub);
     }
-
-    .photo-cell {
-      display: flex;
-      gap: 6px;
-      align-items: center;
-    }
-
+    .photo-cell { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+    .photo-list { display: flex; gap: 4px; align-items: center; flex-wrap: wrap; }
+    .photo-item { position: relative; width: 38px; height: 38px; flex: 0 0 38px; }
     .photo-thumb {
       width: 38px;
       height: 38px;
@@ -405,55 +267,22 @@
       border-radius: 4px;
       background:
         linear-gradient(135deg, #d7d7d7 0%, #bdbdbd 35%, #efefef 100%);
-      position: relative;
-      overflow: hidden;
     }
-
-    .photo-thumb::before {
-      content: "";
+    .photo-remove {
       position: absolute;
-      left: 6px;
-      top: 9px;
-      width: 23px;
+      top: -6px;
+      right: -6px;
+      width: 14px;
       height: 14px;
-      border: 1px solid rgba(255,255,255,0.75);
-      background:
-        linear-gradient(180deg, rgba(255,255,255,0.8), rgba(255,255,255,0.15)),
-        linear-gradient(135deg, transparent 0 36%, rgba(255,255,255,0.45) 36% 64%, transparent 64% 100%);
+      border-radius: 50%;
+      border: 1px solid #c8c8c8;
+      background: #fff;
+      color: #8a8a8a;
+      font-size: 10px;
+      line-height: 12px;
+      text-align: center;
     }
-
-    .upload-link {
-      color: var(--primary);
-      font-size: var(--font-base);
-      cursor: pointer;
-    }
-
-    .col-index { width: 48px; }
-    .col-material { width: 170px; }
-    .col-brand { width: 62px; }
-    .col-model { width: 62px; }
-    .col-weight { width: 82px; }
-    .col-price { width: 86px; }
-    .col-amount { width: 72px; }
-    .col-rate { width: 86px; }
-    .col-stock { width: 96px; }
-    .col-unit { width: 68px; }
-    .col-count { width: 68px; }
-    .col-each { width: 116px; }
-    .col-detail { width: 82px; }
-
-    .sub-col-index { width: 56px; }
-    .sub-col-code { width: 128px; }
-    .sub-col-qty { width: 90px; }
-    .sub-col-ton { width: 72px; }
-    .sub-col-factory { width: 96px; }
-    .sub-col-photo { width: 110px; }
-    .sub-col-loc { width: 90px; }
-
-    .hint {
-      color: var(--hint);
-      font-size: var(--font-base);
-    }
+    .upload-link { color: var(--primary); cursor: pointer; }
   </style>
 </head>
 <body>
@@ -462,18 +291,11 @@
       <div class="brand">ERP门户</div>
       <div class="tabs-nav">
         <div class="home-tab">首页</div>
-        <div class="page-tab">
-          <span>随货同行单编辑</span>
-          <span class="tab-close">×</span>
-        </div>
+        <div class="page-tab"><span>随货同行单编辑</span><span class="tab-close">×</span></div>
       </div>
     </div>
-
     <div class="main-layout">
-      <aside class="sidebar">
-        <div class="menu-item active">生产</div>
-      </aside>
-
+      <aside class="sidebar"><div class="menu-item active">生产</div></aside>
       <main class="content">
         <div class="page">
           <div class="toolbar">
@@ -484,253 +306,270 @@
             <button class="btn">取消</button>
           </div>
 
-          <div class="section">
-            <div class="section-title"><span class="arrow">⌄</span>单据信息</div>
+          <section class="section">
+            <div class="section-title"><span class="arrow">▼</span><span>单据信息</span></div>
             <div class="form-grid">
-              <div class="field"><label>供应商</label><div class="control readonly">福州金泰和环保科技有限公司</div></div>
-              <div class="field"><label>纸厂</label><div class="control readonly">福州金泰和环保科技有限公司</div></div>
+              <div class="field"><label>供应商</label><div class="readonly">福建省沙县商泓纸业供应站</div></div>
+              <div class="field"><label>纸厂</label><div class="readonly">福建省沙县商泓纸业供应站</div></div>
               <div class="field"><label>入库单号</label><div class="control"></div></div>
-              <div class="field"><label>采购单位</label><div class="control readonly select">江西金旭文化传媒有限公司</div></div>
-
-              <div class="field"><label>入库时间</label><div class="control readonly"></div></div>
-              <div class="field"><label>入库形式</label><div class="control select">公司</div></div>
-              <div class="field"><label>到货日期</label><div class="date-box">2026-04-01</div></div>
-              <div class="field"><label>收货仓库</label><div class="control select hint">请选择</div></div>
-
-              <div class="field"><label>纸厂联系人</label><div class="control readonly">陈</div></div>
-              <div class="field"><label>合同号</label><div class="control readonly">HT202505190001</div></div>
+              <div class="field"><label>采购单位</label><div class="readonly">江西易行采物联有限公司</div></div>
+              <div class="field"><label>入库时间</label><div class="control"></div></div>
+              <div class="field"><label>入库形式</label><div class="readonly">公司</div></div>
+              <div class="field"><label>到货日期</label><div class="readonly">2025-06-19</div></div>
+              <div class="field"><label>收货仓库</label><div class="readonly">ND原料仓</div></div>
+              <div class="field"><label>纸厂联系人</label><div class="readonly">李安琪</div></div>
+              <div class="field"><label>合同号</label><div class="readonly">HT202504280001</div></div>
               <div class="field"><label>随货同行单号</label><div class="control"></div></div>
-              <div class="field"><label>收货地点</label><div class="control readonly">公司原料仓库</div></div>
-
-              <div class="field"><label>采购订单号</label><div class="control readonly">CGDD202505240009</div></div>
-              <div class="field"><label>单据编号</label><div class="control readonly">SZD202508070001-1</div></div>
-              <div class="field"><label>状态</label><div class="control readonly">待提交</div></div>
-              <div class="field"><label>库位</label><div class="control select hint">请选择</div></div>
-
+              <div class="field"><label>收货地点</label><div class="readonly">公司原料仓库</div></div>
+              <div class="field"><label>采购订单号</label><div class="readonly">CGDD202504290001</div></div>
+              <div class="field"><label>单据编号</label><div class="readonly">SZD202506190002-1</div></div>
+              <div class="field"><label>状态</label><div class="readonly">编辑中</div></div>
+              <div class="field"><label>库位</label><div class="select-control"><select id="document-location" class="select-input"><option value="W0001" selected>W0001</option><option value="W0002">W0002</option><option value="W0003">W0003</option></select></div></div>
+              <div class="field"><label>需求名称</label><div class="readonly">集成测试-纸张类</div></div>
               <div class="field"><label>备注</label><textarea class="textarea"></textarea></div>
-              <div class="field"><label>需求名称</label><div class="control readonly">集成测试-纸张类</div></div>
-              <div class="field span-2">
-                <label>随货同行单图片</label>
-                <div class="image-preview"></div>
+              <div class="field"><label>随货同行单图片</label><div class="image-preview"></div></div>
+            </div>
+          </section>
+
+          <section class="section">
+            <div class="section-title"><span class="arrow">▼</span><span>纸张信息</span></div>
+            <div class="sub-title"><span>物料汇总表</span></div>
+            <table>
+              <thead>
+                <tr>
+                  <th style="width:64px;">序号</th>
+                  <th>物料名称</th>
+                  <th style="width:120px;">品牌</th>
+                  <th style="width:120px;">机型</th>
+                  <th style="width:110px;">吨数</th>
+                  <th style="width:110px;">转换率</th>
+                  <th style="width:120px;">入库数量</th>
+                  <th style="width:100px;">存储单位</th>
+                  <th style="width:90px;">件数</th>
+                  <th style="width:120px;">每件数量</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>1</td><td>55克870*1230平板书写</td><td>-</td><td>-</td><td>1.000</td><td>33.982</td><td>33.982</td><td>件</td><td>3</td><td>-</td></tr>
+                <tr><td>2</td><td>60克890*1240平板双胶</td><td>-</td><td>-</td><td>0.900</td><td>31.500</td><td>28.350</td><td>件</td><td>2</td><td>-</td></tr>
+                <tr class="sum-row"><td>合计</td><td colspan="3"></td><td>1.900000</td><td></td><td>62.332</td><td></td><td>5.000</td><td></td></tr>
+              </tbody>
+            </table>
+
+            <div class="sub-title"><span>件明细</span></div>
+            <div class="accordion-item">
+              <div class="accordion-header" role="button" tabindex="0">
+                <span class="accordion-title"><span class="toggle-icon">▼</span><span>55克870*1230平板书写</span></span>
+                <span class="group-actions"><button class="mini-btn primary" type="button" data-add-row="material-1">新增件明细</button></span>
+              </div>
+              <div class="accordion-body">
+              <table>
+                <thead>
+                  <tr>
+                    <th style="width:70px;">件序号</th>
+                    <th style="width:160px;">唯一编号</th>
+                    <th style="width:90px;">入库数量</th>
+                    <th style="width:90px;">吨数</th>
+                    <th style="width:120px;">出厂编码</th>
+                    <th style="width:120px;">照片</th>
+                    <th style="width:100px;">库位</th>
+                    <th style="width:70px;">操作</th>
+                  </tr>
+                </thead>
+                <tbody id="material-1" data-material="55克870*1230平板书写">
+                  <tr>
+                    <td><input class="cell-input readonly" value="1" readonly /></td>
+                    <td><input class="cell-input readonly" value="" placeholder="审核通过后生成" readonly /></td>
+                    <td><input class="cell-input" value="11.321" /></td>
+                    <td><input class="cell-input" value="0.333" /></td>
+                    <td><input class="cell-input" value="FC-001" /></td>
+                    <td>
+                      <div class="photo-cell">
+                        <div class="photo-list">
+                          <div class="photo-item"><div class="photo-thumb"></div><div class="photo-remove">×</div></div>
+                          <div class="photo-item"><div class="photo-thumb"></div><div class="photo-remove">×</div></div>
+                        </div>
+                        <span class="upload-link">继续上传</span>
+                      </div>
+                    </td>
+                    <td><div class="table-select"><select class="cell-select" data-location><option value="W0001" selected>W0001</option><option value="W0002">W0002</option><option value="W0003">W0003</option></select></div></td>
+                    <td><span class="row-action" data-delete-row>删除</span></td>
+                  </tr>
+                  <tr>
+                    <td><input class="cell-input readonly" value="2" readonly /></td>
+                    <td><input class="cell-input readonly" value="" placeholder="审核通过后生成" readonly /></td>
+                    <td><input class="cell-input" value="11.321" /></td>
+                    <td><input class="cell-input" value="0.333" /></td>
+                    <td><input class="cell-input" value="FC-002" /></td>
+                    <td>
+                      <div class="photo-cell">
+                        <div class="photo-list">
+                          <div class="photo-item"><div class="photo-thumb"></div><div class="photo-remove">×</div></div>
+                        </div>
+                        <span class="upload-link">继续上传</span>
+                      </div>
+                    </td>
+                    <td><div class="table-select"><select class="cell-select" data-location><option value="W0001" selected>W0001</option><option value="W0002">W0002</option><option value="W0003">W0003</option></select></div></td>
+                    <td><span class="row-action" data-delete-row>删除</span></td>
+                  </tr>
+                  <tr>
+                    <td><input class="cell-input readonly" value="3" readonly /></td>
+                    <td><input class="cell-input readonly" value="" placeholder="审核通过后生成" readonly /></td>
+                    <td><input class="cell-input" value="11.340" /></td>
+                    <td><input class="cell-input" value="0.334" /></td>
+                    <td><input class="cell-input" value="FC-003" /></td>
+                    <td><span class="upload-link">上传照片</span></td>
+                    <td><div class="table-select"><select class="cell-select" data-location><option value="W0001" selected>W0001</option><option value="W0002">W0002</option><option value="W0003">W0003</option></select></div></td>
+                    <td><span class="row-action" data-delete-row>删除</span></td>
+                  </tr>
+                </tbody>
+              </table>
               </div>
             </div>
-          </div>
 
-          <div class="section">
-            <div class="section-title"><span class="arrow">⌄</span>纸张信息</div>
-            <div class="table-wrap">
+            <div class="accordion-item collapsed">
+              <div class="accordion-header" role="button" tabindex="0">
+                <span class="accordion-title"><span class="toggle-icon">▶</span><span>60克890*1240平板双胶</span></span>
+                <span class="group-actions"><button class="mini-btn primary" type="button" data-add-row="material-2">新增件明细</button></span>
+              </div>
+              <div class="accordion-body">
               <table>
-          <thead>
-            <tr>
-              <th class="col-index">序号</th>
-              <th class="col-material">物料名称</th>
-              <th class="col-brand">品牌</th>
-              <th class="col-model">机型</th>
-              <th class="col-weight">*吨数</th>
-              <th class="col-price">采购单价</th>
-              <th class="col-amount">金额</th>
-              <th class="col-rate">转换率</th>
-              <th class="col-stock">*入库数量</th>
-              <th class="col-unit">存储单位</th>
-              <th class="col-count">件数</th>
-              <th class="col-each">每件数量</th>
-              <th class="col-detail">件明细</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td class="seq-cell">1</td>
-              <td>55克870*1230平板书写</td>
-              <td></td>
-              <td></td>
-              <td><input class="input-cell" value="0.300000" /></td>
-              <td>5000</td>
-              <td>0.000</td>
-              <td>33.982000</td>
-              <td><input class="input-cell" value="10.195" /></td>
-              <td>令</td>
-              <td><input class="input-cell" value="3" /></td>
-              <td><input class="input-cell" placeholder="请输入每件数量" /></td>
-              <td><button class="expand-btn active" data-target="detail-1">收起</button></td>
-            </tr>
-            <tr id="detail-1" class="child-row open">
-              <td colspan="13" class="child-cell">
-                <div class="detail-panel">
-                  <div class="detail-head">
-                    <div class="detail-title">件明细</div>
-                    <div class="detail-actions">
-                      <button class="mini-btn">新增件明细</button>
-                      <button class="mini-btn primary">打印二维码</button>
-                    </div>
-                  </div>
-                  <table class="sub-table">
-                    <thead>
-                      <tr>
-                        <th class="sub-col-index">件序号</th>
-                        <th class="sub-col-code">唯一编号</th>
-                        <th class="sub-col-qty">入库数量</th>
-                        <th class="sub-col-ton">吨数</th>
-                        <th class="sub-col-factory">出厂编码</th>
-                        <th class="sub-col-photo">照片</th>
-                        <th class="sub-col-loc">当前库位</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td class="seq-cell">1</td>
-                        <td><input class="input-cell readonly" value="2026000001" readonly /></td>
-                        <td><input class="input-cell" value="3.398" /></td>
-                        <td><input class="input-cell" value="0.100" /></td>
-                        <td><input class="input-cell" value="FC-001" /></td>
-                        <td>
-                          <div class="photo-cell">
-                            <div class="photo-thumb" title="照片预览"></div>
-                            <span class="upload-link">重新上传</span>
-                          </div>
-                        </td>
-                        <td><input class="input-cell readonly" value="1号库位" readonly /></td>
-                      </tr>
-                      <tr>
-                        <td class="seq-cell">2</td>
-                        <td><input class="input-cell readonly" value="2026000002" readonly /></td>
-                        <td><input class="input-cell" value="3.398" /></td>
-                        <td><input class="input-cell" value="0.100" /></td>
-                        <td><input class="input-cell" value="FC-002" /></td>
-                        <td>
-                          <div class="photo-cell">
-                            <div class="photo-thumb" title="照片预览"></div>
-                            <span class="upload-link">重新上传</span>
-                          </div>
-                        </td>
-                        <td><input class="input-cell readonly" value="1号库位" readonly /></td>
-                      </tr>
-                      <tr>
-                        <td class="seq-cell">3</td>
-                        <td><input class="input-cell readonly" value="2026000003" readonly /></td>
-                        <td><input class="input-cell" value="3.399" /></td>
-                        <td><input class="input-cell" value="0.100" /></td>
-                        <td><input class="input-cell" value="FC-003" /></td>
-                        <td>
-                          <div class="photo-cell">
-                            <span class="upload-link">上传照片</span>
-                          </div>
-                        </td>
-                        <td><input class="input-cell readonly" value="1号库位" readonly /></td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </td>
-            </tr>
-
-            <tr>
-              <td class="seq-cell">2</td>
-              <td>70克900*1200双胶纸</td>
-              <td></td>
-              <td></td>
-              <td><input class="input-cell" value="0.420000" /></td>
-              <td>5200</td>
-              <td>0.000</td>
-              <td>32.100000</td>
-              <td><input class="input-cell" value="13.482" /></td>
-              <td>令</td>
-              <td><input class="input-cell" value="4" /></td>
-              <td><input class="input-cell" placeholder="请输入每件数量" /></td>
-              <td><button class="expand-btn" data-target="detail-2">展开</button></td>
-            </tr>
-            <tr id="detail-2" class="child-row">
-              <td colspan="13" class="child-cell">
-                <div class="detail-panel">
-                  <div class="detail-head">
-                    <div class="detail-title">件明细</div>
-                    <div class="detail-actions">
-                      <button class="mini-btn">新增件明细</button>
-                      <button class="mini-btn primary">打印二维码</button>
-                    </div>
-                  </div>
-                  <table class="sub-table">
-                    <thead>
-                      <tr>
-                        <th class="sub-col-index">件序号</th>
-                        <th class="sub-col-code">唯一编号</th>
-                        <th class="sub-col-qty">入库数量</th>
-                        <th class="sub-col-ton">吨数</th>
-                        <th class="sub-col-factory">出厂编码</th>
-                        <th class="sub-col-photo">照片</th>
-                        <th class="sub-col-loc">当前库位</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td class="seq-cell">1</td>
-                        <td><input class="input-cell readonly" value="2026000101" readonly /></td>
-                        <td><input class="input-cell" value="3.370" /></td>
-                        <td><input class="input-cell" value="0.105" /></td>
-                        <td><input class="input-cell" value="FC-101" /></td>
-                        <td><div class="photo-cell"><div class="photo-thumb"></div><span class="upload-link">重新上传</span></div></td>
-                        <td><input class="input-cell readonly" value="2号库位" readonly /></td>
-                      </tr>
-                      <tr>
-                        <td class="seq-cell">2</td>
-                        <td><input class="input-cell readonly" value="2026000102" readonly /></td>
-                        <td><input class="input-cell" value="3.370" /></td>
-                        <td><input class="input-cell" value="0.105" /></td>
-                        <td><input class="input-cell" value="FC-102" /></td>
-                        <td><div class="photo-cell"><div class="photo-thumb"></div><span class="upload-link">重新上传</span></div></td>
-                        <td><input class="input-cell readonly" value="2号库位" readonly /></td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </td>
-            </tr>
-
-            <tr class="sum-row">
-              <td>合计</td>
-              <td colspan="5"></td>
-              <td>0.000</td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-            </tr>
-          </tbody>
+                <thead>
+                  <tr>
+                    <th style="width:70px;">件序号</th>
+                    <th style="width:160px;">唯一编号</th>
+                    <th style="width:90px;">入库数量</th>
+                    <th style="width:90px;">吨数</th>
+                    <th style="width:120px;">出厂编码</th>
+                    <th style="width:120px;">照片</th>
+                    <th style="width:100px;">库位</th>
+                    <th style="width:70px;">操作</th>
+                  </tr>
+                </thead>
+                <tbody id="material-2" data-material="60克890*1240平板双胶">
+                  <tr>
+                    <td><input class="cell-input readonly" value="1" readonly /></td>
+                    <td><input class="cell-input readonly" value="" placeholder="审核通过后生成" readonly /></td>
+                    <td><input class="cell-input" value="14.175" /></td>
+                    <td><input class="cell-input" value="0.450" /></td>
+                    <td><input class="cell-input" value="FC-101" /></td>
+                    <td>
+                      <div class="photo-cell">
+                        <div class="photo-list">
+                          <div class="photo-item"><div class="photo-thumb"></div><div class="photo-remove">×</div></div>
+                        </div>
+                        <span class="upload-link">继续上传</span>
+                      </div>
+                    </td>
+                    <td><div class="table-select"><select class="cell-select" data-location><option value="W0001" selected>W0001</option><option value="W0002">W0002</option><option value="W0003">W0003</option></select></div></td>
+                    <td><span class="row-action" data-delete-row>删除</span></td>
+                  </tr>
+                  <tr>
+                    <td><input class="cell-input readonly" value="2" readonly /></td>
+                    <td><input class="cell-input readonly" value="" placeholder="审核通过后生成" readonly /></td>
+                    <td><input class="cell-input" value="14.175" /></td>
+                    <td><input class="cell-input" value="0.450" /></td>
+                    <td><input class="cell-input" value="FC-102" /></td>
+                    <td><span class="upload-link">上传照片</span></td>
+                    <td><div class="table-select"><select class="cell-select" data-location><option value="W0001" selected>W0001</option><option value="W0002">W0002</option><option value="W0003">W0003</option></select></div></td>
+                    <td><span class="row-action" data-delete-row>删除</span></td>
+                  </tr>
+                </tbody>
               </table>
+              </div>
             </div>
-          </div>
+          </section>
         </div>
       </main>
     </div>
   </div>
-
   <script>
-    const buttons = document.querySelectorAll('.expand-btn');
-
-    function collapseAll() {
-      document.querySelectorAll('.child-row').forEach((row) => row.classList.remove('open'));
-      buttons.forEach((btn) => {
-        btn.classList.remove('active');
-        btn.textContent = '展开';
-      });
-    }
-
-    buttons.forEach((button) => {
-      button.addEventListener('click', () => {
-        const targetId = button.getAttribute('data-target');
-        const target = document.getElementById(targetId);
-        const isOpen = target.classList.contains('open');
-
-        collapseAll();
-
-        if (!isOpen) {
-          target.classList.add('open');
-          button.classList.add('active');
-          button.textContent = '收起';
+    const documentLocation = document.getElementById('document-location');
+    const accordionItems = document.querySelectorAll('.accordion-item');
+    accordionItems.forEach((item) => {
+      const header = item.querySelector('.accordion-header');
+      const icon = item.querySelector('.toggle-icon');
+      header.addEventListener('click', () => {
+        const isCollapsed = item.classList.contains('collapsed');
+        accordionItems.forEach((other) => {
+          other.classList.add('collapsed');
+          other.querySelector('.toggle-icon').textContent = '▶';
+        });
+        if (isCollapsed) {
+          item.classList.remove('collapsed');
+          icon.textContent = '▼';
         }
       });
     });
+    function syncLocationsFromDocument() {
+      if (!documentLocation) return;
+      document.querySelectorAll('[data-location]').forEach((select) => {
+        if (select.dataset.manual === 'true') return;
+        select.value = documentLocation.value;
+      });
+    }
+    function resequenceRows(tbody) {
+      Array.from(tbody.querySelectorAll('tr')).forEach((row, index) => {
+        const seqInput = row.querySelector('.cell-input.readonly');
+        if (seqInput) seqInput.value = String(index + 1);
+      });
+    }
+    const addRowButtons = document.querySelectorAll('[data-add-row]');
+    addRowButtons.forEach((button) => {
+      button.addEventListener('click', (event) => {
+        event.stopPropagation();
+        const tbody = document.getElementById(button.dataset.addRow);
+        if (!tbody) return;
+        const nextIndex = tbody.querySelectorAll('tr').length + 1;
+        const materialName = tbody.dataset.material || '';
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td><input class="cell-input readonly" value="${nextIndex}" readonly /></td>
+          <td><input class="cell-input readonly" value="" placeholder="审核通过后生成" readonly /></td>
+          <td><input class="cell-input" value="" /></td>
+          <td><input class="cell-input" value="" /></td>
+          <td><input class="cell-input" value="" /></td>
+          <td><span class="upload-link">上传照片</span></td>
+          <td><div class="table-select"><select class="cell-select" data-location><option value="W0001">W0001</option><option value="W0002">W0002</option><option value="W0003">W0003</option></select></div></td>
+          <td><span class="row-action" data-delete-row>删除</span></td>
+        `;
+        tbody.appendChild(row);
+        resequenceRows(tbody);
+        const locationSelect = row.querySelector('[data-location]');
+        if (locationSelect && documentLocation) {
+          locationSelect.value = documentLocation.value;
+        }
+        const parentItem = button.closest('.accordion-item');
+        if (parentItem && parentItem.classList.contains('collapsed')) {
+          accordionItems.forEach((other) => {
+            other.classList.add('collapsed');
+            other.querySelector('.toggle-icon').textContent = '▶';
+          });
+          parentItem.classList.remove('collapsed');
+          parentItem.querySelector('.toggle-icon').textContent = '▼';
+        }
+        const inputs = row.querySelectorAll('.cell-input');
+        if (inputs[2]) inputs[2].focus();
+      });
+    });
+    if (documentLocation) {
+      documentLocation.addEventListener('change', syncLocationsFromDocument);
+    }
+    document.addEventListener('click', (event) => {
+      const trigger = event.target.closest('[data-delete-row]');
+      if (!trigger) return;
+      const row = trigger.closest('tr');
+      const tbody = row && row.parentElement;
+      if (!row || !tbody) return;
+      row.remove();
+      resequenceRows(tbody);
+    });
+    document.addEventListener('change', (event) => {
+      const select = event.target.closest('[data-location]');
+      if (!select || !documentLocation) return;
+      select.dataset.manual = select.value === documentLocation.value ? 'false' : 'true';
+    });
+    syncLocationsFromDocument();
   </script>
 </body>
 </html>
