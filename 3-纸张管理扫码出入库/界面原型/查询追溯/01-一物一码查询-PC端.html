@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>一物一码查询-PC端</title>
+  <style>
+    * { box-sizing: border-box; }
+    :root {
+      --bg: #f5f7fa;
+      --panel: #ffffff;
+      --line: #e4e7ed;
+      --line-soft: #ebeef5;
+      --text: #303133;
+      --sub: #606266;
+      --hint: #909399;
+      --primary: #409eff;
+      --primary-soft: #ecf5ff;
+      --success: #67c23a;
+      --font-base: 12px;
+      --font-title: 14px;
+    }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: var(--font-base);
+    }
+    .app-shell { min-width: 1440px; }
+    .topbar {
+      height: 56px;
+      background: #fff;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: flex-end;
+      gap: 16px;
+      padding: 0 16px;
+    }
+    .brand {
+      font-size: var(--font-title);
+      font-weight: 600;
+      align-self: center;
+    }
+    .tabs-nav {
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+      margin-bottom: -1px;
+    }
+    .home-tab, .page-tab {
+      height: 34px;
+      padding: 0 16px;
+      border: 1px solid var(--line);
+      border-radius: 4px 4px 0 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+    }
+    .home-tab {
+      background: #f7f8fa;
+      color: var(--sub);
+    }
+    .page-tab {
+      background: #fff;
+      border-bottom-color: #fff;
+      gap: 10px;
+      font-weight: 500;
+    }
+    .tab-close { color: var(--hint); }
+    .main-layout {
+      display: flex;
+      min-height: calc(100vh - 56px);
+    }
+    .sidebar {
+      width: 132px;
+      background: #fff;
+      border-right: 1px solid var(--line);
+      padding: 10px 0;
+    }
+    .menu-group-title {
+      height: 28px;
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      color: var(--hint);
+      font-size: 11px;
+    }
+    .menu-item {
+      height: 34px;
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+      color: var(--sub);
+    }
+    .menu-item.active {
+      background: var(--primary-soft);
+      color: var(--primary);
+      border-right: 2px solid var(--primary);
+      font-weight: 600;
+    }
+    .content {
+      flex: 1;
+      padding: 12px;
+    }
+    .page {
+      border-top: 1px solid var(--line);
+      padding-top: 10px;
+    }
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .toolbar-title {
+      font-size: 16px;
+      font-weight: 600;
+    }
+    .toolbar-actions {
+      display: flex;
+      gap: 8px;
+    }
+    .btn {
+      min-width: 74px;
+      height: 30px;
+      padding: 0 12px;
+      border-radius: 4px;
+      border: 1px solid #dcdfe6;
+      background: #fff;
+      color: var(--sub);
+      cursor: pointer;
+    }
+    .btn.primary {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+    }
+    .btn.text {
+      border-color: transparent;
+      color: var(--primary);
+      background: transparent;
+    }
+    .query-panel,
+    .section {
+      background: var(--panel);
+      border: 1px solid var(--line-soft);
+      margin-bottom: 10px;
+    }
+    .query-panel {
+      padding: 14px 16px;
+    }
+    .query-row {
+      display: grid;
+      grid-template-columns: 76px 320px auto 1fr;
+      gap: 10px;
+      align-items: center;
+    }
+    .query-label {
+      text-align: right;
+      color: var(--sub);
+    }
+    .search-input {
+      height: 32px;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      padding: 0 10px;
+      outline: none;
+      color: var(--text);
+    }
+    .query-tip {
+      color: var(--hint);
+    }
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line-soft);
+      min-height: 180px;
+    }
+    .section-title {
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 12px;
+      border-bottom: 1px solid var(--line-soft);
+      background: #fafbfc;
+      font-size: var(--font-title);
+      font-weight: 600;
+    }
+    .card-body {
+      padding: 12px;
+    }
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px 16px;
+    }
+    .field {
+      display: grid;
+      grid-template-columns: 84px 1fr;
+      align-items: center;
+      gap: 6px;
+    }
+    .field label {
+      text-align: right;
+      color: var(--sub);
+    }
+    .value {
+      min-height: 28px;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      background: #f5f7fa;
+      padding: 5px 8px;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+    .value.emphasis {
+      color: var(--primary);
+      font-weight: 600;
+    }
+    .source-layout {
+      display: grid;
+      grid-template-columns: 1fr 120px;
+      gap: 12px;
+      align-items: start;
+    }
+    .thumb {
+      width: 100%;
+      height: 108px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background:
+        linear-gradient(45deg, transparent 48%, #d9d9d9 49%, #d9d9d9 51%, transparent 52%),
+        linear-gradient(-45deg, transparent 48%, #d9d9d9 49%, #d9d9d9 51%, transparent 52%),
+        #f5f7fa;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+    }
+    th, td {
+      border: 1px solid var(--line-soft);
+      padding: 8px 10px;
+      vertical-align: middle;
+    }
+    th {
+      background: #fafafa;
+      font-weight: 600;
+    }
+    .result-tag {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 72px;
+      height: 24px;
+      padding: 0 10px;
+      border-radius: 12px;
+      background: #f0f9eb;
+      color: var(--success);
+      border: 1px solid #d9f0c7;
+    }
+    .empty-panel {
+      background: var(--panel);
+      border: 1px dashed #dcdfe6;
+      padding: 48px 16px;
+      text-align: center;
+      color: var(--hint);
+      display: none;
+    }
+    .lookup-shell.empty .result-shell {
+      display: none;
+    }
+    .lookup-shell.empty .empty-panel {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <div class="topbar">
+      <div class="brand">ERP门户</div>
+      <div class="tabs-nav">
+        <div class="home-tab">首页</div>
+        <div class="page-tab"><span>一物一码查询</span><span class="tab-close">×</span></div>
+      </div>
+    </div>
+    <div class="main-layout">
+      <aside class="sidebar">
+        <div class="menu-group-title">生产</div>
+        <div class="menu-item">纸张业务</div>
+        <div class="menu-group-title">查询追溯</div>
+        <div class="menu-item active">一物一码查询</div>
+      </aside>
+      <main class="content">
+        <div class="page">
+          <div class="toolbar">
+            <div class="toolbar-title">一物一码查询</div>
+            <div class="toolbar-actions">
+              <button class="btn text">刷新</button>
+            </div>
+          </div>
+
+          <div class="query-panel">
+            <div class="query-row">
+              <div class="query-label">唯一编号</div>
+              <input class="search-input" id="queryInput" value="2025060002" />
+              <button class="btn primary" id="queryBtn">查询</button>
+              <div class="query-tip">支持扫码枪输入唯一编号后直接回车查询</div>
+            </div>
+          </div>
+
+          <div class="lookup-shell" id="lookupShell">
+            <div class="result-shell">
+              <div class="cards-grid">
+                <section class="card">
+                  <div class="section-title">
+                    <span>当前结果</span>
+                    <span class="result-tag">在库</span>
+                  </div>
+                  <div class="card-body">
+                    <div class="info-grid">
+                      <div class="field"><label>当前仓库</label><div class="value emphasis">ND原料仓</div></div>
+                      <div class="field"><label>当前库位</label><div class="value emphasis">W0001</div></div>
+                      <div class="field"><label>最近结果节点</label><div class="value">仓库确认入库</div></div>
+                      <div class="field"><label>最近结果时间</label><div class="value">2025-06-19 14:38:26</div></div>
+                      <div class="field"><label>最近操作人</label><div class="value">李安琪</div></div>
+                      <div class="field"><label>状态说明</label><div class="value">已完成入库，可继续查询追溯</div></div>
+                    </div>
+                  </div>
+                </section>
+
+                <section class="card">
+                  <div class="section-title">
+                    <span>来源信息</span>
+                    <button class="btn" style="min-width:90px;">打印二维码</button>
+                  </div>
+                  <div class="card-body">
+                    <div class="source-layout">
+                      <div class="info-grid">
+                        <div class="field"><label>来源单据类型</label><div class="value">随货同行单</div></div>
+                        <div class="field"><label>来源单据编号</label><div class="value">SZD202506190002-1</div></div>
+                        <div class="field"><label>物料名称</label><div class="value">55克787*1230平板书写</div></div>
+                        <div class="field"><label>入库数量</label><div class="value">11.321</div></div>
+                        <div class="field"><label>吨数</label><div class="value">0.333</div></div>
+                        <div class="field"><label>出厂编码</label><div class="value">FC-002</div></div>
+                        <div class="field"><label>采购订单号</label><div class="value">CGDD202504290001</div></div>
+                        <div class="field"><label>合同号</label><div class="value">HT202504280001</div></div>
+                      </div>
+                      <div class="thumb" title="图片预览"></div>
+                    </div>
+                  </div>
+                </section>
+              </div>
+
+              <section class="section">
+                <div class="section-title">
+                  <span>流转轨迹</span>
+                  <span style="color: var(--hint); font-size: 12px; font-weight: 400;">按实际写入记录展示</span>
+                </div>
+                <table>
+                  <thead>
+                    <tr>
+                      <th style="width:68px;">序号</th>
+                      <th style="width:170px;">时间</th>
+                      <th style="width:140px;">节点</th>
+                      <th style="width:120px;">操作人</th>
+                      <th style="width:150px;">结果</th>
+                      <th style="width:160px;">仓库/库位</th>
+                      <th>来源说明</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>1</td>
+                      <td>2025-06-18 17:42:16</td>
+                      <td>审核通过</td>
+                      <td>陈静</td>
+                      <td>生成唯一编号</td>
+                      <td>-</td>
+                      <td>随货同行单审核通过后生成二维码编号</td>
+                    </tr>
+                    <tr>
+                      <td>2</td>
+                      <td>2025-06-18 18:10:42</td>
+                      <td>二维码打印</td>
+                      <td>陈静</td>
+                      <td>打印成功</td>
+                      <td>-</td>
+                      <td>按原编号打印纸张标签</td>
+                    </tr>
+                    <tr>
+                      <td>3</td>
+                      <td>2025-06-19 09:32:05</td>
+                      <td>仓库确认入库</td>
+                      <td>李安琪</td>
+                      <td>确认入库</td>
+                      <td>ND原料仓 / W0001</td>
+                      <td>入库形式：公司</td>
+                    </tr>
+                    <tr>
+                      <td>4</td>
+                      <td>2025-06-19 14:38:26</td>
+                      <td>结果落账</td>
+                      <td>系统</td>
+                      <td>更新当前库存位置</td>
+                      <td>ND原料仓 / W0001</td>
+                      <td>同步件台账当前仓库、当前库位和最近结果</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+            </div>
+
+            <div class="empty-panel">
+              <div style="font-size: 15px; color: var(--sub); margin-bottom: 6px;">未查询到对应纸张件</div>
+              <div>请输入正确的唯一编号后重新查询</div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    const queryBtn = document.getElementById('queryBtn');
+    const queryInput = document.getElementById('queryInput');
+    const lookupShell = document.getElementById('lookupShell');
+
+    function refreshState() {
+      const keyword = queryInput.value.trim();
+      lookupShell.classList.toggle('empty', !keyword || keyword === 'NOT-FOUND');
+    }
+
+    queryBtn.addEventListener('click', refreshState);
+    queryInput.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') refreshState();
+    });
+
+    refreshState();
+  </script>
+</body>
+</html>

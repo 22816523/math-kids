@@ -140,7 +140,7 @@
     }
     .action-panel {
       padding: 12px;
-      border-top: 1px solid #f2f3f5;
+      border-bottom: 1px solid #f2f3f5;
     }
     .scan-panel {
       overflow: hidden;
@@ -148,6 +148,36 @@
       border: 1px solid #cfe0ff;
       background: linear-gradient(180deg, #f8fbff 0%, #eef5ff 100%);
       box-shadow: inset 0 1px 0 rgba(255,255,255,0.8);
+    }
+    .location-bar {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      padding: 10px 12px;
+      border-bottom: 1px solid rgba(207, 224, 255, 0.9);
+      background: rgba(255,255,255,0.62);
+    }
+    .location-select {
+      height: 34px;
+      border: 1px solid #cfd6e4;
+      border-radius: 8px;
+      background: #fff;
+      padding: 0 12px;
+      color: #1d2129;
+      font-size: 13px;
+      outline: none;
+    }
+    .location-scan-btn {
+      min-width: 68px;
+      height: 34px;
+      padding: 0 12px;
+      border: 1px solid #cfd6e4;
+      border-radius: 8px;
+      background: #fff;
+      color: #3975c6;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
     }
     .scan-stage {
       position: relative;
@@ -251,10 +281,36 @@
       font-size: 12px;
       color: #86909c;
     }
-    .recent-code {
-      margin-top: 10px;
+    .scan-feedback {
+      display: none;
+      margin-top: 12px;
+      padding: 8px 10px;
+      border-radius: 8px;
       font-size: 12px;
-      color: #86909c;
+      line-height: 1.5;
+    }
+    .scan-feedback.show {
+      display: block;
+    }
+    .scan-feedback.success {
+      background: #edf9f0;
+      color: #1f8f48;
+      border: 1px solid #cdebd5;
+    }
+    .scan-feedback.error {
+      background: #fff1f0;
+      color: #cf1322;
+      border: 1px solid #ffc7c2;
+    }
+    .scan-feedback.info {
+      background: #f5f7fa;
+      color: #4e5969;
+      border: 1px solid #e5e6eb;
+    }
+    .section-divider {
+      height: 1px;
+      margin: 0 12px;
+      background: #f2f3f5;
     }
     .accordion {
       border-top: 1px solid #f2f3f5;
@@ -299,6 +355,12 @@
       border-radius: 10px;
       background: #fafbfc;
       border: 1px solid #edf0f5;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    }
+    .piece-card.active {
+      border-color: #69a8ff;
+      background: #f5faff;
+      box-shadow: 0 0 0 2px rgba(64, 158, 255, 0.14);
     }
     .piece-head {
       display: flex;
@@ -336,6 +398,64 @@
       display: flex;
       justify-content: flex-end;
       padding-top: 6px;
+    }
+    .piece-location-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 7px 0;
+      font-size: 14px;
+    }
+    .piece-location-main {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+      flex: 1;
+    }
+    .piece-location-label {
+      min-width: 68px;
+      color: #86909c;
+    }
+    .piece-location-value {
+      min-width: 0;
+      flex: 1;
+      color: #1d2129;
+      word-break: break-all;
+      text-align: right;
+    }
+    .piece-location-actions {
+      display: flex;
+      gap: 8px;
+    }
+    .piece-link-btn {
+      border: 0;
+      padding: 0;
+      background: transparent;
+      color: #3975c6;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .piece-location-editor {
+      display: none;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .piece-location-editor.show {
+      display: flex;
+    }
+    .piece-location-select {
+      flex: 1;
+      height: 34px;
+      border: 1px solid #cfd6e4;
+      border-radius: 8px;
+      background: #fff;
+      padding: 0 10px;
+      color: #1d2129;
+      font-size: 13px;
+      outline: none;
     }
     .piece-note {
       margin-top: 10px;
@@ -398,9 +518,26 @@
 
     <div class="content">
       <div class="section">
+        <div class="section-title">随货同行单图片</div>
+        <div class="gallery">
+          <div class="gallery-card">
+            <div class="preview"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
         <div class="section-title">确认入库</div>
         <div class="action-panel">
           <div class="scan-panel">
+            <div class="location-bar">
+              <select class="location-select" id="locationSelect">
+                <option value="WWYLC-001" selected>默认库位：WWYLC-001</option>
+                <option value="WWYLC-002">默认库位：WWYLC-002</option>
+                <option value="WWYLC-003">默认库位：WWYLC-003</option>
+              </select>
+              <button class="location-scan-btn" id="scanLocationBtn" type="button">扫库位</button>
+            </div>
             <div class="scan-stage">
               <span class="scan-corner lt"></span>
               <span class="scan-corner rt"></span>
@@ -426,16 +563,7 @@
               <span>待确认</span>
             </div>
           </div>
-          <div class="recent-code" id="recent-code">最近识别：SH20250403000101</div>
-        </div>
-      </div>
-
-      <div class="section">
-        <div class="section-title">随货同行单图片</div>
-        <div class="gallery">
-          <div class="gallery-card">
-            <div class="preview"></div>
-          </div>
+          <div class="scan-feedback info show" id="scanFeedback">等待扫码或输入编号后回车确认</div>
         </div>
       </div>
 
@@ -464,7 +592,7 @@
             <span class="count-tag">2件</span>
           </button>
           <div class="accordion-body">
-            <div class="piece-card" data-piece-id="SH20250403000101" data-status="confirmed">
+            <div class="piece-card" data-piece-id="SH20250403000101" data-status="confirmed" data-location-manual="false">
               <div class="piece-head">
                 <div class="piece-index">件序号：1</div>
                 <div class="piece-status confirmed">已确认</div>
@@ -473,12 +601,28 @@
               <div class="row"><div class="label">入库数量：</div><div class="value">30</div></div>
               <div class="row"><div class="label">吨数：</div><div class="value">1</div></div>
               <div class="row"><div class="label">出厂编码：</div><div class="value">FC-001</div></div>
-              <div class="row"><div class="label">当前库位：</div><div class="value">WWYLC-001</div></div>
+              <div class="piece-location-row">
+                <div class="piece-location-main">
+                  <div class="piece-location-label">当前库位：</div>
+                  <div class="piece-location-value" data-piece-location-value>WWYLC-001</div>
+                </div>
+                <div class="piece-location-actions">
+                  <button class="piece-link-btn" type="button" data-piece-edit-toggle>修改</button>
+                </div>
+              </div>
+              <div class="piece-location-editor" data-piece-location-editor>
+                <select class="piece-location-select" data-piece-location-select>
+                  <option value="WWYLC-001" selected>WWYLC-001</option>
+                  <option value="WWYLC-002">WWYLC-002</option>
+                  <option value="WWYLC-003">WWYLC-003</option>
+                </select>
+                <button class="location-scan-btn" type="button" data-piece-scan-location>扫库位</button>
+              </div>
               <div class="piece-media"><div class="piece-thumb"></div></div>
               <div class="piece-note">扫码确认完成</div>
             </div>
 
-            <div class="piece-card" data-piece-id="SH20250403000102" data-status="pending">
+            <div class="piece-card" data-piece-id="SH20250403000102" data-status="pending" data-location-manual="false">
               <div class="piece-head">
                 <div class="piece-index">件序号：2</div>
                 <div class="piece-status pending">待确认</div>
@@ -487,7 +631,23 @@
               <div class="row"><div class="label">入库数量：</div><div class="value">30</div></div>
               <div class="row"><div class="label">吨数：</div><div class="value">1</div></div>
               <div class="row"><div class="label">出厂编码：</div><div class="value">FC-002</div></div>
-              <div class="row"><div class="label">当前库位：</div><div class="value">WWYLC-001</div></div>
+              <div class="piece-location-row">
+                <div class="piece-location-main">
+                  <div class="piece-location-label">当前库位：</div>
+                  <div class="piece-location-value" data-piece-location-value>WWYLC-001</div>
+                </div>
+                <div class="piece-location-actions">
+                  <button class="piece-link-btn" type="button" data-piece-edit-toggle>修改</button>
+                </div>
+              </div>
+              <div class="piece-location-editor" data-piece-location-editor>
+                <select class="piece-location-select" data-piece-location-select>
+                  <option value="WWYLC-001" selected>WWYLC-001</option>
+                  <option value="WWYLC-002">WWYLC-002</option>
+                  <option value="WWYLC-003">WWYLC-003</option>
+                </select>
+                <button class="location-scan-btn" type="button" data-piece-scan-location>扫库位</button>
+              </div>
               <div class="piece-media"><div class="piece-thumb"></div></div>
               <div class="piece-note">待扫码确认</div>
             </div>
@@ -531,9 +691,11 @@
     const toggle = accordion.querySelector('.accordion-toggle');
     const icon = accordion.querySelector('.toggle-icon');
     const scanBtn = document.getElementById('scan-btn');
+    const scanLocationBtn = document.getElementById('scanLocationBtn');
+    const locationSelect = document.getElementById('locationSelect');
     const codeInput = document.getElementById('code-input');
     const submitBtn = document.getElementById('submit-btn');
-    const recentCode = document.getElementById('recent-code');
+    const scanFeedback = document.getElementById('scanFeedback');
     const totalCount = document.getElementById('total-count');
     const confirmedCount = document.getElementById('confirmed-count');
     const pendingCount = document.getElementById('pending-count');
@@ -545,6 +707,36 @@
 
     function getCards() {
       return Array.from(document.querySelectorAll('.piece-card'));
+    }
+
+    function syncPieceLocation(card, location, manual) {
+      const valueNode = card.querySelector('[data-piece-location-value]');
+      const selectNode = card.querySelector('[data-piece-location-select]');
+      if (valueNode) valueNode.textContent = location;
+      if (selectNode) selectNode.value = location;
+      if (manual) {
+        card.dataset.locationManual = 'true';
+      }
+    }
+
+    function applyDefaultLocation(location) {
+      getCards().forEach((card) => {
+        if (card.dataset.locationManual === 'true') return;
+        syncPieceLocation(card, location, false);
+      });
+    }
+
+    function showFeedback(message, type) {
+      scanFeedback.className = `scan-feedback show ${type}`;
+      scanFeedback.textContent = message;
+    }
+
+    function highlightCard(card) {
+      getCards().forEach((item) => item.classList.remove('active'));
+      card.classList.add('active');
+      window.setTimeout(() => {
+        card.classList.remove('active');
+      }, 1800);
     }
 
     function updateSummary() {
@@ -587,18 +779,82 @@
       }
     }
 
+    function resolveTarget(codeText) {
+      const cards = getCards();
+      if (!codeText) {
+        return cards.find((card) => card.dataset.status === 'pending');
+      }
+
+      const matched = cards.find((card) => card.dataset.pieceId === codeText);
+      if (!matched) {
+        showFeedback('未找到对应件明细，请核对唯一编号后重试', 'error');
+        return null;
+      }
+      if (matched.dataset.status === 'confirmed') {
+        showFeedback(`该件已确认，请勿重复操作：${codeText}`, 'error');
+        highlightCard(matched);
+        return null;
+      }
+      return matched;
+    }
+
     function confirmNextPiece(source, codeText) {
       if (scanBtn.classList.contains('disabled')) return;
 
-      const target = getCards().find((card) => card.dataset.status === 'pending');
+      const target = resolveTarget(codeText);
       if (!target) return;
 
       setCardStatus(target, 'confirmed');
-      recentCode.textContent = `${source}：${codeText || target.dataset.pieceId}`;
+      const finalCode = codeText || target.dataset.pieceId;
+      showFeedback(`识别成功，已确认 ${finalCode}`, 'success');
+      highlightCard(target);
       updateSummary();
     }
 
     scanBtn.addEventListener('click', () => confirmNextPiece('最近识别'));
+
+    scanLocationBtn.addEventListener('click', () => {
+      locationSelect.value = 'WWYLC-002';
+      applyDefaultLocation(locationSelect.value);
+      showFeedback('库位识别成功，默认库位已切换为 WWYLC-002', 'success');
+    });
+
+    locationSelect.addEventListener('change', () => {
+      applyDefaultLocation(locationSelect.value);
+      showFeedback(`默认库位已更新为 ${locationSelect.value}`, 'success');
+    });
+
+    document.querySelectorAll('[data-piece-edit-toggle]').forEach((button) => {
+      button.addEventListener('click', () => {
+        const card = button.closest('.piece-card');
+        const editor = card.querySelector('[data-piece-location-editor]');
+        const show = !editor.classList.contains('show');
+        document.querySelectorAll('[data-piece-location-editor]').forEach((node) => node.classList.remove('show'));
+        document.querySelectorAll('[data-piece-edit-toggle]').forEach((node) => {
+          node.textContent = '修改';
+        });
+        if (show) {
+          editor.classList.add('show');
+          button.textContent = '收起';
+        }
+      });
+    });
+
+    document.querySelectorAll('[data-piece-location-select]').forEach((select) => {
+      select.addEventListener('change', () => {
+        const card = select.closest('.piece-card');
+        syncPieceLocation(card, select.value, true);
+        showFeedback(`件级库位已更新为 ${select.value}`, 'success');
+      });
+    });
+
+    document.querySelectorAll('[data-piece-scan-location]').forEach((button) => {
+      button.addEventListener('click', () => {
+        const card = button.closest('.piece-card');
+        syncPieceLocation(card, 'WWYLC-003', true);
+        showFeedback(`件级库位识别成功，已更新为 WWYLC-003`, 'success');
+      });
+    });
 
     codeInput.addEventListener('keydown', (event) => {
       if (event.key !== 'Enter') return;
@@ -609,6 +865,7 @@
       codeInput.value = '';
     });
 
+    applyDefaultLocation(locationSelect.value);
     updateSummary();
   </script>
 </body>
