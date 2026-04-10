@@ -74,7 +74,7 @@
       min-height: calc(100vh - 56px);
     }
     .sidebar {
-      width: 132px;
+      width: 160px;
       background: #fff;
       border-right: 1px solid var(--line);
       padding: 10px 0;
@@ -94,11 +94,43 @@
       padding: 0 16px;
       color: var(--sub);
     }
+    .menu-item.parent {
+      justify-content: space-between;
+      font-weight: 500;
+    }
+    .menu-item.parent::after {
+      content: "▾";
+      font-size: 10px;
+      color: var(--hint);
+    }
+    .submenu {
+      padding-bottom: 6px;
+    }
+    .submenu .menu-item {
+      height: 32px;
+      padding-left: 34px;
+      font-size: 12px;
+      position: relative;
+    }
+    .submenu .menu-item::before {
+      content: "";
+      position: absolute;
+      left: 20px;
+      top: 50%;
+      width: 6px;
+      height: 6px;
+      margin-top: -3px;
+      border-radius: 50%;
+      background: #c0c4cc;
+    }
     .menu-item.active {
       background: var(--primary-soft);
       color: var(--primary);
       border-right: 2px solid var(--primary);
       font-weight: 600;
+    }
+    .submenu .menu-item.active::before {
+      background: var(--primary);
     }
     .content {
       flex: 1;
@@ -153,7 +185,7 @@
     }
     .query-row {
       display: grid;
-      grid-template-columns: 76px 320px auto 1fr;
+      grid-template-columns: 76px 320px auto auto 1fr;
       gap: 10px;
       align-items: center;
     }
@@ -169,13 +201,7 @@
       outline: none;
       color: var(--text);
     }
-    .query-tip {
-      color: var(--hint);
-    }
     .cards-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 10px;
       margin-bottom: 10px;
     }
     .card {
@@ -258,18 +284,6 @@
       background: #fafafa;
       font-weight: 600;
     }
-    .result-tag {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-width: 72px;
-      height: 24px;
-      padding: 0 10px;
-      border-radius: 12px;
-      background: #f0f9eb;
-      color: var(--success);
-      border: 1px solid #d9f0c7;
-    }
     .empty-panel {
       background: var(--panel);
       border: 1px dashed #dcdfe6;
@@ -298,9 +312,10 @@
     <div class="main-layout">
       <aside class="sidebar">
         <div class="menu-group-title">生产</div>
-        <div class="menu-item">纸张业务</div>
-        <div class="menu-group-title">查询追溯</div>
-        <div class="menu-item active">一物一码查询</div>
+        <div class="menu-item parent">物料管理</div>
+        <div class="submenu">
+          <div class="menu-item active">一物一码查询</div>
+        </div>
       </aside>
       <main class="content">
         <div class="page">
@@ -316,7 +331,7 @@
               <div class="query-label">唯一编号</div>
               <input class="search-input" id="queryInput" value="2025060002" />
               <button class="btn primary" id="queryBtn">查询</button>
-              <div class="query-tip">支持扫码枪输入唯一编号后直接回车查询</div>
+              <button class="btn" style="min-width:90px;">打印二维码</button>
             </div>
           </div>
 
@@ -325,25 +340,7 @@
               <div class="cards-grid">
                 <section class="card">
                   <div class="section-title">
-                    <span>当前结果</span>
-                    <span class="result-tag">在库</span>
-                  </div>
-                  <div class="card-body">
-                    <div class="info-grid">
-                      <div class="field"><label>当前仓库</label><div class="value emphasis">ND原料仓</div></div>
-                      <div class="field"><label>当前库位</label><div class="value emphasis">W0001</div></div>
-                      <div class="field"><label>最近结果节点</label><div class="value">仓库确认入库</div></div>
-                      <div class="field"><label>最近结果时间</label><div class="value">2025-06-19 14:38:26</div></div>
-                      <div class="field"><label>最近操作人</label><div class="value">李安琪</div></div>
-                      <div class="field"><label>状态说明</label><div class="value">已完成入库，可继续查询追溯</div></div>
-                    </div>
-                  </div>
-                </section>
-
-                <section class="card">
-                  <div class="section-title">
-                    <span>来源信息</span>
-                    <button class="btn" style="min-width:90px;">打印二维码</button>
+                    <span>件明细</span>
                   </div>
                   <div class="card-body">
                     <div class="source-layout">
@@ -351,11 +348,14 @@
                         <div class="field"><label>来源单据类型</label><div class="value">随货同行单</div></div>
                         <div class="field"><label>来源单据编号</label><div class="value">SZD202506190002-1</div></div>
                         <div class="field"><label>物料名称</label><div class="value">55克787*1230平板书写</div></div>
-                        <div class="field"><label>入库数量</label><div class="value">11.321</div></div>
+                        <div class="field"><label>存储数量</label><div class="value">11.321</div></div>
                         <div class="field"><label>吨数</label><div class="value">0.333</div></div>
                         <div class="field"><label>出厂编码</label><div class="value">FC-002</div></div>
-                        <div class="field"><label>采购订单号</label><div class="value">CGDD202504290001</div></div>
-                        <div class="field"><label>合同号</label><div class="value">HT202504280001</div></div>
+                        <div class="field"><label>当前仓库</label><div class="value emphasis">ND原料仓</div></div>
+                        <div class="field"><label>当前库位</label><div class="value emphasis">W0001</div></div>
+                        <div class="field"><label>最近结果</label><div class="value">入库成功</div></div>
+                        <div class="field"><label>最近结果时间</label><div class="value">2025-06-19 09:32:05</div></div>
+                        <div class="field"><label>最近操作人</label><div class="value">李安琪</div></div>
                       </div>
                       <div class="thumb" title="图片预览"></div>
                     </div>
@@ -365,57 +365,34 @@
 
               <section class="section">
                 <div class="section-title">
-                  <span>流转轨迹</span>
-                  <span style="color: var(--hint); font-size: 12px; font-weight: 400;">按实际写入记录展示</span>
+                  <span>结果记录</span>
+                  <span style="color: var(--hint); font-size: 12px; font-weight: 400;">仅记录最终业务结果，不记录中间状态</span>
                 </div>
                 <table>
                   <thead>
                     <tr>
                       <th style="width:68px;">序号</th>
-                      <th style="width:170px;">时间</th>
-                      <th style="width:140px;">节点</th>
-                      <th style="width:120px;">操作人</th>
-                      <th style="width:150px;">结果</th>
-                      <th style="width:160px;">仓库/库位</th>
-                      <th>来源说明</th>
+                      <th style="width:170px;">结果时间</th>
+                      <th style="width:120px;">来源单据</th>
+                      <th style="width:180px;">单据编号</th>
+                      <th style="width:120px;">结果</th>
+                      <th style="width:110px;">操作人</th>
+                      <th style="width:160px;">来源仓库/库位</th>
+                      <th style="width:160px;">目标仓库/库位</th>
+                      <th>结果说明</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr>
                       <td>1</td>
-                      <td>2025-06-18 17:42:16</td>
-                      <td>审核通过</td>
-                      <td>陈静</td>
-                      <td>生成唯一编号</td>
-                      <td>-</td>
-                      <td>随货同行单审核通过后生成二维码编号</td>
-                    </tr>
-                    <tr>
-                      <td>2</td>
-                      <td>2025-06-18 18:10:42</td>
-                      <td>二维码打印</td>
-                      <td>陈静</td>
-                      <td>打印成功</td>
-                      <td>-</td>
-                      <td>按原编号打印纸张标签</td>
-                    </tr>
-                    <tr>
-                      <td>3</td>
                       <td>2025-06-19 09:32:05</td>
-                      <td>仓库确认入库</td>
+                      <td>随货同行单</td>
+                      <td>SZD202506190002-1</td>
+                      <td>入库成功</td>
                       <td>李安琪</td>
-                      <td>确认入库</td>
+                      <td>-</td>
                       <td>ND原料仓 / W0001</td>
-                      <td>入库形式：公司</td>
-                    </tr>
-                    <tr>
-                      <td>4</td>
-                      <td>2025-06-19 14:38:26</td>
-                      <td>结果落账</td>
-                      <td>系统</td>
-                      <td>更新当前库存位置</td>
-                      <td>ND原料仓 / W0001</td>
-                      <td>同步件台账当前仓库、当前库位和最近结果</td>
+                      <td>入库到 ND原料仓，库位 W0001</td>
                     </tr>
                   </tbody>
                 </table>

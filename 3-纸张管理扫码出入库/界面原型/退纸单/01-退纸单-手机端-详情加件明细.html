@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>退纸单-手机端-详情加件明细</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+      background: #f2f3f5;
+      color: #1d2129;
+    }
+    .phone {
+      width: 390px;
+      margin: 24px auto;
+      border: 1px solid #dcdfe6;
+      border-radius: 24px;
+      overflow: hidden;
+      background: #f2f3f5;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    }
+    .header {
+      background: #fff;
+      color: #1d2129;
+    }
+    .nav {
+      display: grid;
+      grid-template-columns: auto auto 1fr auto;
+      align-items: center;
+      column-gap: 18px;
+      height: 56px;
+      padding: 0 16px;
+      border-bottom: 1px solid #eef1f6;
+      font-size: 15px;
+      background: #fff;
+    }
+    .nav-title {
+      grid-column: 3;
+      justify-self: center;
+      font-size: 17px;
+      font-weight: 700;
+    }
+    .nav-icon {
+      font-size: 18px;
+      line-height: 1;
+      color: #1d2129;
+    }
+    .nav-icon.more {
+      font-size: 24px;
+      justify-self: end;
+    }
+    .status-card {
+      margin: 0;
+      padding: 20px 22px 104px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.02) 100%),
+        linear-gradient(180deg, #3f79c5 0%, #4b82cf 100%);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      overflow: hidden;
+      position: relative;
+    }
+    .status-card::after {
+      content: "";
+      position: absolute;
+      left: -8%;
+      right: -8%;
+      bottom: 20px;
+      height: 88px;
+      background:
+        radial-gradient(120px 42px at 16% 60%, rgba(255,255,255,0.16) 0%, rgba(255,255,255,0) 72%),
+        radial-gradient(160px 48px at 46% 42%, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0) 72%),
+        radial-gradient(140px 44px at 78% 58%, rgba(255,255,255,0.14) 0%, rgba(255,255,255,0) 72%);
+      pointer-events: none;
+    }
+    .status-main {
+      position: relative;
+      z-index: 1;
+      font-size: 18px;
+      font-weight: 700;
+    }
+    .status-link {
+      position: relative;
+      z-index: 1;
+      color: #fff;
+      font-size: 28px;
+      line-height: 1;
+    }
+    .content {
+      position: relative;
+      z-index: 2;
+      margin-top: -78px;
+      padding: 0 12px 18px;
+    }
+    .section {
+      margin-bottom: 12px;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #fff;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+    }
+    .section-title {
+      padding: 10px 12px;
+      background: #e8f5ff;
+      color: #3975c6;
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .block {
+      padding: 12px;
+      border-top: 1px solid #f2f3f5;
+    }
+    .row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 7px 0;
+      font-size: 14px;
+    }
+    .label {
+      min-width: 92px;
+      color: #86909c;
+    }
+    .label.required::before {
+      content: "*";
+      margin-right: 4px;
+      color: #f53f3f;
+    }
+    .value {
+      flex: 1;
+      text-align: right;
+      color: #1d2129;
+      word-break: break-all;
+    }
+    .value.blue {
+      color: #1979ff;
+      font-weight: 600;
+    }
+    .value.photo-value {
+      display: flex;
+      justify-content: flex-end;
+    }
+    .accordion {
+      border-top: 1px solid #f2f3f5;
+    }
+    .accordion-toggle {
+      width: 100%;
+      padding: 12px;
+      border: 0;
+      background: #fbfcfe;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      color: #1d2129;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .accordion-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-align: left;
+    }
+    .toggle-icon {
+      width: 16px;
+      color: #86909c;
+      font-size: 12px;
+    }
+    .count-tag {
+      color: #3975c6;
+      background: #edf5ff;
+      border-radius: 999px;
+      padding: 2px 8px;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+    .piece-card {
+      margin: 0 12px 12px;
+      padding: 12px;
+      border-radius: 10px;
+      background: #fafbfc;
+      border: 1px solid #edf0f5;
+    }
+    .piece-photo-card {
+      width: 92px;
+      height: 68px;
+      border: 1px solid #d9e6fb;
+      border-radius: 8px;
+      background:
+        linear-gradient(45deg, transparent 48%, #d8d8d8 49%, #d8d8d8 51%, transparent 52%),
+        linear-gradient(-45deg, transparent 48%, #d8d8d8 49%, #d8d8d8 51%, transparent 52%),
+        #f2f3f5;
+    }
+    .attachment-card {
+      width: 120px;
+      height: 88px;
+      border: 1px solid #d9e6fb;
+      border-radius: 8px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.6), rgba(255,255,255,0.6)),
+        linear-gradient(135deg, #ddeaff 0%, #bdd2ff 100%);
+    }
+    .accordion.collapsed .accordion-body {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="phone">
+    <div class="header">
+      <div class="nav">
+        <span class="nav-icon">←</span>
+        <span class="nav-icon">×</span>
+        <span class="nav-title">退纸单</span>
+        <span class="nav-icon more">⋯</span>
+      </div>
+      <div class="status-card">
+        <div class="status-main">完结</div>
+        <div class="status-link">›</div>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="section">
+        <div class="section-title">原料明细（1）</div>
+        <div class="block">
+          <div class="row"><div class="label">名称：</div><div class="value">200克889*1240平板铜版纸</div></div>
+          <div class="row"><div class="label">件数：</div><div class="value">3</div></div>
+          <div class="row"><div class="label">调拨吨数：</div><div class="value">2</div></div>
+          <div class="row"><div class="label">转换率：</div><div class="value">9.072</div></div>
+          <div class="row"><div class="label required">调拨数量：</div><div class="value blue">18.144</div></div>
+          <div class="row"><div class="label">存储单位：</div><div class="value">令</div></div>
+        </div>
+        <div class="accordion">
+          <button class="accordion-toggle" type="button">
+            <span class="accordion-title"><span class="toggle-icon">▼</span><span>件明细</span></span>
+            <span class="count-tag">2件</span>
+          </button>
+          <div class="accordion-body">
+            <div class="piece-card">
+              <div class="row"><div class="label">件序号：</div><div class="value">1</div></div>
+              <div class="row"><div class="label">唯一编号：</div><div class="value">RP-20260408-001</div></div>
+              <div class="row"><div class="label">调拨数量：</div><div class="value blue">9.072</div></div>
+              <div class="row"><div class="label">吨数：</div><div class="value">1</div></div>
+              <div class="row"><div class="label">调入仓库：</div><div class="value">万纬原料仓</div></div>
+              <div class="row"><div class="label">调入库位：</div><div class="value">WW-YL-01-01</div></div>
+              <div class="row"><div class="label">图片：</div><div class="value photo-value"><div class="piece-photo-card"></div></div></div>
+            </div>
+            <div class="piece-card">
+              <div class="row"><div class="label">件序号：</div><div class="value">2</div></div>
+              <div class="row"><div class="label">唯一编号：</div><div class="value">RP-20260408-002</div></div>
+              <div class="row"><div class="label">调拨数量：</div><div class="value blue">9.072</div></div>
+              <div class="row"><div class="label">吨数：</div><div class="value">1</div></div>
+              <div class="row"><div class="label">调入仓库：</div><div class="value">万纬原料仓</div></div>
+              <div class="row"><div class="label">调入库位：</div><div class="value">WW-YL-01-02</div></div>
+              <div class="row"><div class="label">图片：</div><div class="value photo-value"><div class="piece-photo-card"></div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">单据信息</div>
+        <div class="block">
+          <div class="row"><div class="label">单据编号：</div><div class="value">RP202604080001</div></div>
+          <div class="row"><div class="label">提交时间：</div><div class="value">2026-04-08 14:25</div></div>
+          <div class="row"><div class="label">调入地点：</div><div class="value">万纬原料仓</div></div>
+          <div class="row"><div class="label">调出地点：</div><div class="value">金太阳印务仓库</div></div>
+          <div class="row"><div class="label">状态：</div><div class="value">完结</div></div>
+          <div class="row"><div class="label">印厂：</div><div class="value">金太阳印务</div></div>
+          <div class="row"><div class="label">备注：</div><div class="value">测试</div></div>
+          <div class="row"><div class="label">纸张到库时间：</div><div class="value">2026-04-08</div></div>
+          <div class="row"><div class="label">纸张到库图片：</div><div class="value photo-value"><div class="piece-photo-card"></div></div></div>
+          <div class="row"><div class="label">附件：</div><div class="value photo-value"><div class="attachment-card"></div></div></div>
+          <div class="row"><div class="label">物料分类：</div><div class="value">纸张</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.querySelectorAll('.accordion-toggle').forEach((toggle) => {
+      toggle.addEventListener('click', () => {
+        const item = toggle.closest('.accordion');
+        const icon = item.querySelector('.toggle-icon');
+        item.classList.toggle('collapsed');
+        icon.textContent = item.classList.contains('collapsed') ? '▲' : '▼';
+      });
+    });
+  </script>
+</body>
+</html>

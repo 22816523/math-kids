@@ -22,53 +22,84 @@
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
     }
     .header {
-      background: linear-gradient(180deg, #3975c6 0%, #4a8ee8 100%);
-      color: #fff;
-      padding: 18px 16px 62px;
-      position: relative;
+      background: #fff;
+      color: #1d2129;
     }
     .nav {
-      display: flex;
+      display: grid;
+      grid-template-columns: auto auto 1fr auto;
       align-items: center;
-      justify-content: space-between;
+      column-gap: 18px;
+      height: 56px;
+      padding: 0 16px;
+      border-bottom: 1px solid #eef1f6;
       font-size: 15px;
-      margin-bottom: 10px;
+      background: #fff;
     }
     .nav-title {
+      grid-column: 3;
+      justify-self: center;
       font-size: 17px;
       font-weight: 700;
     }
+    .nav-icon {
+      font-size: 18px;
+      line-height: 1;
+      color: #1d2129;
+    }
+    .nav-icon.more {
+      font-size: 24px;
+      justify-self: end;
+    }
     .status-card {
-      position: absolute;
-      left: 16px;
-      right: 16px;
-      bottom: -28px;
-      background: #fff;
-      border-radius: 14px;
-      padding: 12px 14px;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+      margin: 0;
+      padding: 20px 22px 104px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.02) 100%),
+        linear-gradient(180deg, #3f79c5 0%, #4b82cf 100%);
+      color: #fff;
+      border-radius: 0;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 12px;
+      overflow: hidden;
+      position: relative;
+    }
+    .status-card::after {
+      content: "";
+      position: absolute;
+      left: -8%;
+      right: -8%;
+      bottom: 20px;
+      height: 88px;
+      background:
+        radial-gradient(120px 42px at 16% 60%, rgba(255,255,255,0.16) 0%, rgba(255,255,255,0) 72%),
+        radial-gradient(160px 48px at 46% 42%, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0) 72%),
+        radial-gradient(140px 44px at 78% 58%, rgba(255,255,255,0.14) 0%, rgba(255,255,255,0) 72%);
+      pointer-events: none;
     }
     .status-main {
-      font-size: 16px;
+      font-size: 18px;
       font-weight: 700;
-      color: #1979ff;
+      color: #fff;
+      position: relative;
+      z-index: 1;
     }
-    .status-sub {
-      font-size: 12px;
-      color: #86909c;
-      margin-top: 4px;
-    }
+    .status-sub { display: none; }
     .status-link {
-      color: #1979ff;
-      font-size: 13px;
+      color: #fff;
+      font-size: 28px;
+      line-height: 1;
       white-space: nowrap;
+      position: relative;
+      z-index: 1;
     }
     .content {
-      padding: 40px 12px 96px;
+      padding: 0 12px 96px;
+      margin-top: -78px;
+      position: relative;
+      z-index: 2;
     }
     .section {
       margin-bottom: 12px;
@@ -362,18 +393,9 @@
       background: #f5faff;
       box-shadow: 0 0 0 2px rgba(64, 158, 255, 0.14);
     }
-    .piece-head {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 8px;
-    }
-    .piece-index {
-      font-size: 14px;
-      font-weight: 700;
-    }
     .piece-status {
+      display: inline-flex;
+      align-items: center;
       padding: 3px 10px;
       border-radius: 999px;
       font-size: 12px;
@@ -387,17 +409,19 @@
       background: #e8ffea;
       color: #1f8f48;
     }
-    .piece-thumb {
-      width: 44px;
-      height: 44px;
-      border: 1px solid #d9e6fb;
-      border-radius: 8px;
-      background: linear-gradient(135deg, #d7d7d7 0%, #efefef 100%);
-    }
-    .piece-media {
+    .value.photo-value {
       display: flex;
       justify-content: flex-end;
-      padding-top: 6px;
+    }
+    .piece-photo-card {
+      width: 92px;
+      height: 68px;
+      border: 1px solid #d9e6fb;
+      border-radius: 8px;
+      background:
+        linear-gradient(45deg, transparent 48%, #d8d8d8 49%, #d8d8d8 51%, transparent 52%),
+        linear-gradient(-45deg, transparent 48%, #d8d8d8 49%, #d8d8d8 51%, transparent 52%),
+        #f2f3f5;
     }
     .piece-location-row {
       display: flex;
@@ -457,12 +481,6 @@
       font-size: 13px;
       outline: none;
     }
-    .piece-note {
-      margin-top: 10px;
-      text-align: right;
-      font-size: 12px;
-      color: #86909c;
-    }
     .footer {
       position: sticky;
       bottom: 0;
@@ -504,15 +522,16 @@
   <div class="phone">
     <div class="header">
       <div class="nav">
-        <span>←</span>
+        <span class="nav-icon">←</span>
+        <span class="nav-icon">×</span>
         <span class="nav-title">随货同行单</span>
-        <span>⋯</span>
+        <span class="nav-icon more">⋯</span>
       </div>
       <div class="status-card">
         <div>
           <div class="status-main">已处理（待确认入库）</div>
         </div>
-        <div class="status-link">进度</div>
+        <div class="status-link">›</div>
       </div>
     </div>
 
@@ -593,10 +612,8 @@
           </button>
           <div class="accordion-body">
             <div class="piece-card" data-piece-id="SH20250403000101" data-status="confirmed" data-location-manual="false">
-              <div class="piece-head">
-                <div class="piece-index">件序号：1</div>
-                <div class="piece-status confirmed">已确认</div>
-              </div>
+              <div class="row"><div class="label">件序号：</div><div class="value">1</div></div>
+              <div class="row"><div class="label">状态：</div><div class="value"><span class="piece-status confirmed">已确认</span></div></div>
               <div class="row"><div class="label">唯一编号：</div><div class="value">SH20250403000101</div></div>
               <div class="row"><div class="label">入库数量：</div><div class="value">30</div></div>
               <div class="row"><div class="label">吨数：</div><div class="value">1</div></div>
@@ -618,15 +635,12 @@
                 </select>
                 <button class="location-scan-btn" type="button" data-piece-scan-location>扫库位</button>
               </div>
-              <div class="piece-media"><div class="piece-thumb"></div></div>
-              <div class="piece-note">扫码确认完成</div>
+              <div class="row"><div class="label">图片：</div><div class="value photo-value"><div class="piece-photo-card"></div></div></div>
             </div>
 
             <div class="piece-card" data-piece-id="SH20250403000102" data-status="pending" data-location-manual="false">
-              <div class="piece-head">
-                <div class="piece-index">件序号：2</div>
-                <div class="piece-status pending">待确认</div>
-              </div>
+              <div class="row"><div class="label">件序号：</div><div class="value">2</div></div>
+              <div class="row"><div class="label">状态：</div><div class="value"><span class="piece-status pending">待确认</span></div></div>
               <div class="row"><div class="label">唯一编号：</div><div class="value">SH20250403000102</div></div>
               <div class="row"><div class="label">入库数量：</div><div class="value">30</div></div>
               <div class="row"><div class="label">吨数：</div><div class="value">1</div></div>
@@ -648,8 +662,7 @@
                 </select>
                 <button class="location-scan-btn" type="button" data-piece-scan-location>扫库位</button>
               </div>
-              <div class="piece-media"><div class="piece-thumb"></div></div>
-              <div class="piece-note">待扫码确认</div>
+              <div class="row"><div class="label">图片：</div><div class="value photo-value"><div class="piece-photo-card"></div></div></div>
             </div>
           </div>
         </div>
@@ -764,18 +777,15 @@
 
     function setCardStatus(card, status) {
       const badge = card.querySelector('.piece-status');
-      const note = card.querySelector('.piece-note');
       card.dataset.status = status;
       badge.classList.remove('pending', 'confirmed');
 
       if (status === 'confirmed') {
         badge.classList.add('confirmed');
         badge.textContent = '已确认';
-        if (note) note.textContent = '扫码确认完成';
       } else {
         badge.classList.add('pending');
         badge.textContent = '待确认';
-        if (note) note.textContent = '待扫码确认';
       }
     }
 
