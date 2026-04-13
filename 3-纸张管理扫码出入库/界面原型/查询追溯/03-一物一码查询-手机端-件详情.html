@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>一物一码查询-手机端-件详情</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+      background: #f2f3f5;
+      color: #1d2129;
+    }
+    .phone {
+      width: 390px;
+      margin: 24px auto;
+      border: 1px solid #dcdfe6;
+      border-radius: 24px;
+      overflow: hidden;
+      background: #f2f3f5;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    }
+    .header {
+      background: #fff;
+      color: #1d2129;
+    }
+    .nav {
+      display: grid;
+      grid-template-columns: auto auto 1fr auto;
+      align-items: center;
+      column-gap: 18px;
+      height: 56px;
+      padding: 0 16px;
+      border-bottom: 1px solid #eef1f6;
+      font-size: 15px;
+      background: #fff;
+    }
+    .nav-title {
+      grid-column: 3;
+      justify-self: center;
+      font-size: 17px;
+      font-weight: 700;
+    }
+    .nav-icon {
+      font-size: 18px;
+      line-height: 1;
+      color: #1d2129;
+      cursor: pointer;
+    }
+    .nav-icon.more {
+      font-size: 24px;
+      justify-self: end;
+    }
+    .hero {
+      padding: 20px 22px 104px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.02) 100%),
+        linear-gradient(180deg, #3f79c5 0%, #4b82cf 100%);
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::after {
+      content: "";
+      position: absolute;
+      left: -8%;
+      right: -8%;
+      bottom: 20px;
+      height: 88px;
+      background:
+        radial-gradient(120px 42px at 16% 60%, rgba(255,255,255,0.16) 0%, rgba(255,255,255,0) 72%),
+        radial-gradient(160px 48px at 46% 42%, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0) 72%),
+        radial-gradient(140px 44px at 78% 58%, rgba(255,255,255,0.14) 0%, rgba(255,255,255,0) 72%);
+      pointer-events: none;
+    }
+    .hero-title {
+      position: relative;
+      z-index: 1;
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .hero-sub {
+      position: relative;
+      z-index: 1;
+      font-size: 13px;
+      line-height: 1.5;
+      color: rgba(255,255,255,0.88);
+    }
+    .content {
+      position: relative;
+      z-index: 2;
+      margin-top: -78px;
+      padding: 0 12px 18px;
+    }
+    .section {
+      margin-bottom: 12px;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #fff;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+    }
+    .section-title {
+      padding: 10px 12px;
+      background: #e8f5ff;
+      color: #3975c6;
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .block {
+      padding: 12px;
+      border-top: 1px solid #f2f3f5;
+    }
+    .row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 6px 0;
+      font-size: 14px;
+    }
+    .label {
+      min-width: 92px;
+      color: #86909c;
+    }
+    .value {
+      flex: 1;
+      text-align: right;
+      color: #1d2129;
+      word-break: break-all;
+    }
+    .thumb-wrap {
+      display: flex;
+      justify-content: flex-end;
+    }
+    .thumb {
+      width: 92px;
+      height: 68px;
+      border: 1px solid #d9e6fb;
+      border-radius: 8px;
+      background:
+        linear-gradient(45deg, transparent 48%, #d8d8d8 49%, #d8d8d8 51%, transparent 52%),
+        linear-gradient(-45deg, transparent 48%, #d8d8d8 49%, #d8d8d8 51%, transparent 52%),
+        #f2f3f5;
+    }
+    .record-item {
+      margin: 0 12px 12px;
+      padding: 12px;
+      border-radius: 10px;
+      background: #fafbfc;
+      border: 1px solid #edf0f5;
+    }
+    .record-title {
+      margin-bottom: 8px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #1d2129;
+    }
+  </style>
+</head>
+<body>
+  <div class="phone">
+    <div class="header">
+      <div class="nav">
+        <span class="nav-icon" id="backBtn">←</span>
+        <span class="nav-icon" id="closeBtn">✕</span>
+        <span class="nav-title">件详情</span>
+        <span class="nav-icon more">⋯</span>
+      </div>
+      <div class="hero">
+        <div class="hero-title">2025060002</div>
+        <div class="hero-sub">当前仓库：ND原料仓　当前库位：W0001</div>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="section">
+        <div class="section-title">基础信息</div>
+        <div class="block">
+          <div class="row"><div class="label">唯一编号</div><div class="value">2025060002</div></div>
+          <div class="row"><div class="label">原料编码</div><div class="value">RM-787-1230</div></div>
+          <div class="row"><div class="label">原料名称</div><div class="value">55克 787*1230 平板书写纸</div></div>
+          <div class="row"><div class="label">存储数量</div><div class="value">11.321</div></div>
+          <div class="row"><div class="label">吨数</div><div class="value">0.333</div></div>
+          <div class="row"><div class="label">出厂编码</div><div class="value">FC-002</div></div>
+          <div class="row"><div class="label">当前仓库</div><div class="value">ND原料仓</div></div>
+          <div class="row"><div class="label">当前库位</div><div class="value">W0001</div></div>
+          <div class="row"><div class="label">件级图片</div><div class="value thumb-wrap"><div class="thumb"></div></div></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">单据结果记录</div>
+        <div class="record-item">
+          <div class="record-title">记录1</div>
+          <div class="row"><div class="label">结果时间</div><div class="value">2025-06-19 09:32:05</div></div>
+          <div class="row"><div class="label">单据类型</div><div class="value">随货同行单</div></div>
+          <div class="row"><div class="label">单据编号</div><div class="value">SZD202506190002-1</div></div>
+          <div class="row"><div class="label">结果</div><div class="value">入库成功</div></div>
+        </div>
+        <div class="record-item">
+          <div class="record-title">记录2</div>
+          <div class="row"><div class="label">结果时间</div><div class="value">2025-06-21 16:11:47</div></div>
+          <div class="row"><div class="label">单据类型</div><div class="value">提纸单</div></div>
+          <div class="row"><div class="label">单据编号</div><div class="value">TZD202506210003</div></div>
+          <div class="row"><div class="label">结果</div><div class="value">确认收纸</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    const backBtn = document.getElementById('backBtn');
+    const closeBtn = document.getElementById('closeBtn');
+
+    function goBackToList() {
+      if (window.history.length > 1) {
+        window.history.back();
+      } else {
+        window.location.href = './02-一物一码查询-手机端.html';
+      }
+    }
+
+    backBtn.addEventListener('click', goBackToList);
+    closeBtn.addEventListener('click', goBackToList);
+  </script>
+</body>
+</html>

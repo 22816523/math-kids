@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>一物一码查询-PC端</title>
+  <title>查询追溯-PC端</title>
   <style>
     * { box-sizing: border-box; }
     :root {
@@ -16,7 +16,6 @@
       --hint: #909399;
       --primary: #409eff;
       --primary-soft: #ecf5ff;
-      --success: #67c23a;
       --font-base: 12px;
       --font-title: 14px;
     }
@@ -103,9 +102,7 @@
       font-size: 10px;
       color: var(--hint);
     }
-    .submenu {
-      padding-bottom: 6px;
-    }
+    .submenu { padding-bottom: 6px; }
     .submenu .menu-item {
       height: 32px;
       padding-left: 34px;
@@ -129,9 +126,7 @@
       border-right: 2px solid var(--primary);
       font-weight: 600;
     }
-    .submenu .menu-item.active::before {
-      background: var(--primary);
-    }
+    .submenu .menu-item.active::before { background: var(--primary); }
     .content {
       flex: 1;
       padding: 12px;
@@ -150,10 +145,6 @@
       font-size: 16px;
       font-weight: 600;
     }
-    .toolbar-actions {
-      display: flex;
-      gap: 8px;
-    }
     .btn {
       min-width: 74px;
       height: 30px;
@@ -169,45 +160,63 @@
       border-color: var(--primary);
       color: #fff;
     }
-    .btn.text {
-      border-color: transparent;
-      color: var(--primary);
-      background: transparent;
+    .btn.small {
+      min-width: 58px;
+      height: 26px;
+      padding: 0 10px;
+      font-size: 12px;
+    }
+    .btn[disabled] {
+      cursor: not-allowed;
+      opacity: 0.55;
     }
     .query-panel,
-    .section {
+    .section,
+    .card {
       background: var(--panel);
       border: 1px solid var(--line-soft);
       margin-bottom: 10px;
     }
-    .query-panel {
-      padding: 14px 16px;
-    }
+    .query-panel { padding: 14px 16px; }
     .query-row {
       display: grid;
-      grid-template-columns: 76px 320px auto auto 1fr;
-      gap: 10px;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 12px;
+      align-items: end;
+    }
+    .query-item {
+      min-width: 0;
+    }
+    .query-item.actions {
+      display: flex;
       align-items: center;
+      gap: 8px;
     }
     .query-label {
-      text-align: right;
+      display: block;
+      margin-bottom: 6px;
       color: var(--sub);
     }
     .search-input {
+      width: 100%;
       height: 32px;
       border: 1px solid var(--line);
       border-radius: 4px;
       padding: 0 10px;
       outline: none;
       color: var(--text);
+      background: #fff;
     }
-    .cards-grid {
+    .query-hint {
+      margin-top: 10px;
+      color: var(--hint);
+      min-height: 18px;
+    }
+    .list-toolbar {
+      display: flex;
+      justify-content: flex-start;
       margin-bottom: 10px;
-    }
-    .card {
-      background: var(--panel);
-      border: 1px solid var(--line-soft);
-      min-height: 180px;
+      padding: 0 2px;
     }
     .section-title {
       height: 36px;
@@ -220,8 +229,12 @@
       font-size: var(--font-title);
       font-weight: 600;
     }
-    .card-body {
-      padding: 12px;
+    .card-body { padding: 12px; }
+    .source-layout {
+      display: grid;
+      grid-template-columns: 1fr 120px;
+      gap: 12px;
+      align-items: start;
     }
     .info-grid {
       display: grid;
@@ -230,7 +243,7 @@
     }
     .field {
       display: grid;
-      grid-template-columns: 84px 1fr;
+      grid-template-columns: 96px 1fr;
       align-items: center;
       gap: 6px;
     }
@@ -249,16 +262,6 @@
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
-    }
-    .value.emphasis {
-      color: var(--primary);
-      font-weight: 600;
-    }
-    .source-layout {
-      display: grid;
-      grid-template-columns: 1fr 120px;
-      gap: 12px;
-      align-items: start;
     }
     .thumb {
       width: 100%;
@@ -284,6 +287,9 @@
       background: #fafafa;
       font-weight: 600;
     }
+    .list-row-active td {
+      background: #f7fbff;
+    }
     .empty-panel {
       background: var(--panel);
       border: 1px dashed #dcdfe6;
@@ -292,12 +298,8 @@
       color: var(--hint);
       display: none;
     }
-    .lookup-shell.empty .result-shell {
-      display: none;
-    }
-    .lookup-shell.empty .empty-panel {
-      display: block;
-    }
+    .lookup-shell.empty .result-shell { display: none; }
+    .lookup-shell.empty .empty-panel { display: block; }
   </style>
 </head>
 <body>
@@ -306,7 +308,7 @@
       <div class="brand">ERP门户</div>
       <div class="tabs-nav">
         <div class="home-tab">首页</div>
-        <div class="page-tab"><span>一物一码查询</span><span class="tab-close">×</span></div>
+        <div class="page-tab"><span>查询追溯</span><span class="tab-close">×</span></div>
       </div>
     </div>
     <div class="main-layout">
@@ -314,72 +316,132 @@
         <div class="menu-group-title">生产</div>
         <div class="menu-item parent">物料管理</div>
         <div class="submenu">
-          <div class="menu-item active">一物一码查询</div>
+          <div class="menu-item active">查询追溯</div>
         </div>
       </aside>
       <main class="content">
         <div class="page">
           <div class="toolbar">
-            <div class="toolbar-title">一物一码查询</div>
-            <div class="toolbar-actions">
-              <button class="btn text">刷新</button>
-            </div>
+            <div class="toolbar-title">纸张查询追溯</div>
           </div>
 
           <div class="query-panel">
             <div class="query-row">
-              <div class="query-label">唯一编号</div>
-              <input class="search-input" id="queryInput" value="2025060002" />
-              <button class="btn primary" id="queryBtn">查询</button>
-              <button class="btn" style="min-width:90px;">打印二维码</button>
+              <div class="query-item">
+                <label class="query-label" for="serialInput">唯一编号</label>
+                <input class="search-input" id="serialInput" value="2025060002" placeholder="请输入唯一编号" />
+              </div>
+              <div class="query-item">
+                <label class="query-label" for="materialCodeInput">原料编码</label>
+                <input class="search-input" id="materialCodeInput" value="" placeholder="请输入原料编码" />
+              </div>
+              <div class="query-item">
+                <label class="query-label" for="materialNameInput">原料名称</label>
+                <input class="search-input" id="materialNameInput" value="" placeholder="请输入原料名称" />
+              </div>
+              <div class="query-item actions">
+                <button class="btn primary" id="queryBtn" style="flex: 1;">查询</button>
+                <button class="btn" id="resetBtn" style="flex: 1;">重置</button>
+              </div>
+              <div class="query-item"></div>
+              <div class="query-item"></div>
             </div>
+            <div class="query-hint"></div>
           </div>
 
           <div class="lookup-shell" id="lookupShell">
             <div class="result-shell">
-              <div class="cards-grid">
-                <section class="card">
-                  <div class="section-title">
-                    <span>件明细</span>
-                  </div>
-                  <div class="card-body">
-                    <div class="source-layout">
-                      <div class="info-grid">
-                        <div class="field"><label>来源单据类型</label><div class="value">随货同行单</div></div>
-                        <div class="field"><label>来源单据编号</label><div class="value">SZD202506190002-1</div></div>
-                        <div class="field"><label>物料名称</label><div class="value">55克787*1230平板书写</div></div>
-                        <div class="field"><label>存储数量</label><div class="value">11.321</div></div>
-                        <div class="field"><label>吨数</label><div class="value">0.333</div></div>
-                        <div class="field"><label>出厂编码</label><div class="value">FC-002</div></div>
-                        <div class="field"><label>当前仓库</label><div class="value emphasis">ND原料仓</div></div>
-                        <div class="field"><label>当前库位</label><div class="value emphasis">W0001</div></div>
-                        <div class="field"><label>最近结果</label><div class="value">入库成功</div></div>
-                        <div class="field"><label>最近结果时间</label><div class="value">2025-06-19 09:32:05</div></div>
-                        <div class="field"><label>最近操作人</label><div class="value">李安琪</div></div>
-                      </div>
-                      <div class="thumb" title="图片预览"></div>
-                    </div>
-                  </div>
-                </section>
+              <div class="list-toolbar">
+                <button class="btn" id="printBtn" style="min-width: 110px;">打印选中二维码</button>
               </div>
 
               <section class="section">
                 <div class="section-title">
-                  <span>结果记录</span>
-                  <span style="color: var(--hint); font-size: 12px; font-weight: 400;">仅记录最终业务结果，不记录中间状态</span>
+                  <span>件明细列表</span>
+                </div>
+                <div class="card-body">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th style="width: 52px;"><input type="checkbox" checked /></th>
+                        <th style="width: 68px;">序号</th>
+                        <th style="width: 150px;">唯一编号</th>
+                        <th style="width: 130px;">原料编码</th>
+                        <th style="width: 180px;">原料名称/规格</th>
+                        <th style="width: 120px;">当前仓库</th>
+                        <th style="width: 120px;">当前库位</th>
+                        <th style="width: 92px;">操作</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr class="list-row-active">
+                        <td><input type="checkbox" checked /></td>
+                        <td>1</td>
+                        <td>2025060002</td>
+                        <td>RM-787-1230</td>
+                        <td>55克 787*1230 平板书写纸</td>
+                        <td>ND原料仓</td>
+                        <td>W0001</td>
+                        <td><button class="btn small primary">查看详情</button></td>
+                      </tr>
+                      <tr>
+                        <td><input type="checkbox" checked /></td>
+                        <td>2</td>
+                        <td>2025060007</td>
+                        <td>RM-787-1230</td>
+                        <td>55克 787*1230 平板书写纸</td>
+                        <td>ND原料仓</td>
+                        <td>W0003</td>
+                        <td><button class="btn small">查看详情</button></td>
+                      </tr>
+                      <tr>
+                        <td><input type="checkbox" /></td>
+                        <td>3</td>
+                        <td>2025060011</td>
+                        <td>RM-787-1230</td>
+                        <td>55克 787*1230 平板书写纸</td>
+                        <td>嘉成原料仓</td>
+                        <td>JC-02-08</td>
+                        <td><button class="btn small">查看详情</button></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </section>
+
+              <section class="section">
+                <div class="section-title">
+                  <span>选中件详情</span>
+                </div>
+                <div class="card-body">
+                  <div class="source-layout">
+                    <div class="info-grid">
+                      <div class="field"><label>唯一编号</label><div class="value">2025060002</div></div>
+                      <div class="field"><label>原料编码</label><div class="value">RM-787-1230</div></div>
+                      <div class="field"><label>原料名称</label><div class="value">55克 787*1230 平板书写纸</div></div>
+                      <div class="field"><label>存储数量</label><div class="value">11.321</div></div>
+                      <div class="field"><label>吨数</label><div class="value">0.333</div></div>
+                      <div class="field"><label>出厂编码</label><div class="value">FC-002</div></div>
+                      <div class="field"><label>当前仓库</label><div class="value">ND原料仓</div></div>
+                      <div class="field"><label>当前库位</label><div class="value">W0001</div></div>
+                    </div>
+                    <div class="thumb" title="件级图片预览"></div>
+                  </div>
+                </div>
+              </section>
+
+              <section class="section">
+                <div class="section-title">
+                  <span>单据结果记录</span>
                 </div>
                 <table>
                   <thead>
                     <tr>
-                      <th style="width:68px;">序号</th>
-                      <th style="width:170px;">结果时间</th>
-                      <th style="width:120px;">来源单据</th>
-                      <th style="width:180px;">单据编号</th>
-                      <th style="width:120px;">结果</th>
-                      <th style="width:110px;">操作人</th>
-                      <th style="width:160px;">来源仓库/库位</th>
-                      <th style="width:160px;">目标仓库/库位</th>
-                      <th>结果说明</th>
+                      <th style="width: 68px;">序号</th>
+                      <th style="width: 170px;">结果时间</th>
+                      <th style="width: 120px;">单据类型</th>
+                      <th style="width: 180px;">单据编号</th>
+                      <th style="width: 120px;">结果</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -389,10 +451,6 @@
                       <td>随货同行单</td>
                       <td>SZD202506190002-1</td>
                       <td>入库成功</td>
-                      <td>李安琪</td>
-                      <td>-</td>
-                      <td>ND原料仓 / W0001</td>
-                      <td>入库到 ND原料仓，库位 W0001</td>
                     </tr>
                   </tbody>
                 </table>
@@ -401,7 +459,7 @@
 
             <div class="empty-panel">
               <div style="font-size: 15px; color: var(--sub); margin-bottom: 6px;">未查询到对应纸张件</div>
-              <div>请输入正确的唯一编号后重新查询</div>
+              <div>请输入正确的唯一编号、原料编码或原料名称，或调整组合条件后重新查询</div>
             </div>
           </div>
         </div>
@@ -410,18 +468,36 @@
   </div>
 
   <script>
+    const serialInput = document.getElementById('serialInput');
+    const materialCodeInput = document.getElementById('materialCodeInput');
+    const materialNameInput = document.getElementById('materialNameInput');
     const queryBtn = document.getElementById('queryBtn');
-    const queryInput = document.getElementById('queryInput');
+    const resetBtn = document.getElementById('resetBtn');
+    const printBtn = document.getElementById('printBtn');
     const lookupShell = document.getElementById('lookupShell');
 
     function refreshState() {
-      const keyword = queryInput.value.trim();
-      lookupShell.classList.toggle('empty', !keyword || keyword === 'NOT-FOUND');
+      const serial = serialInput.value.trim();
+      const materialCode = materialCodeInput.value.trim();
+      const materialName = materialNameInput.value.trim();
+      const hasQuery = serial || materialCode || materialName;
+      const notFound = serial === 'NOT-FOUND' || materialCode === 'NOT-FOUND' || materialName === 'NOT-FOUND';
+      lookupShell.classList.toggle('empty', !hasQuery || notFound);
+      printBtn.disabled = !hasQuery || notFound;
     }
 
     queryBtn.addEventListener('click', refreshState);
-    queryInput.addEventListener('keydown', (event) => {
-      if (event.key === 'Enter') refreshState();
+    resetBtn.addEventListener('click', () => {
+      serialInput.value = '';
+      materialCodeInput.value = '';
+      materialNameInput.value = '';
+      refreshState();
+    });
+
+    [serialInput, materialCodeInput, materialNameInput].forEach((input) => {
+      input.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') refreshState();
+      });
     });
 
     refreshState();

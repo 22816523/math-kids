@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>一物一码查询-手机端</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+      background: #f2f3f5;
+      color: #1d2129;
+    }
+    .phone {
+      width: 390px;
+      margin: 24px auto;
+      border: 1px solid #dcdfe6;
+      border-radius: 24px;
+      overflow: hidden;
+      background: #f2f3f5;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    }
+    .header {
+      background: #fff;
+      color: #1d2129;
+    }
+    .nav {
+      display: grid;
+      grid-template-columns: auto auto 1fr auto;
+      align-items: center;
+      column-gap: 18px;
+      height: 56px;
+      padding: 0 16px;
+      border-bottom: 1px solid #eef1f6;
+      font-size: 15px;
+      background: #fff;
+    }
+    .nav-title {
+      grid-column: 3;
+      justify-self: center;
+      font-size: 17px;
+      font-weight: 700;
+    }
+    .nav-icon {
+      font-size: 18px;
+      line-height: 1;
+      color: #1d2129;
+    }
+    .nav-icon.more {
+      font-size: 24px;
+      justify-self: end;
+    }
+    .hero {
+      padding: 20px 22px 104px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.02) 100%),
+        linear-gradient(180deg, #3f79c5 0%, #4b82cf 100%);
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::after {
+      content: "";
+      position: absolute;
+      left: -8%;
+      right: -8%;
+      bottom: 20px;
+      height: 88px;
+      background:
+        radial-gradient(120px 42px at 16% 60%, rgba(255,255,255,0.16) 0%, rgba(255,255,255,0) 72%),
+        radial-gradient(160px 48px at 46% 42%, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0) 72%),
+        radial-gradient(140px 44px at 78% 58%, rgba(255,255,255,0.14) 0%, rgba(255,255,255,0) 72%);
+      pointer-events: none;
+    }
+    .hero-title {
+      position: relative;
+      z-index: 1;
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .hero-sub {
+      position: relative;
+      z-index: 1;
+      font-size: 13px;
+      line-height: 1.5;
+      color: rgba(255,255,255,0.88);
+    }
+    .content {
+      position: relative;
+      z-index: 2;
+      margin-top: -78px;
+      padding: 0 12px 18px;
+    }
+    .section {
+      margin-bottom: 12px;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #fff;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+    }
+    .section-title {
+      padding: 10px 12px;
+      background: #e8f5ff;
+      color: #3975c6;
+      font-size: 14px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .section-meta {
+      font-size: 12px;
+      font-weight: 500;
+      color: #6b7785;
+      white-space: nowrap;
+    }
+    .block {
+      padding: 12px;
+      border-top: 1px solid #f2f3f5;
+    }
+    .field-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .field-label {
+      font-size: 13px;
+      color: #86909c;
+    }
+    .scan-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+    }
+    .input,
+    .scan-btn,
+    .action-btn {
+      height: 36px;
+      border-radius: 8px;
+      border: 1px solid #d6dbe6;
+      background: #fff;
+      font-size: 14px;
+    }
+    .input {
+      width: 100%;
+      padding: 0 12px;
+      color: #1d2129;
+      outline: none;
+    }
+    .scan-btn {
+      min-width: 74px;
+      padding: 0 12px;
+      color: #3975c6;
+      font-weight: 600;
+    }
+    .action-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 4px;
+    }
+    .action-btn.primary {
+      background: #3975c6;
+      border-color: #3975c6;
+      color: #fff;
+      font-weight: 600;
+    }
+    .hint {
+      margin-top: 10px;
+      font-size: 12px;
+      color: #86909c;
+      line-height: 1.5;
+    }
+    .result-card {
+      margin: 0 12px 12px;
+      padding: 12px;
+      border-radius: 10px;
+      background: #fafbfc;
+      border: 1px solid #edf0f5;
+      cursor: pointer;
+      transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+    }
+    .result-card:active {
+      transform: scale(0.99);
+    }
+    .result-card.active {
+      border-color: #cfe0ff;
+      background: #f7fbff;
+    }
+    .result-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+    .result-code {
+      font-size: 14px;
+      font-weight: 700;
+      color: #1d2129;
+    }
+    .result-tag {
+      color: #86909c;
+      font-size: 18px;
+      line-height: 1;
+      white-space: nowrap;
+    }
+    .row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 6px 0;
+      font-size: 14px;
+    }
+    .label {
+      min-width: 92px;
+      color: #86909c;
+    }
+    .value {
+      flex: 1;
+      text-align: right;
+      color: #1d2129;
+      word-break: break-all;
+    }
+    .thumb-wrap {
+      display: flex;
+      justify-content: flex-end;
+    }
+    .thumb {
+      width: 92px;
+      height: 68px;
+      border: 1px solid #d9e6fb;
+      border-radius: 8px;
+      background:
+        linear-gradient(45deg, transparent 48%, #d8d8d8 49%, #d8d8d8 51%, transparent 52%),
+        linear-gradient(-45deg, transparent 48%, #d8d8d8 49%, #d8d8d8 51%, transparent 52%),
+        #f2f3f5;
+    }
+    .record-item {
+      margin: 0 12px 12px;
+      padding: 12px;
+      border-radius: 10px;
+      background: #fafbfc;
+      border: 1px solid #edf0f5;
+    }
+    .record-title {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 8px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #1d2129;
+    }
+    .record-title span:last-child {
+      font-size: 12px;
+      font-weight: 500;
+      color: #86909c;
+    }
+    .empty-panel {
+      display: none;
+      margin-bottom: 12px;
+      padding: 44px 16px;
+      border: 1px dashed #d6dbe6;
+      border-radius: 12px;
+      background: #fff;
+      color: #86909c;
+      text-align: center;
+      line-height: 1.6;
+    }
+    .lookup-shell.empty .result-shell { display: none; }
+    .lookup-shell.empty .empty-panel { display: block; }
+  </style>
+</head>
+<body>
+  <div class="phone">
+    <div class="header">
+      <div class="nav">
+        <span class="nav-icon">←</span>
+        <span class="nav-icon">✕</span>
+        <span class="nav-title">一物一码查询</span>
+        <span class="nav-icon more">⋯</span>
+      </div>
+      <div class="hero">
+        <div class="hero-title">纸张查询追溯</div>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="section">
+        <div class="section-title">查询条件</div>
+        <div class="block">
+          <div class="field-stack">
+            <div class="field-group">
+              <div class="field-label">唯一编号</div>
+              <div class="scan-row">
+                <input class="input" id="serialInput" value="2025060002" placeholder="请输入唯一编号" />
+                <button class="scan-btn" type="button">扫码</button>
+              </div>
+            </div>
+            <div class="field-group">
+              <div class="field-label">原料编码</div>
+              <input class="input" id="materialCodeInput" value="" placeholder="请输入原料编码" />
+            </div>
+            <div class="field-group">
+              <div class="field-label">原料名称</div>
+              <input class="input" id="materialNameInput" value="" placeholder="请输入原料名称" />
+            </div>
+            <div class="action-row">
+              <button class="action-btn primary" id="queryBtn" type="button">查询</button>
+              <button class="action-btn" id="resetBtn" type="button">重置</button>
+            </div>
+          </div>
+          <div class="hint">支持按唯一编号直接查单件，也可按原料编码或原料名称先筛出候选件，再切换查看详情。</div>
+        </div>
+      </div>
+
+      <div class="lookup-shell" id="lookupShell">
+        <div class="result-shell">
+          <div class="section">
+            <div class="section-title">物料信息</div>
+            <div class="block">
+              <div class="row"><div class="label">原料编码</div><div class="value">RM-787-1230</div></div>
+              <div class="row"><div class="label">原料名称</div><div class="value">55克 787*1230 平板书写纸</div></div>
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="section-title">
+              <span>件明细列表</span>
+              <span class="section-meta">3件 / 2仓</span>
+            </div>
+            <div class="result-card active" data-href="./03-一物一码查询-手机端-件详情.html">
+              <div class="result-head">
+                <div class="result-code">2025060002</div>
+                <div class="result-tag">›</div>
+              </div>
+              <div class="row"><div class="label">当前仓库</div><div class="value">ND原料仓</div></div>
+              <div class="row"><div class="label">当前库位</div><div class="value">W0001</div></div>
+            </div>
+            <div class="result-card" data-href="./03-一物一码查询-手机端-件详情.html">
+              <div class="result-head">
+                <div class="result-code">2025060007</div>
+                <div class="result-tag">›</div>
+              </div>
+              <div class="row"><div class="label">当前仓库</div><div class="value">ND原料仓</div></div>
+              <div class="row"><div class="label">当前库位</div><div class="value">W0003</div></div>
+            </div>
+            <div class="result-card" data-href="./03-一物一码查询-手机端-件详情.html">
+              <div class="result-head">
+                <div class="result-code">2025060011</div>
+                <div class="result-tag">›</div>
+              </div>
+              <div class="row"><div class="label">当前仓库</div><div class="value">嘉成原料仓</div></div>
+              <div class="row"><div class="label">当前库位</div><div class="value">JC-02-08</div></div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="empty-panel">
+          <div style="font-size: 15px; color: #4e5969; margin-bottom: 6px;">暂无查询结果</div>
+          <div>请输入唯一编号、原料编码或原料名称后点击查询。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const serialInput = document.getElementById('serialInput');
+    const materialCodeInput = document.getElementById('materialCodeInput');
+    const materialNameInput = document.getElementById('materialNameInput');
+    const queryBtn = document.getElementById('queryBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const lookupShell = document.getElementById('lookupShell');
+    const resultCards = Array.from(document.querySelectorAll('.result-card'));
+
+    function refreshState() {
+      const hasQuery = serialInput.value.trim() || materialCodeInput.value.trim() || materialNameInput.value.trim();
+      const notFound = serialInput.value.trim() === 'NOT-FOUND' || materialCodeInput.value.trim() === 'NOT-FOUND' || materialNameInput.value.trim() === 'NOT-FOUND';
+      lookupShell.classList.toggle('empty', !hasQuery || notFound);
+    }
+
+    queryBtn.addEventListener('click', refreshState);
+    resetBtn.addEventListener('click', () => {
+      serialInput.value = '';
+      materialCodeInput.value = '';
+      materialNameInput.value = '';
+      refreshState();
+    });
+
+    [serialInput, materialCodeInput, materialNameInput].forEach((input) => {
+      input.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') refreshState();
+      });
+    });
+
+    resultCards.forEach((card) => {
+      card.addEventListener('click', () => {
+        const target = card.dataset.href;
+        if (target) window.location.href = target;
+      });
+    });
+
+    refreshState();
+  </script>
+</body>
+</html>
