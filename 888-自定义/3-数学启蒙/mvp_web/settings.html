@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+  <title>家长设置</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/design-system.css?v=20260313b">
+  <style>
+    .settings-container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .setting-item {
+      background: var(--white);
+      border: 4px solid var(--white);
+      box-shadow: 0 var(--card-depth) 0 var(--gray-100), 0 12px 20px rgba(0,0,0,0.03);
+      border-radius: var(--radius-xl);
+      padding: 24px;
+      margin-bottom: 16px;
+    }
+    .setting-label {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--title);
+      margin-bottom: 16px;
+    }
+    .duration-options {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    .duration-btn {
+      padding: 16px;
+      font-size: 16px;
+      font-weight: 700;
+      background: var(--white);
+      border: 3px solid var(--white);
+      box-shadow: 0 var(--btn-depth) 0 var(--gray-100), 0 8px 12px rgba(0,0,0,0.03);
+      border-radius: var(--radius-xl);
+      cursor: pointer;
+      color: var(--text);
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .duration-btn.active {
+      background: linear-gradient(180deg, #F0F8FD 0%, var(--blue) 100%);
+      border-color: #E4F1FA;
+      box-shadow: 0 var(--btn-depth) 0 var(--blue-dark), 0 8px 12px rgba(133,193,233,0.3);
+      color: var(--title);
+    }
+    .duration-btn:active {
+      transform: translateY(calc(var(--btn-depth) - 2px));
+      box-shadow: 0 2px 0 var(--gray-100);
+    }
+  </style>
+</head>
+<body>
+  <!-- 护眼背景装饰 -->
+  <div class="bg-decoration">
+    <div class="cloud cloud-1"></div>
+    <div class="cloud cloud-2"></div>
+    <div class="cloud cloud-3"></div>
+  </div>
+
+  <div id="app">
+    <div class="topbar">
+      <div class="topbar-left">
+        <a href="index.html" class="back-btn" style="
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          width: 48px;
+          height: 48px;
+          border-radius: var(--radius-full);
+          background: var(--white);
+          border: 3px solid var(--white);
+          box-shadow: 0 var(--btn-depth) 0 var(--gray-100), 0 8px 16px rgba(0,0,0,0.03);
+          text-decoration: none;
+          color: var(--gray-400);
+          font-size: 18px;
+          margin-right: 8px;
+        ">◀</a>
+        <span class="topbar-title">家长设置</span>
+      </div>
+    </div>
+
+    <div class="settings-container">
+      <div class="setting-item">
+        <div class="setting-label">⏰ 学习时长控制</div>
+        <div class="duration-options">
+          <button class="duration-btn" data-duration="0">不限制</button>
+          <button class="duration-btn" data-duration="10">10分钟</button>
+          <button class="duration-btn" data-duration="15">15分钟</button>
+          <button class="duration-btn" data-duration="20">20分钟</button>
+          <button class="duration-btn" data-duration="30">30分钟</button>
+          <button class="duration-btn" data-duration="60">60分钟</button>
+        </div>
+        <div style="margin-top:12px;font-size:14px;color:var(--gray-400);">
+          超过设定时长后需要家长验证才能继续使用
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/timer.js"></script>
+  <script>
+    // 进入家长设置前先验证，先隐藏页面内容
+    document.getElementById('app').style.visibility = 'hidden';
+
+    ParentalControl.requireVerification(() => {
+      // 验证通过，显示页面内容并初始化设置
+      document.getElementById('app').style.visibility = 'visible';
+
+      const buttons = document.querySelectorAll('.duration-btn');
+      const settings = ParentalControl.getSettings();
+
+      // 显示当前设置
+      buttons.forEach(btn => {
+        if (parseInt(btn.dataset.duration) === settings.duration) {
+          btn.classList.add('active');
+        }
+      });
+
+      // 点击设置
+      buttons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const duration = parseInt(btn.dataset.duration);
+          localStorage.setItem('parentalSettings', JSON.stringify({ duration }));
+          ParentalControl.resetTimer();
+
+          buttons.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+
+          alert('✅ 设置已保存');
+        });
+      });
+    });
+
+    // 监听弹窗关闭（点取消）：若未通过验证则返回首页
+    const _cancelObserver = new MutationObserver(() => {
+      if (!document.getElementById('verifyModal') &&
+          document.getElementById('app').style.visibility === 'hidden') {
+        window.location.href = 'index.html';
+      }
+    });
+    _cancelObserver.observe(document.body, { childList: true });
+  </script>
+</body>
+</html>

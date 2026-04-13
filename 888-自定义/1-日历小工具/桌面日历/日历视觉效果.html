@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>酷炫桌面日历</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "微软雅黑", "Roboto", sans-serif;
+        }
+        body {
+            background: #1a1a1a;
+            padding: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        /* 日历主容器：玻璃拟态+渐变+阴影，酷炫悬浮感 */
+        .calendar {
+            width: 420px;
+            background: rgba(30, 30, 30, 0.95);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            box-shadow: 0 0 30px rgba(0, 200, 255, 0.15);
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+            color: #fff;
+        }
+        /* 顶部切换栏：周/月+月份标题 */
+        .calendar-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .view-switch {
+            display: flex;
+            gap: 8px;
+        }
+        .view-switch button {
+            padding: 6px 16px;
+            border: none;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ccc;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+        .view-switch button.active {
+            background: linear-gradient(90deg, #00c3ff, #ffff1c);
+            color: #1a1a1a;
+            font-weight: bold;
+            box-shadow: 0 0 10px rgba(0, 200, 255, 0.5);
+        }
+        .calendar-title {
+            font-size: 20px;
+            font-weight: bold;
+            background: linear-gradient(90deg, #00c3ff, #ffff1c);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        /* 星期栏（周视图/月视图通用） */
+        .calendar-week {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            color: #999;
+            font-size: 14px;
+        }
+        .calendar-week span {
+            width: 50px;
+            text-align: center;
+            line-height: 30px;
+        }
+        /* 日期容器：周视图默认显示，月视图隐藏（切换后显示） */
+        .week-days {
+            display: flex;
+            justify-content: space-between;
+            gap: 5px;
+        }
+        .month-days {
+            display: none;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        /* 日期格子通用样式：酷炫圆角+渐变 hover */
+        .day-item {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .day-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(0, 200, 255, 0.1), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .day-item:hover::before {
+            opacity: 1;
+        }
+        .day-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 200, 255, 0.2);
+        }
+        /* 今日高亮：渐变边框+发光 */
+        .day-item.today {
+            border: 2px solid;
+            border-image: linear-gradient(90deg, #00c3ff, #ffff1c) 1;
+            box-shadow: 0 0 10px rgba(0, 200, 255, 0.4);
+        }
+        /* 休息日：纯红底，无任何文字标注 */
+        .day-item.rest {
+            background: #e63946;
+            color: #fff;
+        }
+        .day-item.rest:hover {
+            background: #d62828;
+            box-shadow: 0 0 15px rgba(230, 57, 70, 0.5);
+        }
+        /* 选中日期：深色底+高亮文字 */
+        .day-item.active {
+            background: rgba(0, 200, 255, 0.2);
+            color: #00c3ff;
+        }
+        /* 详情面板：默认隐藏，点击日期显示 */
+        .detail-panel {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .detail-panel .lunar {
+            font-size: 14px;
+            color: #ccc;
+            margin-bottom: 10px;
+        }
+        .detail-panel .huangli {
+            font-size: 13px;
+            line-height: 1.8;
+            color: #999;
+        }
+        .detail-panel .huangli .yi {
+            color: #4ade80;
+        }
+        .detail-panel .huangli .ji {
+            color: #f87171;
+        }
+    </style>
+</head>
+<body>
+    <div class="calendar">
+        <!-- 顶部切换栏 -->
+        <div class="calendar-top">
+            <div class="view-switch">
+                <button class="active" id="weekBtn">本周</button>
+                <button id="monthBtn">本月</button>
+            </div>
+            <div class="calendar-title">2026年2月 第7周</div>
+        </div>
+
+        <!-- 星期栏 -->
+        <div class="calendar-week">
+            <span>日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span>
+        </div>
+
+        <!-- 周视图日期（默认显示） -->
+        <div class="week-days" id="weekView">
+            <div class="day-item rest">9</div>    <!-- 休息日：仅红底 -->
+            <div class="day-item rest">10</div>   <!-- 休息日：仅红底 -->
+            <div class="day-item rest">11</div>   <!-- 休息日：仅红底 -->
+            <div class="day-item">12</div>
+            <div class="day-item">13</div>
+            <div class="day-item">14</div>
+            <div class="day-item today active" onclick="showDetail()">15</div> <!-- 今日+点击显示详情 -->
+        </div>
+
+        <!-- 月视图日期（默认隐藏） -->
+        <div class="month-days" id="monthView">
+            <div class="day-item">1</div><div class="day-item">2</div><div class="day-item">3</div><div class="day-item">4</div><div class="day-item">5</div><div class="day-item">6</div><div class="day-item">7</div>
+            <div class="day-item">8</div><div class="day-item rest">9</div><div class="day-item rest">10</div><div class="day-item rest">11</div><div class="day-item">12</div><div class="day-item">13</div><div class="day-item">14</div>
+            <div class="day-item today">15</div><div class="day-item">16</div><div class="day-item">17</div><div class="day-item">18</div><div class="day-item">19</div><div class="day-item">20</div><div class="day-item">21</div>
+            <div class="day-item">22</div><div class="day-item">23</div><div class="day-item">24</div><div class="day-item">25</div><div class="day-item">26</div><div class="day-item">27</div><div class="day-item">28</div>
+            <div class="day-item">29</div>
+        </div>
+
+        <!-- 详情面板（默认隐藏，点击日期显示） -->
+        <div class="detail-panel" id="detailPanel">
+            <div class="lunar">2026年2月15日 农历正月十八 星期五</div>
+            <div class="huangli">
+                <div>【黄道吉日·金匮】</div>
+                <div><span class="yi">宜：</span>嫁娶、纳财、开市、出行、祈福</div>
+                <div><span class="ji">忌：</span>动土、安葬、修坟、破土、竖柱</div>
+                <div>冲煞：冲猴(戊申) 煞北 | 喜神：东北 | 财神：正北</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 周/月视图切换
+        const weekBtn = document.getElementById('weekBtn');
+        const monthBtn = document.getElementById('monthBtn');
+        const weekView = document.getElementById('weekView');
+        const monthView = document.getElementById('monthView');
+        
+        weekBtn.onclick = () => {
+            weekBtn.classList.add('active');
+            monthBtn.classList.remove('active');
+            weekView.style.display = 'flex';
+            monthView.style.display = 'none';
+        };
+        
+        monthBtn.onclick = () => {
+            monthBtn.classList.add('active');
+            weekBtn.classList.remove('active');
+            monthView.style.display = 'flex';
+            weekView.style.display = 'none';
+        };
+
+        // 点击日期显示详情（所有日期可复用此逻辑）
+        function showDetail() {
+            const detailPanel = document.getElementById('detailPanel');
+            detailPanel.style.display = 'block';
+        }
+
+        // 给所有日期绑定点击显示详情
+        document.querySelectorAll('.day-item').forEach(item => {
+            item.onclick = () => {
+                // 清除其他选中状态
+                document.querySelectorAll('.day-item').forEach(i => i.classList.remove('active'));
+                // 选中当前日期
+                item.classList.add('active');
+                // 显示详情
+                showDetail();
+            };
+        });
+    </script>
+</body>
+</html>
