@@ -332,6 +332,25 @@
       background: #f4f8ff;
       box-shadow: 0 0 0 3px rgba(25,121,255,0.12);
     }
+    .piece-card-actions {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px dashed #e5e6eb;
+    }
+    .piece-delete-btn {
+      min-width: 92px;
+      height: 32px;
+      padding: 0 12px;
+      border: 1px solid #f7c7c7;
+      border-radius: 16px;
+      background: #fff5f5;
+      color: #d14343;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+    }
     .value.photo-value {
       display: flex;
       justify-content: flex-end;
@@ -438,22 +457,24 @@
           </button>
           <div class="accordion-body" id="pieceList">
             <div class="piece-card" data-code="2026003201">
-              <div class="row"><div class="label">件序号：</div><div class="value">1</div></div>
+              <div class="row"><div class="label">件序号：</div><div class="value" data-piece-seq>1</div></div>
               <div class="row"><div class="label">唯一编号：</div><div class="value">2026003201</div></div>
               <div class="row"><div class="label">调拨数量：</div><div class="value blue">9.072</div></div>
               <div class="row"><div class="label">吨数：</div><div class="value">1.000</div></div>
               <div class="row"><div class="label">调入仓库：</div><div class="value">金太阳印务仓库</div></div>
               <div class="row"><div class="label">调入库位：</div><div class="value">JTY-RK-01</div></div>
               <div class="row"><div class="label">图片：</div><div class="value photo-value"><div class="piece-photo-card"></div></div></div>
+              <div class="piece-card-actions"><button class="piece-delete-btn" type="button" data-piece-delete>删除件明细</button></div>
             </div>
             <div class="piece-card" data-code="2026003202">
-              <div class="row"><div class="label">件序号：</div><div class="value">2</div></div>
+              <div class="row"><div class="label">件序号：</div><div class="value" data-piece-seq>2</div></div>
               <div class="row"><div class="label">唯一编号：</div><div class="value">2026003202</div></div>
               <div class="row"><div class="label">调拨数量：</div><div class="value blue">9.072</div></div>
               <div class="row"><div class="label">吨数：</div><div class="value">1.000</div></div>
               <div class="row"><div class="label">调入仓库：</div><div class="value">金太阳印务仓库</div></div>
               <div class="row"><div class="label">调入库位：</div><div class="value">JTY-RK-01</div></div>
               <div class="row"><div class="label">图片：</div><div class="value photo-value"><div class="piece-photo-card"></div></div></div>
+              <div class="piece-card-actions"><button class="piece-delete-btn" type="button" data-piece-delete>删除件明细</button></div>
             </div>
           </div>
         </div>
@@ -511,8 +532,6 @@
       '2026003207': { seq: 7, qty: '9.072', ton: '1.000', warehouse: '金太阳印务仓库', location: 'JTY-RK-04' },
       '2026003208': { seq: 8, qty: '9.072', ton: '1.000', warehouse: '金太阳印务仓库', location: 'JTY-RK-04' }
     };
-    const scanOrder = ['2026003206', '2026003207', '2026003208'];
-
     function setFeedback(type, message) {
       feedback.className = `scan-feedback ${type} show`;
       feedback.textContent = message;
@@ -537,24 +556,47 @@
       submitBtn.classList.toggle('disabled', recordedCount !== totalCount);
     }
 
+    function updatePieceOrder() {
+      pieceList.querySelectorAll('.piece-card').forEach((card, index) => {
+        const seqEl = card.querySelector('[data-piece-seq]');
+        if (seqEl) seqEl.textContent = index + 1;
+      });
+    }
+
     function createPieceCard(code, piece) {
       const card = document.createElement('div');
       card.className = 'piece-card';
       card.dataset.code = code;
       card.innerHTML = `
-        <div class="row"><div class="label">件序号：</div><div class="value">${piece.seq}</div></div>
+        <div class="row"><div class="label">件序号：</div><div class="value" data-piece-seq>${piece.seq}</div></div>
         <div class="row"><div class="label">唯一编号：</div><div class="value">${code}</div></div>
         <div class="row"><div class="label">调拨数量：</div><div class="value blue">${piece.qty}</div></div>
         <div class="row"><div class="label">吨数：</div><div class="value">${piece.ton}</div></div>
         <div class="row"><div class="label">调入仓库：</div><div class="value">${piece.warehouse}</div></div>
         <div class="row"><div class="label">调入库位：</div><div class="value">${piece.location}</div></div>
         <div class="row"><div class="label">图片：</div><div class="value photo-value"><div class="piece-photo-card"></div></div></div>
+        <div class="piece-card-actions"><button class="piece-delete-btn" type="button" data-piece-delete>删除件明细</button></div>
       `;
       return card;
     }
 
     function nextScanCode() {
-      return scanOrder.find((code) => !recordedCodes.has(code)) || '';
+      return Object.entries(pieceLookup)
+        .sort(([, a], [, b]) => a.seq - b.seq)
+        .find(([code]) => !recordedCodes.has(code))?.[0] || '';
+    }
+
+    function deleteRecordedPiece(card) {
+      const code = card?.dataset.code;
+      if (!code || !recordedCodes.has(code)) return;
+      recordedCodes.delete(code);
+      recordedCount = Math.max(0, recordedCount - 1);
+      card.remove();
+      updatePieceOrder();
+      updateCounts();
+      clearActive();
+      setFeedback('info', `已删除件明细：${code}`);
+      codeInput.focus();
     }
 
     function handleRecord(rawCode, fromScanButton = false) {
@@ -587,6 +629,7 @@
       pieceList.appendChild(card);
       recordedCodes.add(code);
       recordedCount += 1;
+      updatePieceOrder();
       updateCounts();
       highlightCard(card);
       setFeedback('success', recordedCount === totalCount ? `识别成功，已录入最后一件：${code}` : `识别成功，已新增件明细：${code}`);
@@ -600,6 +643,11 @@
         event.preventDefault();
         handleRecord(codeInput.value);
       }
+    });
+    pieceList.addEventListener('click', (event) => {
+      const deleteBtn = event.target.closest('[data-piece-delete]');
+      if (!deleteBtn) return;
+      deleteRecordedPiece(deleteBtn.closest('.piece-card'));
     });
 
     updateCounts();

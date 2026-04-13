@@ -143,6 +143,16 @@
       color: #1d2129;
       word-break: break-all;
     }
+    .row.status-row {
+      align-items: center;
+    }
+    .value.status-value {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
     .value.blue {
       color: #1979ff;
       font-weight: 600;
@@ -365,6 +375,19 @@
     .piece-status.confirmed {
       background: #e8ffea;
       color: #1f8f48;
+    }
+    .piece-confirm-btn {
+      border: 1px solid #ffc7c2;
+      border-radius: 999px;
+      padding: 5px 12px;
+      background: #fff1f0;
+      color: #cf1322;
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1;
+    }
+    .piece-confirm-btn.hidden {
+      display: none;
     }
     .location-editor {
       display: grid;
@@ -641,7 +664,7 @@
           <div class="accordion-body" id="pieceList">
             <div class="piece-card" data-code="RP-20260408-001" data-seq="1">
               <div class="row"><div class="label">件序号：</div><div class="value">1</div></div>
-              <div class="row"><div class="label">状态：</div><div class="value"><span class="piece-status confirmed" data-piece-status>已确认</span></div></div>
+              <div class="row status-row"><div class="label">状态：</div><div class="value status-value"><span class="piece-status confirmed" data-piece-status>已确认</span><button class="piece-confirm-btn" type="button" data-piece-cancel-confirm>取消收纸</button></div></div>
               <div class="row"><div class="label">唯一编号：</div><div class="value">RP-20260408-001</div></div>
               <div class="row"><div class="label">调拨数量：</div><div class="value blue">6.048</div></div>
               <div class="row"><div class="label">吨数：</div><div class="value">0.667</div></div>
@@ -651,7 +674,7 @@
             </div>
             <div class="piece-card" data-code="RP-20260408-002" data-seq="2">
               <div class="row"><div class="label">件序号：</div><div class="value">2</div></div>
-              <div class="row"><div class="label">状态：</div><div class="value"><span class="piece-status pending" data-piece-status>待确认</span></div></div>
+              <div class="row status-row"><div class="label">状态：</div><div class="value status-value"><span class="piece-status pending" data-piece-status>待确认</span><button class="piece-confirm-btn hidden" type="button" data-piece-cancel-confirm>取消收纸</button></div></div>
               <div class="row"><div class="label">唯一编号：</div><div class="value">RP-20260408-002</div></div>
               <div class="row"><div class="label">调拨数量：</div><div class="value blue">6.048</div></div>
               <div class="row"><div class="label">吨数：</div><div class="value">0.667</div></div>
@@ -799,7 +822,7 @@
       card.dataset.seq = piece.seq;
       card.innerHTML = `
         <div class="row"><div class="label">件序号：</div><div class="value">${piece.seq}</div></div>
-        <div class="row"><div class="label">状态：</div><div class="value"><span class="piece-status pending" data-piece-status>待确认</span></div></div>
+        <div class="row status-row"><div class="label">状态：</div><div class="value status-value"><span class="piece-status pending" data-piece-status>待确认</span><button class="piece-confirm-btn hidden" type="button" data-piece-cancel-confirm>取消收纸</button></div></div>
         <div class="row"><div class="label">唯一编号：</div><div class="value">${code}</div></div>
         <div class="row"><div class="label">调拨数量：</div><div class="value blue">${piece.qty}</div></div>
         <div class="row"><div class="label">吨数：</div><div class="value">${piece.ton}</div></div>
@@ -823,6 +846,15 @@
       const statusEl = card.querySelector('[data-piece-status]');
       statusEl.className = 'piece-status confirmed';
       statusEl.textContent = '已确认';
+    }
+
+    function setCardStatus(card, status) {
+      const statusEl = card.querySelector('[data-piece-status]');
+      const cancelButton = card.querySelector('[data-piece-cancel-confirm]');
+      if (!statusEl) return;
+      statusEl.className = `piece-status ${status}`;
+      statusEl.textContent = status === 'confirmed' ? '已确认' : '待确认';
+      if (cancelButton) cancelButton.classList.toggle('hidden', status !== 'confirmed');
     }
 
     function nextPendingCode() {
@@ -853,7 +885,7 @@
       }
       confirmedCodes.add(code);
       confirmedCount += 1;
-      setCardConfirmed(card);
+      setCardStatus(card, 'confirmed');
       const pieceSelect = card.querySelector('.piece-location-select');
       const defaultLocation = getDefaultLocationValue();
       if (pieceSelect) {
@@ -866,12 +898,30 @@
       codeInput.focus();
     }
 
+    function cancelConfirmed(code, card) {
+      if (!confirmedCodes.has(code)) return;
+      confirmedCodes.delete(code);
+      confirmedCount = Math.max(0, confirmedCount - 1);
+      setCardStatus(card, 'pending');
+      updateCounts();
+      setFeedback('success', `已取消收纸：${code}`);
+      highlightCard(card);
+    }
+
     pieceList.addEventListener('click', (event) => {
       const trigger = event.target.closest('[data-piece-location-scan]');
-      if (!trigger) return;
-      const select = trigger.closest('.location-editor').querySelector('.piece-location-select');
-      const value = cycleSelect(select);
-      setFeedback('info', `件级库位已更新为 ${value}`);
+      if (trigger) {
+        const select = trigger.closest('.location-editor').querySelector('.piece-location-select');
+        const value = cycleSelect(select);
+        setFeedback('info', `件级库位已更新为 ${value}`);
+        return;
+      }
+      const cancelTrigger = event.target.closest('[data-piece-cancel-confirm]');
+      if (!cancelTrigger) return;
+      const card = cancelTrigger.closest('.piece-card');
+      const code = card?.dataset.code;
+      if (!card || !code) return;
+      cancelConfirmed(code, card);
     });
 
     scanLocationBtn.addEventListener('click', () => {

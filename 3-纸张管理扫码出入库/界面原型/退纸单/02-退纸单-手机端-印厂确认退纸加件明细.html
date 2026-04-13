@@ -325,6 +325,25 @@
       background: #f4f8ff;
       box-shadow: 0 0 0 3px rgba(25,121,255,0.12);
     }
+    .piece-card-actions {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px dashed #e5e6eb;
+    }
+    .piece-delete-btn {
+      min-width: 92px;
+      height: 32px;
+      padding: 0 12px;
+      border: 1px solid #f7c7c7;
+      border-radius: 16px;
+      background: #fff5f5;
+      color: #d14343;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+    }
     .piece-photo-card {
       width: 92px;
       height: 68px;
@@ -442,13 +461,14 @@
           </button>
           <div class="accordion-body" id="pieceList">
             <div class="piece-card" data-code="RP-20260408-001">
-              <div class="row"><div class="label">件序号：</div><div class="value">1</div></div>
+              <div class="row"><div class="label">件序号：</div><div class="value" data-piece-seq>1</div></div>
               <div class="row"><div class="label">唯一编号：</div><div class="value">RP-20260408-001</div></div>
               <div class="row"><div class="label">调拨数量：</div><div class="value blue">6.048</div></div>
               <div class="row"><div class="label">吨数：</div><div class="value">0.667</div></div>
               <div class="row"><div class="label">调入仓库：</div><div class="value">万纬原料仓</div></div>
               <div class="row"><div class="label">调入库位：</div><div class="value">WW-YL-01-01</div></div>
               <div class="row"><div class="label">图片：</div><div class="value photo-value"><div class="piece-photo-card"></div></div></div>
+              <div class="piece-card-actions"><button class="piece-delete-btn" type="button" data-piece-delete>删除件明细</button></div>
             </div>
           </div>
         </div>
@@ -505,8 +525,6 @@
       'RP-20260408-002': { seq: 2, qty: '6.048', ton: '0.667', warehouse: '万纬原料仓', location: 'WW-YL-01-02' },
       'RP-20260408-003': { seq: 3, qty: '6.048', ton: '0.666', warehouse: '万纬原料仓', location: 'WW-YL-02-01' }
     };
-    const scanOrder = ['RP-20260408-002', 'RP-20260408-003'];
-
     function setFeedback(type, message) {
       feedback.className = `scan-feedback ${type}`;
       feedback.textContent = message;
@@ -531,24 +549,47 @@
       submitBtn.classList.toggle('disabled', recordedCount !== totalCount);
     }
 
+    function updatePieceOrder() {
+      pieceList.querySelectorAll('.piece-card').forEach((card, index) => {
+        const seqEl = card.querySelector('[data-piece-seq]');
+        if (seqEl) seqEl.textContent = index + 1;
+      });
+    }
+
     function createPieceCard(code, piece) {
       const card = document.createElement('div');
       card.className = 'piece-card';
       card.dataset.code = code;
       card.innerHTML = `
-        <div class="row"><div class="label">件序号：</div><div class="value">${piece.seq}</div></div>
+        <div class="row"><div class="label">件序号：</div><div class="value" data-piece-seq>${piece.seq}</div></div>
         <div class="row"><div class="label">唯一编号：</div><div class="value">${code}</div></div>
         <div class="row"><div class="label">调拨数量：</div><div class="value blue">${piece.qty}</div></div>
         <div class="row"><div class="label">吨数：</div><div class="value">${piece.ton}</div></div>
         <div class="row"><div class="label">调入仓库：</div><div class="value">${piece.warehouse}</div></div>
         <div class="row"><div class="label">调入库位：</div><div class="value">${piece.location}</div></div>
         <div class="row"><div class="label">图片：</div><div class="value photo-value"><div class="piece-photo-card"></div></div></div>
+        <div class="piece-card-actions"><button class="piece-delete-btn" type="button" data-piece-delete>删除件明细</button></div>
       `;
       return card;
     }
 
     function nextScanCode() {
-      return scanOrder.find((code) => !recordedCodes.has(code)) || '';
+      return Object.entries(pieceLookup)
+        .sort(([, a], [, b]) => a.seq - b.seq)
+        .find(([code]) => !recordedCodes.has(code))?.[0] || '';
+    }
+
+    function deleteRecordedPiece(card) {
+      const code = card?.dataset.code;
+      if (!code || !recordedCodes.has(code)) return;
+      recordedCodes.delete(code);
+      recordedCount = Math.max(0, recordedCount - 1);
+      card.remove();
+      updatePieceOrder();
+      updateCounts();
+      clearActive();
+      setFeedback('info', `已删除件明细：${code}`);
+      codeInput.focus();
     }
 
     function handleRecord(rawCode, fromScanButton = false) {
@@ -576,6 +617,7 @@
       pieceList.appendChild(card);
       recordedCodes.add(code);
       recordedCount += 1;
+      updatePieceOrder();
       updateCounts();
       highlightCard(card);
       setFeedback('success', recordedCount === totalCount ? `识别成功，已录入最后一件退纸：${code}` : `识别成功，已新增退纸件：${code}`);
@@ -589,6 +631,11 @@
         event.preventDefault();
         handleRecord(codeInput.value);
       }
+    });
+    pieceList.addEventListener('click', (event) => {
+      const deleteBtn = event.target.closest('[data-piece-delete]');
+      if (!deleteBtn) return;
+      deleteRecordedPiece(deleteBtn.closest('.piece-card'));
     });
 
     updateCounts();

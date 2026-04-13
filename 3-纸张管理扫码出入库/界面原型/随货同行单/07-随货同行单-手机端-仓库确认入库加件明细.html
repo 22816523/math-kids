@@ -137,6 +137,16 @@
       color: #1d2129;
       word-break: break-all;
     }
+    .row.status-row {
+      align-items: center;
+    }
+    .value.status-value {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
     .gallery {
       border-top: 1px solid #f2f3f5;
       padding: 12px;
@@ -409,6 +419,19 @@
       background: #e8ffea;
       color: #1f8f48;
     }
+    .piece-confirm-btn {
+      border: 1px solid #ffc7c2;
+      border-radius: 999px;
+      padding: 5px 12px;
+      background: #fff1f0;
+      color: #cf1322;
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1;
+    }
+    .piece-confirm-btn.hidden {
+      display: none;
+    }
     .value.photo-value {
       display: flex;
       justify-content: flex-end;
@@ -613,7 +636,7 @@
           <div class="accordion-body">
             <div class="piece-card" data-piece-id="SH20250403000101" data-status="confirmed" data-location-manual="false">
               <div class="row"><div class="label">件序号：</div><div class="value">1</div></div>
-              <div class="row"><div class="label">状态：</div><div class="value"><span class="piece-status confirmed">已确认</span></div></div>
+              <div class="row status-row"><div class="label">状态：</div><div class="value status-value"><span class="piece-status confirmed">已确认</span><button class="piece-confirm-btn" type="button" data-piece-cancel-confirm>取消确认</button></div></div>
               <div class="row"><div class="label">唯一编号：</div><div class="value">SH20250403000101</div></div>
               <div class="row"><div class="label">入库数量：</div><div class="value">30</div></div>
               <div class="row"><div class="label">吨数：</div><div class="value">1</div></div>
@@ -640,7 +663,7 @@
 
             <div class="piece-card" data-piece-id="SH20250403000102" data-status="pending" data-location-manual="false">
               <div class="row"><div class="label">件序号：</div><div class="value">2</div></div>
-              <div class="row"><div class="label">状态：</div><div class="value"><span class="piece-status pending">待确认</span></div></div>
+              <div class="row status-row"><div class="label">状态：</div><div class="value status-value"><span class="piece-status pending">待确认</span><button class="piece-confirm-btn hidden" type="button" data-piece-cancel-confirm>取消确认</button></div></div>
               <div class="row"><div class="label">唯一编号：</div><div class="value">SH20250403000102</div></div>
               <div class="row"><div class="label">入库数量：</div><div class="value">30</div></div>
               <div class="row"><div class="label">吨数：</div><div class="value">1</div></div>
@@ -777,15 +800,18 @@
 
     function setCardStatus(card, status) {
       const badge = card.querySelector('.piece-status');
+      const cancelButton = card.querySelector('[data-piece-cancel-confirm]');
       card.dataset.status = status;
       badge.classList.remove('pending', 'confirmed');
 
       if (status === 'confirmed') {
         badge.classList.add('confirmed');
         badge.textContent = '已确认';
+        if (cancelButton) cancelButton.classList.remove('hidden');
       } else {
         badge.classList.add('pending');
         badge.textContent = '待确认';
+        if (cancelButton) cancelButton.classList.add('hidden');
       }
     }
 
@@ -818,6 +844,14 @@
       const finalCode = codeText || target.dataset.pieceId;
       showFeedback(`识别成功，已确认 ${finalCode}`, 'success');
       highlightCard(target);
+      updateSummary();
+    }
+
+    function cancelConfirmedPiece(card) {
+      if (!card || card.dataset.status !== 'confirmed') return;
+      setCardStatus(card, 'pending');
+      showFeedback(`已取消确认：${card.dataset.pieceId}`, 'success');
+      highlightCard(card);
       updateSummary();
     }
 
@@ -863,6 +897,13 @@
         const card = button.closest('.piece-card');
         syncPieceLocation(card, 'WWYLC-003', true);
         showFeedback(`件级库位识别成功，已更新为 WWYLC-003`, 'success');
+      });
+    });
+
+    document.querySelectorAll('[data-piece-cancel-confirm]').forEach((button) => {
+      button.addEventListener('click', () => {
+        const card = button.closest('.piece-card');
+        cancelConfirmedPiece(card);
       });
     });
 
