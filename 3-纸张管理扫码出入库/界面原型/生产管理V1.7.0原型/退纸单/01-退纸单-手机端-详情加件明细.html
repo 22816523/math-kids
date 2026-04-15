@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>退纸单-手机端-详情加件明细</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+      background: #f2f3f5;
+      color: #1d2129;
+    }
+    .phone {
+      width: 390px;
+      margin: 24px auto;
+      border: 1px solid #dcdfe6;
+      border-radius: 24px;
+      overflow: hidden;
+      background: #f2f3f5;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    }
+    .header {
+      background: #fff;
+      color: #1d2129;
+    }
+    .nav {
+      display: grid;
+      grid-template-columns: auto auto 1fr auto;
+      align-items: center;
+      column-gap: 18px;
+      height: 56px;
+      padding: 0 16px;
+      border-bottom: 1px solid #eef1f6;
+      font-size: 15px;
+      background: #fff;
+    }
+    .nav-title {
+      grid-column: 3;
+      justify-self: center;
+      font-size: 17px;
+      font-weight: 700;
+    }
+    .nav-icon {
+      font-size: 18px;
+      line-height: 1;
+      color: #1d2129;
+    }
+    .nav-icon.more {
+      font-size: 24px;
+      justify-self: end;
+    }
+    .status-card {
+      margin: 0;
+      padding: 20px 22px 104px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.02) 100%),
+        linear-gradient(180deg, #3f79c5 0%, #4b82cf 100%);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      overflow: hidden;
+      position: relative;
+    }
+    .status-card::after {
+      content: "";
+      position: absolute;
+      left: -8%;
+      right: -8%;
+      bottom: 20px;
+      height: 88px;
+      background:
+        radial-gradient(120px 42px at 16% 60%, rgba(255,255,255,0.16) 0%, rgba(255,255,255,0) 72%),
+        radial-gradient(160px 48px at 46% 42%, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0) 72%),
+        radial-gradient(140px 44px at 78% 58%, rgba(255,255,255,0.14) 0%, rgba(255,255,255,0) 72%);
+      pointer-events: none;
+    }
+    .status-main {
+      position: relative;
+      z-index: 1;
+      font-size: 18px;
+      font-weight: 700;
+    }
+    .status-link {
+      position: relative;
+      z-index: 1;
+      color: #fff;
+      font-size: 28px;
+      line-height: 1;
+    }
+    .content {
+      position: relative;
+      z-index: 2;
+      margin-top: -78px;
+      padding: 0 12px 18px;
+    }
+    .section {
+      margin-bottom: 12px;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #fff;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+    }
+    .section-title {
+      padding: 10px 12px;
+      background: #e8f5ff;
+      color: #3975c6;
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .section-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 12px;
+      background: #e8f5ff;
+      color: #3975c6;
+    }
+    .section-title-text {
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .piece-entry {
+      border: 0;
+      padding: 0;
+      background: transparent;
+      color: #3975c6;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .piece-entry-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #3975c6;
+      color: #fff;
+      font-size: 11px;
+      line-height: 1;
+    }
+    .block {
+      padding: 12px;
+      border-top: 1px solid #f2f3f5;
+    }
+    .row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 7px 0;
+      font-size: 14px;
+    }
+    .label {
+      min-width: 92px;
+      color: #86909c;
+    }
+    .label.required::before {
+      content: "*";
+      margin-right: 4px;
+      color: #f53f3f;
+    }
+    .value {
+      flex: 1;
+      text-align: right;
+      color: #1d2129;
+      word-break: break-all;
+    }
+    .value.blue {
+      color: #1979ff;
+      font-weight: 600;
+    }
+    .value.photo-value {
+      display: flex;
+      justify-content: flex-end;
+    }
+    .piece-card {
+      width: 100%;
+      box-sizing: border-box;
+      margin: 0;
+      padding: 12px;
+      border-radius: 10px;
+      background: #fafbfc;
+      border: 1px solid #edf0f5;
+    }
+    .piece-photo-card {
+      width: 92px;
+      height: 68px;
+      border: 1px solid #d9e6fb;
+      border-radius: 8px;
+      background:
+        linear-gradient(45deg, transparent 48%, #d8d8d8 49%, #d8d8d8 51%, transparent 52%),
+        linear-gradient(-45deg, transparent 48%, #d8d8d8 49%, #d8d8d8 51%, transparent 52%),
+        #f2f3f5;
+    }
+    .attachment-card {
+      width: 120px;
+      height: 88px;
+      border: 1px solid #d9e6fb;
+      border-radius: 8px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.6), rgba(255,255,255,0.6)),
+        linear-gradient(135deg, #ddeaff 0%, #bdd2ff 100%);
+    }
+    .piece-modal {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+      padding: 16px;
+      background: rgba(29, 33, 41, 0.42);
+      z-index: 20;
+    }
+    .piece-modal.show {
+      display: flex;
+    }
+    .piece-dialog {
+      width: 100%;
+      max-width: 390px;
+      border-radius: 16px;
+      background: #fff;
+      overflow: hidden;
+      box-shadow: 0 14px 36px rgba(0, 0, 0, 0.18);
+    }
+    .piece-dialog-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 16px;
+      border-bottom: 1px solid #eef1f6;
+      background: #fff;
+    }
+    .piece-dialog-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .piece-dialog-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #1d2129;
+    }
+    .piece-dialog-count {
+      font-size: 14px;
+      font-weight: 700;
+      color: #3975c6;
+    }
+    .piece-dialog-close {
+      border: 0;
+      padding: 0;
+      background: transparent;
+      color: #86909c;
+      font-size: 22px;
+      cursor: pointer;
+      line-height: 1;
+    }
+    .piece-dialog-body {
+      padding: 14px 0 18px;
+      background: #f7f8fa;
+    }
+    .piece-slider-wrap {
+      position: relative;
+      padding: 0 30px;
+    }
+    .piece-slider {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .piece-slider::-webkit-scrollbar {
+      display: none;
+    }
+    .piece-slide {
+      flex: 0 0 100%;
+      scroll-snap-align: center;
+    }
+    .piece-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 28px;
+      height: 28px;
+      border: 0;
+      border-radius: 50%;
+      background: rgba(57, 117, 198, 0.92);
+      color: #fff;
+      font-size: 16px;
+      line-height: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(57, 117, 198, 0.22);
+    }
+    .piece-nav.prev {
+      left: 20px;
+    }
+    .piece-nav.next {
+      right: 20px;
+    }
+    .piece-nav:disabled {
+      background: rgba(201, 205, 212, 0.92);
+      box-shadow: none;
+      cursor: default;
+    }
+    .piece-summary {
+      margin: 12px 16px 0;
+      border-radius: 12px;
+      background: #fff;
+      border: 1px solid #edf0f5;
+      overflow: hidden;
+    }
+    .piece-summary-toggle {
+      width: 100%;
+      border: 0;
+      background: #fff;
+      padding: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      cursor: pointer;
+    }
+    .piece-summary-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #1d2129;
+    }
+    .piece-summary-arrow {
+      color: #86909c;
+      font-size: 12px;
+      line-height: 1;
+    }
+    .piece-summary-content {
+      padding: 0 12px 12px;
+      border-top: 1px solid #f2f3f5;
+    }
+    .piece-summary-list {
+      display: grid;
+      gap: 8px;
+      padding-top: 12px;
+    }
+    .piece-summary-item {
+      padding: 10px;
+      border-radius: 10px;
+      background: #f7f8fa;
+    }
+    .piece-summary-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .piece-summary-name {
+      font-size: 12px;
+      color: #4e5969;
+      line-height: 1.4;
+      word-break: break-all;
+    }
+    .piece-summary-count {
+      flex-shrink: 0;
+      font-size: 13px;
+      font-weight: 700;
+      color: #3975c6;
+    }
+    .piece-dots {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 12px;
+    }
+    .piece-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #c9cdd4;
+    }
+    .piece-dot.active {
+      background: #3975c6;
+    }
+    .piece-summary.collapsed .piece-summary-content {
+      display: none;
+    }
+    .piece-summary.collapsed .piece-summary-arrow {
+      transform: rotate(-90deg);
+    }
+  </style>
+</head>
+<body>
+  <div class="phone">
+    <div class="header">
+      <div class="nav">
+        <span class="nav-icon">←</span>
+        <span class="nav-icon">⌂</span>
+        <span class="nav-title">退纸单</span>
+        <span class="nav-icon more">⋯</span>
+      </div>
+      <div class="status-card">
+        <div class="status-main">完结</div>
+        <div class="status-link">›</div>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="section">
+        <div class="section-title-row">
+          <div class="section-title-text">原料明细（1）</div>
+          <button class="piece-entry" type="button" id="openPieceModal">件明细（55）<span class="piece-entry-icon">›</span></button>
+        </div>
+        <div class="block">
+          <div class="row"><div class="label">名称：</div><div class="value">200克 889*1240 平板铜版纸</div></div>
+          <div class="row"><div class="label">件数：</div><div class="value">55</div></div>
+          <div class="row"><div class="label">调拨吨数：</div><div class="value">50</div></div>
+          <div class="row"><div class="label">转换率：</div><div class="value">9.072</div></div>
+          <div class="row"><div class="label required">调拨数量：</div><div class="value blue">453.600</div></div>
+          <div class="row"><div class="label">存储单位：</div><div class="value">件</div></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">单据信息</div>
+        <div class="block">
+          <div class="row"><div class="label">单据编号：</div><div class="value">RP202604080001</div></div>
+          <div class="row"><div class="label">提交时间：</div><div class="value">2026-04-08 14:25</div></div>
+          <div class="row"><div class="label">调入地点：</div><div class="value">万纪原料仓</div></div>
+          <div class="row"><div class="label">调出地点：</div><div class="value">金太阳印务仓库</div></div>
+          <div class="row"><div class="label">状态：</div><div class="value">完结</div></div>
+          <div class="row"><div class="label">印厂：</div><div class="value">金太阳印务</div></div>
+          <div class="row"><div class="label">备注：</div><div class="value">测试</div></div>
+          <div class="row"><div class="label">纸张到库时间：</div><div class="value">2026-04-08</div></div>
+          <div class="row"><div class="label">纸张到库图片：</div><div class="value photo-value"><div class="piece-photo-card"></div></div></div>
+          <div class="row"><div class="label">附件：</div><div class="value photo-value"><div class="attachment-card"></div></div></div>
+          <div class="row"><div class="label">物料分类：</div><div class="value">纸张</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="piece-modal" id="pieceModal">
+    <div class="piece-dialog">
+      <div class="piece-dialog-head">
+        <div class="piece-dialog-title-wrap">
+          <div class="piece-dialog-title">件明细</div>
+          <div class="piece-dialog-count"><span id="pieceCurrent">1</span>/55</div>
+        </div>
+        <button class="piece-dialog-close" type="button" id="closePieceModal">×</button>
+      </div>
+      <div class="piece-dialog-body">
+        <div class="piece-slider-wrap">
+          <button class="piece-nav prev" type="button" id="piecePrev">‹</button>
+          <div class="piece-slider" id="pieceSlider">
+            <div class="piece-card piece-slide">
+              <div class="row"><div class="label">唯一编号：</div><div class="value">2026000001</div></div>
+              <div class="row"><div class="label">出厂编码：</div><div class="value">CP-20260408-001</div></div>
+              <div class="row"><div class="label">调拨数量：</div><div class="value blue">9.072</div></div>
+              <div class="row"><div class="label">吨数：</div><div class="value">1.000</div></div>
+              <div class="row"><div class="label">调入库位：</div><div class="value">WW-YL-01-01</div></div>
+              <div class="row"><div class="label">图片：</div><div class="value photo-value"><div class="piece-photo-card"></div></div></div>
+            </div>
+            <div class="piece-card piece-slide">
+              <div class="row"><div class="label">唯一编号：</div><div class="value">2026000002</div></div>
+              <div class="row"><div class="label">出厂编码：</div><div class="value">CP-20260408-002</div></div>
+              <div class="row"><div class="label">调拨数量：</div><div class="value blue">9.072</div></div>
+              <div class="row"><div class="label">吨数：</div><div class="value">1.000</div></div>
+              <div class="row"><div class="label">调入库位：</div><div class="value">WW-YL-01-02</div></div>
+              <div class="row"><div class="label">图片：</div><div class="value photo-value"><div class="piece-photo-card"></div></div></div>
+            </div>
+            <div class="piece-card piece-slide">
+              <div class="row"><div class="label">唯一编号：</div><div class="value">2026000003</div></div>
+              <div class="row"><div class="label">出厂编码：</div><div class="value">CP-20260408-003</div></div>
+              <div class="row"><div class="label">调拨数量：</div><div class="value blue">9.072</div></div>
+              <div class="row"><div class="label">吨数：</div><div class="value">1.000</div></div>
+              <div class="row"><div class="label">调入库位：</div><div class="value">WW-YL-01-03</div></div>
+              <div class="row"><div class="label">图片：</div><div class="value photo-value"><div class="piece-photo-card"></div></div></div>
+            </div>
+          </div>
+          <button class="piece-nav next" type="button" id="pieceNext">›</button>
+        </div>
+        <div class="piece-summary collapsed" id="pieceSummary">
+          <button class="piece-summary-toggle" type="button" id="pieceSummaryToggle">
+            <div class="piece-summary-title">库位件数统计</div>
+            <div class="piece-summary-arrow">▼</div>
+          </button>
+          <div class="piece-summary-content">
+            <div class="piece-summary-list">
+              <div class="piece-summary-item">
+                <div class="piece-summary-row">
+                  <div class="piece-summary-name">WW-YL-01-01</div>
+                  <div class="piece-summary-count">20件</div>
+                </div>
+              </div>
+              <div class="piece-summary-item">
+                <div class="piece-summary-row">
+                  <div class="piece-summary-name">WW-YL-01-02</div>
+                  <div class="piece-summary-count">18件</div>
+                </div>
+              </div>
+              <div class="piece-summary-item">
+                <div class="piece-summary-row">
+                  <div class="piece-summary-name">WW-YL-01-03</div>
+                  <div class="piece-summary-count">12件</div>
+                </div>
+              </div>
+              <div class="piece-summary-item">
+                <div class="piece-summary-row">
+                  <div class="piece-summary-name">WW-YL-02-01</div>
+                  <div class="piece-summary-count">3件</div>
+                </div>
+              </div>
+              <div class="piece-summary-item">
+                <div class="piece-summary-row">
+                  <div class="piece-summary-name">WW-YL-02-02</div>
+                  <div class="piece-summary-count">2件</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="piece-dots">
+          <span class="piece-dot active"></span>
+          <span class="piece-dot"></span>
+          <span class="piece-dot"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const pieceModal = document.getElementById('pieceModal');
+    const openPieceModal = document.getElementById('openPieceModal');
+    const closePieceModal = document.getElementById('closePieceModal');
+    const pieceSlider = document.getElementById('pieceSlider');
+    const pieceCurrent = document.getElementById('pieceCurrent');
+    const piecePrev = document.getElementById('piecePrev');
+    const pieceNext = document.getElementById('pieceNext');
+    const pieceSummary = document.getElementById('pieceSummary');
+    const pieceSummaryToggle = document.getElementById('pieceSummaryToggle');
+    const pieceDots = Array.from(document.querySelectorAll('.piece-dot'));
+    const pieceSlides = Array.from(document.querySelectorAll('.piece-slide'));
+
+    function getCurrentIndex() {
+      if (!pieceSlides.length) return 1;
+      const gap = 12;
+      const slideWidth = pieceSlides[0].offsetWidth + gap;
+      return Math.min(
+        pieceSlides.length,
+        Math.max(1, Math.round(pieceSlider.scrollLeft / slideWidth) + 1)
+      );
+    }
+
+    function updatePieceState() {
+      if (!pieceSlides.length) return;
+      const currentIndex = getCurrentIndex();
+      pieceCurrent.textContent = currentIndex;
+      pieceDots.forEach((dot, index) => {
+        dot.classList.toggle('active', index + 1 === currentIndex);
+      });
+      piecePrev.disabled = currentIndex === 1;
+      pieceNext.disabled = currentIndex === pieceSlides.length;
+    }
+
+    function scrollToPiece(targetIndex) {
+      if (!pieceSlides.length) return;
+      const index = Math.min(pieceSlides.length, Math.max(1, targetIndex));
+      pieceSlides[index - 1].scrollIntoView({
+        behavior: 'smooth',
+        inline: 'center',
+        block: 'nearest'
+      });
+    }
+
+    openPieceModal.addEventListener('click', () => {
+      pieceModal.classList.add('show');
+      document.body.style.overflow = 'hidden';
+      updatePieceState();
+    });
+
+    function closeModal() {
+      pieceModal.classList.remove('show');
+      document.body.style.overflow = '';
+    }
+
+    closePieceModal.addEventListener('click', closeModal);
+
+    pieceModal.addEventListener('click', (event) => {
+      if (event.target === pieceModal) {
+        closeModal();
+      }
+    });
+
+    pieceSlider.addEventListener('scroll', updatePieceState);
+    piecePrev.addEventListener('click', () => {
+      scrollToPiece(getCurrentIndex() - 1);
+    });
+    pieceNext.addEventListener('click', () => {
+      scrollToPiece(getCurrentIndex() + 1);
+    });
+    pieceSummaryToggle.addEventListener('click', () => {
+      pieceSummary.classList.toggle('collapsed');
+    });
+  </script>
+</body>
+</html>

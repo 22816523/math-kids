@@ -103,6 +103,14 @@
       font-size: var(--font-title);
       font-weight: 600;
     }
+    .section-title-between {
+      justify-content: space-between;
+    }
+    .section-title-main {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
     .arrow { color: var(--hint); font-size: 12px; }
     .sub-title {
       display: flex;
@@ -243,6 +251,17 @@
       border-color: var(--primary);
       color: #fff;
     }
+    .assist-btn {
+      height: 28px;
+      padding: 0 10px;
+      border: 1px solid #d6e5ff;
+      border-radius: 14px;
+      background: #f8fbff;
+      color: var(--primary);
+      font-size: var(--font-base);
+      font-weight: 600;
+      cursor: pointer;
+    }
     .row-action {
       color: var(--danger);
       cursor: pointer;
@@ -275,7 +294,6 @@
       flex-wrap: wrap;
     }
     .photo-item {
-      position: relative;
       width: 38px;
       height: 38px;
       flex: 0 0 38px;
@@ -287,25 +305,9 @@
       border-radius: 4px;
       background: linear-gradient(135deg, #d7d7d7 0%, #bdbdbd 35%, #efefef 100%);
     }
-    .photo-remove {
-      position: absolute;
-      top: -6px;
-      right: -6px;
-      width: 14px;
-      height: 14px;
-      border-radius: 50%;
-      border: 1px solid #c8c8c8;
-      background: #fff;
-      color: #8a8a8a;
-      font-size: 10px;
-      line-height: 12px;
-      text-align: center;
-      cursor: pointer;
-    }
-    .upload-link {
-      color: var(--primary);
-      cursor: pointer;
-      white-space: nowrap;
+    .photo-thumb.empty {
+      background: #f3f4f6;
+      border-style: dashed;
     }
     .table-select {
       width: 100%;
@@ -323,6 +325,120 @@
       font-size: var(--font-base);
       color: var(--text);
       background: transparent;
+    }
+    .warehouse-modal {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.38);
+      z-index: 30;
+    }
+    .warehouse-modal.show {
+      display: flex;
+    }
+    .warehouse-dialog {
+      width: 760px;
+      max-height: 78vh;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.18);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .warehouse-dialog-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 16px 18px 12px;
+      border-bottom: 1px solid var(--line-soft);
+      background: #fff;
+    }
+    .warehouse-dialog-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .warehouse-dialog-desc {
+      margin-top: 6px;
+      color: var(--hint);
+      line-height: 1.6;
+    }
+    .warehouse-dialog-close {
+      width: 28px;
+      height: 28px;
+      border: 0;
+      border-radius: 4px;
+      background: #f5f7fa;
+      color: var(--sub);
+      font-size: 18px;
+      cursor: pointer;
+    }
+    .warehouse-dialog-body {
+      padding: 16px 18px 18px;
+      background: #f7f8fa;
+      overflow-y: auto;
+    }
+    .warehouse-chip {
+      display: inline-flex;
+      align-items: center;
+      height: 28px;
+      padding: 0 12px;
+      border-radius: 14px;
+      background: var(--primary-soft);
+      color: var(--primary);
+      font-weight: 600;
+    }
+    .warehouse-group {
+      margin-top: 12px;
+      border: 1px solid var(--line-soft);
+      background: #fff;
+    }
+    .warehouse-group-head {
+      padding: 12px 14px 10px;
+      border-bottom: 1px solid var(--line-soft);
+      background: #fafbfc;
+    }
+    .warehouse-group-title {
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 1.6;
+      word-break: break-all;
+    }
+    .warehouse-group-meta {
+      margin-top: 4px;
+      color: var(--hint);
+    }
+    .warehouse-table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: auto;
+    }
+    .warehouse-table th,
+    .warehouse-table td {
+      border: 0;
+      border-bottom: 1px solid var(--line-soft);
+      padding: 10px 14px;
+      font-size: var(--font-base);
+    }
+    .warehouse-table th {
+      background: #fff;
+      color: var(--sub);
+      text-align: left;
+    }
+    .warehouse-table td:last-child,
+    .warehouse-table th:last-child {
+      width: 100px;
+      text-align: right;
+    }
+    .warehouse-table tr:last-child td {
+      border-bottom: 0;
+    }
+    .warehouse-row-unset td {
+      color: #d46b08;
     }
   </style>
 </head>
@@ -355,14 +471,15 @@
               <div class="field"><label>提交时间</label><div class="readonly">2026-03-30 09:32</div></div>
               <div class="field"><label>调出地点</label><div class="readonly">万纬原料仓</div></div>
               <div class="field"><label>调入地点</label><div class="readonly">十二厂仓库</div></div>
-              <div class="field"><label>调入库位</label><div class="select-control"><select id="document-location" class="select-input"><option value="W0001" selected>W0001</option><option value="W0002">W0002</option><option value="W0003">W0003</option></select></div></div>
               <div class="field"><label>物料分类</label><div class="readonly">纸张</div></div>
             </div>
           </section>
 
           <section class="section">
-            <div class="section-title"><span class="arrow">▼</span><span>提纸明细</span></div>
-            <div class="sub-title"><span>物料汇总表</span></div>
+            <div class="section-title section-title-between">
+              <span class="section-title-main"><span class="arrow">▼</span><span>提纸明细</span></span>
+              <button class="assist-btn" type="button" id="openWarehouseModal">当前仓库库位件数</button>
+            </div>
             <table>
               <thead>
                 <tr>
@@ -387,7 +504,9 @@
               </tbody>
             </table>
 
-            <div class="sub-title"><span>件明细</span></div>
+            <div class="section-title">
+              <span class="arrow">▼</span><span>件明细</span>
+            </div>
 
             <div class="accordion-item">
               <div class="accordion-header" role="button" tabindex="0">
@@ -405,9 +524,8 @@
                       <th style="width:160px;">唯一编号</th>
                       <th style="width:90px;">调拨数量</th>
                       <th style="width:90px;">吨数</th>
-                      <th style="width:90px;">调入仓库</th>
+                      <th style="width:160px;">出厂编码</th>
                       <th style="width:120px;">图片</th>
-                      <th style="width:100px;">调入库位</th>
                       <th style="width:70px;">操作</th>
                     </tr>
                   </thead>
@@ -417,25 +535,14 @@
                       <td><input class="cell-input" value="2026002201" placeholder="请输入唯一编号" data-code-field /></td>
                       <td><input class="cell-input readonly" value="1275" readonly data-qty-field /></td>
                       <td><input class="cell-input readonly" value="19.394" readonly data-ton-field /></td>
-                      <td><input class="cell-input readonly" value="十二厂仓库" readonly data-warehouse-field /></td>
+                      <td><input class="cell-input readonly" value="CP-20260411-001" readonly data-factory-field /></td>
                       <td>
-                        <div class="photo-cell">
+                        <div class="photo-cell" data-photo-field>
                           <div class="photo-list">
                             <div class="photo-item">
                               <div class="photo-thumb"></div>
-                              <div class="photo-remove" data-delete-photo>×</div>
                             </div>
                           </div>
-                          <span class="upload-link">继续上传</span>
-                        </div>
-                      </td>
-                      <td>
-                        <div class="table-select">
-                          <select class="cell-select" data-location>
-                            <option value="W0001" selected>W0001</option>
-                            <option value="W0002">W0002</option>
-                            <option value="W0003">W0003</option>
-                          </select>
                         </div>
                       </td>
                       <td><span class="row-action" data-delete-row>删除</span></td>
@@ -461,9 +568,8 @@
                       <th style="width:160px;">唯一编号</th>
                       <th style="width:90px;">调拨数量</th>
                       <th style="width:90px;">吨数</th>
-                      <th style="width:90px;">调入仓库</th>
+                      <th style="width:160px;">出厂编码</th>
                       <th style="width:120px;">图片</th>
-                      <th style="width:100px;">调入库位</th>
                       <th style="width:70px;">操作</th>
                     </tr>
                   </thead>
@@ -492,23 +598,73 @@
     </div>
   </div>
 
+  <div class="warehouse-modal" id="warehouseModal">
+    <div class="warehouse-dialog">
+      <div class="warehouse-dialog-head">
+        <div>
+          <div class="warehouse-dialog-title">当前仓库库位件数</div>
+          <div class="warehouse-dialog-desc">展示本单各物料在当前仓库下的库位件数，不含调入库位信息。</div>
+        </div>
+        <button class="warehouse-dialog-close" type="button" id="closeWarehouseModal">×</button>
+      </div>
+      <div class="warehouse-dialog-body">
+        <div class="warehouse-chip">当前仓库：金太阳印务仓库</div>
+
+        <div class="warehouse-group">
+          <div class="warehouse-group-head">
+            <div class="warehouse-group-title">60克787*1092平板双胶纸岳阳</div>
+            <div class="warehouse-group-meta">2个库位 / 2件</div>
+          </div>
+          <table class="warehouse-table">
+            <thead>
+              <tr><th>当前库位</th><th>件数</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>JTY-FP-01</td><td>1件</td></tr>
+              <tr><td>JTY-FP-03</td><td>1件</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="warehouse-group">
+          <div class="warehouse-group-head">
+            <div class="warehouse-group-title">55克70*1230平板书写纸</div>
+            <div class="warehouse-group-meta">3个库位 / 3件</div>
+          </div>
+          <table class="warehouse-table">
+            <thead>
+              <tr><th>当前库位</th><th>件数</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>JTY-FP-06</td><td>1件</td></tr>
+              <tr><td>JTY-FP-07</td><td>1件</td></tr>
+              <tr class="warehouse-row-unset"><td>未维护当前库位</td><td>1件</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script>
     const accordionItems = document.querySelectorAll('.accordion-item');
     const submitButton = document.getElementById('submit-btn');
-    const documentLocation = document.getElementById('document-location');
+    const warehouseModal = document.getElementById('warehouseModal');
+    const openWarehouseModal = document.getElementById('openWarehouseModal');
+    const closeWarehouseModal = document.getElementById('closeWarehouseModal');
     const rowTemplates = {
-      'material-1': { warehouse: '十二厂仓库' },
-      'material-2': { warehouse: '十二厂仓库' }
+      'material-1': { factoryCode: '' },
+      'material-2': { factoryCode: '' }
     };
     const pieceLookups = {
       'material-1': {
-        '2026002201': { qty: '1275', ton: '19.394', warehouse: '十二厂仓库' },
-        '2026002202': { qty: '1275', ton: '19.393', warehouse: '十二厂仓库' }
+        '2026002201': { qty: '1275', ton: '19.394', factoryCode: 'CP-20260411-001' },
+        '2026002202': { qty: '1275', ton: '19.393', factoryCode: 'CP-20260411-002' }
       },
       'material-2': {
-        '2026003201': { qty: '1.000', ton: '0.333', warehouse: '十二厂仓库' },
-        '2026003202': { qty: '1.000', ton: '0.334', warehouse: '十二厂仓库' },
-        '2026003203': { qty: '1.000', ton: '0.333', warehouse: '十二厂仓库' }
+        '2026003201': { qty: '1.000', ton: '0.333', factoryCode: 'CP-20260411-101' },
+        '2026003202': { qty: '1.000', ton: '0.334', factoryCode: 'CP-20260411-102' },
+        '2026003203': { qty: '1.000', ton: '0.333', factoryCode: 'CP-20260411-103' }
       }
     };
 
@@ -531,21 +687,23 @@
       });
     });
 
-    function buildLocationOptions(selectedValue) {
-      return ['W0001', 'W0002', 'W0003'].map((value) => `<option value="${value}"${value === selectedValue ? ' selected' : ''}>${value}</option>`).join('');
+    function openWarehouseDialog() {
+      warehouseModal.classList.add('show');
+      document.body.style.overflow = 'hidden';
     }
 
-    function markLocationManual(select) {
-      if (!select) return;
-      select.dataset.manualLocation = select.value !== documentLocation.value ? 'true' : 'false';
+    function closeWarehouseDialog() {
+      warehouseModal.classList.remove('show');
+      document.body.style.overflow = '';
     }
 
-    function applyDocumentLocationToRows() {
-      document.querySelectorAll('[data-location]').forEach((select) => {
-        if (select.dataset.manualLocation === 'true') return;
-        select.value = documentLocation.value;
-      });
-    }
+    openWarehouseModal.addEventListener('click', openWarehouseDialog);
+    closeWarehouseModal.addEventListener('click', closeWarehouseDialog);
+    warehouseModal.addEventListener('click', (event) => {
+      if (event.target === warehouseModal) {
+        closeWarehouseDialog();
+      }
+    });
 
     function resequenceRows(tbody) {
       Array.from(tbody.querySelectorAll('tr')).forEach((row, index) => {
@@ -576,10 +734,14 @@
     function clearDerivedFields(row) {
       const qtyField = row.querySelector('[data-qty-field]');
       const tonField = row.querySelector('[data-ton-field]');
-      const warehouseField = row.querySelector('[data-warehouse-field]');
+      const factoryField = row.querySelector('[data-factory-field]');
+      const photoField = row.querySelector('[data-photo-field]');
       if (qtyField) qtyField.value = '';
       if (tonField) tonField.value = '';
-      if (warehouseField) warehouseField.value = '';
+      if (factoryField) factoryField.value = '';
+      if (photoField) {
+        photoField.innerHTML = '<div class="photo-list"><div class="photo-item"><div class="photo-thumb empty"></div></div></div>';
+      }
       row.dataset.valid = 'false';
     }
 
@@ -588,8 +750,9 @@
       const codeField = row.querySelector('[data-code-field]');
       const qtyField = row.querySelector('[data-qty-field]');
       const tonField = row.querySelector('[data-ton-field]');
-      const warehouseField = row.querySelector('[data-warehouse-field]');
-      if (!tbody || !codeField || !qtyField || !tonField || !warehouseField) return;
+      const factoryField = row.querySelector('[data-factory-field]');
+      const photoField = row.querySelector('[data-photo-field]');
+      if (!tbody || !codeField || !qtyField || !tonField || !factoryField || !photoField) return;
       const code = codeField.value.trim();
       if (!code) {
         clearDerivedFields(row);
@@ -616,7 +779,8 @@
       }
       qtyField.value = lookup.qty;
       tonField.value = lookup.ton;
-      warehouseField.value = lookup.warehouse;
+      factoryField.value = lookup.factoryCode;
+      photoField.innerHTML = '<div class="photo-list"><div class="photo-item"><div class="photo-thumb"></div></div></div>';
       row.dataset.valid = 'true';
       refreshGroupCount(tbody);
       refreshSubmitState();
@@ -640,19 +804,8 @@
           <td><input class="cell-input" value="" placeholder="请输入唯一编号" data-code-field /></td>
           <td><input class="cell-input readonly" value="" readonly data-qty-field /></td>
           <td><input class="cell-input readonly" value="" readonly data-ton-field /></td>
-          <td><input class="cell-input readonly" value="${tpl.warehouse}" readonly data-warehouse-field /></td>
-          <td>
-            <div class="photo-cell">
-              <span class="upload-link">上传图片</span>
-            </div>
-          </td>
-          <td>
-            <div class="table-select">
-              <select class="cell-select" data-location>
-                ${buildLocationOptions(documentLocation.value)}
-              </select>
-            </div>
-          </td>
+          <td><input class="cell-input readonly" value="${tpl.factoryCode}" readonly data-factory-field /></td>
+          <td><div class="photo-cell" data-photo-field><div class="photo-list"><div class="photo-item"><div class="photo-thumb empty"></div></div></div></div></td>
           <td><span class="row-action" data-delete-row>删除</span></td>
         `;
         row.dataset.valid = 'false';
@@ -679,24 +832,9 @@
         if (row) bindCodeToRow(row);
         return;
       }
-      const locationSelect = event.target.closest('[data-location]');
-      if (locationSelect) {
-        markLocationManual(locationSelect);
-      }
     });
 
     document.addEventListener('click', (event) => {
-      const photoTrigger = event.target.closest('[data-delete-photo]');
-      if (photoTrigger) {
-        const photoItem = photoTrigger.closest('.photo-item');
-        const photoCell = photoTrigger.closest('.photo-cell');
-        const photoList = photoCell && photoCell.querySelector('.photo-list');
-        if (photoItem) photoItem.remove();
-        if (photoCell && photoList && photoList.children.length === 0 && !photoCell.querySelector('.upload-link')) {
-          photoCell.innerHTML = '<span class="upload-link">上传图片</span>';
-        }
-        return;
-      }
       const trigger = event.target.closest('[data-delete-row]');
       if (!trigger) return;
       const row = trigger.closest('tr');
@@ -708,19 +846,10 @@
       refreshSubmitState();
     });
 
-    documentLocation.addEventListener('change', () => {
-      applyDocumentLocationToRows();
-    });
-
     document.querySelectorAll('tbody[data-expected-count] tr').forEach((row) => {
       row.dataset.valid = 'false';
       bindCodeToRow(row);
     });
-    document.querySelectorAll('[data-location]').forEach((select) => {
-      select.dataset.manualLocation = 'false';
-      select.value = documentLocation.value;
-    });
-    applyDocumentLocationToRows();
     document.querySelectorAll('tbody[data-expected-count]').forEach((tbody) => refreshGroupCount(tbody));
     refreshSubmitState();
   </script>

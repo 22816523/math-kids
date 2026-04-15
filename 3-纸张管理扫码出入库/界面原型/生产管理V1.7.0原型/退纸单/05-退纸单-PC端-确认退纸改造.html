@@ -143,6 +143,14 @@
       font-size: var(--font-title);
       font-weight: 600;
     }
+    .section-title-between {
+      justify-content: space-between;
+    }
+    .section-title-main {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
     .arrow {
       color: var(--hint);
       font-size: 12px;
@@ -255,6 +263,7 @@
       align-items: center;
       gap: 8px;
       font-weight: 600;
+      min-width: 0;
     }
     .toggle-icon {
       width: 18px;
@@ -266,6 +275,7 @@
       display: flex;
       align-items: center;
       gap: 10px;
+      flex-shrink: 0;
     }
     .metric {
       color: var(--sub);
@@ -284,11 +294,138 @@
       color: var(--sub);
       cursor: pointer;
       font-size: var(--font-base);
+      white-space: nowrap;
     }
     .mini-btn.primary {
       background: var(--primary);
       border-color: var(--primary);
       color: #fff;
+    }
+    .assist-btn {
+      height: 28px;
+      padding: 0 10px;
+      border: 1px solid #d6e5ff;
+      border-radius: 14px;
+      background: #f8fbff;
+      color: var(--primary);
+      font-size: var(--font-base);
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .warehouse-modal {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.38);
+      z-index: 30;
+    }
+    .warehouse-modal.show {
+      display: flex;
+    }
+    .warehouse-dialog {
+      width: 760px;
+      max-height: 78vh;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.18);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .warehouse-dialog-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 16px 18px 12px;
+      border-bottom: 1px solid var(--line-soft);
+      background: #fff;
+    }
+    .warehouse-dialog-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .warehouse-dialog-desc {
+      margin-top: 6px;
+      color: var(--hint);
+      line-height: 1.6;
+    }
+    .warehouse-dialog-close {
+      width: 28px;
+      height: 28px;
+      border: 0;
+      border-radius: 4px;
+      background: #f5f7fa;
+      color: var(--sub);
+      font-size: 18px;
+      cursor: pointer;
+    }
+    .warehouse-dialog-body {
+      padding: 16px 18px 18px;
+      background: #f7f8fa;
+      overflow-y: auto;
+    }
+    .warehouse-chip {
+      display: inline-flex;
+      align-items: center;
+      height: 28px;
+      padding: 0 12px;
+      border-radius: 14px;
+      background: var(--primary-soft);
+      color: var(--primary);
+      font-weight: 600;
+    }
+    .warehouse-group {
+      margin-top: 12px;
+      border: 1px solid var(--line-soft);
+      background: #fff;
+    }
+    .warehouse-group-head {
+      padding: 12px 14px 10px;
+      border-bottom: 1px solid var(--line-soft);
+      background: #fafbfc;
+    }
+    .warehouse-group-title {
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 1.6;
+      word-break: break-all;
+    }
+    .warehouse-group-meta {
+      margin-top: 4px;
+      color: var(--hint);
+    }
+    .warehouse-table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: auto;
+    }
+    .warehouse-table th,
+    .warehouse-table td {
+      border: 0;
+      border-bottom: 1px solid var(--line-soft);
+      padding: 10px 14px;
+      font-size: var(--font-base);
+    }
+    .warehouse-table th {
+      background: #fff;
+      color: var(--sub);
+      text-align: left;
+    }
+    .warehouse-table td:last-child,
+    .warehouse-table th:last-child {
+      width: 100px;
+      text-align: right;
+    }
+    .warehouse-table tr:last-child td {
+      border-bottom: 0;
+    }
+    .warehouse-row-unset td {
+      color: #d46b08;
     }
     .mini-btn:disabled {
       color: var(--hint);
@@ -376,7 +513,6 @@
               <div class="field"><label>印厂</label><div class="readonly">十二厂</div></div>
               <div class="field"><label>调出地点</label><div class="readonly">十二厂仓库</div></div>
               <div class="field"><label>调入地点</label><div class="readonly">白水湖仓库</div></div>
-              <div class="field"><label>调入库位</label><div class="select-control"><select id="document-location"><option value="BSH-RK-01-01" selected>BSH-RK-01-01</option><option value="BSH-RK-01-02">BSH-RK-01-02</option><option value="BSH-RK-02-01">BSH-RK-02-01</option></select></div></div>
               <div class="field"><label>物料分类</label><div class="readonly">纸张</div></div>
               <div class="field textarea"><label>备注</label><textarea class="control">退纸件明细由本环节维护形成。</textarea></div>
               <div class="field"><label>附件</label><div class="readonly">-</div></div>
@@ -384,7 +520,10 @@
           </section>
 
           <section class="section">
-            <div class="section-title"><span class="arrow">▼</span><span>明细</span></div>
+            <div class="section-title section-title-between">
+              <span class="section-title-main"><span class="arrow">▼</span><span>明细</span></span>
+              <button class="assist-btn" type="button" id="openWarehouseModal">当前仓库库位件数</button>
+            </div>
             <table>
               <thead>
                 <tr>
@@ -421,13 +560,13 @@
             <div class="section-title"><span class="arrow">▼</span><span>件明细</span></div>
 
             <div class="accordion-item">
-              <button class="accordion-header" type="button">
+              <div class="accordion-header" role="button" tabindex="0">
                 <span class="accordion-title"><span class="toggle-icon">▼</span><span>150克889*1240平板铜版纸</span></span>
                 <span class="group-actions">
                   <span class="metric">应退<strong>2</strong> / 已录<strong data-count="material-1">1</strong></span>
                   <button class="mini-btn primary" type="button" data-add-row="material-1">新增件明细</button>
                 </span>
-              </button>
+              </div>
               <div class="accordion-body">
                 <table>
                   <thead>
@@ -473,13 +612,13 @@
             </div>
 
             <div class="accordion-item collapsed">
-              <button class="accordion-header" type="button">
+              <div class="accordion-header" role="button" tabindex="0">
                 <span class="accordion-title"><span class="toggle-icon">▶</span><span>55克787*1092平板书写纸晨鸣</span></span>
                 <span class="group-actions">
                   <span class="metric">应退<strong>3</strong> / 已录<strong data-count="material-2">0</strong></span>
                   <button class="mini-btn primary" type="button" data-add-row="material-2">新增件明细</button>
                 </span>
-              </button>
+              </div>
               <div class="accordion-body">
                 <table>
                   <thead>
@@ -504,10 +643,60 @@
     </div>
   </div>
 
+  <div class="warehouse-modal" id="warehouseModal">
+    <div class="warehouse-dialog">
+      <div class="warehouse-dialog-head">
+        <div>
+          <div class="warehouse-dialog-title">当前仓库库位件数</div>
+          <div class="warehouse-dialog-desc">展示本单各物料在当前仓库下的库位件数，不含调入库位信息。</div>
+        </div>
+        <button class="warehouse-dialog-close" type="button" id="closeWarehouseModal">×</button>
+      </div>
+      <div class="warehouse-dialog-body">
+        <div class="warehouse-chip">当前仓库：金太阳印务仓库</div>
+
+        <div class="warehouse-group">
+          <div class="warehouse-group-head">
+            <div class="warehouse-group-title">150克889*1240平板铜版纸</div>
+            <div class="warehouse-group-meta">3个库位 / 8件</div>
+          </div>
+          <table class="warehouse-table">
+            <thead>
+              <tr><th>当前库位</th><th>件数</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>JTY-RT-01</td><td>4件</td></tr>
+              <tr><td>JTY-RT-02</td><td>2件</td></tr>
+              <tr class="warehouse-row-unset"><td>未维护当前库位</td><td>2件</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="warehouse-group">
+          <div class="warehouse-group-head">
+            <div class="warehouse-group-title">55克787*1092平板书写纸晨鸣</div>
+            <div class="warehouse-group-meta">2个库位 / 5件</div>
+          </div>
+          <table class="warehouse-table">
+            <thead>
+              <tr><th>当前库位</th><th>件数</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>JTY-RT-05</td><td>3件</td></tr>
+              <tr><td>JTY-RT-06</td><td>2件</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script>
     const accordionItems = document.querySelectorAll('.accordion-item');
     const submitButton = document.getElementById('submit-btn');
-    const documentLocation = document.getElementById('document-location');
+    const warehouseModal = document.getElementById('warehouseModal');
+    const openWarehouseModal = document.getElementById('openWarehouseModal');
+    const closeWarehouseModal = document.getElementById('closeWarehouseModal');
     const pieceLookups = {
       'material-1': {
         'TP-20260205-001': { qty: '14.211', ton: '1.175', warehouse: '白水湖仓库' },
@@ -523,7 +712,7 @@
     accordionItems.forEach((item) => {
       const header = item.querySelector('.accordion-header');
       const icon = item.querySelector('.toggle-icon');
-      header.addEventListener('click', () => {
+      const toggleAccordion = () => {
         const isCollapsed = item.classList.contains('collapsed');
         accordionItems.forEach((other) => {
           other.classList.add('collapsed');
@@ -533,12 +722,36 @@
           item.classList.remove('collapsed');
           icon.textContent = '▼';
         }
+      };
+      header.addEventListener('click', toggleAccordion);
+      header.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          toggleAccordion();
+        }
       });
+    });
+
+    function openWarehouseDialog() {
+      warehouseModal.classList.add('show');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeWarehouseDialog() {
+      warehouseModal.classList.remove('show');
+      document.body.style.overflow = '';
+    }
+
+    openWarehouseModal.addEventListener('click', openWarehouseDialog);
+    closeWarehouseModal.addEventListener('click', closeWarehouseDialog);
+    warehouseModal.addEventListener('click', (event) => {
+      if (event.target === warehouseModal) {
+        closeWarehouseDialog();
+      }
     });
 
     function createRow(groupId, index) {
       const lookup = pieceLookups[groupId];
-      const selectedLocation = documentLocation.value;
       const row = document.createElement('tr');
       row.innerHTML = `
         <td><input class="cell-input" value="${index}" readonly /></td>
@@ -564,7 +777,6 @@
         </td>
         <td><span class="row-delete" data-delete-row>删除</span></td>
       `;
-      row.querySelector('[data-location]').value = selectedLocation;
       bindRow(row, groupId);
       return row;
     }
@@ -627,7 +839,8 @@
     }
 
     document.querySelectorAll('[data-add-row]').forEach((button) => {
-      button.addEventListener('click', () => {
+      button.addEventListener('click', (event) => {
+        event.stopPropagation();
         const tbody = document.getElementById(button.dataset.addRow);
         const expectedCount = Number(tbody.dataset.expectedCount);
         if (tbody.children.length >= expectedCount) {
@@ -643,14 +856,6 @@
     document.querySelectorAll('tbody[data-expected-count]').forEach((tbody) => {
       Array.from(tbody.querySelectorAll('tr')).forEach((row) => bindRow(row, tbody.id));
       updateGroupState(tbody);
-    });
-
-    documentLocation.addEventListener('change', () => {
-      document.querySelectorAll('[data-location]').forEach((select) => {
-        if (!select.dataset.modified) {
-          select.value = documentLocation.value;
-        }
-      });
     });
 
     document.addEventListener('change', (event) => {

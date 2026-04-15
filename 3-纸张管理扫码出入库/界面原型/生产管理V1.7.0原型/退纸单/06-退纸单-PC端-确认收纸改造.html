@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>退纸单-PC端-详情改造</title>
+  <title>退纸单-PC端-确认收纸改造</title>
   <style>
     * { box-sizing: border-box; }
     :root {
@@ -16,6 +16,7 @@
       --hint: #909399;
       --primary: #409eff;
       --primary-soft: #ecf5ff;
+      --danger: #f56c6c;
       --font-base: 12px;
       --font-title: 14px;
     }
@@ -110,6 +111,22 @@
       cursor: pointer;
       font-size: var(--font-base);
     }
+    .btn.primary {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+    }
+    .btn.danger {
+      background: #fff0f0;
+      border-color: #f3c5c5;
+      color: var(--danger);
+    }
+    .btn:disabled {
+      color: var(--hint);
+      background: #f5f7fa;
+      border-color: var(--line);
+      cursor: not-allowed;
+    }
     .section {
       margin-bottom: 10px;
       background: var(--panel);
@@ -130,14 +147,6 @@
       color: var(--hint);
       font-size: 12px;
     }
-    .sub-title {
-      display: flex;
-      align-items: center;
-      height: 34px;
-      padding: 0 10px;
-      color: var(--sub);
-      font-weight: 600;
-    }
     .form-grid {
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -146,35 +155,57 @@
     }
     .field {
       display: grid;
-      grid-template-columns: 78px 1fr;
+      grid-template-columns: 92px 1fr;
       gap: 8px;
       align-items: start;
     }
     .field label {
       line-height: 28px;
       text-align: right;
-      color: var(--text);
     }
-    .readonly {
+    .readonly,
+    .control {
+      width: 100%;
       min-height: 28px;
       padding: 6px 8px;
       display: flex;
       align-items: center;
       border: 1px solid var(--line);
       border-radius: 4px;
+      font-size: var(--font-base);
+    }
+    .readonly {
       background: #f5f7fa;
       color: var(--sub);
     }
-    .readonly.multiline {
-      align-items: flex-start;
-      line-height: 1.6;
+    .control {
+      background: #fff;
+      color: var(--text);
     }
-    .photo-preview {
-      width: 92px;
-      height: 92px;
+    .date-control {
+      width: 100%;
+      height: 28px;
+      padding: 0 8px;
       border: 1px solid var(--line);
+      border-radius: 4px;
+      font-size: var(--font-base);
+    }
+    .upload-box {
+      width: 118px;
+      height: 118px;
+      border: 1px dashed #dcdfe6;
       border-radius: 6px;
-      background: linear-gradient(135deg, #cfd8e6 0%, #e5eaf3 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #fafafa;
+      color: var(--hint);
+      font-size: 40px;
+      line-height: 1;
+    }
+    .upload-tip {
+      margin-top: 6px;
+      color: var(--hint);
     }
     table {
       width: 100%;
@@ -237,6 +268,48 @@
       border-radius: 4px;
       background: linear-gradient(135deg, #d7d7d7 0%, #efefef 100%);
     }
+    .status {
+      color: var(--hint);
+    }
+    .status.done {
+      color: var(--primary);
+    }
+    .review-cell {
+      text-align: center;
+    }
+    .review-btn {
+      min-width: 74px;
+      height: 26px;
+      padding: 0 10px;
+      border: 1px solid #dcdfe6;
+      border-radius: 4px;
+      background: #fff;
+      color: var(--primary);
+      cursor: pointer;
+      font-size: var(--font-base);
+    }
+    .review-btn.done {
+      color: var(--danger);
+      border-color: #f3c5c5;
+      background: #fff0f0;
+    }
+    .table-select {
+      width: 100%;
+      height: 26px;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      background: #fff;
+      overflow: hidden;
+    }
+    .cell-select {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      padding: 0 6px;
+      font-size: var(--font-base);
+      color: var(--text);
+      background: transparent;
+    }
   </style>
 </head>
 <body>
@@ -245,7 +318,7 @@
       <div class="brand">ERP门户</div>
       <div class="tabs-nav">
         <div class="home-tab">首页</div>
-        <div class="page-tab"><span>退纸单详情</span><span class="tab-close">×</span></div>
+        <div class="page-tab"><span>退纸单仓管确认收纸</span><span class="tab-close">×</span></div>
       </div>
     </div>
     <div class="main-layout">
@@ -255,24 +328,23 @@
       <main class="content">
         <div class="page">
           <div class="toolbar">
-            <button class="btn">一键下载纸张到库图片</button>
+            <button class="btn primary" id="submit-btn" disabled>提交</button>
+            <button class="btn danger">返单</button>
             <button class="btn">查看进度明细</button>
+            <button class="btn">取消</button>
           </div>
 
           <section class="section">
             <div class="section-title"><span class="arrow">▼</span><span>单据信息</span></div>
             <div class="form-grid">
-              <div class="field"><label>单据编号</label><div class="readonly">RP202510150001</div></div>
-              <div class="field"><label>状态</label><div class="readonly">完结</div></div>
-              <div class="field"><label>提交时间</label><div class="readonly">2025-10-15 14:05</div></div>
-              <div class="field"><label>印厂</label><div class="readonly">江西宏达</div></div>
-              <div class="field"><label>调出地点</label><div class="readonly">宏达仓库</div></div>
-              <div class="field"><label>调入地点</label><div class="readonly">十二厂仓库</div></div>
-              <div class="field"><label>调入库位</label><div class="readonly">TP-RK-01-01</div></div>
+              <div class="field"><label>单据编号</label><div class="readonly">RP202502260001-2</div></div>
+              <div class="field"><label>状态</label><div class="readonly">印厂已确认</div></div>
+              <div class="field"><label>提交时间</label><div class="readonly">2025-02-26 15:50</div></div>
+              <div class="field"><label>印厂</label><div class="readonly">十二厂</div></div>
+              <div class="field"><label>调出地点</label><div class="readonly">十二厂仓库</div></div>
+              <div class="field"><label>调入地点</label><div class="readonly">宏达仓库</div></div>
               <div class="field"><label>物料分类</label><div class="readonly">纸张</div></div>
-              <div class="field"><label>纸张到库时间</label><div class="readonly">2025-10-15</div></div>
-              <div class="field"><label>备注</label><div class="readonly multiline">测试测试</div></div>
-              <div class="field"><label>纸张到库图片</label><div class="photo-preview"></div></div>
+              <div class="field"><label>备注</label><div class="readonly">777</div></div>
               <div class="field"><label>附件</label><div class="readonly">-</div></div>
             </div>
           </section>
@@ -284,6 +356,7 @@
                 <tr>
                   <th style="width:70px;">序号</th>
                   <th>物料名称</th>
+                  <th style="width:120px;">库存</th>
                   <th style="width:120px;">件数</th>
                   <th style="width:140px;">调拨吨数</th>
                   <th style="width:140px;">调拨数量</th>
@@ -293,18 +366,11 @@
               <tbody>
                 <tr>
                   <td>1</td>
-                  <td>55克870*1230平板书写</td>
-                  <td>1</td>
-                  <td>2.000</td>
-                  <td>20.000</td>
-                  <td>令</td>
-                </tr>
-                <tr>
+                  <td>80克880*1230平板双胶纸牡丹</td>
+                  <td>-</td>
                   <td>2</td>
-                  <td>58克870*1230卷筒双胶纸晨鸣</td>
-                  <td>2</td>
+                  <td>-</td>
                   <td>3.000</td>
-                  <td>30.000</td>
                   <td>令</td>
                 </tr>
               </tbody>
@@ -316,40 +382,7 @@
 
             <div class="accordion-item">
               <button class="accordion-header" type="button">
-                <span class="accordion-title"><span class="toggle-icon">▼</span><span>55克870*1230平板书写</span></span>
-                <span class="metric">件数<strong>1</strong></span>
-              </button>
-              <div class="accordion-body">
-                <table>
-                  <thead>
-                    <tr>
-                      <th style="width:70px;">件序号</th>
-                      <th style="width:160px;">唯一编号</th>
-                      <th style="width:110px;">调拨数量</th>
-                      <th style="width:90px;">吨数</th>
-                      <th style="width:120px;">调入仓库</th>
-                      <th style="width:100px;">图片</th>
-                      <th style="width:120px;">调入库位</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>1</td>
-                      <td>20251015000101</td>
-                      <td>20.000</td>
-                      <td>2.000</td>
-                      <td>十二厂仓库</td>
-                      <td><div class="thumb"></div></td>
-                      <td>TP-RK-01-01</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-            <div class="accordion-item collapsed">
-              <button class="accordion-header" type="button">
-                <span class="accordion-title"><span class="toggle-icon">▶</span><span>58克870*1230卷筒双胶纸晨鸣</span></span>
+                <span class="accordion-title"><span class="toggle-icon">▼</span><span>80克880*1230平板双胶纸牡丹</span></span>
                 <span class="metric">件数<strong>2</strong></span>
               </button>
               <div class="accordion-body">
@@ -360,32 +393,52 @@
                       <th style="width:160px;">唯一编号</th>
                       <th style="width:110px;">调拨数量</th>
                       <th style="width:90px;">吨数</th>
-                      <th style="width:120px;">调入仓库</th>
+                      <th style="width:160px;">出厂编码</th>
                       <th style="width:100px;">图片</th>
                       <th style="width:120px;">调入库位</th>
+                      <th style="width:100px;">收纸状态</th>
+                      <th style="width:120px;">收纸操作</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr>
                       <td>1</td>
-                      <td>20251015000201</td>
-                      <td>15.000</td>
+                      <td>2026002601</td>
                       <td>1.500</td>
-                      <td>十二厂仓库</td>
+                      <td>0.750</td>
+                      <td>CP-20260409-601</td>
                       <td><div class="thumb"></div></td>
-                      <td>TP-RK-01-02</td>
+                      <td><div class="table-select"><select class="cell-select"><option value="HD-RK-01-01" selected>HD-RK-01-01</option><option value="HD-RK-01-02">HD-RK-01-02</option><option value="HD-RK-02-01">HD-RK-02-01</option></select></div></td>
+                      <td><span class="status">待收纸</span></td>
+                      <td class="review-cell"><button class="review-btn" data-review>确认收纸</button></td>
                     </tr>
                     <tr>
                       <td>2</td>
-                      <td>20251015000202</td>
-                      <td>15.000</td>
+                      <td>2026002602</td>
                       <td>1.500</td>
-                      <td>十二厂仓库</td>
+                      <td>0.750</td>
+                      <td>CP-20260409-602</td>
                       <td><div class="thumb"></div></td>
-                      <td>TP-RK-01-03</td>
+                      <td><div class="table-select"><select class="cell-select"><option value="HD-RK-01-01">HD-RK-01-01</option><option value="HD-RK-01-02" selected>HD-RK-01-02</option><option value="HD-RK-02-01">HD-RK-02-01</option></select></div></td>
+                      <td><span class="status">待收纸</span></td>
+                      <td class="review-cell"><button class="review-btn" data-review>确认收纸</button></td>
                     </tr>
                   </tbody>
                 </table>
+              </div>
+            </div>
+          </section>
+
+          <section class="section">
+            <div class="section-title"><span class="arrow">▼</span><span>确认（当前操作：仓管确认收纸）</span></div>
+            <div class="form-grid">
+              <div class="field"><label>纸张到库时间</label><input class="date-control" type="date" value="2026-04-03" /></div>
+              <div class="field" style="grid-column: span 2;">
+                <label>纸张到库图片</label>
+                <div>
+                  <div class="upload-box">+</div>
+                  <div class="upload-tip">提示：请上传图片格式，每张不超过15M</div>
+                </div>
               </div>
             </div>
           </section>
@@ -396,6 +449,8 @@
 
   <script>
     const accordionItems = document.querySelectorAll('.accordion-item');
+    const submitButton = document.getElementById('submit-btn');
+
     accordionItems.forEach((item) => {
       const header = item.querySelector('.accordion-header');
       const icon = item.querySelector('.toggle-icon');
@@ -411,6 +466,26 @@
         }
       });
     });
+
+    function refreshSubmitState() {
+      const allDone = Array.from(document.querySelectorAll('.status')).every((node) => node.classList.contains('done'));
+      submitButton.disabled = !allDone;
+    }
+
+    document.querySelectorAll('[data-review]').forEach((button) => {
+      button.addEventListener('click', () => {
+        const row = button.closest('tr');
+        const status = row.querySelector('.status');
+        const done = status.classList.contains('done');
+        status.classList.toggle('done', !done);
+        status.textContent = done ? '待收纸' : '已收纸';
+        button.classList.toggle('done', !done);
+        button.textContent = done ? '确认收纸' : '取消收纸';
+        refreshSubmitState();
+      });
+    });
+
+    refreshSubmitState();
   </script>
 </body>
 </html>

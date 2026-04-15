@@ -226,6 +226,23 @@
       border-color: #f3c5c5;
       background: #fff0f0;
     }
+    .table-select {
+      width: 100%;
+      height: 26px;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      background: #fff;
+      overflow: hidden;
+    }
+    .cell-select {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      padding: 0 6px;
+      font-size: var(--font-base);
+      color: var(--text);
+      background: transparent;
+    }
   </style>
 </head>
 <body>
@@ -256,7 +273,6 @@
               <div class="field"><label>提交时间</label><div class="readonly">2025-07-21 19:12</div></div>
               <div class="field"><label>调出地点</label><div class="readonly">宏达仓库</div></div>
               <div class="field"><label>调入地点</label><div class="readonly">美达仓库</div></div>
-              <div class="field"><label>调入库位</label><div class="readonly">W0001</div></div>
               <div class="field"><label>物料分类</label><div class="readonly">纸张</div></div>
               <div class="field" style="grid-column: span 2;"><label>纸张出库图片</label><div class="image-preview"></div></div>
             </div>
@@ -264,7 +280,6 @@
 
           <section class="section">
             <div class="section-title"><span class="arrow">▼</span><span>提纸明细</span></div>
-            <div class="sub-title"><span>物料汇总表</span></div>
             <table>
               <thead>
                 <tr>
@@ -289,7 +304,7 @@
               </tbody>
             </table>
 
-            <div class="sub-title"><span>件明细</span></div>
+            <div class="section-title"><span class="arrow">▼</span><span>件明细</span></div>
 
             <div class="accordion-item">
               <button class="accordion-header" type="button">
@@ -304,7 +319,7 @@
                       <th style="width:160px;">唯一编号</th>
                       <th style="width:90px;">调拨数量</th>
                       <th style="width:90px;">吨数</th>
-                      <th style="width:90px;">调入仓库</th>
+                      <th style="width:160px;">出厂编码</th>
                       <th style="width:120px;">图片</th>
                       <th style="width:100px;">调入库位</th>
                       <th style="width:100px;">收纸状态</th>
@@ -312,8 +327,8 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr><td>1</td><td>2026003201</td><td>2.000</td><td>8.192</td><td>美达仓库</td><td><div class="photo-thumb"></div></td><td>M-01-01</td><td><span class="status">待收纸</span></td><td class="review-cell"><button class="review-btn" data-review>确认收纸</button></td></tr>
-                    <tr><td>2</td><td>2026003202</td><td>2.000</td><td>8.192</td><td>美达仓库</td><td><div class="photo-thumb"></div></td><td>M-01-02</td><td><span class="status">待收纸</span></td><td class="review-cell"><button class="review-btn" data-review>确认收纸</button></td></tr>
+                    <tr><td>1</td><td>2026003201</td><td>2.000</td><td>8.192</td><td>CP-20260412-201</td><td><div class="photo-thumb"></div></td><td><div class="table-select"><select class="cell-select"><option value="M-01-01" selected>M-01-01</option><option value="M-01-02">M-01-02</option><option value="M-01-03">M-01-03</option></select></div></td><td><span class="status">待收纸</span></td><td class="review-cell"><button class="review-btn" data-review>确认收纸</button></td></tr>
+                    <tr><td>2</td><td>2026003202</td><td>2.000</td><td>8.192</td><td>CP-20260412-202</td><td><div class="photo-thumb"></div></td><td><div class="table-select"><select class="cell-select"><option value="M-01-01">M-01-01</option><option value="M-01-02" selected>M-01-02</option><option value="M-01-03">M-01-03</option></select></div></td><td><span class="status">待收纸</span></td><td class="review-cell"><button class="review-btn" data-review>确认收纸</button></td></tr>
                   </tbody>
                 </table>
               </div>
@@ -332,7 +347,7 @@
                       <th style="width:160px;">唯一编号</th>
                       <th style="width:90px;">调拨数量</th>
                       <th style="width:90px;">吨数</th>
-                      <th style="width:90px;">调入仓库</th>
+                      <th style="width:160px;">出厂编码</th>
                       <th style="width:120px;">图片</th>
                       <th style="width:100px;">调入库位</th>
                       <th style="width:100px;">收纸状态</th>
@@ -340,8 +355,8 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr><td>1</td><td>2026003301</td><td>1.000</td><td>0.333</td><td>美达仓库</td><td><div class="photo-thumb"></div></td><td>M-02-01</td><td><span class="status">待收纸</span></td><td class="review-cell"><button class="review-btn" data-review>确认收纸</button></td></tr>
-                    <tr><td>2</td><td>2026003302</td><td>1.000</td><td>0.334</td><td>美达仓库</td><td><div class="photo-thumb"></div></td><td>M-02-02</td><td><span class="status">待收纸</span></td><td class="review-cell"><button class="review-btn" data-review>确认收纸</button></td></tr>
+                    <tr><td>1</td><td>2026003301</td><td>1.000</td><td>0.333</td><td>CP-20260412-301</td><td><div class="photo-thumb"></div></td><td><div class="table-select"><select class="cell-select"><option value="M-02-01" selected>M-02-01</option><option value="M-02-02">M-02-02</option><option value="M-02-03">M-02-03</option></select></div></td><td><span class="status">待收纸</span></td><td class="review-cell"><button class="review-btn" data-review>确认收纸</button></td></tr>
+                    <tr><td>2</td><td>2026003302</td><td>1.000</td><td>0.334</td><td>CP-20260412-302</td><td><div class="photo-thumb"></div></td><td><div class="table-select"><select class="cell-select"><option value="M-02-01">M-02-01</option><option value="M-02-02" selected>M-02-02</option><option value="M-02-03">M-02-03</option></select></div></td><td><span class="status">待收纸</span></td><td class="review-cell"><button class="review-btn" data-review>确认收纸</button></td></tr>
                   </tbody>
                 </table>
               </div>

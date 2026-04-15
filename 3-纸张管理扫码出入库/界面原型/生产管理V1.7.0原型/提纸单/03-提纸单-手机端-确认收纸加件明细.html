@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>提纸单-手机端-确认收纸加件明细</title>
+  <style>
+    *{box-sizing:border-box}body{margin:0;font-family:"Microsoft YaHei","PingFang SC",sans-serif;background:#f2f3f5;color:#1d2129}
+    .phone{width:390px;margin:24px auto;border:1px solid #dcdfe6;border-radius:24px;overflow:hidden;background:#f2f3f5;box-shadow:0 8px 24px rgba(0,0,0,.08)}
+    .nav{display:grid;grid-template-columns:auto auto 1fr auto;align-items:center;column-gap:18px;height:56px;padding:0 16px;border-bottom:1px solid #eef1f6;background:#fff}.nav-title{grid-column:3;justify-self:center;font-size:17px;font-weight:700}.nav-icon{font-size:18px}.nav-icon.more{font-size:24px;justify-self:end}
+    .status-card{padding:20px 22px 104px;background:linear-gradient(180deg,rgba(255,255,255,.10) 0%,rgba(255,255,255,.02) 100%),linear-gradient(180deg,#3f79c5 0%,#4b82cf 100%);color:#fff;display:flex;align-items:center;justify-content:space-between;position:relative}.status-main{font-size:18px;font-weight:700;position:relative;z-index:1}.status-link{font-size:28px;position:relative;z-index:1}
+    .content{position:relative;z-index:2;margin-top:-78px;padding:0 12px 96px}.section{margin-bottom:12px;border-radius:12px;overflow:hidden;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.03)}.block,.action-panel{padding:12px;border-top:1px solid #f2f3f5}
+    .section-title{padding:10px 12px;background:#e8f5ff;color:#3975c6;font-size:14px;font-weight:700}.section-title-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 12px;background:#e8f5ff;color:#3975c6}.piece-entry{border:0;padding:0;background:transparent;color:#3975c6;font-size:14px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:4px}.piece-entry-icon{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;background:#3975c6;color:#fff;font-size:11px}
+    .row{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:7px 0;font-size:14px}.row.status-row{align-items:center}.label{min-width:92px;color:#86909c}.value{flex:1;min-width:0;text-align:right;word-break:break-all}.value.blue{color:#1979ff;font-weight:600}.value.status-value,.value.photo-value,.value.editor-value{display:flex;justify-content:flex-end;align-items:center;gap:8px;flex-wrap:wrap}
+    .scan-panel{overflow:hidden;border-radius:16px;border:1px solid #cfe0ff;background:linear-gradient(180deg,#f8fbff 0%,#eef5ff 100%)}.location-bar{display:grid;grid-template-columns:1fr auto;gap:8px;padding:10px 12px;border-bottom:1px solid rgba(207,224,255,.9);background:rgba(255,255,255,.62)}.location-tip{padding:8px 12px 0;color:#6b778c;font-size:12px;line-height:1.5}
+    .location-select{height:34px;padding:0 12px;border:1px solid #cfd6e4;border-radius:8px;background:#fff;color:#1d2129;font-size:13px;outline:none}.location-scan-btn,.location-btn{height:34px;border:1px solid #cfd6e4;border-radius:8px;background:#fff;color:#3975c6;font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:center;cursor:pointer}.location-scan-btn{min-width:72px;padding:0 12px}
+    .scan-stage{position:relative;min-height:104px;padding:12px 16px 8px;background:linear-gradient(180deg,rgba(57,117,198,.18) 0%,rgba(57,117,198,.04) 48%,rgba(255,255,255,.92) 100%),linear-gradient(90deg,rgba(57,117,198,.08) 1px,transparent 1px),linear-gradient(rgba(57,117,198,.08) 1px,transparent 1px);background-size:auto,20px 20px,20px 20px}.scan-corner{position:absolute;width:42px;height:42px;border-color:#2e6de0;border-style:solid;pointer-events:none}.lt{top:16px;left:16px;border-width:6px 0 0 6px}.rt{top:16px;right:16px;border-width:6px 6px 0 0}.lb{bottom:16px;left:16px;border-width:0 0 6px 6px}.rb{bottom:16px;right:16px;border-width:0 6px 6px 0}
+    .scan-input-wrap{position:relative;z-index:1;min-height:56px;display:flex;align-items:center;justify-content:center}.scan-input{width:100%;height:40px;padding:0 12px;border:0;background:transparent;text-align:center;font-size:12px;line-height:1.3;font-weight:600;color:#2f63c7;outline:none;appearance:none;-webkit-appearance:none;caret-color:#111}.scan-input::placeholder{color:#2f63c7;opacity:1}.scan-action{width:100%;height:52px;border:0;background:linear-gradient(180deg,#4b81ea 0%,#3b70de 100%);color:#fff;font-size:15px;font-weight:700;cursor:pointer}
+    .progress-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}.progress-card{border:1px solid #edf0f5;border-radius:10px;background:#fbfcfe;padding:10px;text-align:center}.progress-card strong{display:block;margin-bottom:4px;font-size:16px}.progress-card span{font-size:12px;color:#86909c}
+    .scan-feedback{display:none;margin-top:12px;padding:8px 10px;border-radius:8px;font-size:12px;line-height:1.5}.scan-feedback.show{display:block}.info{background:#f5f7fa;color:#4e5969;border:1px solid #e5e6eb}.success{background:#edf8f1;color:#1f8f48;border:1px solid #b7ebc5}.error{background:#fff1f0;color:#cf1322;border:1px solid #ffccc7}.warn{background:#fff7e8;color:#d46b08;border:1px solid #ffd591}
+    .footer{position:sticky;bottom:0;display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:10px 12px;background:#fff;border-top:1px solid #e5e6eb}.btn{height:42px;border-radius:10px;background:#fff;border:1px solid #d7dce5;font-size:15px;font-weight:700;color:#4e5969;display:flex;align-items:center;justify-content:center}.btn.primary{border:0;background:linear-gradient(180deg,#4b81ea 0%,#3b70de 100%);color:#fff}.btn.disabled{background:#b9c7e7}
+    .piece-modal{position:fixed;inset:0;display:none;align-items:flex-end;justify-content:center;padding:16px;background:rgba(0,0,0,.35);z-index:20}.piece-modal.show{display:flex}.piece-dialog{width:min(390px,100%);max-height:86vh;border-radius:20px 20px 0 0;background:#fff;overflow:hidden;box-shadow:0 -8px 24px rgba(0,0,0,.16)}.piece-dialog-head{display:flex;align-items:center;justify-content:space-between;padding:16px 16px 12px;border-bottom:1px solid #eef1f6}.piece-dialog-title-wrap{display:flex;align-items:center;gap:8px}.piece-dialog-count{font-size:14px;font-weight:700;color:#3975c6}.piece-dialog-close{width:28px;height:28px;border:0;border-radius:50%;background:#f2f3f5;font-size:18px;cursor:pointer}.piece-dialog-body{padding:14px 14px 18px;background:#f7f8fa}
+    .piece-slider-wrap{position:relative;padding:0 30px}.piece-slider{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}.piece-slider::-webkit-scrollbar{display:none}.piece-card{flex:0 0 100%;width:100%;box-sizing:border-box;scroll-snap-align:center;border-radius:16px;background:#fff;border:1px solid #e8ebf0;padding:14px 14px 12px;box-shadow:0 4px 12px rgba(15,35,95,.06)}.piece-card.active{border-color:#91baff;background:#f4f8ff;box-shadow:0 0 0 3px rgba(25,121,255,.12)}.piece-summary{margin-top:12px;border-radius:12px;background:#fff;border:1px solid #edf0f5;overflow:hidden}.piece-summary-toggle{width:100%;border:0;background:#fff;padding:12px;display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer}.piece-summary-title{font-size:13px;font-weight:700;color:#1d2129}.piece-summary-arrow{color:#86909c;font-size:12px;line-height:1}.piece-summary-content{padding:0 12px 12px;border-top:1px solid #f2f3f5}.piece-summary-list{display:grid;gap:8px;padding-top:12px}.piece-summary-item{padding:10px;border-radius:10px;background:#f7f8fa}.piece-summary-row{display:flex;align-items:center;justify-content:space-between;gap:12px}.piece-summary-name{font-size:12px;color:#4e5969;line-height:1.4;word-break:break-all}.piece-summary-count{flex-shrink:0;font-size:13px;font-weight:700;color:#3975c6}.piece-summary.collapsed .piece-summary-content{display:none}
+    .piece-status{display:inline-flex;align-items:center;border-radius:999px;padding:4px 10px;font-size:12px;font-weight:700}.piece-status.pending{background:#fff3e8;color:#d96900}.piece-status.confirmed{background:#e8ffea;color:#1f8f48}.piece-card-actions{margin-top:12px;padding-top:12px;border-top:1px solid #eef1f6;display:flex;justify-content:flex-end}.piece-confirm-btn{border:1px solid #ffc7c2;border-radius:999px;padding:5px 12px;background:#fff1f0;color:#cf1322;font-size:12px;font-weight:700;cursor:pointer}.piece-confirm-btn.hidden{display:none}
+    .location-editor{display:grid;grid-template-columns:minmax(0,1fr) 24px;align-items:center;gap:8px;width:166px;max-width:100%}.location-editor .location-select{min-width:0}.location-editor .location-btn{align-self:center;min-width:24px;width:24px;height:24px;padding:0;border:0;background:transparent;box-shadow:none;font-size:0;position:relative}.location-btn::before{content:"";position:absolute;inset:2px;background:linear-gradient(#3975c6,#3975c6) left top/7px 2px no-repeat,linear-gradient(#3975c6,#3975c6) left top/2px 7px no-repeat,linear-gradient(#3975c6,#3975c6) right top/7px 2px no-repeat,linear-gradient(#3975c6,#3975c6) right top/2px 7px no-repeat,linear-gradient(#3975c6,#3975c6) left bottom/7px 2px no-repeat,linear-gradient(#3975c6,#3975c6) left bottom/2px 7px no-repeat,linear-gradient(#3975c6,#3975c6) right bottom/7px 2px no-repeat,linear-gradient(#3975c6,#3975c6) right bottom/2px 7px no-repeat}.location-btn::after{content:"";position:absolute;left:6px;right:6px;top:50%;height:2px;border-radius:999px;background:#3975c6;box-shadow:0 0 0 1px rgba(57,117,198,.08),0 0 6px rgba(57,117,198,.24);transform:translateY(-50%)}.piece-photo-card{width:92px;height:68px;border:1px solid #d9e6fb;border-radius:8px;background:linear-gradient(45deg,transparent 48%,#d8d8d8 49%,#d8d8d8 51%,transparent 52%),linear-gradient(-45deg,transparent 48%,#d8d8d8 49%,#d8d8d8 51%,transparent 52%),#f2f3f5}
+    .piece-nav{position:absolute;top:50%;transform:translateY(-50%);width:28px;height:28px;border:0;border-radius:50%;background:rgba(57,117,198,.92);color:#fff;font-size:16px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer}.piece-nav.prev{left:0}.piece-nav.next{right:0}.piece-nav:disabled{background:rgba(201,205,212,.92);cursor:default}
+  </style>
+</head>
+<body>
+  <div class="phone">
+    <div class="nav"><span class="nav-icon">&#x2039;</span><span class="nav-icon">&#x2302;</span><span class="nav-title">提纸单</span><span class="nav-icon more">&#x22EE;</span></div>
+    <div class="status-card"><div class="status-main">初审通过</div><div class="status-link">&#x203A;</div></div>
+    <div class="content">
+      <div class="section">
+        <div class="action-panel">
+          <div class="scan-panel">
+            <div class="location-bar">
+              <select class="location-select" id="locationSelect">
+                <option selected>JTY-01-01</option>
+                <option>JTY-01-02</option>
+                <option>JTY-01-03</option>
+              </select>
+              <button class="location-scan-btn" id="scanLocationBtn" type="button">扫库位</button>
+            </div>
+            <div class="location-tip">提示：上方库位仅作为后续扫码件的默认库位；切换库位后，不影响已扫码件的库位，之后新扫码的件按新库位带入。</div>
+            <div class="scan-stage">
+              <span class="scan-corner lt"></span><span class="scan-corner rt"></span><span class="scan-corner lb"></span><span class="scan-corner rb"></span>
+              <div class="scan-input-wrap"><input class="scan-input" id="codeInput" type="text" placeholder="扫码或手动输入唯一编号后回车确认" /></div>
+            </div>
+            <button class="scan-action" id="scanBtn" type="button">点击扫码确认当前纸张</button>
+          </div>
+          <div class="progress-row">
+            <div class="progress-card"><strong id="totalCount">8件</strong><span>应收件数</span></div>
+            <div class="progress-card"><strong id="confirmedCount">5件</strong><span>已收件数</span></div>
+            <div class="progress-card"><strong id="pendingCount">3件</strong><span>待收件数</span></div>
+          </div>
+          <div class="scan-feedback info show" id="scanFeedback">等待扫码或输入编号后回车确认</div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="section-title-row">
+          <div style="font-size:14px;font-weight:700">原料明细（1）</div>
+          <button class="piece-entry" type="button" id="openPieceModal">件明细（8）<span class="piece-entry-icon">&#x203A;</span></button>
+        </div>
+        <div class="block">
+          <div class="row"><div class="label">名称：</div><div class="value">200克889*1240平板铜版纸</div></div>
+          <div class="row"><div class="label">库存数量：</div><div class="value">-</div></div>
+          <div class="row"><div class="label">件数：</div><div class="value">8</div></div>
+          <div class="row"><div class="label">存储单位：</div><div class="value">令</div></div>
+          <div class="row"><div class="label">每件数量：</div><div class="value">-</div></div>
+          <div class="row"><div class="label">零数：</div><div class="value">-</div></div>
+          <div class="row"><div class="label">吨数：</div><div class="value">8</div></div>
+          <div class="row"><div class="label">调拨数量：</div><div class="value blue">72.576</div></div>
+          <div class="row"><div class="label">品牌：</div><div class="value">-</div></div>
+          <div class="row"><div class="label">机型：</div><div class="value">-</div></div>
+          <div class="row"><div class="label">转换率：</div><div class="value">9.072</div></div>
+          <div class="row"><div class="label">提纸人员：</div><div class="value">小王</div></div>
+          <div class="row"><div class="label">联系方式：</div><div class="value">13100002222</div></div>
+          <div class="row"><div class="label">提纸日期：</div><div class="value">2026-04-08 13:00</div></div>
+          <div class="row"><div class="label">到库时间：</div><div class="value">2026-04-08</div></div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="section-title">单据信息</div>
+        <div class="block">
+          <div class="row"><div class="label">单据编号：</div><div class="value">TZD202604080001</div></div>
+          <div class="row"><div class="label">提交时间：</div><div class="value">2026-04-08 11:10</div></div>
+          <div class="row"><div class="label">调入地点：</div><div class="value">金太阳印务仓库</div></div>
+          <div class="row"><div class="label">调出地点：</div><div class="value">万玮原料仓</div></div>
+          <div class="row"><div class="label">物料分类：</div><div class="value">纸张</div></div>
+          <div class="row"><div class="label">状态：</div><div class="value">初审通过</div></div>
+          <div class="row"><div class="label">实际提纸日期：</div><div class="value">2026-04-08</div></div>
+          <div class="row"><div class="label">纸张出库图片：</div><div class="value photo-value"><div class="piece-photo-card"></div></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="footer"><div class="btn">拒绝</div><div class="btn primary disabled" id="submitBtn">通过</div></div>
+  </div>
+  <div class="piece-modal" id="pieceModal">
+    <div class="piece-dialog">
+      <div class="piece-dialog-head"><div class="piece-dialog-title-wrap"><div class="section-title" style="padding:0;background:none;color:#1d2129">件明细</div><div class="piece-dialog-count"><span id="pieceCurrent">1</span>/8</div></div><button class="piece-dialog-close" id="closePieceModal" type="button">×</button></div>
+      <div class="piece-dialog-body">
+        <div class="piece-slider-wrap">
+          <button class="piece-nav prev" id="piecePrev" type="button">&#x2039;</button>
+          <div class="piece-slider" id="pieceList"></div>
+          <button class="piece-nav next" id="pieceNext" type="button">&#x203A;</button>
+        </div>
+        <div class="piece-summary collapsed" id="pieceSummary">
+          <button class="piece-summary-toggle" type="button" id="pieceSummaryToggle">
+            <div class="piece-summary-title">库位件数统计</div>
+            <div class="piece-summary-arrow" id="pieceSummaryArrow">&#9656;</div>
+          </button>
+          <div class="piece-summary-content">
+            <div class="piece-summary-list" id="pieceSummaryList"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    const pieceOrder=['2026003201','2026003202','2026003203','2026003204','2026003205','2026003206','2026003207','2026003208'];
+    const pieceLookup={
+      '2026003201':{factoryCode:'CP-20260408-001',qty:'9.072',ton:'1.000',warehouse:'金太阳印务仓库',location:'JTY-01-01'},
+      '2026003202':{factoryCode:'CP-20260408-002',qty:'9.072',ton:'1.000',warehouse:'金太阳印务仓库',location:'JTY-01-01'},
+      '2026003203':{factoryCode:'CP-20260408-003',qty:'9.072',ton:'1.000',warehouse:'金太阳印务仓库',location:'JTY-01-02'},
+      '2026003204':{factoryCode:'CP-20260408-004',qty:'9.072',ton:'1.000',warehouse:'金太阳印务仓库',location:'JTY-01-02'},
+      '2026003205':{factoryCode:'CP-20260408-005',qty:'9.072',ton:'1.000',warehouse:'金太阳印务仓库',location:'JTY-01-03'},
+      '2026003206':{factoryCode:'CP-20260408-006',qty:'9.072',ton:'1.000',warehouse:'金太阳印务仓库',location:'JTY-01-01'},
+      '2026003207':{factoryCode:'CP-20260408-007',qty:'9.072',ton:'1.000',warehouse:'金太阳印务仓库',location:'JTY-01-01'},
+      '2026003208':{factoryCode:'CP-20260408-008',qty:'9.072',ton:'1.000',warehouse:'金太阳印务仓库',location:'JTY-01-01'}
+    };
+    const confirmedCodes=new Set(['2026003201','2026003202','2026003203','2026003204','2026003205']);
+    const pieceModal=document.getElementById('pieceModal'),openPieceModal=document.getElementById('openPieceModal'),closePieceModal=document.getElementById('closePieceModal'),pieceList=document.getElementById('pieceList'),pieceCurrent=document.getElementById('pieceCurrent'),piecePrev=document.getElementById('piecePrev'),pieceNext=document.getElementById('pieceNext'),pieceSummary=document.getElementById('pieceSummary'),pieceSummaryToggle=document.getElementById('pieceSummaryToggle'),pieceSummaryArrow=document.getElementById('pieceSummaryArrow'),pieceSummaryList=document.getElementById('pieceSummaryList'),codeInput=document.getElementById('codeInput'),scanBtn=document.getElementById('scanBtn'),feedback=document.getElementById('scanFeedback'),totalCountEl=document.getElementById('totalCount'),confirmedCountEl=document.getElementById('confirmedCount'),pendingCountEl=document.getElementById('pendingCount'),submitBtn=document.getElementById('submitBtn'),defaultLocationSelect=document.getElementById('locationSelect'),scanLocationBtn=document.getElementById('scanLocationBtn');
+    const totalCount=pieceOrder.length;
+    function setFeedback(type,msg){feedback.className=`scan-feedback ${type} show`;feedback.textContent=msg}
+    function updateCounts(){const confirmed=confirmedCodes.size,pending=Math.max(totalCount-confirmed,0);totalCountEl.textContent=`${totalCount}件`;confirmedCountEl.textContent=`${confirmed}件`;pendingCountEl.textContent=`${pending}件`;submitBtn.classList.toggle('disabled',pending!==0)}
+    function defaultLocation(){return defaultLocationSelect.value}
+    function cycleSelect(select){const next=(select.selectedIndex+1)%select.options.length;select.selectedIndex=next;return select.options[next].textContent}
+    function cardHtml(code){const piece=pieceLookup[code],confirmed=confirmedCodes.has(code);return `<div class="piece-card" data-code="${code}"><div class="row status-row"><div class="label">状态：</div><div class="value status-value"><span class="piece-status ${confirmed?'confirmed':'pending'}" data-piece-status>${confirmed?'已确认':'待确认'}</span></div></div><div class="row"><div class="label">唯一编号：</div><div class="value">${code}</div></div><div class="row"><div class="label">出厂编码：</div><div class="value">${piece.factoryCode}</div></div><div class="row"><div class="label">调拨数量：</div><div class="value blue">${piece.qty}</div></div><div class="row"><div class="label">吨数：</div><div class="value">${piece.ton}</div></div><div class="row"><div class="label">调入库位：</div><div class="value editor-value"><div class="location-editor"><select class="location-select piece-location-select"><option ${piece.location==='JTY-01-01'?'selected':''}>JTY-01-01</option><option ${piece.location==='JTY-01-02'?'selected':''}>JTY-01-02</option><option ${piece.location==='JTY-01-03'?'selected':''}>JTY-01-03</option></select><div class="location-btn" data-piece-location-scan aria-label="扫库位" title="扫库位"></div></div></div></div><div class="row"><div class="label">图片：</div><div class="value photo-value"><div class="piece-photo-card"></div></div></div><div class="piece-card-actions"><button class="piece-confirm-btn ${confirmed?'':'hidden'}" type="button" data-piece-cancel-confirm>取消收纸</button></div></div>`}
+    function renderLocationSummary(){const counts={};pieceOrder.forEach(code=>{const location=pieceLookup[code].location||'-';counts[location]=(counts[location]||0)+1});pieceSummaryList.innerHTML=Object.entries(counts).sort((a,b)=>a[0].localeCompare(b[0])).map(([name,count])=>`<div class="piece-summary-item"><div class="piece-summary-row"><div class="piece-summary-name">${name}</div><div class="piece-summary-count">${count}件</div></div></div>`).join('')}
+    function renderCards(){pieceList.innerHTML=pieceOrder.map(cardHtml).join('');renderLocationSummary();updatePieceCurrent()}
+    function updatePieceCurrent(){const cards=pieceList.querySelectorAll('.piece-card');if(!cards.length){pieceCurrent.textContent='0';piecePrev.disabled=true;pieceNext.disabled=true;return}const width=cards[0].offsetWidth+12,index=Math.min(cards.length,Math.max(1,Math.round(pieceList.scrollLeft/width)+1));pieceCurrent.textContent=String(index);piecePrev.disabled=index===1;pieceNext.disabled=index===cards.length}
+    function scrollToPiece(index){const cards=pieceList.querySelectorAll('.piece-card');if(!cards.length)return;const i=Math.min(cards.length,Math.max(1,index));cards[i-1].scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'})}
+    function highlight(code){pieceList.querySelectorAll('.piece-card.active').forEach(card=>card.classList.remove('active'));const card=pieceList.querySelector(`[data-code="${code}"]`);if(!card)return;card.classList.add('active');const index=pieceOrder.indexOf(code);if(index>=0)requestAnimationFrame(()=>scrollToPiece(index+1))}
+    function openModal(code){pieceModal.classList.add('show');document.body.style.overflow='hidden';requestAnimationFrame(()=>{updatePieceCurrent();if(code)highlight(code)})}
+    function closeModal(){pieceModal.classList.remove('show');document.body.style.overflow='';pieceList.querySelectorAll('.piece-card.active').forEach(card=>card.classList.remove('active'))}
+    function syncPendingLocations(value){pieceOrder.filter(code=>!confirmedCodes.has(code)).forEach(code=>pieceLookup[code].location=value);pieceList.querySelectorAll('.piece-card').forEach(card=>{const code=card.dataset.code;if(confirmedCodes.has(code))return;const select=card.querySelector('.piece-location-select');if(!select)return;const matched=[...select.options].find(option=>option.textContent===value);if(matched)select.value=matched.value});renderLocationSummary()}
+    function setCardStatus(code,confirmed){const card=pieceList.querySelector(`[data-code="${code}"]`);if(!card)return;card.querySelector('[data-piece-status]').className=`piece-status ${confirmed?'confirmed':'pending'}`;card.querySelector('[data-piece-status]').textContent=confirmed?'已确认':'待确认';card.querySelector('[data-piece-cancel-confirm]').classList.toggle('hidden',!confirmed)}
+    function nextPendingCode(){return pieceOrder.find(code=>!confirmedCodes.has(code))||''}
+    function handleConfirm(rawCode,autoPick){let code=rawCode.trim();if(!code&&autoPick)code=nextPendingCode();if(!code){setFeedback('error','请输入唯一编号后再进行确认');codeInput.focus();return}if(!pieceLookup[code]){setFeedback('error',`未找到本单待收纸件：${code}`);codeInput.select();return}if(confirmedCodes.has(code)){setFeedback('warn',`当前纸张已确认，请勿重复操作：${code}`);codeInput.value='';codeInput.focus();return}confirmedCodes.add(code);pieceLookup[code].location=defaultLocation();setCardStatus(code,true);const select=pieceList.querySelector(`[data-code="${code}"] .piece-location-select`);if(select){const matched=[...select.options].find(option=>option.textContent===pieceLookup[code].location);if(matched)select.value=matched.value}renderLocationSummary();updateCounts();setFeedback('success',confirmedCodes.size===totalCount?`识别成功，已完成最后一件确认：${code}`:`识别成功，当前纸张已确认：${code}`);codeInput.value='';codeInput.focus()}
+    function cancelConfirmed(code){if(!confirmedCodes.has(code))return;confirmedCodes.delete(code);setCardStatus(code,false);updateCounts();setFeedback('success',`已取消收纸：${code}`);openModal(code)}
+    openPieceModal.addEventListener('click',()=>openModal());closePieceModal.addEventListener('click',closeModal);pieceModal.addEventListener('click',e=>{if(e.target===pieceModal)closeModal()});scanBtn.addEventListener('click',()=>handleConfirm(codeInput.value,true));codeInput.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();handleConfirm(codeInput.value,false)}})
+    pieceSummaryToggle.addEventListener('click',()=>{const collapsed=pieceSummary.classList.toggle('collapsed');pieceSummaryArrow.innerHTML=collapsed?'&#9656;':'&#9662;'})
+    scanLocationBtn.addEventListener('click',()=>{const value=cycleSelect(defaultLocationSelect);syncPendingLocations(value);setFeedback('info',`后续扫码件默认库位已更新为 ${value}，已扫码件保持原库位`)})
+    defaultLocationSelect.addEventListener('change',()=>{const value=defaultLocation();syncPendingLocations(value);setFeedback('info',`后续扫码件默认库位已更新为 ${value}，已扫码件保持原库位`)})
+    pieceList.addEventListener('click',e=>{const locationTrigger=e.target.closest('[data-piece-location-scan]');if(locationTrigger){const select=locationTrigger.closest('.location-editor').querySelector('.piece-location-select');const code=locationTrigger.closest('.piece-card').dataset.code;const value=cycleSelect(select);pieceLookup[code].location=value;renderLocationSummary();setFeedback('info',`件级库位已更新为 ${value}`);return}const cancelTrigger=e.target.closest('[data-piece-cancel-confirm]');if(cancelTrigger)cancelConfirmed(cancelTrigger.closest('.piece-card').dataset.code)})
+    pieceList.addEventListener('scroll',updatePieceCurrent,{passive:true});window.addEventListener('resize',updatePieceCurrent);piecePrev.addEventListener('click',()=>scrollToPiece(Number(pieceCurrent.textContent||'1')-1));pieceNext.addEventListener('click',()=>scrollToPiece(Number(pieceCurrent.textContent||'1')+1));
+    let startX=0,endX=0;pieceList.addEventListener('touchstart',e=>{startX=e.touches[0].clientX},{passive:true});pieceList.addEventListener('touchend',e=>{endX=e.changedTouches[0].clientX;const delta=endX-startX;if(Math.abs(delta)<36)return;scrollToPiece(Number(pieceCurrent.textContent||'1')+(delta>0?-1:1))},{passive:true});
+    renderCards();updateCounts();
+  </script>
+</body>
+</html>

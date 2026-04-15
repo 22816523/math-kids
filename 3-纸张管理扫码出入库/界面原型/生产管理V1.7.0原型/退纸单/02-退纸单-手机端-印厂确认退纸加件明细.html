@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>退纸单-手机端-印厂确认退纸加件明细</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+      background: #f2f3f5;
+      color: #1d2129;
+    }
+    .phone {
+      width: 390px;
+      margin: 24px auto;
+      border: 1px solid #dcdfe6;
+      border-radius: 24px;
+      overflow: hidden;
+      background: #f2f3f5;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    }
+    .header {
+      background: #fff;
+      color: #1d2129;
+    }
+    .nav {
+      display: grid;
+      grid-template-columns: auto auto 1fr auto;
+      align-items: center;
+      column-gap: 18px;
+      height: 56px;
+      padding: 0 16px;
+      border-bottom: 1px solid #eef1f6;
+      font-size: 15px;
+      background: #fff;
+    }
+    .nav-title {
+      grid-column: 3;
+      justify-self: center;
+      font-size: 17px;
+      font-weight: 700;
+    }
+    .nav-icon {
+      font-size: 18px;
+      line-height: 1;
+      color: #1d2129;
+    }
+    .nav-icon.more {
+      font-size: 24px;
+      justify-self: end;
+    }
+    .status-card {
+      margin: 0;
+      padding: 20px 22px 104px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.02) 100%),
+        linear-gradient(180deg, #3f79c5 0%, #4b82cf 100%);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      overflow: hidden;
+      position: relative;
+    }
+    .status-card::after {
+      content: "";
+      position: absolute;
+      left: -8%;
+      right: -8%;
+      bottom: 20px;
+      height: 88px;
+      background:
+        radial-gradient(120px 42px at 16% 60%, rgba(255,255,255,0.16) 0%, rgba(255,255,255,0) 72%),
+        radial-gradient(160px 48px at 46% 42%, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0) 72%),
+        radial-gradient(140px 44px at 78% 58%, rgba(255,255,255,0.14) 0%, rgba(255,255,255,0) 72%);
+      pointer-events: none;
+    }
+    .status-main {
+      position: relative;
+      z-index: 1;
+      font-size: 18px;
+      font-weight: 700;
+    }
+    .status-link {
+      position: relative;
+      z-index: 1;
+      color: #fff;
+      font-size: 28px;
+      line-height: 1;
+    }
+    .content {
+      position: relative;
+      z-index: 2;
+      margin-top: -78px;
+      padding: 0 12px 96px;
+    }
+    .section {
+      margin-bottom: 12px;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #fff;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+    }
+    .section-title {
+      padding: 10px 12px;
+      background: #e8f5ff;
+      color: #3975c6;
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .section-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 12px;
+      background: #e8f5ff;
+      color: #3975c6;
+    }
+    .section-title-text {
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .piece-entry {
+      border: 0;
+      padding: 0;
+      background: transparent;
+      color: #3975c6;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .piece-entry-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #3975c6;
+      color: #fff;
+      font-size: 11px;
+      line-height: 1;
+    }
+    .action-panel {
+      padding: 12px;
+      border-top: 1px solid #f2f3f5;
+    }
+    .block {
+      padding: 12px;
+      border-top: 1px solid #f2f3f5;
+    }
+    .row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 7px 0;
+      font-size: 14px;
+    }
+    .label {
+      min-width: 92px;
+      color: #86909c;
+    }
+    .label.required::before {
+      content: "*";
+      margin-right: 4px;
+      color: #f53f3f;
+    }
+    .value {
+      flex: 1;
+      text-align: right;
+      color: #1d2129;
+      word-break: break-all;
+    }
+    .value.blue {
+      color: #1979ff;
+      font-weight: 600;
+    }
+    .value.photo-value {
+      display: flex;
+      justify-content: flex-end;
+    }
+    .value-field {
+      min-width: 120px;
+      padding: 6px 12px;
+      border: 1px solid #d7dce5;
+      border-radius: 8px;
+      background: #fff;
+      text-align: right;
+      font-weight: 600;
+      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.03);
+    }
+    .scan-panel {
+      overflow: hidden;
+      border-radius: 16px;
+      border: 1px solid #cfe0ff;
+      background: linear-gradient(180deg, #f8fbff 0%, #eef5ff 100%);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.8);
+    }
+    .scan-stage {
+      position: relative;
+      min-height: 104px;
+      padding: 12px 16px 8px;
+      background:
+        linear-gradient(180deg, rgba(57,117,198,0.18) 0%, rgba(57,117,198,0.04) 48%, rgba(255,255,255,0.92) 100%),
+        linear-gradient(90deg, rgba(57,117,198,0.08) 1px, transparent 1px),
+        linear-gradient(rgba(57,117,198,0.08) 1px, transparent 1px);
+      background-size: auto, 20px 20px, 20px 20px;
+    }
+    .scan-corner {
+      position: absolute;
+      width: 42px;
+      height: 42px;
+      border-color: #2e6de0;
+      border-style: solid;
+      pointer-events: none;
+    }
+    .scan-corner.lt { top: 16px; left: 16px; border-width: 6px 0 0 6px; }
+    .scan-corner.rt { top: 16px; right: 16px; border-width: 6px 6px 0 0; }
+    .scan-corner.lb { bottom: 16px; left: 16px; border-width: 0 0 6px 6px; }
+    .scan-corner.rb { bottom: 16px; right: 16px; border-width: 0 6px 6px 0; }
+    .scan-input-wrap {
+      position: relative;
+      z-index: 1;
+      min-height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .scan-input {
+      width: 100%;
+      height: 40px;
+      padding: 0 12px;
+      border: 0;
+      background: transparent;
+      text-align: center;
+      font-size: 12px;
+      line-height: 1.3;
+      font-weight: 600;
+      color: #2f63c7;
+      outline: none;
+      appearance: none;
+      -webkit-appearance: none;
+      caret-color: #111;
+    }
+    .scan-input::placeholder {
+      color: #2f63c7;
+      opacity: 1;
+    }
+    .scan-action {
+      width: 100%;
+      height: 52px;
+      border: 0;
+      background: linear-gradient(180deg, #4b81ea 0%, #3b70de 100%);
+      color: #fff;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      cursor: pointer;
+    }
+    .progress-row {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .progress-card {
+      border: 1px solid #edf0f5;
+      border-radius: 10px;
+      background: #fbfcfe;
+      padding: 10px;
+      text-align: center;
+    }
+    .progress-card strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 16px;
+      color: #1d2129;
+    }
+    .progress-card span {
+      font-size: 12px;
+      color: #86909c;
+    }
+    .scan-feedback {
+      display: none;
+      margin-top: 12px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+    .scan-feedback.show { display: block; }
+    .scan-feedback.info {
+      background: #f5f7fa;
+      color: #4e5969;
+      border: 1px solid #e5e6eb;
+    }
+    .scan-feedback.success {
+      background: #edf8f1;
+      color: #1f8f48;
+      border: 1px solid #b7ebc5;
+    }
+    .scan-feedback.error {
+      background: #fff1f0;
+      color: #cf1322;
+      border: 1px solid #ffccc7;
+    }
+    .scan-feedback.warn {
+      background: #fff7e8;
+      color: #d46b08;
+      border: 1px solid #ffd591;
+    }
+    .assist-row {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 10px;
+    }
+    .assist-entry {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      height: 30px;
+      padding: 0 10px;
+      border: 1px solid #d6e5ff;
+      border-radius: 999px;
+      background: #f8fbff;
+      color: #3975c6;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .assist-entry::after {
+      content: ">";
+      font-size: 12px;
+      line-height: 1;
+    }
+    .btn {
+      height: 44px;
+      border-radius: 12px;
+      background: #fff;
+      border: 1px solid #d7dce5;
+      font-size: 15px;
+      font-weight: 700;
+      color: #4e5969;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+    .btn.primary {
+      border: 0;
+      background: linear-gradient(180deg, #4b81ea 0%, #3b70de 100%);
+      color: #fff;
+      box-shadow: 0 6px 14px rgba(59, 112, 222, 0.24);
+    }
+    .btn.disabled {
+      background: #b9c7e7;
+      box-shadow: none;
+      cursor: default;
+    }
+    .footer {
+      position: sticky;
+      bottom: 0;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      padding: 12px;
+      background: rgba(242, 243, 245, 0.96);
+      backdrop-filter: blur(10px);
+      border-top: 1px solid #e8ebf0;
+    }
+    .piece-modal {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+      padding: 16px;
+      background: rgba(0, 0, 0, 0.35);
+      z-index: 20;
+    }
+    .piece-modal.show {
+      display: flex;
+    }
+    .piece-dialog {
+      width: min(390px, 100%);
+      max-height: 86vh;
+      border-radius: 20px 20px 0 0;
+      background: #fff;
+      overflow: hidden;
+      box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.16);
+    }
+    .piece-dialog-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 16px 12px;
+      border-bottom: 1px solid #eef1f6;
+    }
+    .piece-dialog-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .piece-dialog-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #1d2129;
+    }
+    .piece-dialog-count {
+      font-size: 14px;
+      font-weight: 700;
+      color: #3975c6;
+    }
+    .piece-dialog-close {
+      width: 28px;
+      height: 28px;
+      border: 0;
+      border-radius: 50%;
+      background: #f2f3f5;
+      color: #4e5969;
+      font-size: 18px;
+      cursor: pointer;
+    }
+    .piece-dialog-body {
+      padding: 14px 14px 18px;
+      background: #f7f8fa;
+    }
+    .piece-slider-wrap {
+      position: relative;
+      padding: 0 30px;
+    }
+    .piece-slider {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    .piece-slider::-webkit-scrollbar {
+      display: none;
+    }
+    .piece-card {
+      flex: 0 0 100%;
+      width: 100%;
+      box-sizing: border-box;
+      scroll-snap-align: center;
+      border-radius: 16px;
+      background: #fff;
+      border: 1px solid #e8ebf0;
+      padding: 14px 14px 12px;
+      box-shadow: 0 4px 12px rgba(15, 35, 95, 0.06);
+    }
+    .piece-photo-card {
+      width: 88px;
+      height: 88px;
+      border-radius: 12px;
+      border: 1px dashed #c9cdd4;
+      background:
+        linear-gradient(135deg, rgba(57,117,198,0.08) 0%, rgba(57,117,198,0.02) 100%),
+        #f8f9fb;
+      position: relative;
+    }
+    .piece-photo-card::before,
+    .piece-photo-card::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 34px;
+      height: 1px;
+      background: #b7beca;
+      transform-origin: center;
+    }
+    .piece-photo-card::before {
+      transform: translate(-50%, -50%) rotate(45deg);
+    }
+    .piece-photo-card::after {
+      transform: translate(-50%, -50%) rotate(-45deg);
+    }
+    .attachment-card {
+      width: 120px;
+      height: 88px;
+      border: 1px solid #d9e6fb;
+      border-radius: 8px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.6), rgba(255,255,255,0.6)),
+        linear-gradient(135deg, #ddeaff 0%, #bdd2ff 100%);
+    }
+    .piece-card-actions {
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid #eef1f6;
+      display: flex;
+      justify-content: flex-end;
+    }
+    .piece-delete-btn {
+      padding: 6px 12px;
+      border: 1px solid #ffd6d6;
+      border-radius: 999px;
+      background: #fff5f5;
+      color: #cf1322;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .piece-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 28px;
+      height: 28px;
+      border: 0;
+      border-radius: 50%;
+      background: rgba(57, 117, 198, 0.92);
+      color: #fff;
+      font-size: 16px;
+      line-height: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(57, 117, 198, 0.22);
+      z-index: 1;
+    }
+    .piece-nav.prev {
+      left: 0;
+    }
+    .piece-nav.next {
+      right: 0;
+    }
+    .piece-nav:disabled {
+      background: rgba(201, 205, 212, 0.92);
+      box-shadow: none;
+      cursor: default;
+    }
+    .warehouse-modal {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+      padding: 16px;
+      background: rgba(29, 33, 41, 0.42);
+      z-index: 21;
+    }
+    .warehouse-modal.show {
+      display: flex;
+    }
+    .warehouse-dialog {
+      width: 100%;
+      max-width: 390px;
+      max-height: min(82vh, 720px);
+      border-radius: 16px;
+      background: #fff;
+      overflow: hidden;
+      box-shadow: 0 14px 36px rgba(0, 0, 0, 0.18);
+    }
+    .warehouse-dialog-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 16px 12px;
+      border-bottom: 1px solid #eef1f6;
+      background: #fff;
+    }
+    .warehouse-dialog-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #1d2129;
+    }
+    .warehouse-dialog-desc {
+      margin-top: 6px;
+      font-size: 12px;
+      line-height: 1.5;
+      color: #86909c;
+    }
+    .warehouse-dialog-close {
+      border: 0;
+      padding: 0;
+      background: transparent;
+      color: #86909c;
+      font-size: 22px;
+      cursor: pointer;
+      line-height: 1;
+    }
+    .warehouse-dialog-body {
+      max-height: calc(min(82vh, 720px) - 72px);
+      padding: 12px;
+      overflow-y: auto;
+      background: #f7f8fa;
+    }
+    .warehouse-chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: #eef5ff;
+      color: #3975c6;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .warehouse-group {
+      margin-top: 10px;
+      border: 1px solid #edf0f5;
+      border-radius: 12px;
+      background: #fff;
+      overflow: hidden;
+    }
+    .warehouse-group:first-of-type {
+      margin-top: 12px;
+    }
+    .warehouse-group-head {
+      display: block;
+      padding: 12px;
+      border-bottom: 1px solid #f2f3f5;
+      background: #fbfcfe;
+    }
+    .warehouse-group-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #1d2129;
+      line-height: 1.5;
+      word-break: break-all;
+    }
+    .warehouse-group-meta {
+      margin-top: 4px;
+      font-size: 12px;
+      color: #86909c;
+    }
+    .warehouse-list {
+      padding: 0 12px;
+    }
+    .warehouse-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 11px 0;
+      border-bottom: 1px solid #f2f3f5;
+      font-size: 13px;
+    }
+    .warehouse-row:last-child {
+      border-bottom: 0;
+    }
+    .warehouse-location {
+      color: #4e5969;
+    }
+    .warehouse-count {
+      color: #1d2129;
+      font-weight: 700;
+    }
+    .warehouse-row.unset .warehouse-location,
+    .warehouse-row.unset .warehouse-count {
+      color: #d46b08;
+    }
+  </style>
+</head>
+<body>
+  <div class="phone">
+    <div class="header">
+      <div class="nav">
+        <span class="nav-icon">&#x2039;</span>
+        <span class="nav-icon">&#x2302;</span>
+        <span class="nav-title">退纸单</span>
+        <span class="nav-icon more">&#x22EE;</span>
+      </div>
+      <div class="status-card">
+        <div>
+          <div class="status-main">待确认</div>
+        </div>
+        <div class="status-link">&#x203A;</div>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="section">
+        <div class="action-panel">
+          <div class="assist-row">
+            <button class="assist-entry" type="button" id="openWarehouseModal">当前仓库库位件数</button>
+          </div>
+          <div class="scan-panel">
+            <div class="scan-stage">
+              <div class="scan-corner lt"></div>
+              <div class="scan-corner rt"></div>
+              <div class="scan-corner lb"></div>
+              <div class="scan-corner rb"></div>
+              <div class="scan-input-wrap">
+                <input id="code-input" class="scan-input" type="text" placeholder="扫码或手动输入唯一编号后回车确认" />
+              </div>
+            </div>
+            <button id="scan-btn" class="scan-action" type="button">扫码录入</button>
+          </div>
+          <div class="progress-row">
+            <div class="progress-card">
+              <strong id="totalCount">3件</strong>
+              <span>应录件数</span>
+            </div>
+            <div class="progress-card">
+              <strong id="recordedCount">3件</strong>
+              <span>已录件数</span>
+            </div>
+            <div class="progress-card">
+              <strong id="pendingCount">0件</strong>
+              <span>待录件数</span>
+            </div>
+          </div>
+          <div class="scan-feedback info show" id="scanFeedback">已录入 3/3 件，可继续核对件明细</div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title-row">
+          <div class="section-title-text">原料明细（1）</div>
+          <button class="piece-entry" type="button" id="openPieceModal">件明细（3）<span class="piece-entry-icon">&#x203A;</span></button>
+        </div>
+        <div class="block">
+          <div class="row"><div class="label">名称：</div><div class="value">200克 889*1240 平板铜版纸</div></div>
+          <div class="row"><div class="label">库存数量：</div><div class="value">-</div></div>
+          <div class="row"><div class="label">件数：</div><div class="value">3</div></div>
+          <div class="row"><div class="label">存储单位：</div><div class="value">件</div></div>
+          <div class="row"><div class="label">每件数量：</div><div class="value">-</div></div>
+          <div class="row"><div class="label">零数：</div><div class="value">-</div></div>
+          <div class="row"><div class="label">吨数：</div><div class="value">2.000</div></div>
+          <div class="row"><div class="label">调拨数量：</div><div class="value blue">18.144</div></div>
+          <div class="row"><div class="label">品牌：</div><div class="value">-</div></div>
+          <div class="row"><div class="label">机型：</div><div class="value">-</div></div>
+          <div class="row"><div class="label">转换率：</div><div class="value">6.048</div></div>
+          <div class="row"><div class="label">退纸人员：</div><div class="value">小王</div></div>
+          <div class="row"><div class="label">联系方式：</div><div class="value">13100002222</div></div>
+          <div class="row"><div class="label">退纸日期：</div><div class="value">2026-04-08 13:00</div></div>
+          <div class="row"><div class="label">到库时间：</div><div class="value">2026-04-08</div></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">单据信息</div>
+        <div class="block">
+          <div class="row"><div class="label">单据编号：</div><div class="value">TSD202604080001</div></div>
+          <div class="row"><div class="label">提交时间：</div><div class="value">2026-04-08 11:10</div></div>
+          <div class="row"><div class="label">调入地点：</div><div class="value">万玮原料仓</div></div>
+          <div class="row"><div class="label">调出地点：</div><div class="value">金太阳印务仓库</div></div>
+          <div class="row"><div class="label">状态：</div><div class="value">校对通过</div></div>
+          <div class="row"><div class="label">印厂：</div><div class="value">金太阳印务</div></div>
+          <div class="row"><div class="label">备注：</div><div class="value">测试</div></div>
+          <div class="row"><div class="label">纸张到库时间：</div><div class="value"></div></div>
+          <div class="row"><div class="label">纸张到库图片：</div><div class="value photo-value"><div class="piece-photo-card"></div></div></div>
+          <div class="row"><div class="label">附件：</div><div class="value photo-value"><div class="attachment-card"></div></div></div>
+          <div class="row"><div class="label">物料分类：</div><div class="value">纸张</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <div class="btn">返单</div>
+      <div class="btn primary disabled" id="submitBtn">印厂确认退纸</div>
+    </div>
+  </div>
+
+  <div class="piece-modal" id="pieceModal">
+    <div class="piece-dialog">
+      <div class="piece-dialog-head">
+        <div class="piece-dialog-title-wrap">
+          <div class="piece-dialog-title">件明细</div>
+          <div class="piece-dialog-count"><span id="pieceCurrent">1</span>/3</div>
+        </div>
+        <button class="piece-dialog-close" type="button" id="closePieceModal">×</button>
+      </div>
+      <div class="piece-dialog-body">
+        <div class="piece-slider-wrap">
+          <button class="piece-nav prev" type="button" id="piecePrev">&#x2039;</button>
+          <div class="piece-slider" id="pieceList">
+            <div class="piece-card" data-code="2026000001">
+              <div class="row"><div class="label">唯一编号：</div><div class="value">2026000001</div></div>
+              <div class="row"><div class="label">出厂编码：</div><div class="value">CP-20260408-001</div></div>
+              <div class="row"><div class="label">调拨数量：</div><div class="value blue">6.048</div></div>
+              <div class="row"><div class="label">吨数：</div><div class="value">0.667</div></div>
+              <div class="row"><div class="label">图片：</div><div class="value photo-value"><div class="piece-photo-card"></div></div></div>
+              <div class="piece-card-actions"><button class="piece-delete-btn" type="button" data-piece-delete>删除件明细</button></div>
+            </div>
+            <div class="piece-card" data-code="2026000002">
+              <div class="row"><div class="label">唯一编号：</div><div class="value">2026000002</div></div>
+              <div class="row"><div class="label">出厂编码：</div><div class="value">CP-20260408-002</div></div>
+              <div class="row"><div class="label">调拨数量：</div><div class="value blue">6.048</div></div>
+              <div class="row"><div class="label">吨数：</div><div class="value">0.667</div></div>
+              <div class="row"><div class="label">图片：</div><div class="value photo-value"><div class="piece-photo-card"></div></div></div>
+              <div class="piece-card-actions"><button class="piece-delete-btn" type="button" data-piece-delete>删除件明细</button></div>
+            </div>
+            <div class="piece-card" data-code="2026000003">
+              <div class="row"><div class="label">唯一编号：</div><div class="value">2026000003</div></div>
+              <div class="row"><div class="label">出厂编码：</div><div class="value">CP-20260408-003</div></div>
+              <div class="row"><div class="label">调拨数量：</div><div class="value blue">6.048</div></div>
+              <div class="row"><div class="label">吨数：</div><div class="value">0.666</div></div>
+              <div class="row"><div class="label">图片：</div><div class="value photo-value"><div class="piece-photo-card"></div></div></div>
+              <div class="piece-card-actions"><button class="piece-delete-btn" type="button" data-piece-delete>删除件明细</button></div>
+            </div>
+          </div>
+          <button class="piece-nav next" type="button" id="pieceNext">&#x203A;</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="warehouse-modal" id="warehouseModal">
+    <div class="warehouse-dialog">
+      <div class="warehouse-dialog-head">
+        <div>
+          <div class="warehouse-dialog-title">当前仓库库位件数</div>
+          <div class="warehouse-dialog-desc">展示本单各物料在当前仓库下的库位件数，不含调入库位信息。</div>
+        </div>
+        <button class="warehouse-dialog-close" type="button" id="closeWarehouseModal">×</button>
+      </div>
+      <div class="warehouse-dialog-body">
+        <div class="warehouse-chip">当前仓库：金太阳印务仓库</div>
+
+        <div class="warehouse-group">
+          <div class="warehouse-group-head">
+            <div class="warehouse-group-title">200克 889*1240 平板铜版纸</div>
+            <div class="warehouse-group-meta">3个库位 / 8件</div>
+          </div>
+          <div class="warehouse-list">
+            <div class="warehouse-row"><div class="warehouse-location">JTY-RT-01</div><div class="warehouse-count">4件</div></div>
+            <div class="warehouse-row"><div class="warehouse-location">JTY-RT-02</div><div class="warehouse-count">2件</div></div>
+            <div class="warehouse-row unset"><div class="warehouse-location">未维护当前库位</div><div class="warehouse-count">2件</div></div>
+          </div>
+        </div>
+
+        <div class="warehouse-group">
+          <div class="warehouse-group-head">
+            <div class="warehouse-group-title">157克 787*1092 高白双胶纸</div>
+            <div class="warehouse-group-meta">2个库位 / 5件</div>
+          </div>
+          <div class="warehouse-list">
+            <div class="warehouse-row"><div class="warehouse-location">JTY-RT-05</div><div class="warehouse-count">3件</div></div>
+            <div class="warehouse-row"><div class="warehouse-location">JTY-RT-06</div><div class="warehouse-count">2件</div></div>
+          </div>
+        </div>
+
+        <div class="warehouse-group">
+          <div class="warehouse-group-head">
+            <div class="warehouse-group-title">128克 889*1194 双口牛皮纸</div>
+            <div class="warehouse-group-meta">2个库位 / 4件</div>
+          </div>
+          <div class="warehouse-list">
+            <div class="warehouse-row"><div class="warehouse-location">JTY-RT-07</div><div class="warehouse-count">2件</div></div>
+            <div class="warehouse-row"><div class="warehouse-location">JTY-RT-08</div><div class="warehouse-count">2件</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const codeInput = document.getElementById('code-input');
+    const scanBtn = document.getElementById('scan-btn');
+    const feedback = document.getElementById('scanFeedback');
+    const warehouseModal = document.getElementById('warehouseModal');
+    const openWarehouseModal = document.getElementById('openWarehouseModal');
+    const closeWarehouseModal = document.getElementById('closeWarehouseModal');
+    const pieceModal = document.getElementById('pieceModal');
+    const openPieceModal = document.getElementById('openPieceModal');
+    const closePieceModal = document.getElementById('closePieceModal');
+    const pieceList = document.getElementById('pieceList');
+    const pieceCurrent = document.getElementById('pieceCurrent');
+    const piecePrev = document.getElementById('piecePrev');
+    const pieceNext = document.getElementById('pieceNext');
+    const totalCountEl = document.getElementById('totalCount');
+    const recordedCountEl = document.getElementById('recordedCount');
+    const pendingCountEl = document.getElementById('pendingCount');
+    const submitBtn = document.getElementById('submitBtn');
+
+    const totalCount = 3;
+    let recordedCount = 3;
+    const recordedCodes = new Set(['2026000001', '2026000002', '2026000003']);
+    const pieceLookup = {
+      '2026000001': { factoryCode: 'CP-20260408-001', qty: '6.048', ton: '0.667', warehouse: '万玮原料仓' },
+      '2026000002': { factoryCode: 'CP-20260408-002', qty: '6.048', ton: '0.667', warehouse: '万玮原料仓' },
+      '2026000003': { factoryCode: 'CP-20260408-003', qty: '6.048', ton: '0.666', warehouse: '万玮原料仓' }
+    };
+
+    function setFeedback(type, message) {
+      feedback.className = `scan-feedback ${type} show`;
+      feedback.textContent = message;
+    }
+
+    function updateCounts() {
+      const pending = Math.max(totalCount - recordedCount, 0);
+      totalCountEl.textContent = `${totalCount}件`;
+      recordedCountEl.textContent = `${recordedCount}件`;
+      pendingCountEl.textContent = `${pending}件`;
+      submitBtn.classList.toggle('disabled', recordedCount !== totalCount);
+    }
+
+    function updatePieceCurrent() {
+      const cards = pieceList.querySelectorAll('.piece-card');
+      if (!cards.length) {
+        pieceCurrent.textContent = '0';
+        piecePrev.disabled = true;
+        pieceNext.disabled = true;
+        return;
+      }
+      const firstCard = cards[0];
+      const gap = 12;
+      const cardWidth = firstCard.offsetWidth + gap;
+      const currentIndex = Math.min(cards.length, Math.max(1, Math.round(pieceList.scrollLeft / cardWidth) + 1));
+      pieceCurrent.textContent = String(currentIndex);
+      piecePrev.disabled = currentIndex === 1;
+      pieceNext.disabled = currentIndex === cards.length;
+    }
+
+    function scrollToPiece(targetIndex) {
+      const cards = pieceList.querySelectorAll('.piece-card');
+      if (!cards.length) return;
+      const index = Math.min(cards.length, Math.max(1, targetIndex));
+      cards[index - 1].scrollIntoView({
+        behavior: 'smooth',
+        inline: 'center',
+        block: 'nearest'
+      });
+    }
+
+    function createPieceCard(code, piece) {
+      const card = document.createElement('div');
+      card.className = 'piece-card';
+      card.dataset.code = code;
+      card.innerHTML = `
+        <div class="row"><div class="label">唯一编号：</div><div class="value">${code}</div></div>
+        <div class="row"><div class="label">出厂编码：</div><div class="value">${piece.factoryCode}</div></div>
+        <div class="row"><div class="label">调拨数量：</div><div class="value blue">${piece.qty}</div></div>
+        <div class="row"><div class="label">吨数：</div><div class="value">${piece.ton}</div></div>
+        <div class="row"><div class="label">图片：</div><div class="value photo-value"><div class="piece-photo-card"></div></div></div>
+        <div class="piece-card-actions"><button class="piece-delete-btn" type="button" data-piece-delete>删除件明细</button></div>
+      `;
+      pieceList.appendChild(card);
+      return card;
+    }
+
+    function syncPieceEntryCount() {
+      openPieceModal.innerHTML = `件明细（${totalCount}）<span class="piece-entry-icon">&#x203A;</span>`;
+    }
+
+    function deletePiece(target) {
+      const card = target.closest('.piece-card');
+      if (!card) return;
+      const code = card.dataset.code;
+      if (recordedCodes.has(code)) {
+        recordedCodes.delete(code);
+        recordedCount = Math.max(recordedCount - 1, 0);
+      }
+      card.remove();
+      updateCounts();
+      updatePieceCurrent();
+      setFeedback('info', `已删除件明细：${code}`);
+    }
+
+    function submitCode() {
+      const code = codeInput.value.trim();
+      if (!code) {
+        setFeedback('error', '请输入或扫码唯一编号');
+        return;
+      }
+      if (!(code in pieceLookup)) {
+        setFeedback('error', '未匹配到该件明细，请核对编号后重试');
+        return;
+      }
+      if (recordedCodes.has(code)) {
+        setFeedback('warn', `该件明细已录入：${code}`);
+        const cards = [...pieceList.querySelectorAll('.piece-card')];
+        const index = cards.findIndex((card) => card.dataset.code === code);
+        if (index >= 0) {
+          openModal();
+          requestAnimationFrame(() => scrollToPiece(index + 1));
+        }
+        return;
+      }
+      if (recordedCount >= totalCount) {
+        setFeedback('warn', '当前退纸单件明细已录满，无需继续扫码');
+        return;
+      }
+
+      recordedCodes.add(code);
+      recordedCount += 1;
+      createPieceCard(code, pieceLookup[code]);
+      updateCounts();
+      setFeedback('success', `识别成功，已新增件明细：${code}`);
+      codeInput.value = '';
+      openModal();
+      requestAnimationFrame(() => scrollToPiece(pieceList.querySelectorAll('.piece-card').length));
+    }
+
+    function syncBodyOverflow() {
+      const hasVisibleModal = warehouseModal.classList.contains('show') || pieceModal.classList.contains('show');
+      document.body.style.overflow = hasVisibleModal ? 'hidden' : '';
+    }
+
+    function openSpecificModal(modal) {
+      modal.classList.add('show');
+      syncBodyOverflow();
+    }
+
+    function hideSpecificModal(modal) {
+      modal.classList.remove('show');
+      syncBodyOverflow();
+    }
+
+    function openModal() {
+      openSpecificModal(pieceModal);
+      requestAnimationFrame(updatePieceCurrent);
+    }
+
+    function closeModal() {
+      hideSpecificModal(pieceModal);
+    }
+
+    openWarehouseModal.addEventListener('click', () => {
+      openSpecificModal(warehouseModal);
+    });
+    closeWarehouseModal.addEventListener('click', () => hideSpecificModal(warehouseModal));
+    warehouseModal.addEventListener('click', (event) => {
+      if (event.target === warehouseModal) {
+        hideSpecificModal(warehouseModal);
+      }
+    });
+
+    openPieceModal.addEventListener('click', openModal);
+    closePieceModal.addEventListener('click', closeModal);
+    pieceModal.addEventListener('click', (event) => {
+      if (event.target === pieceModal) {
+        closeModal();
+      }
+    });
+
+    scanBtn.addEventListener('click', submitCode);
+    codeInput.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        submitCode();
+      }
+    });
+
+    pieceList.addEventListener('scroll', updatePieceCurrent, { passive: true });
+    window.addEventListener('resize', updatePieceCurrent);
+
+    piecePrev.addEventListener('click', () => {
+      scrollToPiece(Number(pieceCurrent.textContent || '1') - 1);
+    });
+    pieceNext.addEventListener('click', () => {
+      scrollToPiece(Number(pieceCurrent.textContent || '1') + 1);
+    });
+
+    pieceList.addEventListener('click', (event) => {
+      if (event.target.hasAttribute('data-piece-delete')) {
+        deletePiece(event.target);
+      }
+    });
+
+    let startX = 0;
+    let endX = 0;
+    pieceList.addEventListener('touchstart', (event) => {
+      startX = event.touches[0].clientX;
+    }, { passive: true });
+    pieceList.addEventListener('touchend', (event) => {
+      endX = event.changedTouches[0].clientX;
+      const delta = endX - startX;
+      if (Math.abs(delta) < 36) return;
+      if (delta > 0) {
+        scrollToPiece(Number(pieceCurrent.textContent || '1') - 1);
+      } else {
+        scrollToPiece(Number(pieceCurrent.textContent || '1') + 1);
+      }
+    }, { passive: true });
+
+    syncPieceEntryCount();
+    updateCounts();
+    updatePieceCurrent();
+  </script>
+</body>
+</html>
