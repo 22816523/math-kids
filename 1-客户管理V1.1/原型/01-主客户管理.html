@@ -1,0 +1,569 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ERP 原型模板</title>
+  <style>
+    :root{
+      --blue:#1677ff;
+      --blue-weak:#eaf3ff;
+      --blue-border:#bcd7ff;
+      --green:#22c55e;
+      --green-bg:#edf9f0;
+      --orange:#f59e0b;
+      --orange-bg:#fff6e8;
+      --red:#ef4444;
+      --red-bg:#fff0f0;
+      --bg:#f7f8fb;
+      --line:#dfe5ee;
+      --line-soft:#edf1f5;
+      --text:#1f2937;
+      --text-soft:#6b7280;
+      --shadow:none;
+      --radius:4px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",Arial,sans-serif;
+      color:var(--text);
+      background:#fff;
+    }
+    .app{min-height:100vh; display:flex; flex-direction:column;}
+    .topbar{
+      height:44px; background:var(--blue); color:#fff; display:flex; align-items:center;
+      padding:0 12px; box-shadow:var(--shadow);
+    }
+    .topnav{
+      display:flex; align-items:stretch; gap:5px; margin-left:10px; height:100%;
+    }
+    .brand{display:flex; align-items:center; gap:8px; font-weight:400; font-size:20px; letter-spacing:.2px;}
+    .brand-logo{
+      display:block;
+      width:188px;
+      height:28px;
+      object-fit:contain;
+    }
+    .topbar-spacer{flex:1}
+    .top-actions{display:flex; align-items:center; gap:10px; opacity:.95; font-size:12px; color:#fff;}
+    .top-actions .top-icon{
+      width:22px;
+      height:22px;
+      flex:0 0 auto;
+      background-repeat:no-repeat;
+      background-position:center;
+      background-size:22px 22px;
+    }
+    .top-actions .top-icon.msg{background-image:url("./assets/提示_tips-one.png");}
+    .top-actions .top-icon.palette{background-image:url("./assets/调色盘_platte.png");}
+    .top-actions .top-icon.bell{background-image:url("./assets/提醒_remind.png");}
+    .top-actions .user-wrap{
+      display:flex;
+      align-items:center;
+      gap:7px;
+      margin-left:2px;
+      padding-right:4px;
+      white-space:nowrap;
+    }
+    .top-actions .avatar{
+      width:24px;
+      height:24px;
+      border-radius:50%;
+      background:#bfc4cc;
+      flex:0 0 auto;
+      border:1px solid rgba(255,255,255,.25);
+    }
+    .top-actions .username{
+      font-size:12px;
+      color:#fff;
+      max-width:70px;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      font-size:12px;
+      line-height:1;
+    }
+    .top-actions .caret{
+      font-size:12px;
+      color:rgba(255,255,255,.95);
+      line-height:1;
+    }
+    .nav-home{
+      display:flex; align-items:center; height:100%; padding:0 10px; color:#fff; font-weight:400;
+      font-size:16px;
+      border-bottom:2px solid transparent;
+    }
+    .nav-arrow{
+      display:flex; align-items:center; height:100%; color:rgba(255,255,255,.75); font-size:18px; line-height:1;
+      padding:0 2px 1px 0;
+    }
+    .nav-tab{
+      display:flex; align-items:center; height:calc(100% - 4px); margin-top:4px; padding:0 12px;
+      background:#fff; color:#1677ff; border-radius:4px 4px 0 0; font-weight:400; font-size:15px;
+      border:1px solid rgba(255,255,255,.9); border-bottom-color:#fff;
+    }
+    .nav-tab .close{margin-left:8px; color:#94a3b8; font-size:13px; line-height:1;}
+    .shell{display:grid; grid-template-columns:234px 1fr; gap:0; min-height:calc(100vh - 44px);}
+    .sidebar{
+      background:#fff; border-right:1px solid var(--line); padding:10px 10px 10px; overflow:auto;
+    }
+    .searchbox{
+      height:44px; border:1px solid var(--line); border-radius:4px; display:flex; align-items:center;
+      padding:0 12px; color:var(--text-soft); background:#f8fafc; margin-bottom:10px; font-size:13px;
+    }
+    .menu{display:flex; flex-direction:column; gap:2px;}
+    .menu-group{margin-top:6px;}
+    .menu-group.sub{
+      margin-top:2px;
+      padding-left:20px;
+      margin-left:18px;
+    }
+    .menu-title{
+      padding:8px 10px; font-weight:400; color:#334155; display:flex; align-items:center; justify-content:space-between;
+      border-radius:4px; font-size:13px;
+    }
+    .menu-toggle{
+      width:8px;
+      height:8px;
+      border-right:2px solid #94a3b8;
+      border-bottom:2px solid #94a3b8;
+      transform:rotate(45deg);
+      flex:0 0 auto;
+      margin-left:8px;
+      margin-right:2px;
+    }
+    .menu-item{
+      height:34px; display:flex; align-items:center; gap:8px; padding:0 10px; border-radius:4px;
+      color:#475569; cursor:default; font-size:13px;
+    }
+    .menu-item.active{background:var(--blue); color:#fff; font-weight:400;}
+    .menu-icon{
+      width:16px;
+      height:16px;
+      object-fit:contain;
+      flex:0 0 auto;
+      display:block;
+    }
+    .menu-item:not(.active) .menu-icon.white{
+      display:none;
+    }
+    .menu-item.active .menu-icon.color{
+      display:none;
+    }
+    .menu-item.active .menu-icon.white{
+      display:block;
+    }
+    .content{padding:10px 10px 12px; overflow:auto;}
+    .section{
+      background:#fff; border:1px solid var(--line); border-radius:4px; overflow:hidden; box-shadow:var(--shadow);
+      margin-bottom:8px;
+    }
+    .section-head{
+      padding:8px 10px; background:#f7f9fc; border-bottom:1px solid var(--line-soft); font-weight:400;
+      display:flex; align-items:center; gap:6px; font-size:13px;
+    }
+    .section-body{padding:10px;}
+    .grid{
+      display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); gap:8px 10px;
+    }
+    .field{display:flex; flex-direction:column; gap:4px;}
+    .field label{font-size:12px; color:var(--text-soft);}
+    .input, .select{
+      height:32px; border:1px solid var(--line); border-radius:4px; padding:0 10px; background:#fff;
+      display:flex; align-items:center; color:#334155; font-size:12px;
+    }
+    .input.muted{color:#94a3b8; background:#fbfdff;}
+    .actions{display:flex; gap:10px; flex-wrap:wrap;}
+    .btn{
+      height:30px; padding:0 12px; border-radius:4px; border:1px solid transparent; font-weight:400;
+      display:inline-flex; align-items:center; justify-content:center; cursor:default; font-size:12px;
+    }
+    .btn.primary{background:var(--blue); color:#fff;}
+    .btn.secondary{background:#fff; border-color:var(--line); color:#334155;}
+    .btn.ghost{background:var(--blue-weak); border-color:var(--blue-border); color:var(--blue);}
+    .btn.danger{background:#fff; border-color:#f8c6c6; color:var(--red);}
+    .toolbar{display:flex; gap:6px; align-items:center; justify-content:space-between; margin-bottom:8px; flex-wrap:wrap;}
+    .toolbar-left,.toolbar-right{display:flex; gap:8px; align-items:center; flex-wrap:wrap;}
+    .table-wrap{
+      border:1px solid var(--line); border-radius:4px; overflow:hidden; background:#fff;
+    }
+    table{width:100%; border-collapse:collapse; font-size:12px;}
+    thead th{
+      background:#f8fafc; border-bottom:1px solid var(--line); border-right:1px solid var(--line);
+      text-align:left; padding:8px 8px; font-weight:400; color:#111827;
+      white-space:nowrap;
+    }
+    tbody td{
+      border-bottom:1px solid var(--line-soft); border-right:1px solid var(--line-soft);
+      padding:8px 8px; color:#374151; vertical-align:middle;
+    }
+    tbody tr:nth-child(2){background:#eef6ff;}
+    .link{color:var(--blue); font-weight:400;}
+    .tag{
+      display:inline-flex; align-items:center; justify-content:center; min-width:52px; height:24px;
+      padding:0 8px; border-radius:4px; border:1px solid currentColor; font-size:12px; font-weight:400;
+    }
+    .tag.blue{color:#2580ff; background:#f3f8ff;}
+    .tag.green{color:#17b26a; background:#effaf4;}
+    .tag.orange{color:#f59e0b; background:#fff8ec;}
+    .tag.red{color:#ef4444; background:#fff1f1;}
+    .pagination{
+      display:flex; align-items:center; justify-content:flex-end; gap:8px; padding:8px 0 0; color:#475569;
+      font-size:12px;
+    }
+    .pagebox{
+      height:28px; min-width:28px; border:1px solid var(--line); border-radius:4px; display:inline-flex;
+      align-items:center; justify-content:center; background:#fff; padding:0 6px;
+    }
+    .pagebox.active{background:var(--blue); color:#fff; border-color:var(--blue);}
+    .detail-grid{
+      display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); gap:8px 10px;
+    }
+    .thumb{
+      width:70px; height:70px; border-radius:8px; background:linear-gradient(180deg,#e7ecf4 0%,#cfd8e6 100%);
+      box-shadow:0 6px 18px rgba(15,23,42,.08);
+    }
+    .overlay{
+      position:relative; margin-top:10px; margin-bottom:20px; border-radius:4px; overflow:visible; border:1px solid var(--line);
+      background:rgba(15,23,42,.42);
+    }
+    .overlay-panel{
+      position:relative; background:#fff; padding:10px 12px 12px;
+      border-bottom:1px solid var(--line); box-shadow:0 18px 36px rgba(15,23,42,.08);
+    }
+    .overlay-title{font-weight:400; font-size:14px; margin-bottom:8px;}
+    .overlay-body{
+      display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); gap:6px 8px; align-items:start;
+    }
+    .overlay-footer{
+      display:flex;
+      justify-content:flex-end;
+      gap:8px;
+      margin-top:14px;
+      padding:0 8px 4px 0;
+      flex-wrap:nowrap;
+      overflow:visible;
+    }
+    .toast-row{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; margin-top:8px;}
+    .toast{
+      min-width:0; border-radius:4px; border:1px solid transparent; padding:10px 12px; display:flex; align-items:center; gap:8px;
+      box-shadow:none;
+    }
+    .toast.success{background:var(--green-bg); border-color:#d5f1df; color:#16a34a;}
+    .toast.warning{background:var(--orange-bg); border-color:#fde3b2; color:#d97706;}
+    .toast.error{background:var(--red-bg); border-color:#f7c8c8; color:#ef4444;}
+    .dialog{
+      max-width:380px; background:#fff; border:1px solid var(--line); border-radius:4px; box-shadow:none;
+      padding:10px 12px 12px; margin-top:10px;
+    }
+    .dialog-head{display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;}
+    .dialog-title{font-size:14px; font-weight:400;}
+    .dialog-main{display:flex; align-items:flex-start; gap:8px; color:#374151; font-size:13px; line-height:1.5;}
+    .dialog-actions{display:flex; justify-content:flex-end; gap:6px; margin-top:12px;}
+    .icon{
+      width:24px; height:24px; border-radius:999px; display:inline-flex; align-items:center; justify-content:center;
+      font-weight:400;
+    }
+    .icon.green{background:#dcfce7; color:#16a34a;}
+    .icon.orange{background:#ffedd5; color:#d97706;}
+    .icon.red{background:#fee2e2; color:#ef4444;}
+    .empty{
+      min-height:160px; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#64748b;
+      gap:8px; text-align:center;
+    }
+    .empty-illus{
+      width:180px;
+      height:auto;
+      display:block;
+      opacity:.95;
+    }
+    .section-note{
+      color:var(--text-soft);
+      font-size:11px;
+      margin-top:6px;
+      padding-right:8px;
+    }
+    .searchbox::before{
+      content:"⌕";
+      margin-right:8px;
+      color:#64748b;
+      font-size:14px;
+    }
+    @media (max-width: 1280px){
+      .shell{grid-template-columns:220px 1fr;}
+      .grid,.detail-grid,.overlay-body{grid-template-columns:repeat(3,minmax(0,1fr));}
+      .toast-row{grid-template-columns:1fr;}
+    }
+    @media (max-width: 960px){
+      .shell{grid-template-columns:1fr;}
+      .sidebar{display:none;}
+      .grid,.detail-grid,.overlay-body{grid-template-columns:repeat(2,minmax(0,1fr));}
+      .toast-row{grid-template-columns:1fr;}
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="topbar">
+      <div class="brand">
+        <img class="brand-logo" src="./assets/home-logo.d25547c0.png" alt="ERP门户" />
+      </div>
+      <div class="topnav">
+        <span class="nav-arrow">‹</span>
+        <div class="nav-home">首页</div>
+        <div class="nav-tab">主客户管理 <span class="close">×</span></div>
+      </div>
+      <div class="topbar-spacer"></div>
+      <div class="top-actions">
+        <span class="top-icon msg" title="消息"></span>
+        <span class="top-icon palette" title="主题"></span>
+        <span class="top-icon bell" title="通知"></span>
+        <div class="user-wrap">
+          <span class="avatar" aria-hidden="true"></span>
+          <span class="username">管理员</span>
+          <span class="caret">▾</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="shell">
+      <aside class="sidebar">
+        <div class="searchbox">搜索 / 关键词</div>
+        <div class="menu">
+          <div class="menu-item">
+            <img class="menu-icon color" src="./assets/系统-设置配置_setting-config.png" alt="">
+            <img class="menu-icon white" src="./assets/白色icon/系统-设置配置_setting-config.png" alt="">
+            系统
+          </div>
+          <div class="menu-item">
+            <img class="menu-icon color" src="./assets/产品-书籍_bookshelf.png" alt="">
+            <img class="menu-icon white" src="./assets/白色icon/产品-书籍_bookshelf.png" alt="">
+            产品
+          </div>
+          <div class="menu-item">
+            <img class="menu-icon color" src="./assets/采购-接收库_receive (1).png" alt="">
+            <img class="menu-icon white" src="./assets/白色icon/采购-接收库_receive.png" alt="">
+            采购
+          </div>
+            <div class="menu-item active">
+            <img class="menu-icon color" src="./assets/销售-排行榜_ranking.png" alt="">
+            <img class="menu-icon white" src="./assets/白色icon/销售-排行榜_ranking.png" alt="">
+            销售
+          </div>
+          <div class="menu-group sub">
+            <div class="menu-title">客户管理 <span class="menu-toggle" aria-hidden="true"></span></div>
+            <div class="menu-item active">主客户管理</div>
+            <div class="menu-item">联系人管理</div>
+            <div class="menu-item">主客户查重</div>
+          </div>
+          <div class="menu-item">
+            <img class="menu-icon color" src="./assets/印务-打印机_printer-two.png" alt="">
+            <img class="menu-icon white" src="./assets/白色icon/印务-打印机_printer-two.png" alt="">
+            印务
+          </div>
+          <div class="menu-item">
+            <img class="menu-icon color" src="./assets/财务-钞票_paper-money.png" alt="">
+            <img class="menu-icon white" src="./assets/白色icon/财务-钞票_paper-money.png" alt="">
+            财务
+          </div>
+          <div class="menu-item">
+            <img class="menu-icon color" src="./assets/储运-建筑_building-four.png" alt="">
+            <img class="menu-icon white" src="./assets/白色icon/储运-建筑_building-four.png" alt="">
+            储运
+          </div>
+          <div class="menu-item">
+            <img class="menu-icon color" src="./assets/生产-雷达图_radar-chart.png" alt="">
+            <img class="menu-icon white" src="./assets/白色icon/生产-雷达图_radar-chart.png" alt="">
+            生产
+          </div>
+          <div class="menu-item">
+            <img class="menu-icon color" src="./assets/支持-瀑布流纵向_waterfalls-v.png" alt="">
+            <img class="menu-icon white" src="./assets/白色icon/支持-瀑布流纵向_waterfalls-v.png" alt="">
+            支持
+          </div>
+          <div class="menu-item">
+            <img class="menu-icon color" src="./assets/统计-数据看板_data-screen.png" alt="">
+            <img class="menu-icon white" src="./assets/白色icon/统计-数据看板_data-screen.png" alt="">
+            统计
+          </div>
+        </div>
+      </aside>
+
+      <main class="content">
+        <section class="section">
+          <div class="section-head">主客户管理</div>
+          <div class="section-body">
+            <div class="grid">
+              <div class="field"><label>单位状态</label><div class="select">请选择</div></div>
+              <div class="field"><label>单位名称</label><div class="input muted">请输入关键字</div></div>
+              <div class="field"><label>省份</label><div class="select">请选择</div></div>
+              <div class="field"><label>城市</label><div class="select">请选择</div></div>
+              <div class="field"><label>区县</label><div class="select">请选择</div></div>
+              <div class="field"><label>单位类型</label><div class="select">请选择</div></div>
+              <div class="field"><label>学段</label><div class="select">请选择</div></div>
+              <div class="field"><label>数据来源</label><div class="select">请选择</div></div>
+              <div class="field"><label>主营联系人</label><div class="input muted">请输入联系人</div></div>
+              <div class="field"><label>手机号</label><div class="input muted">请输入手机号</div></div>
+              <div class="field"><label>统一社会信用代码</label><div class="input muted">请输入</div></div>
+              <div class="field"><label>客户编码</label><div class="input muted">请输入</div></div>
+            </div>
+            <div class="toolbar" style="margin-top:16px;">
+              <div class="toolbar-left">
+                <div class="btn primary">查询</div>
+                <div class="btn secondary">重置</div>
+                <div class="btn ghost">高级筛选</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <div class="toolbar">
+          <div class="toolbar-left">
+            <div class="btn primary">新增主客户</div>
+            <div class="btn secondary">编辑主客户</div>
+            <div class="btn ghost">主客户审核</div>
+            <div class="btn primary">关联联系人</div>
+            <div class="btn secondary">主客户合并</div>
+            <div class="btn ghost">导出</div>
+          </div>
+          <div class="toolbar-right">
+            <span style="color:var(--blue);">刷新</span>
+          </div>
+        </div>
+
+        <section class="section">
+          <div class="section-head">主客户列表</div>
+          <div class="section-body">
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th style="width:60px;">序号</th>
+                    <th>单位状态</th>
+                    <th>客户编码</th>
+                    <th>单位名称</th>
+                    <th>省份</th>
+                    <th>城市</th>
+                    <th>区县</th>
+                    <th>单位类型</th>
+                    <th>数据来源</th>
+                    <th>联系人数</th>
+                    <th>最后更新</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>1</td>
+                    <td><span class="tag blue">未开通</span></td>
+                    <td class="link">C096918</td>
+                    <td>大名县第四中学</td>
+                    <td>河北省</td>
+                    <td>邯郸市</td>
+                    <td>大名县</td>
+                    <td>学校</td>
+                    <td>导入</td>
+                    <td>3</td>
+                    <td>2026-04-16</td>
+                  </tr>
+                  <tr>
+                    <td>2</td>
+                    <td><span class="tag green">已开通</span></td>
+                    <td class="link">C096917</td>
+                    <td>大名县第一中学</td>
+                    <td>河北省</td>
+                    <td>邯郸市</td>
+                    <td>大名县</td>
+                    <td>学校</td>
+                    <td>手工录入</td>
+                    <td>5</td>
+                    <td>2026-04-16</td>
+                  </tr>
+                  <tr>
+                    <td>3</td>
+                    <td><span class="tag blue">未开通</span></td>
+                    <td class="link">C096916</td>
+                    <td>西双版纳州教体局</td>
+                    <td>云南省</td>
+                    <td>西双版纳</td>
+                    <td>景洪市</td>
+                    <td>教育局</td>
+                    <td>系统同步</td>
+                    <td>2</td>
+                    <td>2026-04-15</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="pagination">
+              <span>共 137055 条</span>
+              <span class="pagebox">50条/页</span>
+              <span class="pagebox">‹</span>
+              <span class="pagebox active">1</span>
+              <span class="pagebox">2</span>
+              <span class="pagebox">3</span>
+              <span class="pagebox">…</span>
+              <span class="pagebox">2742</span>
+              <span class="pagebox">›</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-head">主客户详情与联系人</div>
+          <div class="section-body">
+            <div class="detail-grid">
+              <div class="field"><label>主客户编码</label><div class="input muted">C096918</div></div>
+              <div class="field"><label>主客户名称</label><div class="input muted">大名县第四中学</div></div>
+              <div class="field"><label>单位状态</label><div class="input muted">未开通</div></div>
+              <div class="field"><label>省份</label><div class="input muted">河北省</div></div>
+              <div class="field"><label>城市</label><div class="input muted">邯郸市</div></div>
+              <div class="field"><label>区县</label><div class="input muted">大名县</div></div>
+              <div class="field"><label>单位类型</label><div class="input muted">学校</div></div>
+              <div class="field"><label>学段</label><div class="input muted">高中</div></div>
+              <div class="field"><label>数据来源</label><div class="input muted">导入</div></div>
+              <div class="field"><label>主营联系人</label><div class="input muted">陈慧心</div></div>
+              <div class="field"><label>手机号</label><div class="input muted">18720377175</div></div>
+              <div class="field"><label>备注</label><div class="input muted">主客户为统一主档，外部系统按主客户编码回写</div></div>
+            </div>
+            <div style="height:12px;"></div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th style="width:60px;">序号</th>
+                    <th>联系人状态</th>
+                    <th>联系人编码</th>
+                    <th>联系人</th>
+                    <th>手机号</th>
+                    <th>电话</th>
+                    <th>业务经理</th>
+                    <th>部门</th>
+                    <th>职务</th>
+                    <th>联系人状态说明</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>1</td>
+                    <td><span class="tag blue">待审核</span></td>
+                    <td class="link">M000340453</td>
+                    <td>吴慧满</td>
+                    <td>18720377175</td>
+                    <td>—</td>
+                    <td>何炳佳(16334)</td>
+                    <td>大名县第一中学</td>
+                    <td>业务经理</td>
+                    <td>待审核</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+</body>
+</html>
+
+

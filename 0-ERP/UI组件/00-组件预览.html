@@ -1,0 +1,1320 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ERP 原型模板</title>
+  <style>
+    :root{
+      --blue:#1677ff;
+      --blue-weak:#eaf3ff;
+      --blue-border:#bcd7ff;
+      --green:#22c55e;
+      --green-bg:#edf9f0;
+      --orange:#f59e0b;
+      --orange-bg:#fff6e8;
+      --red:#ef4444;
+      --red-bg:#fff0f0;
+      --bg:#f7f8fb;
+      --line:#dfe5ee;
+      --line-soft:#edf1f5;
+      --text:#1f2937;
+      --text-soft:#6b7280;
+      --shadow:none;
+      --radius:4px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",Arial,sans-serif;
+      color:var(--text);
+      background:#fff;
+    }
+    .app{min-height:100vh; display:flex; flex-direction:column;}
+    .topbar{
+      height:44px; background:var(--blue); color:#fff; display:flex; align-items:center;
+      padding:0 12px; box-shadow:var(--shadow);
+    }
+    .topnav{
+      display:flex; align-items:stretch; gap:5px; margin-left:10px; height:100%;
+    }
+    .brand{display:flex; align-items:center; gap:8px; font-weight:400; font-size:20px; letter-spacing:.2px;}
+    .brand-logo{
+      display:block;
+      width:188px;
+      height:28px;
+      object-fit:contain;
+    }
+    .topbar-spacer{flex:1}
+    .top-actions{display:flex; align-items:center; gap:10px; opacity:.95; font-size:12px; color:#fff;}
+    .top-actions .top-icon{
+      width:22px;
+      height:22px;
+      flex:0 0 auto;
+      background-repeat:no-repeat;
+      background-position:center;
+      background-size:22px 22px;
+    }
+    .top-actions .top-icon.msg{background-image:url("./assets/提示_tips-one.png");}
+    .top-actions .top-icon.palette{background-image:url("./assets/调色盘_platte.png");}
+    .top-actions .top-icon.bell{background-image:url("./assets/提醒_remind.png");}
+    .top-actions .user-wrap{
+      display:flex;
+      align-items:center;
+      gap:7px;
+      margin-left:2px;
+      padding-right:4px;
+      white-space:nowrap;
+    }
+    .top-actions .avatar{
+      width:24px;
+      height:24px;
+      border-radius:50%;
+      background:#bfc4cc;
+      flex:0 0 auto;
+      border:1px solid rgba(255,255,255,.25);
+    }
+    .top-actions .username{
+      font-size:12px;
+      color:#fff;
+      max-width:70px;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      font-size:12px;
+      line-height:1;
+    }
+    .top-actions .caret{
+      font-size:12px;
+      color:rgba(255,255,255,.95);
+      line-height:1;
+    }
+    .nav-home{
+      display:flex; align-items:center; height:100%; padding:0 10px; color:#fff; font-weight:400;
+      font-size:16px;
+      border-bottom:2px solid transparent;
+    }
+    .nav-arrow{
+      display:flex; align-items:center; height:100%; color:rgba(255,255,255,.75); font-size:18px; line-height:1;
+      padding:0 2px 1px 0;
+    }
+    .nav-tab{
+      display:flex; align-items:center; height:calc(100% - 4px); margin-top:4px; padding:0 12px;
+      background:#fff; color:#1677ff; border-radius:4px 4px 0 0; font-weight:400; font-size:15px;
+      border:1px solid rgba(255,255,255,.9); border-bottom-color:#fff;
+    }
+    .nav-tab .close{margin-left:8px; color:#94a3b8; font-size:13px; line-height:1;}
+    .shell{
+      position:relative;
+      display:grid;
+      grid-template-columns:72px 1fr;
+      gap:0;
+      min-height:calc(100vh - 44px);
+    }
+    .sidebar{
+      background:#fff;
+      border-right:1px solid var(--line);
+      padding:10px 0 12px;
+      overflow:hidden;
+      position:relative;
+      z-index:3;
+    }
+    .rail{display:flex; flex-direction:column; gap:2px;}
+    .menu-item{
+      height:58px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:4px;
+      padding:0 2px;
+      border-radius:0;
+      color:#475569;
+      cursor:default;
+      font-size:13px;
+      text-align:center;
+    }
+    .menu-item.active{background:var(--blue); color:#fff; font-weight:400;}
+    .menu-icon{
+      width:16px;
+      height:16px;
+      object-fit:contain;
+      flex:0 0 auto;
+      display:block;
+    }
+    .menu-item:not(.active) .menu-icon.white{
+      display:none;
+    }
+    .menu-item.active .menu-icon.color{
+      display:none;
+    }
+    .menu-item.active .menu-icon.white{
+      display:block;
+    }
+    .menu-item .rail-search{
+      width:20px;
+      height:20px;
+      font-size:18px;
+      line-height:1;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:inherit;
+    }
+    .menu-item .rail-label{
+      line-height:1;
+    }
+    .menu-overlay{
+      position:absolute;
+      inset:0 0 0 72px;
+      z-index:5;
+      display:none;
+    }
+    .menu-overlay.is-open{display:block;}
+    .menu-overlay-backdrop{
+      position:absolute;
+      inset:0;
+      background:rgba(255,255,255,.28);
+    }
+    .menu-panel{
+      position:absolute;
+      left:0;
+      top:0;
+      width:min(66%, 1020px);
+      height:100%;
+      background:#fff;
+      border-right:1px solid #dfe5ee;
+      box-shadow:18px 0 42px rgba(15,23,42,.14);
+      display:flex;
+      flex-direction:column;
+      overflow:hidden;
+    }
+    .menu-panel-head{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:14px 18px 12px;
+      border-bottom:1px solid #eef2f7;
+      color:#94a3b8;
+    }
+    .menu-panel-search{
+      flex:1 1 auto;
+      border:none;
+      outline:none;
+      background:transparent;
+      color:#334155;
+      font-size:13px;
+      height:28px;
+    }
+    .menu-panel-body{
+      padding:18px 20px 20px;
+      overflow:auto;
+    }
+    .menu-section{
+      margin-bottom:24px;
+    }
+    .menu-section-title{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      font-size:17px;
+      color:#1f2937;
+      margin-bottom:12px;
+      font-weight:500;
+    }
+    .menu-placeholder{
+      width:14px;
+      height:14px;
+      border-radius:3px;
+      border:1px solid #cbd5e1;
+      background:#f8fafc;
+      flex:0 0 auto;
+      box-sizing:border-box;
+    }
+    .menu-section-list{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:8px 22px;
+      padding-left:10px;
+    }
+    .menu-link{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      color:#475569;
+      font-size:14px;
+      min-height:28px;
+      padding:4px 10px 4px 18px;
+      border-radius:4px;
+      position:relative;
+      line-height:1.25;
+    }
+    .menu-link.active{
+      color:#1677ff;
+      background:#eaf3ff;
+      width:100%;
+    }
+    .menu-link .menu-placeholder{
+      width:12px;
+      height:12px;
+      border-radius:2px;
+      margin-left:-2px;
+    }
+    .content{padding:10px 10px 12px; overflow:auto;}
+    .section{
+      background:#fff; border:1px solid var(--line); border-radius:4px; overflow:hidden; box-shadow:var(--shadow);
+      margin-bottom:8px;
+    }
+    .section-head{
+      padding:8px 10px; background:#f7f9fc; border-bottom:1px solid var(--line-soft); font-weight:400;
+      display:flex; align-items:center; gap:6px; font-size:13px;
+    }
+    .section-body{padding:10px;}
+    .grid{
+      display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); gap:8px 10px;
+    }
+    .field{display:flex; flex-direction:column; gap:4px;}
+    .field label{font-size:12px; color:var(--text-soft);}
+    .input, .select{
+      height:32px; border:1px solid var(--line); border-radius:4px; padding:0 10px; background:#fff;
+      display:flex; align-items:center; color:#334155; font-size:12px;
+    }
+    .input.muted{color:#94a3b8; background:#fbfdff;}
+    .actions{display:flex; gap:10px; flex-wrap:wrap;}
+    .btn{
+      height:30px; padding:0 12px; border-radius:4px; border:1px solid transparent; font-weight:400;
+      display:inline-flex; align-items:center; justify-content:center; cursor:default; font-size:12px;
+    }
+    .btn.primary{background:var(--blue); color:#fff;}
+    .btn.secondary{background:#fff; border-color:var(--line); color:#334155;}
+    .btn.ghost{background:var(--blue-weak); border-color:var(--blue-border); color:var(--blue);}
+    .btn.danger{background:#fff; border-color:#f8c6c6; color:var(--red);}
+    .toolbar{display:flex; gap:6px; align-items:center; justify-content:space-between; margin-bottom:8px; flex-wrap:wrap;}
+    .toolbar-left,.toolbar-right{display:flex; gap:8px; align-items:center; flex-wrap:wrap;}
+    .table-wrap{
+      border:1px solid var(--line); border-radius:4px; overflow:hidden; background:#fff;
+    }
+    table{width:100%; border-collapse:collapse; font-size:12px;}
+    thead th{
+      background:#f8fafc; border-bottom:1px solid var(--line); border-right:1px solid var(--line);
+      text-align:left; padding:8px 8px; font-weight:400; color:#111827;
+      white-space:nowrap;
+    }
+    tbody td{
+      border-bottom:1px solid var(--line-soft); border-right:1px solid var(--line-soft);
+      padding:8px 8px; color:#374151; vertical-align:middle;
+    }
+    tbody tr:nth-child(2){background:#eef6ff;}
+    .link{color:var(--blue); font-weight:400;}
+    .tag{
+      display:inline-flex; align-items:center; justify-content:center; min-width:52px; height:24px;
+      padding:0 8px; border-radius:4px; border:1px solid currentColor; font-size:12px; font-weight:400;
+    }
+    .tag.blue{color:#2580ff; background:#f3f8ff;}
+    .tag.green{color:#17b26a; background:#effaf4;}
+    .tag.orange{color:#f59e0b; background:#fff8ec;}
+    .tag.red{color:#ef4444; background:#fff1f1;}
+    .pagination{
+      display:flex; align-items:center; justify-content:flex-end; gap:8px; padding:8px 0 0; color:#475569;
+      font-size:12px;
+    }
+    .pagebox{
+      height:28px; min-width:28px; border:1px solid var(--line); border-radius:4px; display:inline-flex;
+      align-items:center; justify-content:center; background:#fff; padding:0 6px;
+    }
+    .pagebox.active{background:var(--blue); color:#fff; border-color:var(--blue);}
+    .detail-grid{
+      display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); gap:8px 10px;
+    }
+    .thumb{
+      width:70px; height:70px; border-radius:8px; background:linear-gradient(180deg,#e7ecf4 0%,#cfd8e6 100%);
+      box-shadow:0 6px 18px rgba(15,23,42,.08);
+    }
+    .overlay{
+      position:relative; margin-top:10px; margin-bottom:20px; border-radius:4px; overflow:visible; border:1px solid var(--line);
+      background:rgba(15,23,42,.42);
+    }
+    .overlay-panel{
+      position:relative; background:#fff; padding:10px 12px 12px;
+      border:1px solid var(--line); box-shadow:0 18px 36px rgba(15,23,42,.08);
+    }
+    .overlay-title{font-weight:400; font-size:14px; margin-bottom:8px;}
+    .overlay-body{
+      display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); gap:6px 8px; align-items:start;
+    }
+    .overlay-footer{
+      display:flex;
+      justify-content:flex-end;
+      gap:8px;
+      margin-top:14px;
+      padding:0 8px 4px 0;
+      flex-wrap:nowrap;
+      overflow:visible;
+    }
+    .toast-row{
+      display:flex;
+      gap:8px;
+      margin-top:8px;
+      align-items:flex-start;
+    }
+    .toast{
+      min-width:0;
+      flex:1 1 0;
+      min-height:56px;
+      border-radius:4px;
+      border:1px solid transparent;
+      padding:0 12px;
+      display:flex;
+      align-items:center;
+      gap:8px;
+      box-shadow:none;
+      overflow:hidden;
+    }
+    .toast.success{background:var(--green-bg); border-color:#d5f1df; color:#16a34a;}
+    .toast.warning{background:var(--orange-bg); border-color:#fde3b2; color:#d97706;}
+    .toast.error{background:var(--red-bg); border-color:#f7c8c8; color:#ef4444;}
+    .dialog{
+      max-width:380px; background:#fff; border:1px solid var(--line); border-radius:4px; box-shadow:none;
+      padding:10px 12px 12px; margin-top:10px;
+    }
+    .dialog-head{display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;}
+    .dialog-title{font-size:14px; font-weight:400;}
+    .dialog-main{display:flex; align-items:flex-start; gap:8px; color:#374151; font-size:13px; line-height:1.5;}
+    .dialog-actions{display:flex; justify-content:flex-end; gap:6px; margin-top:12px;}
+    .icon{
+      width:24px; height:24px; border-radius:999px; display:inline-flex; align-items:center; justify-content:center;
+      font-weight:400;
+      flex:0 0 auto;
+    }
+    .icon.green{background:#dcfce7; color:#16a34a;}
+    .icon.orange{background:#ffedd5; color:#d97706;}
+    .icon.red{background:#fee2e2; color:#ef4444;}
+    .empty{
+      min-height:240px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      color:#64748b;
+      gap:10px;
+      text-align:center;
+      border:1px solid #eef2f7;
+      border-radius:4px;
+      background:#fff;
+    }
+    .empty-illus{
+      width:170px;
+      height:auto;
+      display:block;
+      opacity:.92;
+    }
+    .section-note{
+      color:var(--text-soft);
+      font-size:11px;
+      margin-top:6px;
+      padding-right:8px;
+    }
+    .preview-grid{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:10px;
+    }
+    .preview-card{
+      border:1px solid var(--line);
+      border-radius:4px;
+      padding:10px 12px;
+      background:#fff;
+    }
+    .preview-card.overlay-demo{
+      grid-column:1 / -1;
+      padding-bottom:12px;
+    }
+    .preview-card.empty-demo{
+      grid-column:1 / -1;
+      padding-bottom:12px;
+    }
+    .preview-card.detail-demo{
+      grid-column:1 / -1;
+      padding-bottom:12px;
+    }
+    .detail-modal{
+      border:1px solid #eef2f7;
+      border-radius:4px;
+      background:#fff;
+      overflow:hidden;
+    }
+    .detail-modal-head{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      padding:2px 0 12px;
+    }
+    .detail-modal-title{
+      font-size:16px;
+      color:#1f2937;
+      line-height:1.2;
+    }
+    .detail-modal-close{
+      font-size:24px;
+      line-height:1;
+      color:#111827;
+      padding:0 4px;
+      flex:0 0 auto;
+    }
+    .detail-section{
+      margin-top:0;
+    }
+    .detail-section-head{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      padding:10px 12px;
+      background:#f7f9fc;
+      border:1px solid #eef2f7;
+      border-left:none;
+      border-right:none;
+      color:#1f2937;
+      font-size:13px;
+      margin-bottom:12px;
+    }
+    .detail-section-body{
+      padding:0 12px 8px;
+    }
+    .detail-form-grid{
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:10px 12px;
+    }
+    .detail-form-grid .field{
+      display:grid;
+      grid-template-columns:88px minmax(0,1fr);
+      align-items:center;
+      gap:10px;
+      min-width:0;
+    }
+    .detail-form-grid .field label{
+      font-size:13px;
+      color:#ef4444;
+      line-height:1.1;
+      text-align:right;
+      white-space:nowrap;
+    }
+    .detail-form-grid .field .label-muted{
+      color:#374151;
+    }
+    .readonly-input{
+      height:38px;
+      border:1px solid #dbe3ef;
+      border-radius:4px;
+      background:#f7f9fc;
+      display:flex;
+      align-items:center;
+      padding:0 12px;
+      color:#111827;
+      font-size:13px;
+    }
+    .readonly-input.select{
+      justify-content:space-between;
+      gap:8px;
+    }
+    .readonly-input.select::after{
+      content:"⌄";
+      color:#a3aab8;
+      font-size:15px;
+      margin-left:auto;
+    }
+    .detail-form-grid .field.span-2{grid-column:span 2;}
+    .detail-form-grid .field.span-4{grid-column:span 4;}
+    .detail-form-grid .field.span-2 .readonly-input{min-width:0;}
+    .detail-form-grid .field.span-4 .readonly-input{min-width:0;}
+    .detail-table-wrap{
+      border:1px solid var(--line);
+      border-radius:0;
+      overflow:hidden;
+      background:#fff;
+      margin-top:4px;
+    }
+    .detail-footer{
+      display:flex;
+      justify-content:flex-end;
+      padding-top:14px;
+    }
+    .preview-card h4{
+      margin:0 0 8px;
+      font-size:13px;
+      color:#0f172a;
+      font-weight:400;
+    }
+    .preview-card p{
+      margin:0 0 10px;
+      color:var(--text-soft);
+      font-size:12px;
+      line-height:1.5;
+    }
+    .toast-text{
+      min-width:0;
+      flex:1 1 auto;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .float-query{
+      display:grid;
+      grid-template-columns:repeat(6,minmax(0,1fr));
+      gap:8px 10px;
+    }
+    .float-item{
+      position:relative;
+      min-width:0;
+    }
+    .float-label{
+      position:absolute;
+      top:-8px;
+      left:12px;
+      padding:0 4px;
+      background:#fff;
+      color:#1677ff;
+      font-size:12px;
+      line-height:1;
+    }
+    .float-input{
+      height:32px;
+      border:1px solid #bfd7ff;
+      border-radius:4px;
+      padding:0 12px;
+      display:flex;
+      align-items:center;
+      color:#334155;
+      background:#fff;
+      font-size:12px;
+    }
+    .float-input.input{
+      background:#fff;
+      border-color:#d7e2f0;
+    }
+    .float-input.select{
+      justify-content:space-between;
+      gap:8px;
+      padding-right:10px;
+      border-color:#d7e2f0;
+      background:#fcfdff;
+    }
+    .float-input.select::after{
+      content:"⌄";
+      flex:0 0 auto;
+      color:#94a3b8;
+      font-size:14px;
+      line-height:1;
+      margin-left:auto;
+      transform:translateY(-1px);
+    }
+    .float-input.range{
+      justify-content:space-between;
+      gap:8px;
+      border-color:#d7e2f0;
+      background:#fcfdff;
+    }
+    .float-input.range::after{
+      content:"📅";
+      flex:0 0 auto;
+      color:#94a3b8;
+      font-size:12px;
+      line-height:1;
+      margin-left:auto;
+    }
+    .float-input.muted{
+      color:#94a3b8;
+    }
+    .float-input.focus{
+      border-color:#1677ff;
+      box-shadow:0 0 0 1px rgba(22,119,255,.12) inset;
+    }
+    .calendar{
+      border:1px solid var(--line);
+      border-radius:6px;
+      background:#fff;
+      box-shadow:0 12px 24px rgba(15,23,42,.08);
+      overflow:hidden;
+      width:min(420px, 100%);
+    }
+    .calendar-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:8px 10px 6px;
+      color:#111827;
+    }
+    .calendar-nav{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      color:#94a3b8;
+      font-size:12px;
+    }
+    .calendar-title{
+      font-size:14px;
+      color:#111827;
+      letter-spacing:.5px;
+    }
+    .calendar-week{
+      display:grid;
+      grid-template-columns:repeat(7,minmax(0,1fr));
+      padding:10px 10px 8px;
+      border-top:1px solid #eef2f7;
+      color:#0f172a;
+      font-size:11px;
+      text-align:center;
+    }
+    .calendar-grid{
+      display:grid;
+      grid-template-columns:repeat(7,minmax(0,1fr));
+      gap:0;
+      padding:0 10px 10px;
+      font-size:12px;
+    }
+    .calendar-cell{
+      height:34px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:#0f172a;
+    }
+    .calendar-cell.muted{color:#c0c7d3;}
+    .calendar-cell.active{color:#1677ff;}
+    .calendar-cell.range-start,
+    .calendar-cell.range-end{
+      color:#1677ff;
+      position:relative;
+      z-index:0;
+    }
+    .calendar-cell.range-start::before,
+    .calendar-cell.range-end::before{
+      content:"";
+      position:absolute;
+      inset:5px;
+      border-radius:4px;
+      background:#e8f2ff;
+      z-index:-1;
+    }
+    .searchbox::before{
+      content:"⌕";
+      margin-right:8px;
+      color:#64748b;
+      font-size:14px;
+    }
+    @media (max-width: 1280px){
+      .shell{grid-template-columns:220px 1fr;}
+      .grid,.detail-grid,.overlay-body{grid-template-columns:repeat(3,minmax(0,1fr));}
+      .toast-row{grid-template-columns:1fr;}
+    }
+    @media (max-width: 960px){
+      .shell{grid-template-columns:1fr;}
+      .sidebar{display:none;}
+      .grid,.detail-grid,.overlay-body{grid-template-columns:repeat(2,minmax(0,1fr));}
+      .toast-row{grid-template-columns:1fr;}
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="topbar">
+      <div class="brand">
+        <img class="brand-logo" src="./assets/home-logo.d25547c0.png" alt="ERP门户" />
+      </div>
+      <div class="topnav">
+        <span class="nav-arrow">‹</span>
+        <div class="nav-home">首页</div>
+        <div class="nav-tab">组件预览 <span class="close">×</span></div>
+      </div>
+      <div class="topbar-spacer"></div>
+      <div class="top-actions">
+        <span class="top-icon msg" title="消息"></span>
+        <span class="top-icon palette" title="主题"></span>
+        <span class="top-icon bell" title="通知"></span>
+        <div class="user-wrap">
+          <span class="avatar" aria-hidden="true"></span>
+          <span class="username">管理员</span>
+          <span class="caret">▾</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="shell">
+      <aside class="sidebar">
+        <div class="rail">
+          <div class="menu-item">
+            <span class="rail-search">⌕</span>
+            <span class="rail-label">搜索</span>
+          </div>
+          <div class="menu-item">
+            <img class="menu-icon color" src="./assets/系统-设置配置_setting-config.png" alt="">
+            <img class="menu-icon white" src="./assets/白色icon/系统-设置配置_setting-config.png" alt="">
+            <span class="rail-label">系统</span>
+          </div>
+          <div class="menu-item active" data-menu-open="sales">
+            <img class="menu-icon color" src="./assets/销售-排行榜_ranking.png" alt="">
+            <img class="menu-icon white" src="./assets/白色icon/销售-排行榜_ranking.png" alt="">
+            <span class="rail-label">销售</span>
+          </div>
+          <div class="menu-item">
+            <img class="menu-icon color" src="./assets/印务-打印机_printer-two.png" alt="">
+            <img class="menu-icon white" src="./assets/白色icon/印务-打印机_printer-two.png" alt="">
+            <span class="rail-label">印务</span>
+          </div>
+          <div class="menu-item">
+            <img class="menu-icon color" src="./assets/采购-接收库_receive (1).png" alt="">
+            <img class="menu-icon white" src="./assets/白色icon/采购-接收库_receive.png" alt="">
+            <span class="rail-label">采购</span>
+          </div>
+          <div class="menu-item">
+            <img class="menu-icon color" src="./assets/储运-建筑_building-four.png" alt="">
+            <img class="menu-icon white" src="./assets/白色icon/储运-建筑_building-four.png" alt="">
+            <span class="rail-label">储运</span>
+          </div>
+          <div class="menu-item">
+            <img class="menu-icon color" src="./assets/产品-书籍_bookshelf.png" alt="">
+            <img class="menu-icon white" src="./assets/白色icon/产品-书籍_bookshelf.png" alt="">
+            <span class="rail-label">产品</span>
+          </div>
+          <div class="menu-item">
+            <img class="menu-icon color" src="./assets/财务-钞票_paper-money.png" alt="">
+            <img class="menu-icon white" src="./assets/白色icon/财务-钞票_paper-money.png" alt="">
+            <span class="rail-label">财务</span>
+          </div>
+          <div class="menu-item">
+            <img class="menu-icon color" src="./assets/生产-雷达图_radar-chart.png" alt="">
+            <img class="menu-icon white" src="./assets/白色icon/生产-雷达图_radar-chart.png" alt="">
+            <span class="rail-label">生产</span>
+          </div>
+          <div class="menu-item">
+            <img class="menu-icon color" src="./assets/支持-瀑布流纵向_waterfalls-v.png" alt="">
+            <img class="menu-icon white" src="./assets/白色icon/支持-瀑布流纵向_waterfalls-v.png" alt="">
+            <span class="rail-label">支持</span>
+          </div>
+          <div class="menu-item">
+            <img class="menu-icon color" src="./assets/统计-数据看板_data-screen.png" alt="">
+            <img class="menu-icon white" src="./assets/白色icon/统计-数据看板_data-screen.png" alt="">
+            <span class="rail-label">统计</span>
+          </div>
+        </div>
+      </aside>
+      <div class="menu-overlay" data-menu-overlay>
+        <div class="menu-overlay-backdrop" data-menu-close></div>
+        <div class="menu-panel">
+          <div class="menu-panel-head">
+            <span style="font-size:16px;color:#94a3b8;">⌕</span>
+            <input class="menu-panel-search" value="请输入关键字" aria-label="菜单搜索" />
+            <div class="btn secondary" style="height:28px; padding:0 10px;" data-menu-close>关闭</div>
+          </div>
+          <div class="menu-panel-body">
+            <div class="menu-section">
+              <div class="menu-section-title">
+                <span class="menu-placeholder" aria-hidden="true"></span>
+                <span>客户管理</span>
+              </div>
+              <div class="menu-section-list">
+                <div class="menu-link active">
+                  <span class="menu-placeholder" aria-hidden="true"></span>
+                  <span>单位联系人管理</span>
+                </div>
+                <div class="menu-link">
+                  <span class="menu-placeholder" aria-hidden="true"></span>
+                  <span>单位审核</span>
+                </div>
+                <div class="menu-link">
+                  <span class="menu-placeholder" aria-hidden="true"></span>
+                  <span>联系人审核</span>
+                </div>
+                <div class="menu-link">
+                  <span class="menu-placeholder" aria-hidden="true"></span>
+                  <span>单位合并</span>
+                </div>
+                <div class="menu-link">
+                  <span class="menu-placeholder" aria-hidden="true"></span>
+                  <span>联系人合并</span>
+                </div>
+                <div class="menu-link">
+                  <span class="menu-placeholder" aria-hidden="true"></span>
+                  <span>联系人复制</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="menu-section">
+              <div class="menu-section-title">
+                <span class="menu-placeholder" aria-hidden="true"></span>
+                <span>销售策略</span>
+              </div>
+              <div class="menu-section-list">
+                <div class="menu-link">
+                  <span class="menu-placeholder" aria-hidden="true"></span>
+                  <span>销售架构</span>
+                </div>
+                <div class="menu-link">
+                  <span class="menu-placeholder" aria-hidden="true"></span>
+                  <span>产品分组</span>
+                </div>
+                <div class="menu-link">
+                  <span class="menu-placeholder" aria-hidden="true"></span>
+                  <span>分类合同</span>
+                </div>
+                <div class="menu-link">
+                  <span class="menu-placeholder" aria-hidden="true"></span>
+                  <span>促销规则</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="menu-section">
+              <div class="menu-section-title">
+                <span class="menu-placeholder" aria-hidden="true"></span>
+                <span>预印量管理</span>
+              </div>
+              <div class="menu-section-list">
+                <div class="menu-link">
+                  <span class="menu-placeholder" aria-hidden="true"></span>
+                  <span>预印量计划</span>
+                </div>
+                <div class="menu-link">
+                  <span class="menu-placeholder" aria-hidden="true"></span>
+                  <span>部门印量处理</span>
+                </div>
+                <div class="menu-link">
+                  <span class="menu-placeholder" aria-hidden="true"></span>
+                  <span>业务员印量处理</span>
+                </div>
+                <div class="menu-link">
+                  <span class="menu-placeholder" aria-hidden="true"></span>
+                  <span>部门上报</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="menu-section">
+              <div class="menu-section-title">
+                <span class="menu-placeholder" aria-hidden="true"></span>
+                <span>订单管理</span>
+              </div>
+              <div class="menu-section-list">
+                <div class="menu-link">
+                  <span class="menu-placeholder" aria-hidden="true"></span>
+                  <span>收订单管理</span>
+                </div>
+                <div class="menu-link">
+                  <span class="menu-placeholder" aria-hidden="true"></span>
+                  <span>发样计划</span>
+                </div>
+                <div class="menu-link">
+                  <span class="menu-placeholder" aria-hidden="true"></span>
+                  <span>订单处理</span>
+                </div>
+                <div class="menu-link">
+                  <span class="menu-placeholder" aria-hidden="true"></span>
+                  <span>调货管理</span>
+                </div>
+                <div class="menu-link">
+                  <span class="menu-placeholder" aria-hidden="true"></span>
+                  <span>销货核减</span>
+                </div>
+                <div class="menu-link">
+                  <span class="menu-placeholder" aria-hidden="true"></span>
+                  <span>加减数审核</span>
+                </div>
+                <div class="menu-link">
+                  <span class="menu-placeholder" aria-hidden="true"></span>
+                  <span>批销管理</span>
+                </div>
+                <div class="menu-link">
+                  <span class="menu-placeholder" aria-hidden="true"></span>
+                  <span>补数处理</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <main class="content">
+        <section class="section">
+          <div class="section-head">按钮组件</div>
+          <div class="section-body">
+            <p>主按钮、次按钮、文字按钮和危险按钮统一使用这套口径。</p>
+            <div class="toolbar" style="margin-bottom:10px;">
+              <div class="toolbar-left">
+                <div class="btn primary">主按钮</div>
+                <div class="btn secondary">次按钮</div>
+                <div class="btn ghost">文字按钮</div>
+                <div class="btn danger">危险按钮</div>
+              </div>
+            </div>
+            <div class="toolbar-left" style="gap:8px;">
+              <span class="tag blue">未开通</span>
+              <span class="tag green">已开通</span>
+              <span class="tag orange">待审核</span>
+              <span class="tag red">已拒绝</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-head">浮动标签查询条件</div>
+          <div class="section-body">
+            <p>只保留你确认过的第二种样式：字段名浮在输入框上方，适合紧凑型列表筛选和高级筛选展开层。</p>
+            <div class="float-query">
+              <div class="float-item">
+                <div class="float-label">编号</div>
+                <div class="float-input input muted">请输入</div>
+              </div>
+              <div class="float-item">
+                <div class="float-label">全称</div>
+                <div class="float-input input muted">请输入</div>
+              </div>
+              <div class="float-item">
+                <div class="float-label">简称</div>
+                <div class="float-input input muted">请输入</div>
+              </div>
+              <div class="float-item">
+                <div class="float-label">产品类别</div>
+                <div class="float-input select muted">请选择</div>
+              </div>
+              <div class="float-item">
+                <div class="float-label">有效标志</div>
+                <div class="float-input select focus">是</div>
+              </div>
+              <div class="float-item">
+                <div class="float-label">创建人</div>
+                <div class="float-input input focus">创建人</div>
+              </div>
+            </div>
+            <div style="height:12px;"></div>
+            <div class="float-query" style="grid-template-columns:repeat(6,minmax(0,1fr));">
+              <div class="float-item">
+                <div class="float-label">创建时间范围</div>
+                <div class="float-input range focus">创建开始时间 - 2026-04-02</div>
+              </div>
+            </div>
+            <div class="toolbar" style="margin-top:16px;">
+              <div class="toolbar-left">
+                <div class="btn primary">查询</div>
+                <div class="btn secondary">重置</div>
+                <div class="btn ghost">高级筛选</div>
+              </div>
+            </div>
+            <div style="height:10px;"></div>
+            <div class="calendar">
+              <div class="calendar-head">
+                <div class="calendar-nav">≪ ≪</div>
+                <div class="calendar-title">2026 年 4 月</div>
+                <div class="calendar-nav">› ›</div>
+              </div>
+              <div class="calendar-week">
+                <div>日</div><div>一</div><div>二</div><div>三</div><div>四</div><div>五</div><div>六</div>
+              </div>
+              <div class="calendar-grid">
+                <div class="calendar-cell muted">29</div>
+                <div class="calendar-cell muted">30</div>
+                <div class="calendar-cell muted">31</div>
+                <div class="calendar-cell">1</div>
+                <div class="calendar-cell">2</div>
+                <div class="calendar-cell">3</div>
+                <div class="calendar-cell">4</div>
+                <div class="calendar-cell">5</div>
+                <div class="calendar-cell">6</div>
+                <div class="calendar-cell">7</div>
+                <div class="calendar-cell">8</div>
+                <div class="calendar-cell">9</div>
+                <div class="calendar-cell">10</div>
+                <div class="calendar-cell">11</div>
+                <div class="calendar-cell">12</div>
+                <div class="calendar-cell">13</div>
+                <div class="calendar-cell">14</div>
+                <div class="calendar-cell">15</div>
+                <div class="calendar-cell">16</div>
+                <div class="calendar-cell active">17</div>
+                <div class="calendar-cell">18</div>
+                <div class="calendar-cell">19</div>
+                <div class="calendar-cell">20</div>
+                <div class="calendar-cell">21</div>
+                <div class="calendar-cell">22</div>
+                <div class="calendar-cell">23</div>
+                <div class="calendar-cell">24</div>
+                <div class="calendar-cell">25</div>
+                <div class="calendar-cell">26</div>
+                <div class="calendar-cell">27</div>
+                <div class="calendar-cell">28</div>
+                <div class="calendar-cell">29</div>
+                <div class="calendar-cell">30</div>
+                <div class="calendar-cell muted">1</div>
+                <div class="calendar-cell muted">2</div>
+                <div class="calendar-cell muted">3</div>
+                <div class="calendar-cell muted">4</div>
+                <div class="calendar-cell muted">5</div>
+                <div class="calendar-cell muted">6</div>
+                <div class="calendar-cell muted">7</div>
+                <div class="calendar-cell muted">8</div>
+                <div class="calendar-cell muted">9</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-head">表格组件</div>
+          <div class="section-body">
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th style="width:60px;">序号</th>
+                    <th>编码</th>
+                    <th>名称</th>
+                    <th>地区</th>
+                    <th>类型</th>
+                    <th>状态</th>
+                    <th>更新时间</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>1</td>
+                    <td class="link">C096918</td>
+                    <td>大名县第四中学</td>
+                    <td>河北省 / 邯郸市 / 大名县</td>
+                    <td>学校</td>
+                    <td><span class="tag green">已开通</span></td>
+                    <td>2026-04-16</td>
+                  </tr>
+                  <tr>
+                    <td>2</td>
+                    <td class="link">C096917</td>
+                    <td>大名县第一中学</td>
+                    <td>河北省 / 邯郸市 / 大名县</td>
+                    <td>学校</td>
+                    <td><span class="tag blue">未开通</span></td>
+                    <td>2026-04-16</td>
+                  </tr>
+                  <tr>
+                    <td>3</td>
+                    <td class="link">C096916</td>
+                    <td>西双版纳州教体局</td>
+                    <td>云南省 / 西双版纳 / 景洪市</td>
+                    <td>教育局</td>
+                    <td><span class="tag orange">待审核</span></td>
+                    <td>2026-04-15</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="pagination">
+              <span>共 137055 条</span>
+              <span class="pagebox">50条/页</span>
+              <span class="pagebox">‹</span>
+              <span class="pagebox active">1</span>
+              <span class="pagebox">2</span>
+              <span class="pagebox">3</span>
+              <span class="pagebox">…</span>
+              <span class="pagebox">2742</span>
+              <span class="pagebox">›</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-head">详情弹窗参考</div>
+          <div class="section-body">
+            <div class="detail-modal">
+              <div class="detail-modal-head">
+                <div class="detail-modal-title">查看单位(C062725)</div>
+                <div class="detail-modal-close">×</div>
+              </div>
+
+              <div class="detail-section">
+                <div class="detail-section-head">
+                  <span class="menu-toggle" aria-hidden="true" style="transform:rotate(45deg); margin-left:2px;"></span>
+                  <span>基本信息</span>
+                </div>
+                <div class="detail-section-body">
+                  <div class="detail-form-grid">
+                    <div class="field span-2"><label>单位名称</label><div class="readonly-input">测试1</div></div>
+                    <div class="field"><label class="label-muted">类型</label><div class="readonly-input select">普通</div></div>
+                    <div class="field"><label>省市区</label><div class="readonly-input select">北京市 / 北京市 / 崇文区</div></div>
+                    <div class="field span-2"><label class="label-muted">地址</label><div class="readonly-input">324</div></div>
+                    <div class="field"><label>单位类型</label><div class="readonly-input select">乡镇中心小学</div></div>
+                    <div class="field"><label class="label-muted">单位状态</label><div class="readonly-input select">已开通</div></div>
+                    <div class="field"><label>专用账号</label><div class="readonly-input"></div></div>
+                    <div class="field"><label class="label-muted">创建人</label><div class="readonly-input">陈慧心</div></div>
+                    <div class="field"><label>数据来源</label><div class="readonly-input">手动填写</div></div>
+                    <div class="field"><label class="label-muted">修改人</label><div class="readonly-input"></div></div>
+                    <div class="field"><label>归档</label><div class="readonly-input">否</div></div>
+                    <div class="field"><label class="label-muted">单位编码</label><div class="readonly-input">C062725</div></div>
+                    <div class="field"><label>街道</label><div class="readonly-input select"></div></div>
+                    <div class="field span-2"><label class="label-muted">创建时间</label><div class="readonly-input">2026-04-17 11:48:45</div></div>
+                    <div class="field"><label>修改时间</label><div class="readonly-input"></div></div>
+                    <div class="field span-4"><label class="label-muted">退回备注</label><div class="readonly-input"></div></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="detail-section" style="margin-top:10px;">
+                <div class="detail-section-head">
+                  <span class="menu-toggle" aria-hidden="true" style="transform:rotate(45deg); margin-left:2px;"></span>
+                  <span>字段-学生数维护</span>
+                </div>
+                <div class="detail-section-body">
+                  <div class="float-query" style="grid-template-columns:repeat(6,minmax(0,1fr)); gap:10px;">
+                    <div class="float-item" style="grid-column:span 2;">
+                      <div class="float-label">学段</div>
+                      <div class="readonly-input select">小学</div>
+                    </div>
+                    <div class="float-item" style="grid-column:span 2;">
+                      <div class="float-label">届别</div>
+                      <div class="readonly-input select">26届</div>
+                    </div>
+                  </div>
+
+                  <div style="height:12px;"></div>
+                  <div class="detail-table-wrap">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th style="width:70px;">序号</th>
+                          <th>学段名称</th>
+                          <th>年级名称</th>
+                          <th style="width:240px;">学生人数</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>1</td>
+                          <td style="text-align:center;">小学</td>
+                          <td style="text-align:center;">一年级</td>
+                          <td><div class="readonly-input" style="height:34px; background:#f7f9fc;">2</div></td>
+                        </tr>
+                        <tr>
+                          <td>2</td>
+                          <td style="text-align:center;">小学</td>
+                          <td style="text-align:center;">二年级</td>
+                          <td><div class="readonly-input" style="height:34px; background:#f7f9fc;">3</div></td>
+                        </tr>
+                        <tr>
+                          <td>3</td>
+                          <td style="text-align:center;">小学</td>
+                          <td style="text-align:center;">三年级</td>
+                          <td><div class="readonly-input" style="height:34px; background:#f7f9fc;">43</div></td>
+                        </tr>
+                        <tr>
+                          <td>4</td>
+                          <td style="text-align:center;">小学</td>
+                          <td style="text-align:center;">四年级</td>
+                          <td><div class="readonly-input" style="height:34px; background:#f7f9fc;">5</div></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+
+              <div class="detail-footer">
+                <div class="btn secondary" style="min-width:92px;">关闭</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-head">弹窗 / 提示 / 缺省态</div>
+          <div class="section-body">
+            <div class="preview-grid">
+              <div class="preview-card">
+                <h4>删除确认弹窗</h4>
+                <div class="dialog" style="margin-top:0;">
+                  <div class="dialog-head">
+                    <div class="dialog-title">删除确认</div>
+                    <div style="color:#94a3b8;">×</div>
+                  </div>
+                  <div class="dialog-main">
+                    <span class="icon orange">!</span>
+                    <span>您确定要删除勾选的届别?</span>
+                  </div>
+                  <div class="dialog-actions">
+                    <div class="btn secondary">取消</div>
+                    <div class="btn primary">确认</div>
+                  </div>
+                </div>
+              </div>
+              <div class="preview-card">
+                <h4>温馨 / 错误 / 警告提示</h4>
+                <div class="toast-row" style="margin-top:0;">
+                  <div class="toast success"><span class="icon green">✓</span><span class="toast-text">已重新推送</span><span style="margin-left:auto;color:#94a3b8;flex:0 0 auto;">×</span></div>
+                  <div class="toast warning"><span class="icon orange">!</span><span class="toast-text">单据状态有误，不可操作!</span><span style="margin-left:auto;color:#94a3b8;flex:0 0 auto;">×</span></div>
+                  <div class="toast error"><span class="icon red">×</span><span class="toast-text">单据状态不允许该操作，请核实!</span><span style="margin-left:auto;color:#94a3b8;flex:0 0 auto;">×</span></div>
+                </div>
+              </div>
+              <div class="preview-card overlay-demo">
+                <h4>高级筛选展开态</h4>
+                <div class="overlay" style="margin-top:0; margin-bottom:0;">
+                  <div class="overlay-panel" style="position:relative; box-shadow:none;">
+                    <div class="overlay-body">
+                      <div class="field"><label>届别</label><div class="select">26届</div></div>
+                      <div class="field"><label>产品一类</label><div class="select">请选择</div></div>
+                      <div class="field"><label>产品二类</label><div class="input muted">产品二类</div></div>
+                      <div class="field"><label>销售状态</label><div class="select">请选择</div></div>
+                      <div class="field"><label>产品名称关键词</label><div class="input muted">请输入</div></div>
+                      <div class="field"><label>产品编码</label><div class="input muted">请输入</div></div>
+                    </div>
+                    <div class="overlay-footer">
+                      <div class="btn primary">查询</div>
+                      <div class="btn secondary">重置</div>
+                      <div class="btn ghost">取消</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="preview-card empty-demo">
+                <h4>空状态</h4>
+                <div class="empty" style="margin-top:0;">
+                  <img class="empty-illus" src="./assets/empty-img.png" alt="暂无数据" />
+                  <div>暂无数据</div>
+                </div>
+              </div>
+            </div>
+            <div class="section-note">这页只做组件展示，不承载业务流程。后面的业务原型直接照这里的组件组合即可。</div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+  <script>
+    (function () {
+      const menuOverlay = document.querySelector('[data-menu-overlay]');
+      const menuOpeners = document.querySelectorAll('[data-menu-open]');
+      const menuClosers = document.querySelectorAll('[data-menu-close]');
+
+      const setMenuOpen = (open) => {
+        if (menuOverlay) menuOverlay.classList.toggle('is-open', open);
+      };
+
+      menuOpeners.forEach((button) => {
+        button.addEventListener('click', () => {
+          const isOpen = menuOverlay ? menuOverlay.classList.contains('is-open') : false;
+          setMenuOpen(!isOpen);
+        });
+      });
+
+      menuClosers.forEach((button) => {
+        button.addEventListener('click', () => setMenuOpen(false));
+      });
+
+      if (menuOverlay) {
+        menuOverlay.addEventListener('click', (event) => {
+          if (event.target.closest('[data-menu-close]')) {
+            setMenuOpen(false);
+          }
+        });
+      }
+      setMenuOpen(false);
+    })();
+  </script>
+</body>
+</html>
+
+

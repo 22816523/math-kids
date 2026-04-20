@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ERP客户联系人管理页面复刻</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Microsoft YaHei", Arial, sans-serif;
+      background: #edf1f5;
+      color: #333;
+      font-size: 12px;
+      overflow: hidden;
+    }
+
+    .app {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: #f7f9fb;
+    }
+
+    .topbar {
+      height: 36px;
+      background: linear-gradient(180deg, #2d82ea 0%, #1e73db 100%);
+      display: flex;
+      align-items: center;
+      color: #fff;
+      border-bottom: 1px solid #1368ce;
+      flex-shrink: 0;
+    }
+
+    .brand {
+      width: 78px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      font-weight: 600;
+      border-right: 1px solid rgba(255, 255, 255, 0.18);
+      letter-spacing: 0.5px;
+    }
+
+    .back-btn {
+      width: 34px;
+      text-align: center;
+      font-size: 18px;
+      opacity: 0.95;
+    }
+
+    .tabbar {
+      flex: 1;
+      display: flex;
+      align-items: flex-end;
+      height: 36px;
+      gap: 1px;
+      overflow: hidden;
+    }
+
+    .tab {
+      height: 29px;
+      display: flex;
+      align-items: center;
+      padding: 0 14px;
+      font-size: 12px;
+      color: #edf6ff;
+      background: rgba(18, 96, 191, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-bottom: none;
+      border-radius: 3px 3px 0 0;
+      white-space: nowrap;
+    }
+
+    .tab.active {
+      background: #ffffff;
+      color: #1d73db;
+      font-weight: 600;
+    }
+
+    .top-icons {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 10px;
+      font-size: 13px;
+    }
+
+    .avatar {
+      width: 21px;
+      height: 21px;
+      border-radius: 50%;
+      background: #b6c1cd;
+      display: inline-block;
+    }
+
+    .main {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+    }
+
+    .sidebar {
+      width: 106px;
+      border-right: 1px solid #d8dee6;
+      background: #ffffff;
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+    }
+
+    .menu-block {
+      border-bottom: 1px solid #edf1f5;
+    }
+
+    .menu-head {
+      height: 30px;
+      display: flex;
+      align-items: center;
+      padding: 0 8px 0 10px;
+      gap: 6px;
+      color: #4c5762;
+      background: #fff;
+    }
+
+    .menu-head .arrow {
+      margin-left: auto;
+      color: #9aa5b1;
+      font-size: 10px;
+    }
+
+    .submenu {
+      background: #fff;
+      padding: 2px 0;
+    }
+
+    .submenu-item {
+      height: 27px;
+      display: flex;
+      align-items: center;
+      padding-left: 30px;
+      position: relative;
+      color: #4b5563;
+    }
+
+    .submenu-item::before {
+      content: "";
+      position: absolute;
+      left: 13px;
+      width: 10px;
+      height: 10px;
+      border: 1px solid #a5aebb;
+      border-radius: 2px;
+      background: #fff;
+    }
+
+    .submenu-item.active {
+      background: #2580e8;
+      color: #fff;
+    }
+
+    .submenu-item.active::before {
+      border-color: #fff;
+      background: rgba(255,255,255,0.16);
+    }
+
+    .content {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      background: #fff;
+    }
+
+    .panel {
+      margin: 6px 6px 0;
+      border: 1px solid #dbe2ea;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      flex: 1;
+    }
+
+    .search-area {
+      padding: 6px 8px 4px;
+      border-bottom: 1px solid #dbe2ea;
+      background: #f8fafc;
+      flex-shrink: 0;
+    }
+
+    .search-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 5px;
+      white-space: nowrap;
+    }
+
+    .ctrl {
+      height: 22px;
+      border: 1px solid #d6dde8;
+      background: #fff;
+      color: #a1a7b3;
+      border-radius: 2px;
+      padding: 0 7px;
+      min-width: 100px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+
+    .ctrl.wide {
+      min-width: 132px;
+    }
+
+    .select::after {
+      content: "⌄";
+      color: #adb4bf;
+      margin-left: 8px;
+      font-size: 11px;
+    }
+
+    .btn {
+      height: 22px;
+      padding: 0 10px;
+      border-radius: 2px;
+      font-size: 12px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #2580e8;
+      background: #2580e8;
+      color: #fff;
+      flex-shrink: 0;
+    }
+
+    .btn.light {
+      background: #edf5ff;
+      border-color: #c7defb;
+      color: #1d73db;
+    }
+
+    .btn.gray {
+      background: #fff;
+      border-color: #d6dde8;
+      color: #4c5762;
+    }
+
+    .search-spacer {
+      flex: 1;
+    }
+
+    .mini-icon {
+      color: #1d73db;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding-right: 6px;
+    }
+
+    .table-zone {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      background: #fff;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+    }
+
+    th {
+      height: 28px;
+      background: #f2f5f9;
+      border-right: 1px solid #e5ebf2;
+      border-bottom: 1px solid #dde4ed;
+      color: #4b5563;
+      font-weight: 600;
+      padding: 0 6px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      text-align: center;
+    }
+
+    td {
+      height: 28px;
+      border-right: 1px solid #eef2f6;
+      border-bottom: 1px solid #e7edf3;
+      padding: 0 6px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      text-align: center;
+      background: #fff;
+    }
+
+    th.left,
+    td.left {
+      text-align: left;
+    }
+
+    tr.selected td {
+      background: #fff1e6;
+    }
+
+    .code-link {
+      color: #1882e5;
+    }
+
+    .tag-green,
+    .tag-blue {
+      display: inline-block;
+      height: 17px;
+      line-height: 15px;
+      padding: 0 5px;
+      border-radius: 2px;
+      font-size: 11px;
+      border: 1px solid;
+    }
+
+    .tag-green {
+      color: #2ca358;
+      background: #ecf9f0;
+      border-color: #b8dfc1;
+    }
+
+    .tag-blue {
+      color: #1e88e5;
+      background: #edf5ff;
+      border-color: #b9d9fd;
+    }
+
+    .pager {
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 10px;
+      padding: 0 10px;
+      color: #666;
+      border-top: 1px solid #e8edf3;
+      border-bottom: 1px solid #dbe2ea;
+      background: #fff;
+      flex-shrink: 0;
+    }
+
+    .pager .current {
+      color: #1d73db;
+      font-weight: 600;
+    }
+
+    .pager-input {
+      width: 40px;
+      height: 20px;
+      border: 1px solid #d6dde8;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #666;
+      background: #fff;
+      border-radius: 2px;
+    }
+
+    .detail-wrap {
+      height: 126px;
+      flex-shrink: 0;
+      background: #fff;
+    }
+
+    .detail-footer {
+      height: 20px;
+      border-top: 1px solid #edf1f5;
+      background: #fff;
+    }
+
+    @media (max-width: 900px) {
+      body {
+        overflow: auto;
+      }
+
+      .app {
+        min-width: 1200px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">ERP门户</div>
+      <div class="back-btn">‹</div>
+      <div class="tabbar">
+        <div class="tab">首页</div>
+        <div class="tab active">单元联系人管理 ×</div>
+      </div>
+      <div class="top-icons">
+        <span>◁</span>
+        <span>▣</span>
+        <span>⚙</span>
+        <span>◌</span>
+        <span class="avatar"></span>
+        <span>⌄</span>
+      </div>
+    </header>
+
+    <main class="main">
+      <aside class="sidebar">
+        <div class="menu-block"><div class="menu-head">☰ 系统 <span class="arrow">⌄</span></div></div>
+        <div class="menu-block"><div class="menu-head">▣ 产品 <span class="arrow">⌄</span></div></div>
+        <div class="menu-block"><div class="menu-head">◇ 采购 <span class="arrow">⌄</span></div></div>
+        <div class="menu-block">
+          <div class="menu-head">▥ 销售 <span class="arrow">⌄</span></div>
+          <div class="submenu">
+            <div class="submenu-item active">单位联系人管理</div>
+            <div class="submenu-item">单位申请</div>
+            <div class="submenu-item">联系人审核</div>
+            <div class="submenu-item">单位合并</div>
+            <div class="submenu-item">联系人合并</div>
+          </div>
+        </div>
+        <div class="menu-block"><div class="menu-head">▤ 销售辅助 <span class="arrow">⌄</span></div></div>
+        <div class="menu-block"><div class="menu-head">▣ 印刷管理 <span class="arrow">⌄</span></div></div>
+        <div class="menu-block"><div class="menu-head">▣ 订单管理 <span class="arrow">⌄</span></div></div>
+        <div class="menu-block"><div class="menu-head">▣ 财务及跟踪 <span class="arrow">⌄</span></div></div>
+        <div class="menu-block"><div class="menu-head">⚙ 系统设置 <span class="arrow">⌄</span></div></div>
+      </aside>
+
+      <section class="content">
+        <div class="panel">
+          <div class="search-area">
+            <div class="search-row">
+              <div class="ctrl wide">请输入单位编号</div>
+              <div class="ctrl wide">请输入单位名称</div>
+              <div class="ctrl select">学制</div>
+              <div class="ctrl select">区域</div>
+              <div class="ctrl select">单位</div>
+              <div class="ctrl select">销售</div>
+              <div class="ctrl wide">学校名称</div>
+            </div>
+            <div class="search-row">
+              <div class="ctrl select">学段</div>
+              <div class="ctrl select">单位类型</div>
+              <div class="ctrl select">审批状态</div>
+              <div class="ctrl select">建档人</div>
+              <div class="btn">查询</div>
+              <div class="btn gray">重置</div>
+              <div class="search-spacer"></div>
+              <div class="mini-icon">⟳ 刷新</div>
+            </div>
+            <div class="search-row">
+              <div class="btn">新增申请</div>
+              <div class="btn light">成品介入</div>
+              <div class="btn light">状态变更</div>
+              <div class="btn">申请介入</div>
+              <div class="btn light">拆分介入</div>
+              <div class="btn light">终止介入</div>
+              <div class="btn light">联系人导入</div>
+              <div class="btn light">联系人导出</div>
+            </div>
+          </div>
+
+          <div class="table-zone">
+            <table>
+              <thead>
+                <tr>
+                  <th style="width:44px">序号</th>
+                  <th style="width:74px">状态</th>
+                  <th style="width:84px">单位编号</th>
+                  <th class="left" style="width:156px">单位名称</th>
+                  <th style="width:84px">学制</th>
+                  <th style="width:84px">省份</th>
+                  <th style="width:84px">城市</th>
+                  <th style="width:90px">区县</th>
+                  <th style="width:76px">渠道</th>
+                  <th class="left" style="width:170px">地址</th>
+                  <th style="width:84px">单位类型</th>
+                  <th style="width:64px">备注</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>1</td>
+                  <td><span class="tag-green">已开通</span></td>
+                  <td><span class="code-link">cc06918</span></td>
+                  <td class="left">大五路中学</td>
+                  <td>六年制</td>
+                  <td>陕西省</td>
+                  <td>榆林市</td>
+                  <td>大五县</td>
+                  <td>大陆</td>
+                  <td class="left">陕西省榆林市文汇区印象路</td>
+                  <td>学校</td>
+                  <td></td>
+                </tr>
+                <tr class="selected">
+                  <td>2</td>
+                  <td><span class="tag-blue">未开通</span></td>
+                  <td><span class="code-link">cc06917</span></td>
+                  <td class="left">大五路一中学</td>
+                  <td>六年制</td>
+                  <td>陕西省</td>
+                  <td>榆林市</td>
+                  <td>大五县</td>
+                  <td>大陆</td>
+                  <td class="left">大五路1号</td>
+                  <td>学校</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>3</td>
+                  <td><span class="tag-green">已开通</span></td>
+                  <td><span class="code-link">cc06916</span></td>
+                  <td class="left">西双版纳实验基地</td>
+                  <td>五年制</td>
+                  <td>云南省</td>
+                  <td>西双版纳州</td>
+                  <td>景洪市</td>
+                  <td>大陆</td>
+                  <td class="left">西双版纳州景洪路99号</td>
+                  <td>培训机构</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>4</td>
+                  <td><span class="tag-green">已开通</span></td>
+                  <td><span class="code-link">cc06915</span></td>
+                  <td class="left">义乌市实验小学</td>
+                  <td>六年制</td>
+                  <td>浙江省</td>
+                  <td>金华市</td>
+                  <td>义乌市</td>
+                  <td></td>
+                  <td class="left">义乌市稠州路11号</td>
+                  <td>校外点</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>5</td>
+                  <td><span class="tag-green">已开通</span></td>
+                  <td><span class="code-link">cc06913</span></td>
+                  <td class="left">根固初级中学科技学校</td>
+                  <td>四年制</td>
+                  <td>内蒙古</td>
+                  <td>包头市</td>
+                  <td>根固旗</td>
+                  <td></td>
+                  <td class="left">根固旗科技路9号</td>
+                  <td>民办学校</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>6</td>
+                  <td><span class="tag-blue">未开通</span></td>
+                  <td><span class="code-link">cc06911</span></td>
+                  <td class="left">福山音乐职业教育公司</td>
+                  <td>三年制</td>
+                  <td>广东省</td>
+                  <td>深圳市</td>
+                  <td>福田区</td>
+                  <td></td>
+                  <td class="left">福山音乐教育产业园7栋2楼</td>
+                  <td>学校</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>7</td>
+                  <td><span class="tag-green">已开通</span></td>
+                  <td><span class="code-link">cc06910</span></td>
+                  <td class="left">宁波小学</td>
+                  <td>六年制</td>
+                  <td>浙江省</td>
+                  <td>宁波市</td>
+                  <td>海曙区</td>
+                  <td></td>
+                  <td class="left">宁波中学</td>
+                  <td>学校</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>8</td>
+                  <td><span class="tag-green">已开通</span></td>
+                  <td><span class="code-link">cc06909</span></td>
+                  <td class="left">南山教育实验小学</td>
+                  <td>六年制</td>
+                  <td>河北省</td>
+                  <td>石家庄市</td>
+                  <td>桥西区</td>
+                  <td></td>
+                  <td class="left">石桥路文教中学</td>
+                  <td>学校</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>9</td>
+                  <td><span class="tag-green">已开通</span></td>
+                  <td><span class="code-link">cc06908</span></td>
+                  <td class="left">江苏省横峰应用网</td>
+                  <td>五年制</td>
+                  <td>广东省</td>
+                  <td>云浮市</td>
+                  <td>郁南县</td>
+                  <td>联招</td>
+                  <td class="left">桥头二路48号工业园36号</td>
+                  <td>学校</td>
+                  <td></td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div class="pager">
+              <span>共105条</span>
+              <span>‹</span>
+              <span class="current">1</span>
+              <span>2</span>
+              <span>3</span>
+              <span>4</span>
+              <span>5</span>
+              <span>6</span>
+              <span>…</span>
+              <span>22</span>
+              <span>›</span>
+              <span>前往</span>
+              <span class="pager-input">1</span>
+              <span>页</span>
+            </div>
+
+            <div class="detail-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th style="width:44px">序号</th>
+                    <th style="width:86px">联系人状态</th>
+                    <th style="width:108px">联系人编码</th>
+                    <th style="width:84px">联系人</th>
+                    <th style="width:110px">手机号</th>
+                    <th style="width:94px">电话</th>
+                    <th style="width:120px">单位名称</th>
+                    <th class="left">地址</th>
+                    <th style="width:80px">省份</th>
+                    <th style="width:80px">城市</th>
+                    <th style="width:80px">区县</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>1</td>
+                    <td><span class="tag-blue">申请中</span></td>
+                    <td><span class="code-link">mc040453</span></td>
+                    <td>艾美丽</td>
+                    <td>18207377175</td>
+                    <td></td>
+                    <td>大五路一中学</td>
+                    <td class="left">保利峰1634号</td>
+                    <td>河北省</td>
+                    <td>邯郸市</td>
+                    <td>大五县</td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="detail-footer"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>
