@@ -1,0 +1,1179 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>单位联系人管理 - 学校性质版</title>
+  <style>
+    :root{
+      --blue:#1677ff;
+      --blue-weak:#eaf3ff;
+      --blue-border:#bcd7ff;
+      --green:#22c55e;
+      --green-bg:#edf9f0;
+      --orange:#f59e0b;
+      --orange-bg:#fff6e8;
+      --red:#ef4444;
+      --red-bg:#fff0f0;
+      --bg:#f7f8fb;
+      --line:#dfe5ee;
+      --line-soft:#edf1f5;
+      --text:#1f2937;
+      --text-soft:#6b7280;
+      --shadow:none;
+      --radius:4px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",Arial,sans-serif;
+      color:var(--text);
+      background:#fff;
+    }
+    .app{min-height:100vh; display:flex; flex-direction:column;}
+    .topbar{
+      height:42px;
+      background:var(--blue);
+      color:#fff;
+      display:flex;
+      align-items:center;
+      padding:0 10px;
+      box-shadow:var(--shadow);
+    }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      font-weight:400;
+      font-size:20px;
+      letter-spacing:.2px;
+    }
+    .brand-logo{
+      display:block;
+      width:188px;
+      height:28px;
+      object-fit:contain;
+    }
+    .topnav{
+      display:flex;
+      align-items:stretch;
+      gap:5px;
+      margin-left:8px;
+      height:100%;
+      min-width:0;
+      flex:0 0 auto;
+    }
+    .topbar-spacer{flex:1}
+    .top-actions{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      opacity:.95;
+      font-size:11px;
+      color:#fff;
+    }
+    .top-actions .top-icon{
+      width:20px;
+      height:20px;
+      flex:0 0 auto;
+      background-repeat:no-repeat;
+      background-position:center;
+      background-size:20px 20px;
+    }
+    .top-actions .top-icon.msg{background-image:url("./assets/html-template/提示_tips-one.png");}
+    .top-actions .top-icon.palette{background-image:url("./assets/html-template/调色盘_platte.png");}
+    .top-actions .top-icon.bell{background-image:url("./assets/html-template/提醒_remind.png");}
+    .top-actions .user-wrap{
+      display:flex;
+      align-items:center;
+      gap:6px;
+      margin-left:2px;
+      padding-right:4px;
+      white-space:nowrap;
+    }
+    .top-actions .avatar{
+      width:22px;
+      height:22px;
+      border-radius:50%;
+      background:#bfc4cc;
+      flex:0 0 auto;
+      border:1px solid rgba(255,255,255,.25);
+    }
+    .top-actions .username{
+      font-size:11px;
+      color:#fff;
+      max-width:70px;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      line-height:1;
+    }
+    .top-actions .caret{
+      font-size:12px;
+      color:rgba(255,255,255,.95);
+      line-height:1;
+    }
+    .nav-home{
+      display:flex;
+      align-items:center;
+      height:100%;
+      padding:0 8px;
+      color:#fff;
+      font-weight:400;
+      font-size:15px;
+      border-bottom:2px solid transparent;
+      white-space:nowrap;
+    }
+    .nav-arrow{
+      display:flex;
+      align-items:center;
+      height:100%;
+      color:rgba(255,255,255,.75);
+      font-size:18px;
+      line-height:1;
+      padding:0 2px 1px 0;
+    }
+    .nav-tab{
+      display:flex;
+      align-items:center;
+      height:calc(100% - 3px);
+      margin-top:3px;
+      padding:0 10px;
+      background:#fff;
+      color:#1677ff;
+      border-radius:4px 4px 0 0;
+      font-weight:400;
+      font-size:14px;
+      border:1px solid rgba(255,255,255,.9);
+      border-bottom-color:#fff;
+    }
+    .nav-tab .close{margin-left:8px; color:#94a3b8; font-size:12px; line-height:1;}
+    .shell{
+      display:block;
+    }
+    .sidebar{
+      background:#fff;
+      border-right:1px solid var(--line);
+      padding:6px 4px 8px;
+      overflow:auto;
+      position:fixed;
+      top:42px;
+      left:0;
+      bottom:0;
+      width:68px;
+    }
+    .searchbox{
+      display:none;
+    }
+    .menu{display:flex; flex-direction:column; gap:2px;}
+    .menu-group{margin-top:4px;}
+    .menu-group.sub{display:none;}
+    .menu-title{display:none;}
+    .menu-toggle{display:none;}
+    .menu-item{
+      height:62px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:4px;
+      padding:5px 1px;
+      border-radius:4px;
+      color:#475569;
+      cursor:default;
+      font-size:14px;
+      text-align:center;
+      line-height:1.05;
+    }
+    .menu-item.active{
+      background:var(--blue);
+      color:#fff;
+      font-weight:400;
+      margin:0 2px;
+      width:calc(100% - 4px);
+    }
+    .menu-item .menu-text{
+      display:block;
+      max-width:100%;
+      white-space:normal;
+      line-height:1.05;
+      font-size:14px;
+    }
+    .menu-icon{
+      width:22px;
+      height:22px;
+      object-fit:contain;
+      flex:0 0 auto;
+      display:block;
+    }
+    .menu-item.search .search-icon{
+      position:relative;
+      width:22px;
+      height:22px;
+      display:block;
+      border:2px solid #4b5563;
+      border-radius:50%;
+      box-sizing:border-box;
+      margin-top:1px;
+    }
+    .menu-item.search .search-icon::after{
+      content:"";
+      position:absolute;
+      width:8px;
+      height:2px;
+      background:#4b5563;
+      right:-5px;
+      bottom:-1px;
+      transform:rotate(45deg);
+      border-radius:1px;
+    }
+    .menu-item:not(.active) .menu-icon.white{display:none;}
+    .menu-item.active .menu-icon.color{display:none;}
+    .menu-item.active .menu-icon.white{display:block;}
+    .content{
+      padding:6px 10px 6px;
+      overflow:hidden;
+      margin-left:68px;
+      height:calc(100vh - 42px);
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      background:#fff;
+    }
+    .section{
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:4px;
+      overflow:visible;
+      box-shadow:var(--shadow);
+      margin-bottom:6px;
+    }
+    .query-area{
+      margin-bottom:0;
+    }
+    .section-body{padding:8px 10px 10px;}
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(6,minmax(0,1fr));
+      gap:12px 8px;
+    }
+    .field{
+      position:relative;
+      min-width:0;
+      height:28px;
+      border:1px solid #d9e1ea;
+      border-radius:4px;
+      background:#fff;
+      padding:0 10px;
+      box-sizing:border-box;
+      display:flex;
+      align-items:center;
+      cursor:pointer;
+    }
+    .field.input{cursor:text;}
+    .field.focused,
+    .field.filled{
+      border-color:#d9e1ea;
+    }
+    .field label{
+      position:absolute;
+      left:10px;
+      top:-7px;
+      padding:0 4px;
+      background:#fff;
+      font-size:10px;
+      color:#1677ff;
+      line-height:1;
+      white-space:nowrap;
+      display:none;
+      pointer-events:none;
+    }
+    .field.focused label,
+    .field.filled label{
+      display:block;
+    }
+    .field .value{
+      height:100%;
+      width:100%;
+      display:flex;
+      align-items:center;
+      color:#334155;
+      font-size:12px;
+      line-height:1.2;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .field .value.placeholder{
+      color:#a8b3c2;
+    }
+    .field-input{
+      width:100%;
+      height:100%;
+      border:0;
+      outline:0;
+      background:transparent;
+      padding:0;
+      margin:0;
+      font-family:inherit;
+      font-size:12px;
+      line-height:1.2;
+      font-weight:400;
+      color:#334155;
+      min-width:0;
+    }
+    .field-input::placeholder{
+      color:#a8b3c2;
+      font-size:12px;
+      font-family:inherit;
+    }
+    .field.select::after{
+      content:"";
+      position:absolute;
+      right:12px;
+      top:50%;
+      width:6px;
+      height:6px;
+      margin-top:-1px;
+      border-right:1.5px solid #9aa6b7;
+      border-bottom:1.5px solid #9aa6b7;
+      transform:rotate(45deg);
+      pointer-events:none;
+    }
+    .dropdown-panel{
+      position:absolute;
+      left:-1px;
+      right:-1px;
+      top:calc(100% + 4px);
+      display:none;
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:4px;
+      box-shadow:0 12px 24px rgba(15,23,42,.12);
+      max-height:220px;
+      overflow:auto;
+      z-index:20;
+    }
+    .field.open{z-index:30;}
+    .field.open .dropdown-panel{display:block;}
+    .dropdown-option{
+      padding:5px 12px;
+      font-size:12px;
+      line-height:1.2;
+      color:#334155;
+      cursor:pointer;
+      white-space:nowrap;
+    }
+    .dropdown-option:hover,
+    .dropdown-option.selected{
+      background:#eaf3ff;
+      color:#1677ff;
+    }
+    .dropdown-option.disabled{
+      color:#94a3b8;
+      cursor:not-allowed;
+      background:#fff;
+    }
+    .actions{
+      display:flex;
+      gap:8px;
+      flex-wrap:nowrap;
+      justify-content:flex-end;
+      align-items:center;
+    }
+    .btn{
+      height:30px;
+      min-width:72px;
+      padding:0 12px;
+      border-radius:4px;
+      border:1px solid transparent;
+      font-weight:400;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      cursor:default;
+      font-size:12px;
+    }
+    .btn.primary{background:var(--blue); color:#fff;}
+    .btn.secondary{background:#fff; border-color:var(--line); color:#334155;}
+    .btn.ghost{background:var(--blue-weak); border-color:var(--blue-border); color:var(--blue);}
+    .btn.danger{background:#fff; border-color:#f8c6c6; color:var(--red);}
+    .toolbar{display:flex; gap:6px; align-items:center; justify-content:space-between; margin:0; flex-wrap:wrap;}
+    .toolbar-left,.toolbar-right{display:flex; gap:6px; align-items:center; flex-wrap:wrap;}
+    .table-wrap{
+      border:none;
+      border-radius:0;
+      overflow:auto;
+      background:#fff;
+    }
+    .section.data-section{
+      flex:1;
+      min-height:0;
+      display:flex;
+      flex-direction:column;
+      border:none;
+      box-shadow:none;
+      background:transparent;
+      margin-bottom:0;
+    }
+    .section.data-section .section-body{
+      flex:1;
+      min-height:0;
+      display:flex;
+      flex-direction:column;
+      padding:0;
+    }
+    .section.data-section .table-wrap{
+      flex:1;
+      min-height:0;
+      overflow:auto;
+    }
+    .section.data-section .pagination{
+      padding-top:6px;
+    }
+    table{
+      width:100%;
+      border-collapse:collapse;
+      font-size:12px;
+      border:1px solid var(--line-soft);
+    }
+    thead th{
+      background:#f8fafc;
+      border-bottom:1px solid var(--line);
+      border-right:1px solid var(--line);
+      text-align:left;
+      padding:6px 8px;
+      font-weight:400;
+      color:#111827;
+      white-space:nowrap;
+      line-height:1.1;
+    }
+    tbody td{
+      border-bottom:1px solid var(--line-soft);
+      border-right:1px solid var(--line-soft);
+      padding:6px 8px;
+      color:#374151;
+      vertical-align:middle;
+      white-space:nowrap;
+      line-height:1.1;
+    }
+    tbody tr.selected{background:#fff3e6;}
+    .link{color:var(--blue); font-weight:400;}
+    .tag{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-width:48px;
+      height:21px;
+      padding:0 8px;
+      border-radius:4px;
+      border:1px solid currentColor;
+      font-size:11px;
+      font-weight:400;
+    }
+    .tag.blue{color:#2580ff; background:#f3f8ff;}
+    .tag.green{color:#17b26a; background:#effaf4;}
+    .tag.orange{color:#f59e0b; background:#fff8ec;}
+    .tag.red{color:#ef4444; background:#fff1f1;}
+    .pagination{
+      display:flex;
+      align-items:center;
+      justify-content:flex-end;
+      gap:8px;
+      padding:6px 0 0;
+      color:#475569;
+      font-size:12px;
+    }
+    .pagebox{
+      height:24px;
+      min-width:28px;
+      border:1px solid var(--line);
+      border-radius:4px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      background:#fff;
+      padding:0 6px;
+    }
+    .pagebox.active{background:var(--blue); color:#fff; border-color:var(--blue);}
+    .split-grid{
+      display:grid;
+      grid-template-columns:repeat(6,minmax(0,1fr));
+      gap:8px 10px;
+    }
+    .subtle{
+      color:#6b7280;
+    }
+    @media (max-width: 1280px) {
+      .shell{grid-template-columns:220px 1fr;}
+      .grid,.split-grid{grid-template-columns:repeat(3,minmax(0,1fr));}
+    }
+    @media (max-width: 960px) {
+      .shell{grid-template-columns:1fr;}
+      .sidebar{display:none;}
+      .grid,.split-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="topbar">
+      <div class="brand">
+        <img class="brand-logo" src="./assets/html-template/home-logo.d25547c0.png" alt="ERP门户" />
+      </div>
+      <div class="topnav">
+        <div class="nav-arrow">‹</div>
+        <div class="nav-home">首页</div>
+        <div class="nav-tab">单位联系人管理 <span class="close">×</span></div>
+      </div>
+      <div class="topbar-spacer"></div>
+      <div class="top-actions">
+        <span class="top-icon msg" title="消息"></span>
+        <span class="top-icon palette" title="主题"></span>
+        <span class="top-icon bell" title="通知"></span>
+        <div class="user-wrap">
+          <span class="avatar"></span>
+          <span class="username">李新</span>
+          <span class="caret">▾</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="shell">
+      <aside class="sidebar">
+        <div class="menu">
+          <div class="menu-item search">
+            <span class="search-icon" aria-hidden="true"></span>
+            <span class="menu-text">搜索</span>
+          </div>
+          <div class="menu-item">
+            <img class="menu-icon color" src="./assets/html-template/系统-设置配置_setting-config.png" alt="">
+            <img class="menu-icon white" src="./assets/html-template/白色icon/系统-设置配置_setting-config.png" alt="">
+            <span class="menu-text">系统</span>
+          </div>
+          <div class="menu-item">
+            <img class="menu-icon color" src="./assets/html-template/产品-书籍_bookshelf.png" alt="">
+            <img class="menu-icon white" src="./assets/html-template/白色icon/产品-书籍_bookshelf.png" alt="">
+            <span class="menu-text">产品</span>
+          </div>
+          <div class="menu-item">
+            <img class="menu-icon color" src="./assets/html-template/采购-接收库_receive (1).png" alt="">
+            <img class="menu-icon white" src="./assets/html-template/白色icon/采购-接收库_receive.png" alt="">
+            <span class="menu-text">采购</span>
+          </div>
+          <div class="menu-item active">
+            <img class="menu-icon color" src="./assets/html-template/销售-排行榜_ranking.png" alt="">
+            <img class="menu-icon white" src="./assets/html-template/白色icon/销售-排行榜_ranking.png" alt="">
+            <span class="menu-text">销售</span>
+          </div>
+          <div class="menu-item">
+            <img class="menu-icon color" src="./assets/html-template/印务-打印机_printer-two.png" alt="">
+            <img class="menu-icon white" src="./assets/html-template/白色icon/印务-打印机_printer-two.png" alt="">
+            <span class="menu-text">印务</span>
+          </div>
+          <div class="menu-item">
+            <img class="menu-icon color" src="./assets/html-template/财务-钞票_paper-money.png" alt="">
+            <img class="menu-icon white" src="./assets/html-template/白色icon/财务-钞票_paper-money.png" alt="">
+            <span class="menu-text">财务</span>
+          </div>
+          <div class="menu-item">
+            <img class="menu-icon color" src="./assets/html-template/储运-建筑_building-four.png" alt="">
+            <img class="menu-icon white" src="./assets/html-template/白色icon/储运-建筑_building-four.png" alt="">
+            <span class="menu-text">储运</span>
+          </div>
+          <div class="menu-item">
+            <img class="menu-icon color" src="./assets/html-template/生产-雷达图_radar-chart.png" alt="">
+            <img class="menu-icon white" src="./assets/html-template/白色icon/生产-雷达图_radar-chart.png" alt="">
+            <span class="menu-text">生产</span>
+          </div>
+          <div class="menu-item">
+            <img class="menu-icon color" src="./assets/html-template/支持-瀑布流纵向_waterfalls-v.png" alt="">
+            <img class="menu-icon white" src="./assets/html-template/白色icon/支持-瀑布流纵向_waterfalls-v.png" alt="">
+            <span class="menu-text">支持</span>
+          </div>
+          <div class="menu-item">
+            <img class="menu-icon color" src="./assets/html-template/统计-数据看板_data-screen.png" alt="">
+            <img class="menu-icon white" src="./assets/html-template/白色icon/统计-数据看板_data-screen.png" alt="">
+            <span class="menu-text">统计</span>
+          </div>
+        </div>
+      </aside>
+
+      <main class="content">
+        <div class="query-area">
+          <div class="grid">
+            <div class="field select"><label>单位状态</label><div class="value placeholder">单位状态</div></div>
+            <div class="field input"><label>单位名称</label><div class="value placeholder">单位名称</div></div>
+            <div class="field select"><label>省份</label><div class="value placeholder">省份</div></div>
+            <div class="field select"><label>城市</label><div class="value placeholder">城市</div></div>
+            <div class="field select"><label>区县</label><div class="value placeholder">区县</div></div>
+            <div class="field select"><label>单位类型</label><div class="value placeholder">单位类型</div></div>
+            <div class="field select"><label>学校性质</label><div class="value placeholder">学校性质</div></div>
+            <div class="field select"><label>学段</label><div class="value placeholder">学段</div></div>
+            <div class="field select"><label>数据来源</label><div class="value placeholder">数据来源</div></div>
+            <div class="field select"><label>类型</label><div class="value placeholder">类型</div></div>
+            <div class="field input"><label>联系人</label><div class="value placeholder">联系人</div></div>
+            <div class="field" style="border-color:transparent; padding:0; height:auto;">
+              <div class="actions" style="margin-top:1px;">
+                <div class="btn primary">查询</div>
+                <div class="btn secondary">重置</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="toolbar">
+          <div class="toolbar-left">
+            <div class="btn primary">新增单位</div>
+            <div class="btn primary">修改单位</div>
+            <div class="btn ghost">状态变更</div>
+            <div class="btn primary">新增联系人</div>
+            <div class="btn primary">修改联系人</div>
+            <div class="btn ghost">单位合并</div>
+            <div class="btn ghost">联系人合并</div>
+            <div class="btn ghost">联系人复制</div>
+          </div>
+        </div>
+
+        <section class="section data-section">
+          <div class="section-body">
+            <div class="table-wrap">
+              <table style="min-width:2500px;">
+                <thead>
+                  <tr>
+                    <th style="width:60px;">序号</th>
+                    <th>单位状态</th>
+                    <th>单位编码</th>
+                    <th>单位名称</th>
+                    <th>省份</th>
+                    <th>城市</th>
+                    <th>区县</th>
+                    <th>街道</th>
+                    <th>地址</th>
+                    <th>单位类型</th>
+                    <th>学校性质</th>
+                    <th>学段</th>
+                    <th>创建事业群</th>
+                    <th>创建人</th>
+                    <th>创建时间</th>
+                    <th>创建业务员</th>
+                    <th>数据来源</th>
+                    <th>修改人</th>
+                    <th>修改时间</th>
+                    <th>归档</th>
+                    <th>类型</th>
+                    <th>专用账号</th>
+                    <th>所属内部公司</th>
+                    <th>所属供应商</th>
+                    <th>退回备注</th>
+                    <th>创建账号</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="selected">
+                    <td>1</td>
+                    <td><span class="tag green">已开通</span></td>
+                    <td class="link">C096948</td>
+                    <td>望谟县石屯镇民族学校</td>
+                    <td>贵州省</td>
+                    <td>黔西南布依族苗族自治州</td>
+                    <td>望谟县</td>
+                    <td>石屯镇</td>
+                    <td>民族学校</td>
+                    <td>乡镇中心小学</td>
+                    <td><span class="tag blue">公办</span></td>
+                    <td>小学</td>
+                    <td>升旭传媒部</td>
+                    <td>李新</td>
+                    <td>2026-04-17 16:10:22</td>
+                    <td>李新(21270)</td>
+                    <td>ERP导入</td>
+                    <td>李新</td>
+                    <td>2026-04-18 09:30:00</td>
+                    <td>未归档</td>
+                    <td>普通</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>李新(21270)</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="pagination">
+              <span>共 1 条</span>
+              <span class="pagebox">50条/页</span>
+              <span class="pagebox">‹</span>
+              <span class="pagebox active">1</span>
+              <span class="pagebox">›</span>
+              <span>前往</span>
+              <span class="pagebox">1</span>
+              <span>页</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="section data-section">
+          <div class="section-body">
+            <div class="table-wrap">
+              <table style="min-width:2600px;">
+                <thead>
+                  <tr>
+                    <th style="width:60px;">序号</th>
+                    <th>联系人状态</th>
+                    <th>联系人编码</th>
+                    <th>联系人</th>
+                    <th>手机号</th>
+                    <th>电话</th>
+                    <th>身份证号码</th>
+                    <th>学科</th>
+                    <th>业务经理</th>
+                    <th>单位名称</th>
+                    <th>省份</th>
+                    <th>城市</th>
+                    <th>区县</th>
+                    <th>到站</th>
+                    <th>街道</th>
+                    <th>地址</th>
+                    <th>创建人</th>
+                    <th>创建时间</th>
+                    <th>性别</th>
+                    <th>职务</th>
+                    <th>部门</th>
+                    <th>原始编号</th>
+                    <th>修改人</th>
+                    <th>修改时间</th>
+                    <th>审核人</th>
+                    <th>审核时间</th>
+                    <th>退回备注</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>1</td>
+                    <td><span class="tag green">已启用</span></td>
+                    <td class="link">M000340794</td>
+                    <td>龙宇</td>
+                    <td>1598****9070</td>
+                    <td></td>
+                    <td class="subtle">未填写</td>
+                    <td>数学</td>
+                    <td>李新(21270)</td>
+                    <td>望谟县石屯镇民族学校</td>
+                    <td>贵州省</td>
+                    <td>黔西南布依族苗族自治州</td>
+                    <td>望谟县</td>
+                    <td>望谟县</td>
+                    <td>石屯镇</td>
+                    <td>民族学校</td>
+                    <td>李新</td>
+                    <td>2026-04-17 16:10:22</td>
+                    <td>男</td>
+                    <td>教师</td>
+                    <td>教务</td>
+                    <td>-</td>
+                    <td>李新</td>
+                    <td>2026-04-18 09:30:00</td>
+                    <td>王敏</td>
+                    <td>2026-04-18 10:00:00</td>
+                    <td>-</td>
+                  </tr>
+                  <tr>
+                    <td>2</td>
+                    <td><span class="tag green">已启用</span></td>
+                    <td class="link">M000292592</td>
+                    <td>韦杰</td>
+                    <td>1587****5959</td>
+                    <td></td>
+                    <td class="subtle">未填写</td>
+                    <td>语文</td>
+                    <td>李新(代理商)(212701)</td>
+                    <td>望谟县石屯镇民族学校</td>
+                    <td>贵州省</td>
+                    <td>黔西南布依族苗族自治州</td>
+                    <td>望谟县</td>
+                    <td>望谟县</td>
+                    <td>石屯镇</td>
+                    <td>民族学校</td>
+                    <td>李新</td>
+                    <td>2026-04-17 16:10:22</td>
+                    <td>女</td>
+                    <td>教师</td>
+                    <td>教务</td>
+                    <td>-</td>
+                    <td>李新</td>
+                    <td>2026-04-18 09:30:00</td>
+                    <td>王敏</td>
+                    <td>2026-04-18 10:00:00</td>
+                    <td>-</td>
+                  </tr>
+                  <tr>
+                    <td>3</td>
+                    <td><span class="tag green">已启用</span></td>
+                    <td class="link">M000292591</td>
+                    <td>曾忠翠</td>
+                    <td>1359****5105</td>
+                    <td></td>
+                    <td class="subtle">未填写</td>
+                    <td>数学</td>
+                    <td>李新(代理商)(212701)</td>
+                    <td>望谟县石屯镇民族学校</td>
+                    <td>贵州省</td>
+                    <td>黔西南布依族苗族自治州</td>
+                    <td>望谟县</td>
+                    <td>望谟县</td>
+                    <td>石屯镇</td>
+                    <td>民族学校</td>
+                    <td>李新</td>
+                    <td>2026-04-17 16:10:22</td>
+                    <td>男</td>
+                    <td>教师</td>
+                    <td>教务</td>
+                    <td>-</td>
+                    <td>李新</td>
+                    <td>2026-04-18 09:30:00</td>
+                    <td>王敏</td>
+                    <td>2026-04-18 10:00:00</td>
+                    <td>-</td>
+                  </tr>
+                  <tr>
+                    <td>4</td>
+                    <td><span class="tag green">已启用</span></td>
+                    <td class="link">M00000058700</td>
+                    <td>韦杰</td>
+                    <td>1587****5959</td>
+                    <td></td>
+                    <td class="subtle">未填写</td>
+                    <td>英语</td>
+                    <td>李新(21270)</td>
+                    <td>望谟县石屯镇民族学校</td>
+                    <td>贵州省</td>
+                    <td>黔西南布依族苗族自治州</td>
+                    <td>望谟县</td>
+                    <td>望谟县</td>
+                    <td>石屯镇</td>
+                    <td>民族学校</td>
+                    <td>李新</td>
+                    <td>2026-04-17 16:10:22</td>
+                    <td>女</td>
+                    <td>教师</td>
+                    <td>教务</td>
+                    <td>-</td>
+                    <td>李新</td>
+                    <td>2026-04-18 09:30:00</td>
+                    <td>王敏</td>
+                    <td>2026-04-18 10:00:00</td>
+                    <td>-</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="pagination">
+              <span>共 4 条</span>
+              <span class="pagebox">50条/页</span>
+              <span class="pagebox">‹</span>
+              <span class="pagebox active">1</span>
+              <span class="pagebox">›</span>
+            </div>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+  <script>
+    (() => {
+      const h = s => s;
+      const provinceData = [
+        {
+          value: '520000',
+          html: '&#36149;&#24030;&#30465;',
+          cities: [
+            {
+              value: '522300',
+              html: '&#40763;&#35199;&#21335;&#24067;&#20381;&#26063;&#33459;&#26063;&#33258;&#27835;&#24030;',
+              dists: [
+                { value: '522326', html: '&#26395;&#35805;&#21439;' },
+                { value: '522301', html: '&#20852;&#20041;&#24066;' }
+              ]
+            },
+            {
+              value: '520100',
+              html: '&#36149;&#38451;&#24066;',
+              dists: [
+                { value: '520102', html: '&#21335;&#26126;&#21306;' },
+                { value: '520103', html: '&#20113;&#23721;&#21306;' }
+              ]
+            }
+          ]
+        },
+        {
+          value: '510000',
+          html: '&#22235;&#24029;&#30465;',
+          cities: [
+            {
+              value: '510100',
+              html: '&#25104;&#37117;&#24066;',
+              dists: [
+                { value: '510104', html: '&#38177;&#27743;&#21306;' },
+                { value: '510106', html: '&#37329;&#29275;&#21306;' }
+              ]
+            },
+            {
+              value: '510700',
+              html: '&#32485;&#38451;&#24066;',
+              dists: [
+                { value: '510703', html: '&#28023;&#22478;&#21306;' },
+                { value: '510704', html: '&#28201;&#27743;&#21306;' }
+              ]
+            }
+          ]
+        },
+        {
+          value: '530000',
+          html: '&#20113;&#21335;&#30465;',
+          cities: [
+            {
+              value: '530100',
+              html: '&#26118;&#26126;&#24066;',
+              dists: [
+                { value: '530102', html: '&#20116;&#21326;&#21306;' },
+                { value: '530103', html: '&#30424;&#40857;&#21306;' }
+              ]
+            }
+          ]
+        }
+      ];
+
+      const staticOptions = {
+        0: [
+          { value: '0', html: '&#26410;&#24320;&#36890;' },
+          { value: '1', html: '&#24050;&#24320;&#36890;' },
+          { value: '2', html: '&#36864;&#22238;' },
+          { value: '9', html: '&#20572;&#29992;' }
+        ],
+        5: [
+          { value: '1', html: '&#20065;&#38215;&#20013;&#24515;&#23567;&#23398;' },
+          { value: '2', html: '&#20844;&#21150;&#23398;&#26657;' },
+          { value: '3', html: '&#27665;&#21150;&#23398;&#26657;' },
+          { value: '4', html: '&#32844;&#19994;&#23398;&#26657;' }
+        ],
+        6: [
+          { value: '1', html: '&#20844;&#21150;' },
+          { value: '2', html: '&#27665;&#21150;' }
+        ],
+        7: [
+          { value: '1', html: '&#23567;&#23398;' },
+          { value: '2', html: '&#21021;&#20013;' },
+          { value: '3', html: '&#39640;&#20013;' },
+          { value: '4', html: '&#23398;&#21069;' }
+        ],
+        8: [
+          { value: '1', html: '&#26412;&#22320;&#24211;' },
+          { value: '2', html: '&#25163;&#21160;&#22635;&#20889;' },
+          { value: '3', html: '&#20225;&#26597;&#26597;' }
+        ],
+        9: [
+          { value: '1', html: '&#26222;&#36890;' },
+          { value: '2', html: '&#19987;&#29992;' },
+          { value: '3', html: '&#20869;&#37096;' }
+        ]
+      };
+
+      const inputIndexes = new Set([1, 10]);
+      const fields = Array.from(document.querySelectorAll('.grid .field')).filter(field => field.querySelector('label'));
+      const fieldByIndex = new Map();
+
+      const findProvince = value => provinceData.find(item => item.value === value) || null;
+      const findCity = value => {
+        for (const province of provinceData) {
+          const city = province.cities.find(item => item.value === value);
+          if (city) return city;
+        }
+        return null;
+      };
+
+      const clearOpen = except => {
+        fields.forEach(field => {
+          if (field !== except) {
+            field.classList.remove('open');
+          }
+        });
+      };
+
+      const syncInputState = field => {
+        const input = field.querySelector('.field-input');
+        if (!input) return;
+        const filled = !!input.value.trim();
+        field.classList.toggle('filled', filled);
+        if (!filled && !field.classList.contains('focused')) {
+          field.classList.remove('filled');
+        }
+      };
+
+      const setSelectValue = (field, value, text) => {
+        const display = field.querySelector('.value');
+        field.dataset.value = value || '';
+        if (display) {
+          display.innerHTML = text || field.dataset.placeholder || '';
+          display.classList.toggle('placeholder', !value);
+        }
+        field.classList.toggle('filled', !!value);
+      };
+
+      const selectOptionsFor = index => {
+        if (index === 2) return provinceData;
+        if (index === 3) {
+          const provinceField = fieldByIndex.get(2);
+          const province = provinceField ? findProvince(provinceField.dataset.value || '') : null;
+          return province ? province.cities : [];
+        }
+        if (index === 4) {
+          const cityField = fieldByIndex.get(3);
+          const city = cityField ? findCity(cityField.dataset.value || '') : null;
+          return city ? city.dists : [];
+        }
+        return staticOptions[index] || [];
+      };
+
+      const renderOptions = (field, index) => {
+        const panel = field.querySelector('.dropdown-panel');
+        if (!panel) return;
+
+        const options = selectOptionsFor(index);
+        if (!options.length) {
+          const hint = index === 3 ? '&#35831;&#20808;&#36873;&#25321;&#30465;&#20221;' : index === 4 ? '&#35831;&#20808;&#36873;&#25321;&#22478;&#24066;' : '&#26222;&#36890;&#26080;&#21487;&#36873;&#39033;';
+          panel.innerHTML = `<div class="dropdown-option disabled">${hint}</div>`;
+          return;
+        }
+
+        const currentValue = field.dataset.value || '';
+        panel.innerHTML = options
+          .map(item => {
+            const html = item.html || '';
+            const active = item.value === currentValue ? ' selected' : '';
+            return `<div class="dropdown-option${active}" data-value="${item.value}" data-html="${html}">${html}</div>`;
+          })
+          .join('');
+      };
+
+      const clearDependents = index => {
+        if (index === 2) {
+          const cityField = fieldByIndex.get(3);
+          const distField = fieldByIndex.get(4);
+          if (cityField) setSelectValue(cityField, '', cityField.dataset.placeholder);
+          if (distField) setSelectValue(distField, '', distField.dataset.placeholder);
+        }
+        if (index === 3) {
+          const distField = fieldByIndex.get(4);
+          if (distField) setSelectValue(distField, '', distField.dataset.placeholder);
+        }
+      };
+
+      const buildInput = (field, index) => {
+        const valueBox = field.querySelector('.value');
+        const placeholder = valueBox ? valueBox.textContent.trim() : '';
+        field.dataset.placeholder = placeholder;
+        if (valueBox) valueBox.remove();
+
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.className = 'field-input';
+        input.placeholder = placeholder;
+        input.value = '';
+        field.appendChild(input);
+
+        input.addEventListener('focus', () => {
+          clearOpen();
+          field.classList.add('focused');
+        });
+        input.addEventListener('blur', () => {
+          field.classList.remove('focused');
+          syncInputState(field);
+        });
+        input.addEventListener('input', () => {
+          syncInputState(field);
+        });
+        field.addEventListener('click', event => {
+          if (event.target !== input) input.focus();
+        });
+        syncInputState(field);
+      };
+
+      const buildSelect = (field, index) => {
+        const valueBox = field.querySelector('.value');
+        const placeholder = valueBox ? valueBox.textContent.trim() : '';
+        field.dataset.placeholder = placeholder;
+        setSelectValue(field, '', placeholder);
+
+        const panel = document.createElement('div');
+        panel.className = 'dropdown-panel';
+        field.appendChild(panel);
+
+        field.addEventListener('click', event => {
+          const option = event.target.closest('.dropdown-option');
+          if (option) {
+            if (option.classList.contains('disabled')) return;
+            const value = option.dataset.value || '';
+            const html = option.dataset.html || option.innerHTML;
+            setSelectValue(field, value, html);
+            clearDependents(index);
+            if (index === 2 || index === 3) {
+              const cityField = fieldByIndex.get(3);
+              const distField = fieldByIndex.get(4);
+              if (index === 2 && cityField) renderOptions(cityField, 3);
+              if ((index === 2 || index === 3) && distField) renderOptions(distField, 4);
+            }
+            field.classList.remove('open');
+            field.classList.add('focused');
+            return;
+          }
+
+          if (field.classList.contains('open')) {
+            field.classList.remove('open');
+          } else {
+            clearOpen(field);
+            field.classList.add('open', 'focused');
+            renderOptions(field, index);
+          }
+        });
+
+        renderOptions(field, index);
+      };
+
+      fields.forEach((field, index) => {
+        fieldByIndex.set(index, field);
+        if (inputIndexes.has(index)) {
+          buildInput(field, index);
+        } else {
+          buildSelect(field, index);
+        }
+      });
+
+      document.addEventListener('click', event => {
+        const field = event.target.closest('.grid .field');
+        if (!field || !field.querySelector('label')) {
+          fields.forEach(item => item.classList.remove('open'));
+          fields.forEach(item => {
+            const input = item.querySelector('.field-input');
+            if (input) {
+              if (!input.value.trim()) {
+                item.classList.remove('focused', 'filled');
+              }
+            } else if (!item.dataset.value) {
+              item.classList.remove('focused');
+            }
+          });
+          return;
+        }
+      });
+
+      window.addEventListener('keydown', event => {
+        if (event.key === 'Escape') {
+          fields.forEach(field => field.classList.remove('open'));
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
