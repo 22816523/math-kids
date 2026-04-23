@@ -1,0 +1,17 @@
+{
+  "softwareName": "儿童数学启蒙互动学习系统",
+  "shortName": "数学启蒙",
+  "version": "V1.0",
+  "totalPages": 71,
+  "screenshots": [
+    "index",
+    "baisu",
+    "math",
+    "measure",
+    "shape",
+    "sudoku",
+    "trace",
+    "settings"
+  ],
+  "outputHtml": "文档鉴别材料.html"
+}

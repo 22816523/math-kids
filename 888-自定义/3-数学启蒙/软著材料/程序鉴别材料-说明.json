@@ -1,0 +1,42 @@
+{
+  "softwareName": "儿童数学启蒙互动学习系统",
+  "version": "V1.0",
+  "sourceRoot": "mvp_web",
+  "includedFiles": [
+    "baisu.html",
+    "css/baisu-board.css",
+    "css/design-system.css",
+    "css/math.css",
+    "css/measure.css",
+    "css/shape.css",
+    "css/sudoku.css",
+    "css/trace.css",
+    "home.html",
+    "index.html",
+    "js/baisu-board.js",
+    "js/math.js",
+    "js/measure.js",
+    "js/practice-support.js",
+    "js/shape.js",
+    "js/sudoku.js",
+    "js/timer.js",
+    "js/trace.js",
+    "math.html",
+    "measure.html",
+    "settings.html",
+    "shape.html",
+    "sudoku.html",
+    "trace.html"
+  ],
+  "totalSourceLines": 11314,
+  "linesPerPage": 50,
+  "pagesPerSection": 30,
+  "frontLineRange": [
+    1,
+    1500
+  ],
+  "backLineRange": [
+    9815,
+    11314
+  ]
+}

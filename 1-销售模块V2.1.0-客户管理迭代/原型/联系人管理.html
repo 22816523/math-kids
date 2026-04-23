@@ -394,7 +394,7 @@
       font-size:12px;
     }
     .btn.primary{background:var(--blue); color:#fff;}
-    .btn.secondary{background:#fff; border-color:var(--line); color:#334155;}
+    .btn.secondary{background:#f3f8ff; border-color:#8dbbff; color:var(--blue);}
     .btn.ghost{background:var(--blue-weak); border-color:var(--blue-border); color:var(--blue);}
     .btn.danger{background:#fff; border-color:#f8c6c6; color:var(--red);}
     .toolbar{display:flex; gap:6px; align-items:center; justify-content:space-between; margin:0; flex-wrap:wrap;}
@@ -458,6 +458,536 @@
     }
     tbody tr.selected{background:#fff3e6;}
     .link{color:var(--blue); font-weight:400;}
+    .table-action{
+      color:var(--blue);
+      background:#f3f8ff;
+      border:1px solid #8dbbff;
+      border-radius:4px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      height:22px;
+      padding:0 8px;
+      font-weight:400;
+      cursor:pointer;
+      white-space:nowrap;
+    }
+    .table-action:hover{
+      background:#e8f2ff;
+      border-color:#5fa1ff;
+    }
+    .contact-table{
+      border-collapse:separate;
+      border-spacing:0;
+    }
+    .contact-table th:last-child{
+      position:sticky;
+      right:0;
+      z-index:3;
+      min-width:116px;
+      text-align:center;
+      background:#f8fafc;
+      border-left:1px solid #dfe5ee;
+      box-shadow:-6px 0 10px rgba(22,119,255,.08);
+    }
+    .contact-table td:last-child{
+      position:sticky;
+      right:0;
+      z-index:2;
+      min-width:116px;
+      text-align:center;
+      background:#fff;
+      border-left:1px solid #dfe5ee;
+      box-shadow:-6px 0 10px rgba(22,119,255,.06);
+    }
+    .contact-table tbody tr.selected td:last-child{
+      background:#fff3e6;
+    }
+    .confirm-mask{
+      position:fixed;
+      inset:0;
+      background:rgba(15,23,42,.22);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      z-index:1000;
+    }
+    .confirm-mask.show{
+      display:flex;
+    }
+    .confirm-dialog{
+      width:360px;
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:6px;
+      box-shadow:0 18px 40px rgba(15,23,42,.18);
+      overflow:hidden;
+    }
+    .confirm-header{
+      height:42px;
+      padding:0 14px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      border-bottom:1px solid var(--line-soft);
+      font-size:14px;
+      color:#111827;
+      background:#fff;
+    }
+    .confirm-close{
+      color:#94a3b8;
+      cursor:pointer;
+      font-size:16px;
+      line-height:1;
+    }
+    .confirm-body{
+      padding:18px 16px 12px;
+      font-size:13px;
+      line-height:1.7;
+      color:#374151;
+    }
+    .confirm-body strong{
+      font-weight:400;
+      color:#1677ff;
+    }
+    .confirm-footer{
+      display:flex;
+      justify-content:flex-end;
+      gap:8px;
+      padding:0 16px 16px;
+    }
+    .erp-modal-mask{
+      position:fixed;
+      inset:0;
+      background:rgba(15,23,42,.22);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      z-index:900;
+    }
+    .erp-modal-mask.show{
+      display:flex;
+    }
+    .erp-modal{
+      width:860px;
+      max-width:calc(100vw - 48px);
+      max-height:calc(100vh - 72px);
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:6px;
+      box-shadow:0 18px 40px rgba(15,23,42,.18);
+      display:flex;
+      flex-direction:column;
+      overflow:hidden;
+    }
+    .erp-modal.import-modal{
+      width:980px;
+    }
+    .erp-modal.contact-modal{
+      width:920px;
+    }
+    .erp-modal-header{
+      height:42px;
+      padding:0 14px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      border-bottom:1px solid var(--line-soft);
+      background:#fff;
+      color:#111827;
+      font-size:14px;
+    }
+    .erp-modal-close{
+      color:#94a3b8;
+      cursor:pointer;
+      font-size:16px;
+      line-height:1;
+    }
+    .erp-modal-body{
+      padding:14px;
+      overflow:auto;
+    }
+    .erp-modal-footer{
+      display:flex;
+      justify-content:flex-end;
+      gap:8px;
+      padding:0 14px 14px;
+      border-top:1px solid var(--line-soft);
+      padding-top:12px;
+    }
+    .modal-note{
+      padding:8px 10px;
+      margin-bottom:12px;
+      border:1px solid #bcd7ff;
+      background:#f3f8ff;
+      color:#475569;
+      border-radius:4px;
+      font-size:12px;
+      line-height:1.5;
+    }
+    .modal-note strong{
+      color:#1677ff;
+      font-weight:400;
+    }
+    .modal-form-grid{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:10px 12px;
+    }
+    .modal-form-grid .full{
+      grid-column:1 / -1;
+    }
+    .contact-modal .modal-field{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      min-width:0;
+    }
+    .contact-modal .modal-field label{
+      flex:0 0 92px;
+      margin-bottom:0;
+      color:#475569;
+      font-size:12px;
+      line-height:1.2;
+      white-space:nowrap;
+      text-align:right;
+    }
+    .required-mark{
+      color:#ef4444;
+      margin-right:2px;
+    }
+    .modal-input,
+    .modal-select,
+    .modal-text{
+      flex:1;
+      min-width:0;
+      width:100%;
+      height:30px;
+      border:1px solid #d9e1ea;
+      border-radius:4px;
+      background:#fff;
+      padding:0 9px;
+      color:#334155;
+      font-family:inherit;
+      font-size:12px;
+      outline:none;
+    }
+    .modal-text{
+      display:flex;
+      align-items:center;
+      background:#f8fafc;
+      color:#64748b;
+    }
+    .modal-inline-grid{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:8px;
+    }
+    .modal-section{
+      border:1px solid var(--line-soft);
+      border-radius:4px;
+      background:#fff;
+      padding:10px;
+      margin-bottom:12px;
+    }
+    .modal-section:last-child{
+      margin-bottom:0;
+    }
+    .modal-section-title{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      margin-bottom:10px;
+      color:#111827;
+      font-size:13px;
+      line-height:1.2;
+    }
+    .modal-section-title .subtle{
+      font-size:12px;
+    }
+    .modal-textarea{
+      width:100%;
+      min-height:66px;
+      border:1px solid #d9e1ea;
+      border-radius:4px;
+      background:#fff;
+      padding:6px 9px;
+      color:#334155;
+      font-family:inherit;
+      font-size:12px;
+      line-height:1.5;
+      outline:none;
+      resize:none;
+    }
+    .manager-filter-row{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      margin-bottom:8px;
+    }
+    .manager-filter-row .manager-search{
+      flex:1;
+    }
+    .manager-result-meta{
+      color:#6b7280;
+      font-size:12px;
+      white-space:nowrap;
+    }
+    .manager-table-shell{
+      border:1px solid #d9e1ea;
+      border-radius:4px;
+      background:#fff;
+      overflow:hidden;
+    }
+    .manager-row{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      min-height:36px;
+      padding:0 10px;
+      border-bottom:1px solid #edf1f5;
+      cursor:pointer;
+      font-size:12px;
+      color:#334155;
+    }
+    .manager-row:last-child{
+      border-bottom:none;
+    }
+    .manager-row:hover{
+      background:#f8fbff;
+    }
+    .manager-row.selected{
+      background:#f3f8ff;
+    }
+    .manager-row-head{
+      background:#f8fafc;
+      cursor:default;
+      font-weight:400;
+    }
+    .manager-row-head:hover{
+      background:#f8fafc;
+    }
+    .manager-row input{
+      margin:0;
+      accent-color:#1677ff;
+    }
+    .manager-row-main{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      min-width:0;
+      flex:1;
+    }
+    .manager-row-name{
+      font-weight:400;
+      color:#111827;
+    }
+    .manager-row-code{
+      color:#6b7280;
+    }
+    .manager-selected-summary{
+      margin-top:8px;
+      color:#6b7280;
+      font-size:12px;
+      line-height:1.4;
+    }
+    .manager-selected-list{
+      display:flex;
+      flex-wrap:wrap;
+      gap:6px;
+      margin-top:8px;
+    }
+    .manager-selected-item{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      min-height:24px;
+      padding:0 8px;
+      border:1px solid #bcd7ff;
+      border-radius:4px;
+      background:#f3f8ff;
+      color:#1677ff;
+      font-size:12px;
+    }
+    .manager-selected-remove{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      width:16px;
+      height:16px;
+      border:none;
+      border-radius:50%;
+      background:#dbeafe;
+      color:#1677ff;
+      cursor:pointer;
+      font-size:12px;
+      line-height:1;
+      padding:0;
+    }
+    .manager-selected-actions{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:8px;
+      margin-top:8px;
+      color:#6b7280;
+      font-size:12px;
+    }
+    .manager-clear-btn{
+      border:none;
+      background:none;
+      color:#1677ff;
+      padding:0;
+      cursor:pointer;
+      font-size:12px;
+    }
+    .manager-empty{
+      padding:10px;
+      color:#6b7280;
+      font-size:12px;
+    }
+    .manager-pagination{
+      display:flex;
+      align-items:center;
+      justify-content:flex-end;
+      gap:6px;
+      margin-top:8px;
+      color:#6b7280;
+      font-size:12px;
+    }
+    .manager-page-btn{
+      min-width:24px;
+      height:24px;
+      padding:0 8px;
+      border:1px solid #d9e1ea;
+      border-radius:4px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      background:#fff;
+      color:#334155;
+      cursor:pointer;
+    }
+    .manager-page-btn.active{
+      border-color:#8dbbff;
+      background:#f3f8ff;
+      color:#1677ff;
+    }
+    .manager-page-btn.disabled{
+      color:#cbd5e1;
+      cursor:not-allowed;
+    }
+    .check-grid{
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:8px;
+    }
+    .check-item{
+      display:flex;
+      align-items:center;
+      gap:6px;
+      min-height:30px;
+      padding:0 8px;
+      border:1px solid #d9e1ea;
+      border-radius:4px;
+      background:#fff;
+      color:#334155;
+      font-size:12px;
+      line-height:1.2;
+    }
+    .check-item input{
+      margin:0;
+      accent-color:#1677ff;
+    }
+    .import-layout{
+      display:grid;
+      grid-template-columns:280px 1fr;
+      gap:12px;
+      align-items:start;
+    }
+    .import-panel{
+      border:1px solid var(--line-soft);
+      border-radius:4px;
+      background:#fff;
+      padding:10px;
+    }
+    .import-panel-title{
+      color:#111827;
+      font-size:13px;
+      margin-bottom:8px;
+    }
+    .import-steps{
+      margin:0;
+      padding-left:18px;
+      color:#475569;
+      font-size:12px;
+      line-height:1.8;
+    }
+    .upload-box{
+      margin-top:10px;
+      padding:12px;
+      border:1px dashed #bcd7ff;
+      border-radius:4px;
+      background:#f8fbff;
+      color:#64748b;
+      font-size:12px;
+      text-align:center;
+    }
+    .upload-box strong{
+      color:#1677ff;
+      font-weight:400;
+    }
+    .upload-box .subtle{
+      margin-top:4px;
+      font-size:12px;
+    }
+    .import-summary{
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:8px;
+      margin-bottom:12px;
+    }
+    .summary-item{
+      border:1px solid var(--line-soft);
+      border-radius:4px;
+      background:#fff;
+      padding:8px 10px;
+    }
+    .summary-label{
+      color:#64748b;
+      font-size:12px;
+      line-height:1.2;
+    }
+    .summary-value{
+      margin-top:5px;
+      color:#111827;
+      font-size:18px;
+      line-height:1;
+    }
+    .template-table{
+      width:100%;
+      border-collapse:collapse;
+      font-size:12px;
+    }
+    .template-table th,
+    .template-table td{
+      border:1px solid var(--line-soft);
+      padding:6px 8px;
+      line-height:1.25;
+      white-space:nowrap;
+      text-align:left;
+    }
+    .template-table th{
+      background:#f8fafc;
+      color:#111827;
+      font-weight:400;
+    }
+    .template-table .yes{
+      color:#ef4444;
+    }
+    .template-table .no{
+      color:#64748b;
+    }
     .tag{
       display:inline-flex;
       align-items:center;
@@ -506,11 +1036,21 @@
     @media (max-width: 1280px) {
       .shell{grid-template-columns:220px 1fr;}
       .grid,.split-grid{grid-template-columns:repeat(3,minmax(0,1fr));}
+      .check-grid,.import-summary{grid-template-columns:repeat(2,minmax(0,1fr));}
     }
     @media (max-width: 960px) {
       .shell{grid-template-columns:1fr;}
       .sidebar{display:none;}
       .grid,.split-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
+      .modal-form-grid,
+      .import-layout,
+      .check-grid,
+      .import-summary{
+        grid-template-columns:1fr;
+      }
+      .modal-inline-grid{
+        grid-template-columns:1fr;
+      }
     }
   </style>
 </head>
@@ -601,17 +1141,17 @@
       <main class="content">
         <div class="query-area">
           <div class="grid">
-            <div class="field select"><label>单位状态</label><div class="value placeholder">单位状态</div></div>
+            <div class="field select"><label>联系人状态</label><div class="value placeholder">联系人状态</div></div>
+            <div class="field input"><label>联系人主表ID</label><div class="value placeholder">联系人主表ID</div></div>
+            <div class="field input"><label>联系人</label><div class="value placeholder">联系人</div></div>
+            <div class="field input"><label>手机号</label><div class="value placeholder">手机号</div></div>
+            <div class="field input"><label>电话</label><div class="value placeholder">电话</div></div>
+            <div class="field select"><label>学科</label><div class="value placeholder">学科</div></div>
             <div class="field input"><label>单位名称</label><div class="value placeholder">单位名称</div></div>
             <div class="field select"><label>省份</label><div class="value placeholder">省份</div></div>
             <div class="field select"><label>城市</label><div class="value placeholder">城市</div></div>
             <div class="field select"><label>区县</label><div class="value placeholder">区县</div></div>
-            <div class="field select"><label>单位类型</label><div class="value placeholder">单位类型</div></div>
-            <div class="field select"><label>学校性质</label><div class="value placeholder">学校性质</div></div>
-            <div class="field select"><label>学段</label><div class="value placeholder">学段</div></div>
-            <div class="field select"><label>数据来源</label><div class="value placeholder">数据来源</div></div>
-            <div class="field select"><label>类型</label><div class="value placeholder">类型</div></div>
-            <div class="field input"><label>联系人</label><div class="value placeholder">联系人</div></div>
+            <div class="field select"><label>性别</label><div class="value placeholder">性别</div></div>
             <div class="field" style="border-color:transparent; padding:0; height:auto;">
               <div class="actions" style="margin-top:1px;">
                 <div class="btn primary">查询</div>
@@ -623,56 +1163,131 @@
 
         <div class="toolbar">
           <div class="toolbar-left">
-            <div class="btn primary">新增单位</div>
-            <div class="btn primary">修改单位</div>
-            <div class="btn ghost">状态变更</div>
-            <div class="btn primary">新增联系人</div>
-            <div class="btn primary">修改联系人</div>
-            <div class="btn ghost">单位合并</div>
-            <div class="btn ghost">联系人合并</div>
-            <div class="btn ghost">联系人复制</div>
+            <div class="btn secondary" id="open-import-modal">导入</div>
+            <div class="btn primary" id="open-contact-modal">新增</div>
+            <div class="btn secondary" id="open-manager-btn">开通业务经理</div>
+            <div class="btn primary" id="open-edit-modal">编辑</div>
+            <div class="btn secondary" id="open-view-modal">查看</div>
+            <div class="btn secondary">导出</div>
           </div>
         </div>
 
         <section class="section data-section">
           <div class="section-body">
             <div class="table-wrap">
-              <table style="min-width:2500px;">
+              <table style="min-width:2600px;">
                 <thead>
                   <tr>
                     <th style="width:60px;">序号</th>
-                    <th>单位状态</th>
-                    <th>单位编码</th>
+                    <th>联系人状态</th>
+                    <th>联系人主表ID</th>
+                    <th>联系人</th>
+                    <th>手机号</th>
+                    <th>电话</th>
+                    <th>身份证号</th>
+                    <th>学科</th>
                     <th>单位名称</th>
                     <th>省份</th>
                     <th>城市</th>
                     <th>区县</th>
+                    <th>到站</th>
                     <th>街道</th>
                     <th>地址</th>
-                    <th>单位类型</th>
-                    <th>学校性质</th>
-                    <th>学段</th>
-                    <th>创建事业群</th>
                     <th>创建人</th>
                     <th>创建时间</th>
-                    <th>创建业务员</th>
-                    <th>数据来源</th>
+                    <th>性别</th>
+                    <th>职务</th>
+                    <th>部门</th>
                     <th>修改人</th>
                     <th>修改时间</th>
-                    <th>归档</th>
-                    <th>类型</th>
-                    <th>专用账号</th>
-                    <th>所属内部公司</th>
-                    <th>所属供应商</th>
-                    <th>退回备注</th>
-                    <th>创建账号</th>
+                    <th>审核人</th>
+                    <th>审核时间</th>
                   </tr>
                 </thead>
-                <tbody></tbody>
+                <tbody id="manager-table-body">
+                  <tr class="selected" data-manager="李逍遥(100801)">
+                    <td>1</td>
+                    <td><span class="tag green">启用</span></td>
+                    <td class="link">LX00000001</td>
+                    <td>龙宇</td>
+                    <td>1598****9070</td>
+                    <td>0859-4612308</td>
+                    <td></td>
+                    <td>数学</td>
+                    <td>望谟县石屯镇民族学校</td>
+                    <td>贵州省</td>
+                    <td>黔西南布依族苗族自治州</td>
+                    <td>望谟县</td>
+                    <td>望谟县</td>
+                    <td>石屯镇</td>
+                    <td>民族学校</td>
+                    <td>李新</td>
+                    <td>2026-04-17 16:10:22</td>
+                    <td>男</td>
+                    <td>教师</td>
+                    <td>教务</td>
+                    <td>李新</td>
+                    <td>2026-04-17 16:10:22</td>
+                    <td>-</td>
+                    <td>-</td>
+                  </tr>
+                  <tr data-manager="张三(10070)">
+                    <td>2</td>
+                    <td><span class="tag green">启用</span></td>
+                    <td class="link">LX00000002</td>
+                    <td>韦杰</td>
+                    <td>1587****5959</td>
+                    <td></td>
+                    <td></td>
+                    <td>语文</td>
+                    <td>望谟县石屯镇民族学校</td>
+                    <td>贵州省</td>
+                    <td>黔西南布依族苗族自治州</td>
+                    <td>望谟县</td>
+                    <td>望谟县</td>
+                    <td>石屯镇</td>
+                    <td>民族学校</td>
+                    <td>李新</td>
+                    <td>2026-04-17 16:10:22</td>
+                    <td>女</td>
+                    <td>教师</td>
+                    <td>教务</td>
+                    <td>李新</td>
+                    <td>2026-04-18 09:30:00</td>
+                    <td>王敏</td>
+                    <td>2026-04-18 10:00:00</td>
+                  </tr>
+                  <tr data-manager="李逍遥2(1008021)">
+                    <td>3</td>
+                    <td><span class="tag orange">停用</span></td>
+                    <td class="link">LX00000003</td>
+                    <td>曾忠翠</td>
+                    <td>1359****5105</td>
+                    <td></td>
+                    <td></td>
+                    <td>英语</td>
+                    <td>望谟县石屯镇民族学校</td>
+                    <td>贵州省</td>
+                    <td>黔西南布依族苗族自治州</td>
+                    <td>望谟县</td>
+                    <td>望谟县</td>
+                    <td>石屯镇</td>
+                    <td>民族学校</td>
+                    <td>李新</td>
+                    <td>2026-04-17 16:10:22</td>
+                    <td>女</td>
+                    <td>年级组长</td>
+                    <td>教务</td>
+                    <td>李新</td>
+                    <td>2026-04-18 09:30:00</td>
+                    <td>王敏</td>
+                    <td>2026-04-18 10:00:00</td>
+                  </tr>
+                </tbody>
               </table>
             </div>
             <div class="pagination">
-              <span>共 1 条</span>
+              <span>共 3 条</span>
               <span class="pagebox">50条/页</span>
               <span class="pagebox">‹</span>
               <span class="pagebox active">1</span>
@@ -687,7 +1302,7 @@
         <section class="section data-section">
           <div class="section-body">
             <div class="table-wrap">
-              <table style="min-width:2600px;">
+              <table class="contact-table" style="min-width:2700px;">
                 <thead>
                   <tr>
                     <th style="width:60px;">序号</th>
@@ -717,9 +1332,10 @@
                     <th>审核人</th>
                     <th>审核时间</th>
                     <th>退回备注</th>
+                    <th style="width:96px;">操作</th>
                   </tr>
                 </thead>
-                <tbody></tbody>
+                <tbody id="contact-table-body"></tbody>
               </table>
             </div>
             <div class="pagination">
@@ -733,6 +1349,295 @@
         </section>
 
       </main>
+    </div>
+  </div>
+  <div class="confirm-mask" id="unlink-confirm-mask">
+    <div class="confirm-dialog" role="dialog" aria-modal="true" aria-labelledby="unlink-confirm-title">
+      <div class="confirm-header">
+        <span id="unlink-confirm-title">确认提示</span>
+        <span class="confirm-close" id="unlink-confirm-close">×</span>
+      </div>
+      <div class="confirm-body" id="unlink-confirm-text"></div>
+      <div class="confirm-footer">
+        <div class="btn secondary" id="unlink-cancel-btn">取消</div>
+        <div class="btn primary" id="unlink-confirm-btn">确认</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="erp-modal-mask" id="contact-modal-mask">
+    <div class="erp-modal contact-modal" role="dialog" aria-modal="true" aria-labelledby="contact-modal-title">
+      <div class="erp-modal-header">
+        <span id="contact-modal-title">新增联系人</span>
+        <span class="erp-modal-close" data-close-modal="contact-modal-mask">×</span>
+      </div>
+      <div class="erp-modal-body">
+        <div class="modal-section">
+          <div class="modal-section-title">
+            <span>主档信息</span>
+            <span class="subtle">带 * 为导入模板必填字段</span>
+          </div>
+          <div class="modal-form-grid">
+            <div class="modal-field">
+              <label><span class="required-mark">*</span>单位名称</label>
+              <select class="modal-select" id="contact-school-select">
+                <option value="C096948" selected>望谟县石屯镇民族学校</option>
+                <option value="C062497">南昌市红谷滩区第一中学</option>
+                <option value="C103612">成都市锦江区实验学校</option>
+                <option value="C118205">昆明市五华区第三小学</option>
+              </select>
+            </div>
+            <div class="modal-field">
+              <label><span class="required-mark">*</span>联系人</label>
+              <input class="modal-input" id="contact-name-input" value="龙宇" />
+            </div>
+            <div class="modal-field">
+              <label><span class="required-mark">*</span>手机号</label>
+              <input class="modal-input" id="contact-phone-input" value="15981239070" />
+            </div>
+            <div class="modal-field">
+              <label>电话</label>
+              <input class="modal-input" id="contact-telephone-input" value="0859-4612308" />
+            </div>
+            <div class="modal-field">
+              <label><span class="required-mark">*</span>学科</label>
+              <select class="modal-select" id="contact-subject-select">
+                <option>数学</option>
+                <option>语文</option>
+                <option>英语</option>
+                <option>物理</option>
+              </select>
+            </div>
+            <div class="modal-field">
+              <label>身份证号</label>
+              <input class="modal-input" id="contact-idcard-input" placeholder="非必填，保存后列表脱敏展示" />
+            </div>
+            <div class="modal-field">
+              <label>性别</label>
+              <select class="modal-select" id="contact-gender-select">
+                <option>男</option>
+                <option>女</option>
+                <option>未知</option>
+              </select>
+            </div>
+            <div class="modal-field">
+              <label>职务</label>
+              <input class="modal-input" id="contact-job-input" value="教师" />
+            </div>
+            <div class="modal-field">
+              <label>部门</label>
+              <input class="modal-input" id="contact-dept-input" value="教务" />
+            </div>
+            <div class="modal-field">
+              <label>年级</label>
+              <input class="modal-input" id="contact-grade-input" placeholder="例：八年级" />
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-section">
+          <div class="modal-section-title">
+            <span>学校地址</span>
+            <span class="subtle">省市区按学校带出，到站、街道、地址允许调整</span>
+          </div>
+          <div class="modal-form-grid">
+            <div class="modal-field">
+              <label>省份</label>
+              <div class="modal-text" id="contact-school-province">贵州省</div>
+            </div>
+            <div class="modal-field">
+              <label>城市</label>
+              <div class="modal-text" id="contact-school-city">黔西南布依族苗族自治州</div>
+            </div>
+            <div class="modal-field">
+              <label>区县</label>
+              <div class="modal-text" id="contact-school-district">望谟县</div>
+            </div>
+            <div class="modal-field">
+              <label>到站</label>
+              <input class="modal-input" id="contact-school-station" value="望谟县" />
+            </div>
+            <div class="modal-field">
+              <label>街道</label>
+              <input class="modal-input" id="contact-school-street" value="石屯镇" />
+            </div>
+            <div class="modal-field">
+              <label>地址</label>
+              <input class="modal-input" id="contact-school-address" value="民族学校" />
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="erp-modal-footer">
+        <div class="btn secondary" id="contact-close-btn" data-close-modal="contact-modal-mask">取消</div>
+        <div class="btn secondary" id="contact-check-btn">查重</div>
+        <div class="btn primary" id="contact-save-btn" data-close-modal="contact-modal-mask">保存</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="erp-modal-mask" id="open-manager-modal-mask">
+    <div class="erp-modal contact-modal" role="dialog" aria-modal="true" aria-labelledby="open-manager-modal-title">
+      <div class="erp-modal-header">
+        <span id="open-manager-modal-title">开通业务经理</span>
+        <span class="erp-modal-close" data-close-modal="open-manager-modal-mask">×</span>
+      </div>
+      <div class="erp-modal-body">
+        <div class="modal-section">
+          <div class="modal-section-title">
+            <span>业务经理选择</span>
+            <span class="subtle">勾选一个或多个业务经理后确认开通</span>
+          </div>
+          <div class="manager-filter-row">
+            <input class="modal-input manager-search" id="manager-search-input" placeholder="搜索业务经理姓名或工号" />
+            <div class="manager-result-meta" id="manager-result-meta">共 0 人</div>
+          </div>
+          <div class="manager-table-shell">
+            <label class="manager-row manager-row-head">
+              <input type="checkbox" id="manager-select-all" />
+              <div class="manager-row-main">
+                <span class="manager-row-name">姓名</span>
+                <span class="manager-row-code">工号</span>
+              </div>
+            </label>
+            <div class="manager-list" id="manager-list"></div>
+          </div>
+          <div class="manager-pagination" id="manager-pagination"></div>
+          <div class="manager-selected-actions">
+            <div class="manager-selected-summary" id="manager-selected-summary">已选 0 人，请先勾选业务经理。</div>
+            <button class="manager-clear-btn" type="button" id="manager-clear-btn">清空已选</button>
+          </div>
+          <div class="manager-selected-list" id="manager-selected-list"></div>
+        </div>
+      </div>
+      <div class="erp-modal-footer">
+        <div class="btn secondary" data-close-modal="open-manager-modal-mask">取消</div>
+        <div class="btn primary" id="confirm-open-manager-btn">确认开通</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="erp-modal-mask" id="import-modal-mask">
+    <div class="erp-modal import-modal" role="dialog" aria-modal="true" aria-labelledby="import-modal-title">
+      <div class="erp-modal-header">
+        <span id="import-modal-title">导入联系人</span>
+        <span class="erp-modal-close" data-close-modal="import-modal-mask">×</span>
+      </div>
+      <div class="erp-modal-body">
+        <div class="import-layout">
+          <div>
+            <div class="import-panel">
+              <div class="import-panel-title">导入流程</div>
+              <ol class="import-steps">
+                <li>下载联系人导入模板。</li>
+                <li>按模板维护必填列和可选列。</li>
+                <li>上传 Excel 后先执行校验。</li>
+                <li>校验通过后创建联系人主档或开通业务经理关系。</li>
+              </ol>
+              <div class="upload-box">
+                <strong>选择文件或拖拽到此处</strong>
+                <div class="subtle">仅支持 .xlsx，单次最多 5000 条</div>
+              </div>
+            </div>
+            <div class="import-panel" style="margin-top:12px;">
+              <div class="import-panel-title">导入规则</div>
+              <ol class="import-steps">
+                <li>必填项与新增联系人弹窗保持一致。</li>
+                <li>姓名、单位、手机号用于全库查重；三项同时一致才判定重复。</li>
+                <li>学科为本次主从表新增必填字段。</li>
+                <li>身份证号非必填，导入后列表按权限脱敏。</li>
+                <li>新增和导入数据的来源系统由系统默认写入 ERP，模板中不维护该列。</li>
+              </ol>
+            </div>
+          </div>
+
+          <div>
+            <div class="import-summary">
+              <div class="summary-item">
+                <div class="summary-label">模板列数</div>
+                <div class="summary-value">17</div>
+              </div>
+              <div class="summary-item">
+                <div class="summary-label">必填列</div>
+                <div class="summary-value">4</div>
+              </div>
+              <div class="summary-item">
+                <div class="summary-label">查重列</div>
+                <div class="summary-value">3</div>
+              </div>
+              <div class="summary-item">
+                <div class="summary-label">默认来源</div>
+                <div class="summary-value" style="font-size:14px;">ERP</div>
+              </div>
+            </div>
+
+            <div class="import-panel">
+              <div class="toolbar" style="margin-bottom:8px;">
+                <div class="import-panel-title" style="margin-bottom:0;">导入模板字段</div>
+                <div class="toolbar-right">
+                  <div class="btn secondary" id="download-template-btn">下载模板</div>
+                </div>
+              </div>
+              <div class="table-wrap">
+                <table class="template-table">
+                  <thead>
+                    <tr>
+                      <th>模板列名</th>
+                      <th>必填</th>
+                      <th>填写说明</th>
+                      <th>示例</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>单位名称</td><td class="yes">是</td><td>填写单位全称，需能匹配客户主档</td><td>望谟县石屯镇民族学校</td></tr>
+                    <tr><td>联系人</td><td class="yes">是</td><td>联系人姓名</td><td>龙宇</td></tr>
+                    <tr><td>手机号</td><td class="yes">是</td><td>11 位手机号，与姓名、单位组合查重</td><td>15981239070</td></tr>
+                    <tr><td>学科</td><td class="yes">是</td><td>本次新增必填字段，按基础档案枚举填写</td><td>数学</td></tr>
+                    <tr><td>业务经理</td><td class="no">否</td><td>未填时默认当前导入人；多业务经理用英文逗号分隔</td><td>李新(21270)</td></tr>
+                    <tr><td>电话</td><td class="no">否</td><td>固定电话或办公电话</td><td>0859-4612308</td></tr>
+                    <tr><td>身份证号</td><td class="no">否</td><td>非必填，保存后按权限查看</td><td>522326********1234</td></tr>
+                    <tr><td>性别</td><td class="no">否</td><td>男、女、未知</td><td>男</td></tr>
+                    <tr><td>职务</td><td class="no">否</td><td>支持校长、教务主任、备课组长、老师等</td><td>教师</td></tr>
+                    <tr><td>部门</td><td class="no">否</td><td>所在部门或科室</td><td>教务</td></tr>
+                    <tr><td>年级</td><td class="no">否</td><td>联系人负责年级</td><td>八年级</td></tr>
+                    <tr><td>省份</td><td class="no">否</td><td>不填时按单位名称带出</td><td>贵州省</td></tr>
+                    <tr><td>城市</td><td class="no">否</td><td>不填时按单位名称带出</td><td>黔西南布依族苗族自治州</td></tr>
+                    <tr><td>区县</td><td class="no">否</td><td>不填时按单位名称带出</td><td>望谟县</td></tr>
+                    <tr><td>到站</td><td class="no">否</td><td>默认等于区县，可调整</td><td>望谟县</td></tr>
+                    <tr><td>街道</td><td class="no">否</td><td>学校所在街道</td><td>石屯镇</td></tr>
+                    <tr><td>地址</td><td class="no">否</td><td>详细地址或收货地址</td><td>民族学校</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="import-panel" style="margin-top:12px;">
+              <div class="import-panel-title">导入后处理结果</div>
+              <table class="template-table">
+                <thead>
+                  <tr>
+                    <th>匹配结果</th>
+                    <th>系统处理</th>
+                    <th>状态</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>主档已存在，业务经理未开通</td><td>新增从库关系，关联原联系人主档</td><td><span class="tag green">可导入</span></td></tr>
+                  <tr><td>主档不存在</td><td>创建联系人主档，并开通所选业务经理</td><td><span class="tag green">可导入</span></td></tr>
+                  <tr><td>单位名称无法匹配</td><td>阻断导入，提示先维护客户主档</td><td><span class="tag red">失败</span></td></tr>
+                  <tr><td>同业务经理名下重复</td><td>阻断导入，返回重复联系人编码</td><td><span class="tag orange">需处理</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="erp-modal-footer">
+        <div class="btn secondary" data-close-modal="import-modal-mask">取消</div>
+        <div class="btn secondary">校验数据</div>
+        <div class="btn primary" data-close-modal="import-modal-mask">确认导入</div>
+      </div>
     </div>
   </div>
   <script>
@@ -801,42 +1706,31 @@
 
       const staticOptions = {
         0: [
-          { value: '0', html: '&#26410;&#24320;&#36890;' },
-          { value: '1', html: '&#24050;&#24320;&#36890;' },
-          { value: '2', html: '&#36864;&#22238;' },
-          { value: '9', html: '&#20572;&#29992;' }
+          { value: '1', html: '&#24453;&#23457;&#26680;' },
+          { value: '2', html: '&#24050;&#21551;&#29992;' },
+          { value: '3', html: '&#20572;&#29992;' },
+          { value: '4', html: '&#36864;&#22238;' }
         ],
         5: [
-          { value: '1', html: '&#20065;&#38215;&#20013;&#24515;&#23567;&#23398;' },
-          { value: '2', html: '&#20844;&#21150;&#23398;&#26657;' },
-          { value: '3', html: '&#27665;&#21150;&#23398;&#26657;' },
-          { value: '4', html: '&#32844;&#19994;&#23398;&#26657;' }
+          { value: '1', html: '&#35821;&#25991;' },
+          { value: '2', html: '&#25968;&#23398;' },
+          { value: '3', html: '&#33521;&#35821;' },
+          { value: '4', html: '&#29289;&#29702;' }
         ],
-        6: [
-          { value: '1', html: '&#20844;&#21150;' },
-          { value: '2', html: '&#27665;&#21150;' }
-        ],
-        7: [
-          { value: '1', html: '&#23567;&#23398;' },
-          { value: '2', html: '&#21021;&#20013;' },
-          { value: '3', html: '&#39640;&#20013;' },
-          { value: '4', html: '&#23398;&#21069;' }
-        ],
-        8: [
-          { value: '1', html: '&#26412;&#22320;&#24211;' },
-          { value: '2', html: '&#25163;&#21160;&#22635;&#20889;' },
-          { value: '3', html: '&#20225;&#26597;&#26597;' }
-        ],
-        9: [
-          { value: '1', html: '&#26222;&#36890;' },
-          { value: '2', html: '&#19987;&#29992;' },
-          { value: '3', html: '&#20869;&#37096;' }
+        10: [
+          { value: '1', html: '&#30007;' },
+          { value: '2', html: '&#22899;' }
         ]
       };
 
-      const inputIndexes = new Set([1, 10]);
+      const inputIndexes = new Set([1, 2, 3, 4, 6]);
       const fields = Array.from(document.querySelectorAll('.grid .field')).filter(field => field.querySelector('label'));
       const fieldByIndex = new Map();
+      const locationFieldIndexes = {
+        province: 7,
+        city: 8,
+        district: 9
+      };
 
       const findProvince = value => provinceData.find(item => item.value === value) || null;
       const findCity = value => {
@@ -876,14 +1770,14 @@
       };
 
       const selectOptionsFor = index => {
-        if (index === 2) return provinceData;
-        if (index === 3) {
-          const provinceField = fieldByIndex.get(2);
+        if (index === locationFieldIndexes.province) return provinceData;
+        if (index === locationFieldIndexes.city) {
+          const provinceField = fieldByIndex.get(locationFieldIndexes.province);
           const province = provinceField ? findProvince(provinceField.dataset.value || '') : null;
           return province ? province.cities : [];
         }
-        if (index === 4) {
-          const cityField = fieldByIndex.get(3);
+        if (index === locationFieldIndexes.district) {
+          const cityField = fieldByIndex.get(locationFieldIndexes.city);
           const city = cityField ? findCity(cityField.dataset.value || '') : null;
           return city ? city.dists : [];
         }
@@ -896,7 +1790,7 @@
 
         const options = selectOptionsFor(index);
         if (!options.length) {
-          const hint = index === 3 ? '&#35831;&#20808;&#36873;&#25321;&#30465;&#20221;' : index === 4 ? '&#35831;&#20808;&#36873;&#25321;&#22478;&#24066;' : '&#26222;&#36890;&#26080;&#21487;&#36873;&#39033;';
+          const hint = index === locationFieldIndexes.city ? '&#35831;&#20808;&#36873;&#25321;&#30465;&#20221;' : index === locationFieldIndexes.district ? '&#35831;&#20808;&#36873;&#25321;&#22478;&#24066;' : '&#26222;&#36890;&#26080;&#21487;&#36873;&#39033;';
           panel.innerHTML = `<div class="dropdown-option disabled">${hint}</div>`;
           return;
         }
@@ -912,14 +1806,14 @@
       };
 
       const clearDependents = index => {
-        if (index === 2) {
-          const cityField = fieldByIndex.get(3);
-          const distField = fieldByIndex.get(4);
+        if (index === locationFieldIndexes.province) {
+          const cityField = fieldByIndex.get(locationFieldIndexes.city);
+          const distField = fieldByIndex.get(locationFieldIndexes.district);
           if (cityField) setSelectValue(cityField, '', cityField.dataset.placeholder);
           if (distField) setSelectValue(distField, '', distField.dataset.placeholder);
         }
-        if (index === 3) {
-          const distField = fieldByIndex.get(4);
+        if (index === locationFieldIndexes.city) {
+          const distField = fieldByIndex.get(locationFieldIndexes.district);
           if (distField) setSelectValue(distField, '', distField.dataset.placeholder);
         }
       };
@@ -972,11 +1866,13 @@
             const html = option.dataset.html || option.innerHTML;
             setSelectValue(field, value, html);
             clearDependents(index);
-            if (index === 2 || index === 3) {
-              const cityField = fieldByIndex.get(3);
-              const distField = fieldByIndex.get(4);
-              if (index === 2 && cityField) renderOptions(cityField, 3);
-              if ((index === 2 || index === 3) && distField) renderOptions(distField, 4);
+            if (index === locationFieldIndexes.province || index === locationFieldIndexes.city) {
+              const cityField = fieldByIndex.get(locationFieldIndexes.city);
+              const distField = fieldByIndex.get(locationFieldIndexes.district);
+              if (index === locationFieldIndexes.province && cityField) renderOptions(cityField, locationFieldIndexes.city);
+              if ((index === locationFieldIndexes.province || index === locationFieldIndexes.city) && distField) {
+                renderOptions(distField, locationFieldIndexes.district);
+              }
             }
             field.classList.remove('open');
             field.classList.add('focused');
@@ -1027,6 +1923,695 @@
           fields.forEach(field => field.classList.remove('open'));
         }
       });
+
+      const managerTableBody = document.getElementById('manager-table-body');
+      const contactTableBody = document.getElementById('contact-table-body');
+      const contactPagination = contactTableBody
+        ? contactTableBody.closest('.section-body')?.querySelector('.pagination')
+        : null;
+      const statusClassMap = {
+        '待审核': 'blue',
+        '启用': 'green',
+        '停用': 'orange',
+        '退回': 'red'
+      };
+      const contactTemplateRows = [
+        {
+          lxrzt: '待审核',
+          lxrbm: 'M000131684',
+          lxr: '戴林林',
+          sjh: '15011112121',
+          dh: '13333333333',
+          ywjl: '李逍遥(100801)',
+          dwmc: '南昌市红谷滩区第一中学(C062497)',
+          sf: '江西省',
+          cs: '南昌市',
+          qx: '红谷滩新区',
+          dz: '红谷滩新区',
+          dz2: '翠苑路888号XXX街道',
+          cjr: '李逍遥(10080)',
+          cjsj: '2024-12-13 08:00:00',
+          xb: '女',
+          zw: '校长',
+          bm: '校长室',
+          ysbh: 'M000131684',
+          xgr: '李逍遥(10080)',
+          xgsj: '2024-12-13 08:00:00',
+          shr: '',
+          shsj: '',
+          thbz: ''
+        },
+        {
+          lxrzt: '启用',
+          lxrbm: 'M000131685',
+          lxr: '戴多多',
+          sjh: '15078787878',
+          dh: '',
+          ywjl: '李逍遥(100801)',
+          dwmc: '南昌市红谷滩区第一中学(C062497)',
+          sf: '江西省',
+          cs: '南昌市',
+          qx: '红谷滩新区',
+          dz: '红谷滩新区',
+          dz2: '翠苑路888号XXX街道',
+          cjr: '李逍遥(10080)',
+          cjsj: '2024-12-13 07:00:00',
+          xb: '女',
+          zw: '校长',
+          bm: '校长室',
+          ysbh: 'M000131685',
+          xgr: '李逍遥(10080)',
+          xgsj: '2024-12-13 07:00:00',
+          shr: '张三(10154)',
+          shsj: '2024-12-13 07:00:00',
+          thbz: ''
+        },
+        {
+          lxrzt: '停用',
+          lxrbm: 'M000131686',
+          lxr: '戴无票',
+          sjh: '15078787878',
+          dh: '',
+          ywjl: '李逍遥(100801)',
+          dwmc: '南昌市红谷滩区第一中学(C062497)',
+          sf: '江西省',
+          cs: '南昌市',
+          qx: '红谷滩新区',
+          dz: '红谷滩新区',
+          dz2: '翠苑路888号XXX街道',
+          cjr: '李逍遥(10080)',
+          cjsj: '2024-12-13 06:00:00',
+          xb: '女',
+          zw: '校长',
+          bm: '校长室',
+          ysbh: 'M000131686',
+          xgr: '李逍遥(10080)',
+          xgsj: '2024-12-13 06:00:00',
+          shr: '张三(10154)',
+          shsj: '2024-12-13 06:00:00',
+          thbz: ''
+        },
+        {
+          lxrzt: '退回',
+          lxrbm: 'M000131687',
+          lxr: '钱多多',
+          sjh: '15044442222',
+          dh: '',
+          ywjl: '李逍遥(100801)',
+          dwmc: '南昌市红谷滩区第一中学(C062497)',
+          sf: '江西省',
+          cs: '南昌市',
+          qx: '红谷滩新区',
+          dz: '红谷滩新区',
+          dz2: '翠苑路888号XXX街道',
+          cjr: '李逍遥(10080)',
+          cjsj: '2024-12-13 05:00:00',
+          xb: '男',
+          zw: '校长',
+          bm: '校长室',
+          ysbh: 'M000131687',
+          xgr: '李逍遥(10080)',
+          xgsj: '2024-12-13 05:00:00',
+          shr: '',
+          shsj: '',
+          thbz: ''
+        }
+      ];
+      const associationState = new Map();
+      let currentSourceRow = null;
+      let pendingUnlink = null;
+      const unlinkConfirmMask = document.getElementById('unlink-confirm-mask');
+      const unlinkConfirmText = document.getElementById('unlink-confirm-text');
+      const unlinkConfirmClose = document.getElementById('unlink-confirm-close');
+      const unlinkCancelBtn = document.getElementById('unlink-cancel-btn');
+      const unlinkConfirmBtn = document.getElementById('unlink-confirm-btn');
+      const contactModalMask = document.getElementById('contact-modal-mask');
+      const contactModalTitle = document.getElementById('contact-modal-title');
+      const openManagerModalMask = document.getElementById('open-manager-modal-mask');
+      const importModalMask = document.getElementById('import-modal-mask');
+      const openContactModalBtn = document.getElementById('open-contact-modal');
+      const openEditModalBtn = document.getElementById('open-edit-modal');
+      const openViewModalBtn = document.getElementById('open-view-modal');
+      const openImportModalBtn = document.getElementById('open-import-modal');
+      const contactCloseBtn = document.getElementById('contact-close-btn');
+      const contactCheckBtn = document.getElementById('contact-check-btn');
+      const contactSaveBtn = document.getElementById('contact-save-btn');
+      const openManagerBtn = document.getElementById('open-manager-btn');
+      const confirmOpenManagerBtn = document.getElementById('confirm-open-manager-btn');
+      const contactNameInput = document.getElementById('contact-name-input');
+      const contactPhoneInput = document.getElementById('contact-phone-input');
+      const contactTelephoneInput = document.getElementById('contact-telephone-input');
+      const contactSubjectSelect = document.getElementById('contact-subject-select');
+      const contactIdcardInput = document.getElementById('contact-idcard-input');
+      const contactGenderSelect = document.getElementById('contact-gender-select');
+      const contactJobInput = document.getElementById('contact-job-input');
+      const contactDeptInput = document.getElementById('contact-dept-input');
+      const contactGradeInput = document.getElementById('contact-grade-input');
+      const managerSearchInput = document.getElementById('manager-search-input');
+      const managerResultMeta = document.getElementById('manager-result-meta');
+      const managerSelectAll = document.getElementById('manager-select-all');
+      const managerList = document.getElementById('manager-list');
+      const managerPagination = document.getElementById('manager-pagination');
+      const managerSelectedSummary = document.getElementById('manager-selected-summary');
+      const managerSelectedList = document.getElementById('manager-selected-list');
+      const managerClearBtn = document.getElementById('manager-clear-btn');
+      const downloadTemplateBtn = document.getElementById('download-template-btn');
+      const contactSchoolSelect = document.getElementById('contact-school-select');
+      const contactSchoolProvince = document.getElementById('contact-school-province');
+      const contactSchoolCity = document.getElementById('contact-school-city');
+      const contactSchoolDistrict = document.getElementById('contact-school-district');
+      const contactSchoolStation = document.getElementById('contact-school-station');
+      const contactSchoolStreet = document.getElementById('contact-school-street');
+      const contactSchoolAddress = document.getElementById('contact-school-address');
+      const modalMasks = [unlinkConfirmMask, contactModalMask, openManagerModalMask, importModalMask].filter(Boolean);
+      const schoolOptions = {
+        C096948: {
+          province: '贵州省',
+          city: '黔西南布依族苗族自治州',
+          district: '望谟县',
+          station: '望谟县',
+          street: '石屯镇',
+          address: '民族学校'
+        },
+        C062497: {
+          province: '江西省',
+          city: '南昌市',
+          district: '红谷滩区',
+          station: '红谷滩区',
+          street: '翠苑路',
+          address: '第一中学'
+        },
+        C103612: {
+          province: '四川省',
+          city: '成都市',
+          district: '锦江区',
+          station: '锦江区',
+          street: '书院街',
+          address: '实验学校'
+        },
+        C118205: {
+          province: '云南省',
+          city: '昆明市',
+          district: '五华区',
+          station: '五华区',
+          street: '学府路',
+          address: '第三小学'
+        }
+      };
+      const managerOptions = [
+        { id: '21270', name: '李新', dept: '销售一组' },
+        { id: '10070', name: '张三', dept: '销售一组' },
+        { id: '100801', name: '李逍遥', dept: '销售二组' },
+        { id: '10154', name: '王敏', dept: '销售二组' },
+        { id: '10092', name: '赵磊', dept: '销售三组' },
+        { id: '10093', name: '周婷', dept: '销售三组' },
+        { id: '10094', name: '孙浩', dept: '销售四组' },
+        { id: '10095', name: '陈晨', dept: '销售四组' },
+        { id: '10096', name: '刘洋', dept: '区域中心' },
+        { id: '10097', name: '黄菲', dept: '区域中心' },
+        { id: '10098', name: '郭强', dept: '大客户部' },
+        { id: '10099', name: '何静', dept: '大客户部' }
+      ];
+      const selectedManagerIds = new Set();
+      const managerPageSize = 6;
+      let managerPage = 1;
+      let contactModalMode = 'create';
+
+      const openModal = mask => {
+        if (!mask) return;
+        modalMasks.forEach(item => {
+          if (item !== mask) item.classList.remove('show');
+        });
+        mask.classList.add('show');
+      };
+
+      const closeModal = mask => {
+        mask?.classList.remove('show');
+      };
+
+      const closeAllModals = () => {
+        modalMasks.forEach(mask => mask.classList.remove('show'));
+      };
+
+      const syncSchoolAddress = schoolCode => {
+        const school = schoolOptions[schoolCode];
+        if (!school) return;
+        if (contactSchoolProvince) contactSchoolProvince.textContent = school.province;
+        if (contactSchoolCity) contactSchoolCity.textContent = school.city;
+        if (contactSchoolDistrict) contactSchoolDistrict.textContent = school.district;
+        if (contactSchoolStation) contactSchoolStation.value = school.station;
+        if (contactSchoolStreet) contactSchoolStreet.value = school.street;
+        if (contactSchoolAddress) contactSchoolAddress.value = school.address;
+      };
+
+      const renderManagerOptions = () => {
+        if (!managerList) return;
+        const keyword = (managerSearchInput?.value || '').trim().toLowerCase();
+        const filtered = managerOptions.filter(item => {
+          const text = `${item.name}${item.id}${item.dept}`.toLowerCase();
+          return !keyword || text.includes(keyword);
+        });
+        const total = filtered.length;
+        const totalPages = Math.max(1, Math.ceil(total / managerPageSize));
+        if (managerPage > totalPages) managerPage = totalPages;
+        const start = (managerPage - 1) * managerPageSize;
+        const pageItems = filtered.slice(start, start + managerPageSize);
+        if (managerResultMeta) {
+          managerResultMeta.textContent = `共 ${total} 人`;
+        }
+        if (managerSelectAll) {
+          managerSelectAll.checked = pageItems.length > 0 && pageItems.every(item => selectedManagerIds.has(item.id));
+          managerSelectAll.indeterminate = pageItems.some(item => selectedManagerIds.has(item.id)) && !managerSelectAll.checked;
+        }
+        managerList.innerHTML = pageItems.length
+          ? pageItems.map(item => `
+            <label class="manager-row${selectedManagerIds.has(item.id) ? ' selected' : ''}">
+              <input type="checkbox" value="${item.id}"${selectedManagerIds.has(item.id) ? ' checked' : ''} />
+              <div class="manager-row-main">
+                <span class="manager-row-name">${item.name}</span>
+                <span class="manager-row-code">${item.id}</span>
+                <span class="manager-row-code">${item.dept}</span>
+              </div>
+            </label>
+          `).join('')
+          : '<div class="manager-empty">未找到匹配的业务经理</div>';
+        if (managerPagination) {
+          managerPagination.innerHTML = `
+            <span>第 ${managerPage} / ${totalPages} 页</span>
+            <span class="manager-page-btn${managerPage <= 1 ? ' disabled' : ''}" data-page-action="prev">上一页</span>
+            <span class="manager-page-btn${managerPage >= totalPages ? ' disabled' : ''}" data-page-action="next">下一页</span>
+          `;
+        }
+        updateManagerSummary();
+      };
+
+      const updateManagerSummary = () => {
+        if (!managerSelectedSummary) return;
+        const selectedItems = managerOptions.filter(item => selectedManagerIds.has(item.id));
+        managerSelectedSummary.textContent = selectedItems.length
+          ? `已选 ${selectedItems.length} 人：${selectedItems.map(item => `${item.name}(${item.id})`).join('、')}`
+          : '已选 0 人，请先勾选业务经理。';
+        if (managerSelectedList) {
+          managerSelectedList.innerHTML = selectedItems.length
+            ? selectedItems.map(item => `
+              <span class="manager-selected-item">
+                <span>${item.name}(${item.id})</span>
+                <button class="manager-selected-remove" type="button" data-remove-manager="${item.id}">×</button>
+              </span>
+            `).join('')
+            : '';
+        }
+      };
+
+      const getAllManagers = () => Array.from(managerTableBody?.querySelectorAll('tr') || [])
+        .map(row => row.dataset.manager)
+        .filter(Boolean);
+
+      const getSourceKey = sourceRow => sourceRow?.cells?.[2]?.textContent.trim()
+        || `row-${Array.from(managerTableBody?.querySelectorAll('tr') || []).indexOf(sourceRow)}`;
+
+      const closeUnlinkConfirm = () => {
+        pendingUnlink = null;
+        unlinkConfirmMask?.classList.remove('show');
+      };
+
+      const openUnlinkConfirm = payload => {
+        pendingUnlink = payload;
+        if (unlinkConfirmText) {
+          unlinkConfirmText.innerHTML = `确认取消业务员 <strong>${payload.manager}</strong> 与联系人 <strong>${payload.contactName}</strong> 的关联吗？`;
+        }
+        openModal(unlinkConfirmMask);
+      };
+
+      const buildContactFromManagerRow = row => {
+        const cells = Array.from(row?.cells || []);
+        const textAt = index => cells[index]?.textContent.trim() || '';
+        return {
+          lxrzt: textAt(1),
+          lxrPrimaryId: textAt(2),
+          lxr: textAt(3),
+          sjh: textAt(4),
+          dh: textAt(5),
+          sfz: textAt(6),
+          xk: textAt(7),
+          dwmc: textAt(8),
+          sf: textAt(9),
+          cs: textAt(10),
+          qx: textAt(11),
+          dz: textAt(12),
+          jd: textAt(13),
+          dz2: textAt(14),
+          cjr: textAt(15),
+          cjsj: textAt(16),
+          xb: textAt(17),
+          zw: textAt(18),
+          bm: textAt(19),
+          xgr: textAt(20),
+          xgsj: textAt(21),
+          shr: textAt(22),
+          shsj: textAt(23),
+          thbz: ''
+        };
+      };
+
+      const contactModalDefaults = {
+        title: '新增联系人',
+        schoolCode: 'C096948',
+        name: '龙宇',
+        phone: '15981239070',
+        telephone: '0859-4612308',
+        subject: '数学',
+        idcard: '',
+        gender: '男',
+        job: '教师',
+        dept: '教务',
+        grade: ''
+      };
+
+      const getSchoolCodeFromUnitText = unitText => {
+        const unit = (unitText || '').trim();
+        const option = Array.from(contactSchoolSelect?.options || [])
+          .find(item => unit.includes(item.textContent.trim()));
+        return option?.value || contactModalDefaults.schoolCode;
+      };
+
+      const applyContactModalValues = values => {
+        if (contactModalTitle) contactModalTitle.textContent = values.title || contactModalDefaults.title;
+        if (contactSchoolSelect) {
+          contactSchoolSelect.value = values.schoolCode || contactModalDefaults.schoolCode;
+          syncSchoolAddress(contactSchoolSelect.value);
+        }
+        if (contactNameInput) contactNameInput.value = values.name ?? '';
+        if (contactPhoneInput) contactPhoneInput.value = values.phone ?? '';
+        if (contactTelephoneInput) contactTelephoneInput.value = values.telephone ?? '';
+        if (contactSubjectSelect) contactSubjectSelect.value = values.subject || contactModalDefaults.subject;
+        if (contactIdcardInput) contactIdcardInput.value = values.idcard ?? '';
+        if (contactGenderSelect) contactGenderSelect.value = values.gender || contactModalDefaults.gender;
+        if (contactJobInput) contactJobInput.value = values.job ?? '';
+        if (contactDeptInput) contactDeptInput.value = values.dept ?? '';
+        if (contactGradeInput) contactGradeInput.value = values.grade ?? '';
+      };
+
+      const setContactModalMode = mode => {
+        contactModalMode = mode;
+        const isReadOnly = mode === 'view';
+        const isCreate = mode === 'create';
+        const controls = [
+          contactSchoolSelect,
+          contactNameInput,
+          contactPhoneInput,
+          contactTelephoneInput,
+          contactSubjectSelect,
+          contactIdcardInput,
+          contactGenderSelect,
+          contactJobInput,
+          contactDeptInput,
+          contactGradeInput,
+          contactSchoolStation,
+          contactSchoolStreet,
+          contactSchoolAddress
+        ].filter(Boolean);
+        controls.forEach(control => {
+          control.disabled = isReadOnly;
+          control.readOnly = isReadOnly && control.tagName === 'INPUT';
+        });
+        if (contactCheckBtn) contactCheckBtn.hidden = isReadOnly;
+        if (contactSaveBtn) contactSaveBtn.hidden = isReadOnly;
+        if (contactCloseBtn) contactCloseBtn.textContent = isReadOnly ? '关闭' : '取消';
+        if (contactModalTitle) {
+          contactModalTitle.textContent = mode === 'edit'
+            ? '编辑联系人'
+            : mode === 'view'
+              ? '查看联系人'
+              : '新增联系人';
+        }
+        if (isCreate) resetContactModalToDefaults();
+      };
+
+      const resetContactModalToDefaults = () => {
+        applyContactModalValues(contactModalDefaults);
+      };
+
+      const fillContactModalFromSourceRow = sourceRow => {
+        const contact = buildContactFromManagerRow(sourceRow);
+        applyContactModalValues({
+          title: '编辑联系人',
+          schoolCode: getSchoolCodeFromUnitText(contact.dwmc),
+          name: contact.lxr,
+          phone: contact.sjh,
+          telephone: contact.dh,
+          subject: contact.xk || contactModalDefaults.subject,
+          idcard: contact.sfz,
+          gender: contact.xb || contactModalDefaults.gender,
+          job: contact.zw,
+          dept: contact.bm,
+          grade: ''
+        });
+      };
+
+      const openContactModalByMode = (mode, sourceRow = null) => {
+        if (mode === 'create') {
+          resetContactModalToDefaults();
+        } else if (sourceRow) {
+          fillContactModalFromSourceRow(sourceRow);
+        }
+        setContactModalMode(mode);
+        openModal(contactModalMask);
+      };
+
+      const renderContactRows = sourceRow => {
+        if (!contactTableBody || !sourceRow) return;
+        currentSourceRow = sourceRow;
+        const contact = buildContactFromManagerRow(sourceRow);
+        const managerRows = Array.from(managerTableBody?.querySelectorAll('tr') || []);
+        const sourceIndex = managerRows.indexOf(sourceRow);
+        const sourceKey = getSourceKey(sourceRow);
+        const codeTemplate = contactTemplateRows[sourceIndex] || contactTemplateRows[0] || {};
+        if (!associationState.has(sourceKey)) {
+          associationState.set(sourceKey, getAllManagers());
+        }
+        const managers = associationState.get(sourceKey) || [];
+        const rows = managers.map(manager => ({
+          ...contact,
+          ywjl: manager,
+          lxrbm: codeTemplate.lxrbm || '',
+          ysbh: codeTemplate.ysbh || codeTemplate.lxrbm || ''
+        }));
+        contactTableBody.innerHTML = rows.map((row, index) => {
+          const tagClass = statusClassMap[row.lxrzt] || 'blue';
+          const empty = value => value || '-';
+          return `
+            <tr${index === 0 ? ' class="selected"' : ''}>
+              <td>${index + 1}</td>
+              <td><span class="tag ${tagClass}">${row.lxrzt}</span></td>
+              <td class="link">${row.lxrbm}</td>
+              <td>${row.lxr}</td>
+              <td>${empty(row.sjh)}</td>
+              <td>${empty(row.dh)}</td>
+              <td>${row.sfz || ''}</td>
+              <td>${empty(row.xk)}</td>
+              <td>${row.ywjl}</td>
+              <td>${row.dwmc}</td>
+              <td>${row.sf}</td>
+              <td>${row.cs}</td>
+              <td>${row.qx}</td>
+              <td>${row.dz}</td>
+              <td>${row.jd}</td>
+              <td>${row.dz2}</td>
+              <td>${row.cjr}</td>
+              <td>${row.cjsj}</td>
+              <td>${row.xb}</td>
+              <td>${row.zw}</td>
+              <td>${row.bm}</td>
+              <td>${row.ysbh}</td>
+              <td>${row.xgr}</td>
+              <td>${row.xgsj}</td>
+              <td>${empty(row.shr === '-' ? '' : row.shr)}</td>
+              <td>${empty(row.shsj === '-' ? '' : row.shsj)}</td>
+              <td>${empty(row.thbz)}</td>
+              <td><span class="table-action unlink-action" data-manager="${row.ywjl}" data-contact="${row.lxr}">取消关联</span></td>
+            </tr>
+          `;
+        }).join('');
+
+        if (contactPagination) {
+          const totalLabel = contactPagination.querySelector('span');
+          if (totalLabel) totalLabel.textContent = `共 ${rows.length} 条`;
+        }
+      };
+
+      if (contactTableBody) {
+        contactTableBody.addEventListener('click', event => {
+          const action = event.target.closest('.unlink-action');
+          if (!action || !currentSourceRow) return;
+
+          openUnlinkConfirm({
+            sourceRow: currentSourceRow,
+            manager: action.dataset.manager || '',
+            contactName: action.dataset.contact || ''
+          });
+        });
+      }
+
+      unlinkConfirmClose?.addEventListener('click', closeUnlinkConfirm);
+      unlinkCancelBtn?.addEventListener('click', closeUnlinkConfirm);
+      unlinkConfirmMask?.addEventListener('click', event => {
+        if (event.target === unlinkConfirmMask) closeUnlinkConfirm();
+      });
+      unlinkConfirmBtn?.addEventListener('click', () => {
+        if (!pendingUnlink?.sourceRow) return;
+        const sourceRow = pendingUnlink.sourceRow;
+        const sourceKey = getSourceKey(sourceRow);
+        const managers = associationState.get(sourceKey) || [];
+        associationState.set(sourceKey, managers.filter(item => item !== pendingUnlink.manager));
+        closeUnlinkConfirm();
+        renderContactRows(sourceRow);
+      });
+
+      window.addEventListener('keydown', event => {
+        if (event.key === 'Escape' && unlinkConfirmMask?.classList.contains('show')) {
+          closeUnlinkConfirm();
+        }
+      });
+
+      openContactModalBtn?.addEventListener('click', () => {
+        openContactModalByMode('create');
+      });
+      openEditModalBtn?.addEventListener('click', () => {
+        const sourceRow = currentSourceRow || managerTableBody?.querySelector('tr.selected') || managerTableBody?.querySelector('tr');
+        if (!sourceRow) {
+          alert('请先选择一条联系人主表记录再编辑。');
+          return;
+        }
+        openContactModalByMode('edit', sourceRow);
+      });
+      openViewModalBtn?.addEventListener('click', () => {
+        const sourceRow = currentSourceRow || managerTableBody?.querySelector('tr.selected') || managerTableBody?.querySelector('tr');
+        if (!sourceRow) {
+          alert('请先选择一条联系人主表记录再查看。');
+          return;
+        }
+        openContactModalByMode('view', sourceRow);
+      });
+      openImportModalBtn?.addEventListener('click', () => openModal(importModalMask));
+      contactSchoolSelect?.addEventListener('change', event => {
+        syncSchoolAddress(event.target.value);
+      });
+
+      document.querySelectorAll('[data-close-modal]').forEach(node => {
+        node.addEventListener('click', () => {
+          const targetId = node.getAttribute('data-close-modal');
+          closeModal(document.getElementById(targetId));
+        });
+      });
+
+      [contactModalMask, importModalMask].forEach(mask => {
+        mask?.addEventListener('click', event => {
+          if (event.target === mask) closeModal(mask);
+        });
+      });
+
+      contactCheckBtn?.addEventListener('click', () => {
+        alert('查重结果：\n姓名“龙宇”、单位“望谟县石屯镇民族学校”、手机号“15981239070”同时命中重复。\n处理建议：可通过【开通业务经理】单独处理业务经理关系。');
+      });
+
+      openManagerBtn?.addEventListener('click', () => {
+        if (managerSearchInput) managerSearchInput.value = '';
+        managerPage = 1;
+        renderManagerOptions();
+        openModal(openManagerModalMask);
+        setTimeout(() => managerSearchInput?.focus(), 0);
+      });
+      managerSearchInput?.addEventListener('input', () => {
+        managerPage = 1;
+        renderManagerOptions();
+      });
+      managerSelectAll?.addEventListener('change', event => {
+        const keyword = (managerSearchInput?.value || '').trim().toLowerCase();
+        const filtered = managerOptions.filter(item => {
+          const text = `${item.name}${item.id}${item.dept}`.toLowerCase();
+          return !keyword || text.includes(keyword);
+        });
+        const totalPages = Math.max(1, Math.ceil(filtered.length / managerPageSize));
+        const start = (managerPage - 1) * managerPageSize;
+        const pageItems = filtered.slice(start, start + managerPageSize);
+        pageItems.forEach(item => {
+          if (event.target.checked) selectedManagerIds.add(item.id);
+          else selectedManagerIds.delete(item.id);
+        });
+        renderManagerOptions();
+      });
+      managerList?.addEventListener('change', event => {
+        const target = event.target;
+        if (!(target instanceof HTMLInputElement) || target.type !== 'checkbox') return;
+        if (target.checked) selectedManagerIds.add(target.value);
+        else selectedManagerIds.delete(target.value);
+        const row = target.closest('.manager-row');
+        row?.classList.toggle('selected', target.checked);
+        updateManagerSummary();
+      });
+      managerSelectedList?.addEventListener('click', event => {
+        const target = event.target;
+        if (!(target instanceof HTMLElement)) return;
+        const id = target.dataset.removeManager;
+        if (!id) return;
+        selectedManagerIds.delete(id);
+        renderManagerOptions();
+      });
+      managerClearBtn?.addEventListener('click', () => {
+        selectedManagerIds.clear();
+        renderManagerOptions();
+      });
+      managerPagination?.addEventListener('click', event => {
+        const target = event.target;
+        if (!(target instanceof HTMLElement)) return;
+        const action = target.dataset.pageAction;
+        if (!action || target.classList.contains('disabled')) return;
+        if (action === 'prev' && managerPage > 1) managerPage -= 1;
+        if (action === 'next') managerPage += 1;
+        renderManagerOptions();
+      });
+      confirmOpenManagerBtn?.addEventListener('click', () => {
+        const selectedManagers = managerOptions
+          .filter(item => selectedManagerIds.has(item.id))
+          .map(item => `${item.name}(${item.id})`)
+          .join('、');
+        if (!selectedManagers) {
+          alert('请先勾选至少一个业务经理。');
+          return;
+        }
+        alert(`开通业务经理：\n已为姓名“龙宇”、单位“望谟县石屯镇民族学校”开通给 ${selectedManagers}。`);
+        closeModal(openManagerModalMask);
+      });
+
+      downloadTemplateBtn?.addEventListener('click', () => {
+        alert('已按当前必填项生成“联系人导入模板.xlsx”原型示意，实际开发时导出字段与本页模板表一致。');
+      });
+
+      window.addEventListener('keydown', event => {
+        if (event.key === 'Escape') {
+          closeAllModals();
+        }
+      });
+
+      if (managerTableBody) {
+        const managerRows = Array.from(managerTableBody.querySelectorAll('tr'));
+        const selectManagerRow = row => {
+          managerRows.forEach(item => item.classList.toggle('selected', item === row));
+          renderContactRows(row);
+        };
+
+        managerRows.forEach(row => {
+          row.addEventListener('click', () => selectManagerRow(row));
+        });
+
+        const selectedRow = managerTableBody.querySelector('tr.selected') || managerRows[0];
+        if (selectedRow) selectManagerRow(selectedRow);
+      }
+
+      if (contactSchoolSelect) {
+        syncSchoolAddress(contactSchoolSelect.value);
+      }
     })();
   </script>
 </body>
