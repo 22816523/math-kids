@@ -457,6 +457,22 @@
       line-height:1.1;
     }
     tbody tr.selected{background:#fff3e6;}
+    #manager-table-body tr.bulk-selected td{
+      background:#eef5ff;
+    }
+    #manager-table-body tr.selected.bulk-selected td{
+      background:#fff3e6;
+    }
+    #manager-table-body tr.bulk-selected td:first-child{
+      box-shadow:inset 3px 0 0 #4f9cff;
+    }
+    #manager-table-body tr.selected.bulk-selected td:first-child{
+      box-shadow:inset 3px 0 0 #f59e0b;
+    }
+    #manager-table-body input[type="checkbox"],
+    #manager-select-all-contacts{
+      cursor:pointer;
+    }
     .link{color:var(--blue); font-weight:400;}
     .table-action{
       color:var(--blue);
@@ -1178,6 +1194,7 @@
               <table style="min-width:2600px;">
                 <thead>
                   <tr>
+                    <th style="width:42px; text-align:center;"><input type="checkbox" id="manager-select-all-contacts" /></th>
                     <th style="width:60px;">序号</th>
                     <th>联系人状态</th>
                     <th>联系人主表ID</th>
@@ -1206,6 +1223,7 @@
                 </thead>
                 <tbody id="manager-table-body">
                   <tr class="selected" data-manager="李逍遥(100801)">
+                    <td style="text-align:center;"><input type="checkbox" class="main-contact-checkbox" checked /></td>
                     <td>1</td>
                     <td><span class="tag green">启用</span></td>
                     <td class="link">LX00000001</td>
@@ -1232,6 +1250,7 @@
                     <td>-</td>
                   </tr>
                   <tr data-manager="张三(10070)">
+                    <td style="text-align:center;"><input type="checkbox" class="main-contact-checkbox" checked /></td>
                     <td>2</td>
                     <td><span class="tag green">启用</span></td>
                     <td class="link">LX00000002</td>
@@ -1258,6 +1277,7 @@
                     <td>2026-04-18 10:00:00</td>
                   </tr>
                   <tr data-manager="李逍遥2(1008021)">
+                    <td style="text-align:center;"><input type="checkbox" class="main-contact-checkbox" /></td>
                     <td>3</td>
                     <td><span class="tag orange">停用</span></td>
                     <td class="link">LX00000003</td>
@@ -2058,6 +2078,7 @@
       const contactSaveBtn = document.getElementById('contact-save-btn');
       const openManagerBtn = document.getElementById('open-manager-btn');
       const confirmOpenManagerBtn = document.getElementById('confirm-open-manager-btn');
+      const mainContactSelectAll = document.getElementById('manager-select-all-contacts');
       const contactNameInput = document.getElementById('contact-name-input');
       const contactPhoneInput = document.getElementById('contact-phone-input');
       const contactTelephoneInput = document.getElementById('contact-telephone-input');
@@ -2133,6 +2154,7 @@
         { id: '10099', name: '何静', dept: '大客户部' }
       ];
       const selectedManagerIds = new Set();
+      let selectedMainContactRows = [];
       const managerPageSize = 6;
       let managerPage = 1;
       let contactModalMode = 'create';
@@ -2151,6 +2173,29 @@
 
       const closeAllModals = () => {
         modalMasks.forEach(mask => mask.classList.remove('show'));
+      };
+
+      const getMainContactRows = () => Array.from(managerTableBody?.querySelectorAll('tr') || []);
+
+      const getSelectedMainContactRows = () => getMainContactRows()
+        .filter(row => row.querySelector('.main-contact-checkbox')?.checked);
+
+      const getMainContactLabel = row => {
+        const cells = Array.from(row?.cells || []);
+        const contactName = cells[4]?.textContent.trim() || '';
+        const schoolName = cells[9]?.textContent.trim() || '';
+        return contactName && schoolName ? `${contactName} / ${schoolName}` : contactName || schoolName;
+      };
+
+      const syncMainContactSelection = () => {
+        const rows = getMainContactRows();
+        const checkedRows = rows.filter(row => row.querySelector('.main-contact-checkbox')?.checked);
+        selectedMainContactRows = checkedRows;
+        if (mainContactSelectAll) {
+          mainContactSelectAll.checked = rows.length > 0 && checkedRows.length === rows.length;
+          mainContactSelectAll.indeterminate = checkedRows.length > 0 && checkedRows.length < rows.length;
+        }
+        rows.forEach(row => row.classList.toggle('bulk-selected', row.querySelector('.main-contact-checkbox')?.checked));
       };
 
       const syncSchoolAddress = schoolCode => {
@@ -2245,7 +2290,8 @@
 
       const buildContactFromManagerRow = row => {
         const cells = Array.from(row?.cells || []);
-        const textAt = index => cells[index]?.textContent.trim() || '';
+        const offset = row?.querySelector('.main-contact-checkbox') ? 1 : 0;
+        const textAt = index => cells[index + offset]?.textContent.trim() || '';
         return {
           lxrzt: textAt(1),
           lxrPrimaryId: textAt(2),
@@ -2386,11 +2432,11 @@
         const managerRows = Array.from(managerTableBody?.querySelectorAll('tr') || []);
         const sourceIndex = managerRows.indexOf(sourceRow);
         const sourceKey = getSourceKey(sourceRow);
-        const codeTemplate = contactTemplateRows[sourceIndex] || contactTemplateRows[0] || {};
         if (!associationState.has(sourceKey)) {
           associationState.set(sourceKey, getAllManagers());
         }
         const managers = associationState.get(sourceKey) || [];
+        const codeTemplate = contactTemplateRows[sourceIndex] || contactTemplateRows[0] || {};
         const rows = managers.map(manager => ({
           ...contact,
           ywjl: manager,
@@ -2516,10 +2562,16 @@
       });
 
       openManagerBtn?.addEventListener('click', () => {
+        const checkedRows = getSelectedMainContactRows();
+        if (!checkedRows.length) {
+          alert('请先勾选至少一个联系人主表记录。');
+          return;
+        }
         if (managerSearchInput) managerSearchInput.value = '';
         managerPage = 1;
         renderManagerOptions();
         openModal(openManagerModalMask);
+        selectedMainContactRows = checkedRows;
         setTimeout(() => managerSearchInput?.focus(), 0);
       });
       managerSearchInput?.addEventListener('input', () => {
@@ -2580,7 +2632,10 @@
           alert('请先勾选至少一个业务经理。');
           return;
         }
-        alert(`开通业务经理：\n已为姓名“龙宇”、单位“望谟县石屯镇民族学校”开通给 ${selectedManagers}。`);
+        const targetContacts = selectedMainContactRows.length
+          ? selectedMainContactRows.map(getMainContactLabel).join('、')
+          : '已选联系人';
+        alert(`开通业务经理：\n已为 ${targetContacts} 批量开通给 ${selectedManagers}。`);
         closeModal(openManagerModalMask);
       });
 
@@ -2608,6 +2663,26 @@
         const selectedRow = managerTableBody.querySelector('tr.selected') || managerRows[0];
         if (selectedRow) selectManagerRow(selectedRow);
       }
+
+      if (managerTableBody) {
+        managerTableBody.addEventListener('change', event => {
+          const target = event.target;
+          if (!(target instanceof HTMLInputElement) || target.type !== 'checkbox' || !target.classList.contains('main-contact-checkbox')) return;
+          syncMainContactSelection();
+        });
+      }
+
+      mainContactSelectAll?.addEventListener('change', event => {
+        const checked = event.target instanceof HTMLInputElement && event.target.checked;
+        getMainContactRows().forEach(row => {
+          const checkbox = row.querySelector('.main-contact-checkbox');
+          if (checkbox instanceof HTMLInputElement) checkbox.checked = checked;
+          row.classList.toggle('bulk-selected', checked);
+        });
+        syncMainContactSelection();
+      });
+
+      syncMainContactSelection();
 
       if (contactSchoolSelect) {
         syncSchoolAddress(contactSchoolSelect.value);
