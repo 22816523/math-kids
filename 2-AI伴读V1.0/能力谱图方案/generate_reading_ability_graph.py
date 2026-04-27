@@ -12,13 +12,39 @@ from typing import Any, Iterable
 from openpyxl import load_workbook
 
 
-DEFAULT_SUGGESTIONS = {
-    "comprehension": "你已经具备不错的文本感知基础，继续巩固事实提取、人物关系和段落信息定位，会更稳定。",
-    "analysis": "你对故事内容有一定把握，继续练习情节梳理、结构拆解和线索归纳，分析会更细致。",
-    "expression": "你在概括和表达上有潜力，继续加强主旨概括、复述和观点表达，输出会更清晰。",
-    "critical_thinking": "你在判断和思考上表现不错，继续练习因果判断、推理选择和观点辨析，思路会更敏锐。",
-    "creativity": "你已经开始形成迁移意识，继续做联想迁移、改写应用和开放延展练习，会更灵活。",
-    "memory": "你对信息的记忆基础不错，继续强化细节记忆、关键信息回忆和快速复盘，表现会更稳。",
+SUGGESTION_TEMPLATE_LIBRARY = {
+    "language_understanding": {
+        "优秀": "你读得很认真，能准确抓住句子和段落的意思，表现很棒。",
+        "良好": "你已经能读懂文章大意了，继续把句子和段落的重点抓得更准，会越来越棒。",
+        "合格": "你已经能看懂不少内容了，再多留意句子里的小细节，会更稳。",
+        "待提升": "你已经有基础了，接下来多练习读句子、找段意和联系上下文，就会进步更快。",
+    },
+    "information_processing": {
+        "优秀": "你找重点又快又准，还能把答案整理得清楚又漂亮，真不错。",
+        "良好": "你已经能找到大部分关键信息了，继续练习归纳和概括，会越来越厉害。",
+        "合格": "你已经能找到一部分信息了，再多练习筛选和整理，答案会更完整。",
+        "待提升": "你已经会找一些信息了，接下来多练习找重点、圈关键词，慢慢就会更熟练。",
+    },
+    "thinking_development": {
+        "优秀": "你很会动脑筋，能把原因和结果想得很清楚，思考力很棒。",
+        "良好": "你已经能做简单分析和判断了，继续保持，会越来越有条理。",
+        "合格": "你已经能看出一些文章里的关系了，再多练习比较和分析，会更有进步。",
+        "待提升": "你已经开始会思考了，接下来多练习看关系、想原因和判断对错，会慢慢变强。",
+    },
+    "literary_appreciation": {
+        "优秀": "你很会感受文章里的画面和感情，读书时总能发现很多美好的地方。",
+        "良好": "你已经能体会文章中的人物和感情了，继续多读几篇，会越来越细腻。",
+        "合格": "你已经能感受到一些内容了，再多关注人物、语言和感情，体会会更丰富。",
+        "待提升": "你已经开始留意文章内容了，接下来多体会文章里的人物、语言和感情，审美能力会慢慢提升。",
+    },
+}
+
+
+ABILITY_FOCUS_TIPS = {
+    "language_understanding": "重点关注词句理解、段落概括和上下文推断。",
+    "information_processing": "重点关注关键信息提取、内容筛选和要点归纳。",
+    "thinking_development": "重点关注推理判断、结构分析和观点辨析。",
+    "literary_appreciation": "重点关注语言美感、形象意境和情感体验。",
 }
 
 
@@ -214,6 +240,96 @@ def load_input(path: str | Path) -> dict[str, Any]:
     raise ValueError(f"Unsupported input type: {suffix}")
 
 
+def score_band(score: int) -> str:
+    if score >= 90:
+        return "优秀"
+    if score >= 75:
+        return "良好"
+    if score >= 60:
+        return "合格"
+    return "待提升"
+
+
+def build_suggestion_cards(abilities: list[dict[str, Any]], ability_order: list[str]) -> list[str]:
+    ordered_abilities = sorted(
+        abilities,
+        key=lambda item: (item["score"], ability_order.index(item["ability_id"])),
+    )
+    selected: list[dict[str, Any]] = []
+    selected_ids: set[str] = set()
+
+    for item in ordered_abilities:
+        ability_id = item["ability_id"]
+        if ability_id in selected_ids:
+            continue
+        selected.append(item)
+        selected_ids.add(ability_id)
+        if len(selected) == 2:
+            break
+
+    high_band_candidates = [
+        item for item in abilities if score_band(item["score"]) in ("优秀", "良好")
+    ]
+    third_pool = high_band_candidates or abilities
+    third_candidates = sorted(
+        third_pool,
+        key=lambda item: (-item["score"], ability_order.index(item["ability_id"])),
+    )
+    for item in third_candidates:
+        if item["ability_id"] not in selected_ids:
+            selected.append(item)
+            selected_ids.add(item["ability_id"])
+            break
+
+    if len(selected) < 3:
+        for item in sorted(
+            abilities,
+            key=lambda item: (-item["score"], ability_order.index(item["ability_id"])),
+        ):
+            if item["ability_id"] not in selected_ids:
+                selected.append(item)
+                selected_ids.add(item["ability_id"])
+            if len(selected) == 3:
+                break
+
+    suggestion_cards: list[str] = []
+    for item in selected[:3]:
+        band = item["band"]
+        template = SUGGESTION_TEMPLATE_LIBRARY.get(item["ability_id"], {}).get(band)
+        if not template:
+            template = item["ability_name"]
+        suggestion_cards.append(f"{item['ability_name']}：{template}")
+
+    return suggestion_cards
+
+
+
+def build_overall_conclusion(overall_score: int, abilities: list[dict[str, Any]]) -> str:
+    band = score_band(overall_score)
+    if band == "优秀":
+        base = "整体表现优秀，四维发展较为均衡，具备较好的阅读理解、信息加工和思维分析能力。"
+    elif band == "良好":
+        base = "整体表现良好，基础较稳，部分维度已形成优势。"
+    elif band == "合格":
+        base = "整体能力处于基础发展阶段，部分维度表现稳定，但维度间差异较明显，需针对性训练。"
+    else:
+        base = "整体阅读能力还有提升空间，建议优先补齐低分维度，逐步夹实基础能力。"
+
+    scores = [item.get("score", 0) for item in abilities]
+    if not scores:
+        suffix = ""
+    else:
+        spread = max(scores) - min(scores)
+        if spread <= 10:
+            suffix = "四维发展较为均衡。"
+        elif spread >= 20:
+            suffix = "维度间差异较明显，建议优先聚焦低分维度。"
+        else:
+            suffix = "部分维度存在波动，可继续巩固弱项。"
+
+    return base + suffix
+
+
 def compute_graph_result(payload: dict[str, Any]) -> dict[str, Any]:
     student = payload["student"]
     ability_catalog = payload["ability_catalog"]
@@ -294,6 +410,7 @@ def compute_graph_result(payload: dict[str, Any]) -> dict[str, Any]:
                 "ability_id": ability_id,
                 "ability_name": ability_names.get(ability_id, ability_id),
                 "score": score,
+                "band": score_band(score),
                 "question_count": int(bucket.get("question_count", 0)),
                 "correct_count": int(bucket.get("correct_count", 0)),
                 "accuracy": accuracy,
@@ -301,16 +418,11 @@ def compute_graph_result(payload: dict[str, Any]) -> dict[str, Any]:
         )
 
     overall_score = round((correct_weight / total_weight) * 100) if total_weight > 0 else 0
+    overall_band = score_band(overall_score)
+    score_spread = max((item["score"] for item in abilities), default=0) - min((item["score"] for item in abilities), default=0)
     radar_values = [item["score"] for item in abilities]
 
-    sorted_for_suggestion = sorted(
-        abilities,
-        key=lambda item: (item["score"], ability_order.index(item["ability_id"])),
-    )
-    suggestions = []
-    for item in sorted_for_suggestion[:2]:
-        template = DEFAULT_SUGGESTIONS.get(item["ability_id"], f"重点补强{item['ability_name']}。")
-        suggestions.append(f"{item['ability_name']}：{template}")
+    suggestions = build_suggestion_cards(abilities, ability_order)
 
     trend = []
     for exam_id, group in sorted(assessment_groups.items(), key=lambda kv: _assessment_sort_key(kv[1][0])):
@@ -339,10 +451,14 @@ def compute_graph_result(payload: dict[str, Any]) -> dict[str, Any]:
 
     assessment_count = len(trend)
     confidence_level = _confidence_level(mapped_question_count, assessment_count)
+    overall_conclusion = build_overall_conclusion(overall_score, abilities)
 
     result = {
         "student": student,
         "overall_score": overall_score,
+        "overall_band": overall_band,
+        "overall_conclusion": overall_conclusion,
+        "score_spread": score_spread,
         "sample_count": mapped_question_count,
         "assessment_count": assessment_count,
         "confidence_level": confidence_level,
@@ -384,16 +500,17 @@ def generate_report_markdown(result: dict[str, Any]) -> str:
     lines = [
         "# 学生阅读能力图谱报告",
         "",
-        f"**学生**：{student.get('student_name', '')}",
-        f"**学生ID**：{student.get('student_id', '')}",
+        f"**学生**?{student.get('student_name', '')}",
+        f"**学生ID**?{student.get('student_id', '')}",
         "",
         "## 1. 综合阅读能力分",
         "",
-        f"**{result['overall_score']} 分**",
+        f"**{result['overall_score']} ?**",
+        f"趋势判断：{result.get('overall_band', score_band(result['overall_score']))}",
         "",
-        "说明：基于测评作答结果统计得出。",
+        "趋势判断：趋势判断：趋势判断：趋势判断：",
         "",
-        "## 2. 6 个能力维度得分",
+        f"## 2. {len(abilities)} ?能力维度??",
         "",
     ]
 
@@ -401,56 +518,51 @@ def generate_report_markdown(result: dict[str, Any]) -> str:
         [
             item["ability_name"],
             item["score"],
+            item["band"],
             item["question_count"],
             item["correct_count"],
             f"{item['accuracy'] * 100:.1f}%",
         ]
         for item in abilities
     ]
-    lines.append(markdown_table(["能力维度", "得分", "题量", "正确数", "正确率"], ability_rows))
+    lines.append(markdown_table(["????", "??", "??", "??", "???", "???"], ability_rows))
 
     lines.extend(
         [
             "",
-            "## 3. 雷达图数据",
+            "## 3. 总体结论",
             "",
-            "按 `ability_catalog` 顺序输出：",
+            result.get("overall_conclusion", build_overall_conclusion(result["overall_score"], abilities)),
+            "",
+            "## 4. 雷达图数据",
+            "",
+            "? `ability_catalog` 趋势判断：",
             "",
             "```json",
             json.dumps(result["radar_values"], ensure_ascii=False),
             "```",
             "",
-            "## 4. 薄弱项分析",
+            "## 5. 薄弱项分析",
             "",
         ]
     )
 
-    weakest = sorted(abilities, key=lambda item: item["score"])[:3]
+    weakest = sorted(abilities, key=lambda item: item["score"])[:2]
     for index, item in enumerate(weakest, start=1):
         lines.extend(
             [
                 f"{index}. **{item['ability_name']}**",
-                f"   - 得分 {item['score']} 分。",
-                f"   - 当前表现相对弱于其他维度。",
+                f"   - ?? {item['score']} ??",
+                f"   - 趋势判断：{item['band']}?",
+                "   - 趋势判断：趋势判断：???",
+                f"   - {ABILITY_FOCUS_TIPS.get(item['ability_id'], '趋势判断：趋势判断：????')}",
+                "",
             ]
         )
-        if item["ability_id"] == "comprehension":
-            lines.append("   - 主要关注事实提取、人物关系和显性信息定位。")
-        elif item["ability_id"] == "analysis":
-            lines.append("   - 主要关注情节梳理、结构拆解和线索归纳。")
-        elif item["ability_id"] == "expression":
-            lines.append("   - 主要关注主旨概括、复述和观点表达。")
-        elif item["ability_id"] == "critical_thinking":
-            lines.append("   - 主要关注因果判断、推理选择和观点辨析。")
-        elif item["ability_id"] == "creativity":
-            lines.append("   - 主要关注联想迁移、改写应用和开放延展。")
-        elif item["ability_id"] == "memory":
-            lines.append("   - 主要关注细节记忆、关键信息回忆和快速复盘。")
-        lines.append("")
 
     lines.extend(
         [
-            "## 5. 提升建议",
+            "## 6. 提升建议",
             "",
         ]
     )
@@ -461,26 +573,28 @@ def generate_report_markdown(result: dict[str, Any]) -> str:
     lines.extend(
         [
             "",
-            "## 6. 成长趋势",
+            "## 7. 成长趋势",
             "",
             markdown_table(
-                ["测评日期", "测评书目", "测评分"],
+                ["????", "????", "???"],
                 [[item["period"], item["book_title"], item["score"]] for item in trend],
             ),
             "",
             "趋势判断：",
-            "- 最近测评分数可用于观察阶段性变化。",
-            "- 分数波动说明能力还需要持续巩固。",
+            "- 趋势判断：趋势判断：趋势判断：??",
+            "- 趋势判断：趋势判断：趋势判断：?",
             "",
-            "## 7. 数据说明",
+            "## 8. 数据说明",
             "",
             markdown_table(
-                ["项目", "值"],
+                ["??", "?"],
                 [
-                    ["测评套数", result.get("assessment_count", 0)],
-                    ["统计样本数", result.get("sample_count", 0)],
-                    ["置信度", result.get("confidence_level", "")],
-                    ["最新更新时间", result.get("updated_at", "")],
+                    ["????", result.get("assessment_count", 0)],
+                    ["趋势判断：", result.get("sample_count", 0)],
+                    ["???", result.get("confidence_level", "")],
+                    ["????", result.get("overall_band", "")],
+                    ["????", result.get("score_spread", 0)],
+                    ["趋势判断：?", result.get("updated_at", "")],
                 ],
             ),
         ]
@@ -490,16 +604,17 @@ def generate_report_markdown(result: dict[str, Any]) -> str:
         lines.extend(
             [
                 "",
-                "## 8. 未映射标签",
+                "## 9. 趋势判断：",
                 "",
-                "- " + "、".join(unmapped_tags),
+                "- " + "?".join(unmapped_tags),
             ]
         )
 
     return "\n".join(lines).rstrip() + "\n"
 
 
-def run(input_path: str | Path, output_md: str | Path | None = None, output_json: str | Path | None = None) -> dict[str, Any]:
+def run(
+input_path: str | Path, output_md: str | Path | None = None, output_json: str | Path | None = None) -> dict[str, Any]:
     payload = load_input(input_path)
     result = compute_graph_result(payload)
     markdown = generate_report_markdown(result)

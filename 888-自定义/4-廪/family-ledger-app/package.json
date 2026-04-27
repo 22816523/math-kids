@@ -1,0 +1,38 @@
+{
+  "name": "family-ledger-app",
+  "private": true,
+  "version": "0.1.0",
+  "main": "dist/main/index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "node scripts/dev.mjs",
+    "build": "electron-vite build",
+    "preview": "electron-vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "dayjs": "^1.11.13",
+    "echarts": "^5.6.0",
+    "lucide-react": "^0.475.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.2.0",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/node": "^22.13.10",
+    "@types/react": "^19.0.10",
+    "@types/react-dom": "^19.0.4",
+    "@vitejs/plugin-react": "^4.3.4",
+    "electron": "^34.2.0",
+    "electron-vite": "^2.3.0",
+    "jsdom": "^26.0.0",
+    "typescript": "^5.8.2",
+    "vite": "^5.4.0",
+    "vitest": "^3.0.7"
+  }
+}
