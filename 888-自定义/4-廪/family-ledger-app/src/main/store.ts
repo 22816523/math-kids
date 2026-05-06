@@ -3,6 +3,7 @@ import crypto from 'node:crypto'
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import { createEmptyLedgerState, parseLedgerState, withPassword } from '@shared/backup'
+import { BACKUP_FILE_PREFIX, DATA_DIR_NAME } from '@shared/defaults'
 import type { LedgerState } from '@shared/types'
 
 function hashPassword(password: string): string {
@@ -10,7 +11,7 @@ function hashPassword(password: string): string {
 }
 
 function getDataDir() {
-  return path.join(app.getPath('documents'), '家庭记账', '数据')
+  return path.join(app.getPath('documents'), DATA_DIR_NAME, '数据')
 }
 
 function getLedgerPath() {
@@ -74,7 +75,7 @@ export async function changePassword(oldPassword: string, newPassword: string) {
 
 export async function exportBackup(state: LedgerState) {
   const result = await dialog.showSaveDialog({
-    defaultPath: path.join(app.getPath('documents'), '家庭记账_备份.json'),
+    defaultPath: path.join(app.getPath('documents'), `${BACKUP_FILE_PREFIX}_备份.json`),
     filters: [{ name: 'JSON', extensions: ['json'] }]
   })
 

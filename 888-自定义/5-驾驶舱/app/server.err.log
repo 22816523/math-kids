@@ -1,0 +1,13 @@
+file:///D:/%E6%96%87%E6%A1%A3/JTY/AI%E9%A1%B9%E7%9B%AE%E6%96%87%E6%A1%A3/888-%E8%87%AA%E5%AE%9A%E4%B9%89/5-%E9%A9%BE%E9%A9%B6%E8%88%B1/app/server.js:37
+  res.end(JSON.stringify(payload));
+               ^
+
+RangeError: Invalid string length
+    at JSON.stringify (<anonymous>)
+    at sendJson (file:///D:/%E6%96%87%E6%A1%A3/JTY/AI%E9%A1%B9%E7%9B%AE%E6%96%87%E6%A1%A3/888-%E8%87%AA%E5%AE%9A%E4%B9%89/5-%E9%A9%BE%E9%A9%B6%E8%88%B1/app/server.js:37:16)
+    at Server.<anonymous> (file:///D:/%E6%96%87%E6%A1%A3/JTY/AI%E9%A1%B9%E7%9B%AE%E6%96%87%E6%A1%A3/888-%E8%87%AA%E5%AE%9A%E4%B9%89/5-%E9%A9%BE%E9%A9%B6%E8%88%B1/app/server.js:90:5)
+    at Server.emit (node:events:508:28)
+    at parserOnIncoming (node:_http_server:1186:12)
+    at HTTPParser.parserOnHeadersComplete (node:_http_common:123:17)
+
+Node.js v24.11.1

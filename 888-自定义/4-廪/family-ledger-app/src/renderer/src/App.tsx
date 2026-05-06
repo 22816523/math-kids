@@ -10,10 +10,7 @@ import {
   FileSpreadsheet,
   FolderOpen,
   Lock,
-  Menu,
-  PieChart,
   Plus,
-  Search,
   Settings2,
   Trash2,
   Upload,
@@ -49,11 +46,12 @@ type FilterState = {
 
 type ReportMode = 'month' | 'year' | 'category' | 'member'
 type ReportChart = 'bar' | 'pie'
+type SettingsGroupKey = 'categories' | 'members' | 'sources'
 
 const NAV_ITEMS: Array<{ key: PageKey; label: string; icon: typeof WalletCards }> = [
   { key: 'dashboard', label: '仪表盘', icon: WalletCards },
   { key: 'ledger', label: '记账明细', icon: FileSpreadsheet },
-  { key: 'reports', label: '报表', icon: BarChart3 },
+  { key: 'reports', label: '报表统计', icon: BarChart3 },
   { key: 'settings', label: '基础设置', icon: Settings2 },
   { key: 'data', label: '数据管理', icon: Database }
 ]
@@ -68,6 +66,12 @@ const EMPTY_FILTERS: FilterState = {
   maxAmount: '',
   keyword: ''
 }
+
+const SETTINGS_GROUPS: Array<{ key: SettingsGroupKey; title: string; description: string }> = [
+  { key: 'categories', title: '分类列表', description: '支出分类' },
+  { key: 'members', title: '成员列表', description: '家庭成员' },
+  { key: 'sources', title: '来源平台', description: '记账来源' }
+]
 
 function createDraft(settings: AppSettings): Draft {
   return {
@@ -183,14 +187,18 @@ function App() {
   const [draft, setDraft] = useState<Draft>(() => createDraft({ categories: DEFAULT_CATEGORIES, members: DEFAULT_MEMBERS, sources: DEFAULT_SOURCES, passwordHash: null }))
   const [editDraft, setEditDraft] = useState<Draft>(() => createDraft({ categories: DEFAULT_CATEGORIES, members: DEFAULT_MEMBERS, sources: DEFAULT_SOURCES, passwordHash: null }))
   const [editingId, setEditingId] = useState<string | null>(null)
+  const [createLedgerOpen, setCreateLedgerOpen] = useState(false)
+  const [restoreLedgerOpen, setRestoreLedgerOpen] = useState(false)
   const [ledgerAddOpen, setLedgerAddOpen] = useState(false)
   const [ledgerImportOpen, setLedgerImportOpen] = useState(false)
   const [filters, setFilters] = useState<FilterState>(EMPTY_FILTERS)
-  const [ledgerFiltersOpen, setLedgerFiltersOpen] = useState(false)
+  const [ledgerFiltersOpen, setLedgerFiltersOpen] = useState(true)
   const [reportMode, setReportMode] = useState<ReportMode>('month')
   const [reportChart, setReportChart] = useState<ReportChart>('bar')
+  const [reportView, setReportView] = useState<'chart' | 'table'>('chart')
   const [importAnalysis, setImportAnalysis] = useState<ImportAnalysis | null>(null)
-  const [reportFiltersOpen, setReportFiltersOpen] = useState(false)
+  const [selectedSettingsGroup, setSelectedSettingsGroup] = useState<SettingsGroupKey>('categories')
+  const [reportFiltersOpen, setReportFiltersOpen] = useState(true)
   const [reportFilters, setReportFilters] = useState<{ from: string; to: string; category: string; member: string; source: string }>({
     from: '',
     to: '',
@@ -296,7 +304,7 @@ function App() {
   }, [reportData, reportMode]) as Array<any>
 
   useEffect(() => {
-    if (!chartRef.current) return
+    if (reportView !== 'chart' || !chartRef.current) return
     const chart = echarts.init(chartRef.current)
 
     if (reportMode === 'month' || reportMode === 'year') {
@@ -345,7 +353,7 @@ function App() {
       window.removeEventListener('resize', resize)
       chart.dispose()
     }
-  }, [reportChart, reportMode, reportRows])
+  }, [reportChart, reportMode, reportRows, reportView])
 
   useEffect(() => {
     setDraft((current) => ({ ...current, category: state?.settings.categories.includes(current.category) ? current.category : state?.settings.categories[0] ?? '', member: state?.settings.members.includes(current.member) ? current.member : state?.settings.members[0] ?? '', source: state?.settings.sources.includes(current.source) ? current.source : state?.settings.sources[0] ?? '' }))
@@ -368,6 +376,7 @@ function App() {
       setState(next)
       setDraft(createDraft(next.settings))
       setPage('dashboard')
+      setCreateLedgerOpen(false)
       setMessage('保存成功')
     } catch (error) {
       setMessage(error instanceof Error ? error.message : '新建失败')
@@ -411,6 +420,7 @@ function App() {
       const next = await window.ledger.restoreBackup(raw, restorePassword)
       setState(mergeDefaults(next))
       setPage('dashboard')
+      setRestoreLedgerOpen(false)
       setMessage('保存成功')
     } catch (error) {
       setMessage(error instanceof Error ? error.message : '恢复失败')
@@ -514,6 +524,10 @@ function App() {
     }
   }
 
+  function resetLedgerFilters() {
+    setFilters(EMPTY_FILTERS)
+  }
+
   async function handleChangePassword(oldPassword: string, newPassword: string) {
     const next = await window.ledger.changePassword(oldPassword, newPassword)
     if (!next) {
@@ -544,7 +558,7 @@ function App() {
     const ws = XLSX.utils.aoa_to_sheet(header)
     const wb = XLSX.utils.book_new()
     XLSX.utils.book_append_sheet(wb, ws, '妯℃澘')
-    XLSX.writeFile(wb, '家庭记账导入模板.xlsx')
+    XLSX.writeFile(wb, '廪导入模板.xlsx')
   }
 
   async function confirmImport() {
@@ -581,46 +595,59 @@ function App() {
     return (
       <div className="startup">
         <div className="startup-panel">
-          <h1>家庭记账工具</h1>
+          <h1>廪</h1>
           <p>新建账本或从备份恢复。</p>
           {renderMessage()}
-          <div className="startup-grid">
-            <section>
-              <h2>新建账本</h2>
-              <label>6 位数字密码</label>
-              <input value={createPassword} onChange={(event) => setCreatePassword(event.target.value)} maxLength={6} inputMode="numeric" />
-              <label>确认密码</label>
-              <input value={createPasswordConfirm} onChange={(event) => setCreatePasswordConfirm(event.target.value)} maxLength={6} inputMode="numeric" />
+          <div className="startup-actions">
+            <button onClick={() => setCreateLedgerOpen(true)}>新建账本</button>
+            <button onClick={() => setRestoreLedgerOpen(true)}>从备份恢复</button>
+          </div>
+        </div>
+        {createLedgerOpen && (
+          <Modal title="新建账本" className="narrow" onClose={() => setCreateLedgerOpen(false)}>
+            <div className="entry-form">
+              <div className="form-grid startup-form-grid">
+                <label><span>6 位数字密码</span><input value={createPassword} onChange={(event) => setCreatePassword(event.target.value)} maxLength={6} inputMode="numeric" /></label>
+                <label><span>确认密码</span><input value={createPasswordConfirm} onChange={(event) => setCreatePasswordConfirm(event.target.value)} maxLength={6} inputMode="numeric" /></label>
+              </div>
               <button disabled={busy} onClick={handleCreateLedger}>新建账本</button>
-            </section>
-            <section>
-              <h2>从备份恢复</h2>
-              <label>选择备份文件</label>
-              <input type="file" accept=".json" onChange={(event) => {
-                const file = event.target.files?.[0]
-                if (!file) return
-                file.text().then((raw) => {
-                  setBackupRaw(raw)
-                  window.ledger.previewBackup(raw).then(setBackupPreview).catch(() => setBackupPreview(null))
-                })
-              }} />
-              {backupPreview && (
-                <div className="hint">
-                  备份时间: {dayjs(backupPreview.updatedAt).format('YYYY-MM-DD HH:mm')}，记录数: {backupPreview.entriesCount}
-                </div>
-              )}
-              <label>新密码</label>
-              <input value={restorePassword} onChange={(event) => setRestorePassword(event.target.value)} maxLength={6} inputMode="numeric" />
-              <label>确认密码</label>
-              <input value={restorePasswordConfirm} onChange={(event) => setRestorePasswordConfirm(event.target.value)} maxLength={6} inputMode="numeric" />
+            </div>
+          </Modal>
+        )}
+        {restoreLedgerOpen && (
+          <Modal title="从备份恢复" className="narrow" onClose={() => setRestoreLedgerOpen(false)}>
+            <div className="entry-form">
+              <div className="form-grid restore-form-grid">
+                <label className="wide">
+                  <span>选择备份文件</span>
+                  <div className="file-button">
+                    <Upload size={16} /> 选择文件
+                    <input type="file" accept=".json" onChange={(event) => {
+                      const file = event.target.files?.[0]
+                      if (!file) return
+                      file.text().then((raw) => {
+                        setBackupRaw(raw)
+                        window.ledger.previewBackup(raw).then(setBackupPreview).catch(() => setBackupPreview(null))
+                      })
+                    }} />
+                  </div>
+                </label>
+                {backupPreview && (
+                  <div className="hint wide">
+                    备份时间: {dayjs(backupPreview.updatedAt).format('YYYY-MM-DD HH:mm')}，记录数: {backupPreview.entriesCount}
+                  </div>
+                )}
+                <label className="wide"><span>新密码</span><input value={restorePassword} onChange={(event) => setRestorePassword(event.target.value)} maxLength={6} inputMode="numeric" /></label>
+                <label className="wide"><span>确认密码</span><input value={restorePasswordConfirm} onChange={(event) => setRestorePasswordConfirm(event.target.value)} maxLength={6} inputMode="numeric" /></label>
+              </div>
               <button disabled={busy || !backupRaw} onClick={async () => {
                 if (!backupRaw) return
                 const file = new File([backupRaw], 'backup.json', { type: 'application/json' })
                 await handleRestoreBackup(file)
               }}>从备份恢复</button>
-            </section>
-          </div>
-        </div>
+            </div>
+          </Modal>
+        )}
       </div>
     )
   }
@@ -631,8 +658,7 @@ function App() {
         <div className="brand">
           <div className="brand-mark"><CircleDollarSign size={20} /></div>
           <div>
-            <div className="brand-title">家庭记账</div>
-            <div className="brand-subtitle">本地账本</div>
+            <div className="brand-title">廪</div>
           </div>
         </div>
         <nav>
@@ -651,7 +677,6 @@ function App() {
         <header className="topbar">
           <div>
             <h1>{NAV_ITEMS.find((item) => item.key === page)?.label}</h1>
-            <p>{dayjs().format('YYYY-MM-DD')}</p>
           </div>
           <div className="top-actions">
             {page === 'ledger' && (
@@ -660,105 +685,109 @@ function App() {
                 <button onClick={openLedgerAddModal}><Plus size={16} /> 新增</button>
               </>
             )}
-            <button onClick={handleExportBackup}><Download size={16} /> 备份</button>
           </div>
         </header>
         {renderMessage()}
         {page === 'dashboard' && (
-          <section className="page-grid">
-            <Card title="本月总支出" value={formatMoney(dashboardStats.monthTotal)} />
-            <Card title="本年累计支出" value={formatMoney(dashboardStats.yearTotal)} />
-            <Card title="最近记录" value={`${dashboardEntries.recent.length} 条`} />
-            <Card title="账本状态" value="正常" />
-            <Panel title="本月支出趋势">
-              <ChartBox
-                height={280}
-                option={{
-                  title: { show: false },
-                  tooltip: { trigger: 'axis' },
-                  grid: { left: 32, right: 24, top: 24, bottom: 32 },
-                  xAxis: {
-                    type: 'category',
-                    data: Object.entries(
-                      dashboardEntries.month.reduce<Record<string, number>>((acc, entry) => {
-                        const day = dayjs(entry.date).format('DD')
-                        acc[day] = (acc[day] ?? 0) + entry.amount
-                        return acc
-                      }, {})
-                    ).map(([day]) => day)
-                  },
-                  yAxis: { type: 'value' },
-                  series: [
-                    {
-                      type: 'line',
+          <>
+            <section className="page-grid">
+              <Card title="本月总支出" value={formatMoney(dashboardStats.monthTotal)} />
+              <Card title="本年累计支出" value={formatMoney(dashboardStats.yearTotal)} />
+              <Card title="最近记录" value={`${dashboardEntries.recent.length} 条`} />
+              <Card title="账本状态" value="正常" />
+            </section>
+            <section className="dashboard-panels-grid">
+              <Panel title="本月支出趋势">
+                <ChartBox
+                  height={280}
+                  option={{
+                    title: { show: false },
+                    tooltip: { trigger: 'axis' },
+                    grid: { left: 32, right: 24, top: 24, bottom: 32 },
+                    xAxis: {
+                      type: 'category',
                       data: Object.entries(
                         dashboardEntries.month.reduce<Record<string, number>>((acc, entry) => {
                           const day = dayjs(entry.date).format('DD')
                           acc[day] = (acc[day] ?? 0) + entry.amount
                           return acc
                         }, {})
-                      ).map(([, amount]) => amount),
-                      smooth: true,
-                      itemStyle: { color: '#2f6b57' }
-                    }
-                  ]
-                }}
-              />
-            </Panel>
-            <Panel title="各分类占比">
-              <ChartBox
-                height={280}
-                option={{
-                  tooltip: { trigger: 'item' },
-                  legend: { bottom: 0 },
-                  series: [
-                    {
-                      type: 'pie',
-                      radius: '62%',
-                      data: dashboardStats.categorySummaries.map((item) => ({ name: item.name, value: item.amount })),
-                      itemStyle: { color: '#2f6b57' }
-                    }
-                  ]
-                }}
-              />
-            </Panel>
-            <Panel title="最近 5 条">
-              <table className="table">
-                <thead>
-                  <tr>
-                    <th>日期</th>
-                    <th>金额</th>
-                    <th>分类</th>
-                    <th>成员</th>
-                    <th>来源平台</th>
-                    <th>备注</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {dashboardEntries.recent.map((entry) => (
-                    <tr key={entry.id}>
-                      <td>{entry.date}</td>
-                      <td>{formatMoney(entry.amount)}</td>
-                      <td>{entry.category}</td>
-                      <td>{entry.member}</td>
-                      <td>{entry.source}</td>
-                      <td>{formatText(entry.note)}</td>
+                      ).map(([day]) => day)
+                    },
+                    yAxis: { type: 'value' },
+                    series: [
+                      {
+                        type: 'line',
+                        data: Object.entries(
+                          dashboardEntries.month.reduce<Record<string, number>>((acc, entry) => {
+                            const day = dayjs(entry.date).format('DD')
+                            acc[day] = (acc[day] ?? 0) + entry.amount
+                            return acc
+                          }, {})
+                        ).map(([, amount]) => amount),
+                        smooth: true,
+                        itemStyle: { color: '#2f6b57' }
+                      }
+                    ]
+                  }}
+                />
+              </Panel>
+              <Panel title="各分类占比">
+                <ChartBox
+                  height={280}
+                  option={{
+                    tooltip: { trigger: 'item' },
+                    legend: { bottom: 0, left: 'center' },
+                    series: [
+                      {
+                        type: 'pie',
+                        radius: '62%',
+                        center: ['50%', '44%'],
+                        data: dashboardStats.categorySummaries.map((item) => ({ name: item.name, value: item.amount })),
+                        itemStyle: { color: '#2f6b57' }
+                      }
+                    ]
+                  }}
+                />
+              </Panel>
+              <Panel title="最近 5 条">
+                <table className="table">
+                  <thead>
+                    <tr>
+                      <th>日期</th>
+                      <th>金额</th>
+                      <th>分类</th>
+                      <th>成员</th>
+                      <th>来源平台</th>
+                      <th>备注</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </Panel>
-            <Panel title="成员支出">
-              <table className="table compact">
-                <thead><tr><th>成员</th><th>金额</th></tr></thead>
-                <tbody>
-                  {dashboardStats.memberSummaries.map((item) => (
-                    <tr key={item.name}><td>{item.name}</td><td>{formatMoney(item.amount)}</td></tr>
-                  ))}
-                </tbody>
-              </table>
-            </Panel>
-          </section>
+                  </thead>
+                  <tbody>
+                    {dashboardEntries.recent.map((entry) => (
+                      <tr key={entry.id}>
+                        <td>{entry.date}</td>
+                        <td>{formatMoney(entry.amount)}</td>
+                        <td>{entry.category}</td>
+                        <td>{entry.member}</td>
+                        <td>{entry.source}</td>
+                        <td>{formatText(entry.note)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </Panel>
+              <Panel title="成员支出">
+                <table className="table compact">
+                  <thead><tr><th>成员</th><th>金额</th></tr></thead>
+                  <tbody>
+                    {dashboardStats.memberSummaries.map((item) => (
+                      <tr key={item.name}><td>{item.name}</td><td>{formatMoney(item.amount)}</td></tr>
+                    ))}
+                  </tbody>
+                </table>
+              </Panel>
+            </section>
+          </>
         )}
         {page === 'ledger' && (
           <section className="page-stack">
@@ -771,7 +800,11 @@ function App() {
                 <label><span>来源平台</span><select value={filters.source} onChange={(event) => setFilters((current) => ({ ...current, source: event.target.value }))}><option value="">全部</option>{state.settings.sources.map((item) => <option key={item} value={item}>{item}</option>)}</select></label>
                 <label><span>金额下限</span><input value={filters.minAmount} onChange={(event) => setFilters((current) => ({ ...current, minAmount: event.target.value }))} /></label>
                 <label><span>金额上限</span><input value={filters.maxAmount} onChange={(event) => setFilters((current) => ({ ...current, maxAmount: event.target.value }))} /></label>
-                <label className="wide"><span>备注关键词</span><input value={filters.keyword} onChange={(event) => setFilters((current) => ({ ...current, keyword: event.target.value }))} /></label>
+                <label><span>备注关键词</span><input value={filters.keyword} onChange={(event) => setFilters((current) => ({ ...current, keyword: event.target.value }))} /></label>
+              </div>
+              <div className="filter-actions">
+                <button type="button" onClick={resetLedgerFilters}>重置</button>
+                <button type="button">查询</button>
               </div>
             </CollapsiblePanel>
             <Panel title={`记账明细 (${filteredEntries.length})`}>
@@ -820,41 +853,58 @@ function App() {
                 <label><span>图表类型</span><select value={reportChart} onChange={(event) => setReportChart(event.target.value as ReportChart)}><option value="bar">柱状图</option><option value="pie">饼状图</option></select></label>
               </div>
             </CollapsiblePanel>
-            <Panel title="图表">
-              <ChartBox height={320} option={{}} chartRef={chartRef} />
-            </Panel>
-            <Panel title="统计表格">
-              <table className="table">
-                <thead>
-                  {reportMode === 'month' || reportMode === 'year' ? (
-                    <tr>
-                      <th>统计周期</th>
-                      {reportCategories.map((category) => <th key={category}>{category}</th>)}
-                      <th>总支出金额</th>
-                    </tr>
-                  ) : (
-                    <tr>
-                      <th>{reportMode === 'category' ? '分类' : '成员'}</th>
-                      <th>支出金额</th>
-                    </tr>
-                  )}
-                </thead>
-                <tbody>
-                  {(reportMode === 'month' || reportMode === 'year'
-                    ? reportRows.map((row) => (
-                      <tr key={row.period}>
-                        <td>{row.period}</td>
-                        {reportCategories.map((category) => <td key={category}>{formatMoney(row.categoryTotals[category] ?? 0)}</td>)}
-                        <td>{formatMoney(row.total)}</td>
+            <div className="tab-switch">
+              <button
+                className={reportView === 'chart' ? 'tab-switch-item active' : 'tab-switch-item'}
+                onClick={() => setReportView('chart')}
+              >
+                图表
+              </button>
+              <button
+                className={reportView === 'table' ? 'tab-switch-item active' : 'tab-switch-item'}
+                onClick={() => setReportView('table')}
+              >
+                统计表格
+              </button>
+            </div>
+            {reportView === 'chart' ? (
+              <Panel title="图表">
+                <ChartBox height={320} option={{}} chartRef={chartRef} />
+              </Panel>
+            ) : (
+              <Panel title="统计表格">
+                <table className="table">
+                  <thead>
+                    {reportMode === 'month' || reportMode === 'year' ? (
+                      <tr>
+                        <th>统计周期</th>
+                        {reportCategories.map((category) => <th key={category}>{category}</th>)}
+                        <th>总支出金额</th>
                       </tr>
-                    ))
-                    : (reportRows as Array<{ name: string; amount: number }>).map((row) => (
-                      <tr key={row.name}><td>{row.name}</td><td>{formatMoney(row.amount)}</td></tr>
-                    )))}
-                </tbody>
-              </table>
-            </Panel>
-            <Panel title="导出">
+                    ) : (
+                      <tr>
+                        <th>{reportMode === 'category' ? '分类' : '成员'}</th>
+                        <th>支出金额</th>
+                      </tr>
+                    )}
+                  </thead>
+                  <tbody>
+                    {(reportMode === 'month' || reportMode === 'year'
+                      ? reportRows.map((row) => (
+                        <tr key={row.period}>
+                          <td>{row.period}</td>
+                          {reportCategories.map((category) => <td key={category}>{formatMoney(row.categoryTotals[category] ?? 0)}</td>)}
+                          <td>{formatMoney(row.total)}</td>
+                        </tr>
+                      ))
+                      : (reportRows as Array<{ name: string; amount: number }>).map((row) => (
+                        <tr key={row.name}><td>{row.name}</td><td>{formatMoney(row.amount)}</td></tr>
+                      )))}
+                  </tbody>
+                </table>
+              </Panel>
+            )}
+            <div className="toolbar report-actions">
               <button onClick={() => {
                 const rows = reportMode === 'month' || reportMode === 'year'
                   ? reportRows.map((row) => ({ 统计周期: row.period, 总支出金额: row.total, ...reportCategories.reduce<Record<string, number>>((acc, category) => ({ ...acc, [category]: row.categoryTotals[category] ?? 0 }), {}) }))
@@ -862,49 +912,53 @@ function App() {
                 const wb = XLSX.utils.book_new()
                 const ws = XLSX.utils.json_to_sheet(rows)
                 XLSX.utils.book_append_sheet(wb, ws, '报表')
-                XLSX.writeFile(wb, '家庭记账报表.xlsx')
+                XLSX.writeFile(wb, '廪报表.xlsx')
               }}><Download size={16} /> 导出报表</button>
-            </Panel>
+            </div>
           </section>
         )}
         {page === 'settings' && (
-          <section className="page-stack">
-            <Panel title="分类维护">
-              <ListEditor
-                items={state.settings.categories}
-                onChange={async (nextItems) => {
-                  await persist({ ...state, settings: { ...state.settings, categories: nextItems }, updatedAt: new Date().toISOString() })
-                }}
-              />
+          <section className="settings-layout">
+            <Panel title="分类列表">
+              <div className="settings-nav">
+                {SETTINGS_GROUPS.map((group) => {
+                  const count = state.settings[group.key].length
+                  return (
+                    <button
+                      key={group.key}
+                      className={selectedSettingsGroup === group.key ? 'settings-nav-item active' : 'settings-nav-item'}
+                      onClick={() => setSelectedSettingsGroup(group.key)}
+                    >
+                      <small>{group.description} · {count} 项</small>
+                    </button>
+                  )
+                })}
+              </div>
             </Panel>
-            <Panel title="成员维护">
+            <Panel title={SETTINGS_GROUPS.find((group) => group.key === selectedSettingsGroup)?.description ?? '值列表'}>
               <ListEditor
-                items={state.settings.members}
+                items={state.settings[selectedSettingsGroup]}
                 onChange={async (nextItems) => {
-                  await persist({ ...state, settings: { ...state.settings, members: nextItems }, updatedAt: new Date().toISOString() })
-                }}
-              />
-            </Panel>
-            <Panel title="来源平台维护">
-              <ListEditor
-                items={state.settings.sources}
-                onChange={async (nextItems) => {
-                  await persist({ ...state, settings: { ...state.settings, sources: nextItems }, updatedAt: new Date().toISOString() })
+                  await persist({
+                    ...state,
+                    settings: { ...state.settings, [selectedSettingsGroup]: nextItems } as AppSettings,
+                    updatedAt: new Date().toISOString()
+                  })
                 }}
               />
             </Panel>
           </section>
         )}
         {page === 'data' && (
-          <section className="page-stack">
+          <section className="page-stack data-page">
             <Panel title="数据管理">
-              <div className="toolbar">
+              <div className="toolbar data-toolbar">
                 <button onClick={handleExportBackup}><Download size={16} /> 导出备份</button>
                 <button onClick={() => window.ledger.openDataDir()}><FolderOpen size={16} /> 打开数据目录</button>
               </div>
-              <div className="panel-inline">
+              <div className="panel-inline data-card">
                 <h3>从备份恢复</h3>
-                <div className="toolbar">
+                <div className="toolbar data-restore-actions">
                   <label className="file-button"><Upload size={16} /> 选择备份文件<input type="file" accept=".json" onChange={(event) => {
                     const file = event.target.files?.[0]
                     if (!file) return
@@ -924,21 +978,23 @@ function App() {
                   </div>
                 )}
               </div>
-              <div className="form-grid">
-                <label><span>旧密码</span><input type="password" id="oldPassword" /></label>
-                <label><span>新密码</span><input type="password" id="newPassword" /></label>
-                <label><span>确认新密码</span><input type="password" id="confirmPassword" /></label>
+              <div className="data-passwords">
+                <div className="form-grid data-password-grid">
+                  <label><span>旧密码</span><input type="password" id="oldPassword" /></label>
+                  <label><span>新密码</span><input type="password" id="newPassword" /></label>
+                  <label><span>确认新密码</span><input type="password" id="confirmPassword" /></label>
+                </div>
+                <button onClick={async () => {
+                  const oldPassword = (document.getElementById('oldPassword') as HTMLInputElement | null)?.value ?? ''
+                  const newPassword = (document.getElementById('newPassword') as HTMLInputElement | null)?.value ?? ''
+                  const confirmPassword = (document.getElementById('confirmPassword') as HTMLInputElement | null)?.value ?? ''
+                  if (newPassword.length !== 6 || newPassword !== confirmPassword) {
+                    setMessage('密码需要 6 位且两次输入一致')
+                    return
+                  }
+                  await handleChangePassword(oldPassword, newPassword)
+                }}><Lock size={16} /> 修改密码</button>
               </div>
-              <button onClick={async () => {
-                const oldPassword = (document.getElementById('oldPassword') as HTMLInputElement | null)?.value ?? ''
-                const newPassword = (document.getElementById('newPassword') as HTMLInputElement | null)?.value ?? ''
-                const confirmPassword = (document.getElementById('confirmPassword') as HTMLInputElement | null)?.value ?? ''
-                if (newPassword.length !== 6 || newPassword !== confirmPassword) {
-                  setMessage('密码需要 6 位且两次输入一致')
-                  return
-                }
-                await handleChangePassword(oldPassword, newPassword)
-              }}><Lock size={16} /> 修改密码</button>
             </Panel>
           </section>
         )}
@@ -1030,10 +1086,10 @@ function Card(props: { title: string; value: string }) {
   )
 }
 
-function Modal(props: { title: string; children: ReactNode; onClose: () => void }) {
+function Modal(props: { title: string; children: ReactNode; onClose: () => void; className?: string }) {
   return (
     <div className="modal-backdrop">
-      <div className="modal">
+      <div className={`modal${props.className ? ` ${props.className}` : ''}`}>
         <div className="modal-head">
           <h3>{props.title}</h3>
           <button className="ghost" onClick={props.onClose}>关闭</button>
@@ -1088,56 +1144,91 @@ function EntryEditor(props: {
 }
 
 function ListEditor(props: { items: string[]; onChange: (nextItems: string[]) => Promise<void> }) {
-  const [draft, setDraft] = useState('')
   const [localItems, setLocalItems] = useState(props.items)
+  const [isEditing, setIsEditing] = useState(false)
+  const [isAdding, setIsAdding] = useState(false)
+  const [newItemValue, setNewItemValue] = useState('')
 
   useEffect(() => {
     setLocalItems(props.items)
+    setIsAdding(false)
+    setNewItemValue('')
   }, [props.items])
 
   async function commit(nextItems: string[]) {
     setLocalItems(nextItems)
+    setIsEditing(false)
     await props.onChange(nextItems)
   }
 
   return (
     <div className="list-editor">
-      <div className="list-add">
-        <input value={draft} onChange={(event) => setDraft(event.target.value)} placeholder="输入新选项" />
-        <button onClick={async () => {
-          const value = draft.trim()
-          if (!value || localItems.includes(value)) return
-          setDraft('')
-          await commit([...localItems, value])
-        }}>添加</button>
+      <div className="list-toolbar">
+        <button onClick={() => {
+          setIsAdding(true)
+          setNewItemValue('')
+        }}>新增</button>
+        {isEditing ? (
+          <>
+            <button onClick={async () => {
+              const cleaned = localItems.map((item) => item.trim())
+              if (cleaned.some((item) => !item) || new Set(cleaned).size !== cleaned.length) return
+              await commit(cleaned)
+            }}>保存</button>
+            <button className="ghost" onClick={() => {
+              setLocalItems(props.items)
+              setIsEditing(false)
+            }}>取消</button>
+          </>
+        ) : (
+          <button onClick={() => {
+            setLocalItems(props.items)
+            setIsEditing(true)
+          }}>编辑</button>
+        )}
       </div>
       <div className="tag-list">
         {localItems.map((item, index) => (
-          <div key={item} className="tag-item">
+          <div key={index} className="tag-item">
             <input
               value={item}
-              onChange={async (event) => {
+              disabled={!isEditing}
+              onChange={(event) => {
                 const nextItems = [...localItems]
                 nextItems[index] = event.target.value
                 setLocalItems(nextItems)
               }}
-              onBlur={async (event) => {
-                const value = event.target.value.trim()
-                if (!value || localItems.filter((current, currentIndex) => currentIndex !== index).includes(value)) {
-                  setLocalItems(props.items)
-                  return
-                }
-                const nextItems = [...localItems]
-                nextItems[index] = value
-                await commit(nextItems)
-              }}
             />
-            <button className="ghost" onClick={async () => {
-              const nextItems = localItems.filter((_, currentIndex) => currentIndex !== index)
-              await commit(nextItems)
-            }}><Trash2 size={14} /></button>
+            {isEditing && (
+              <button className="ghost" onClick={async () => {
+                const nextItems = localItems.filter((_, currentIndex) => currentIndex !== index)
+                setLocalItems(nextItems)
+              }}><Trash2 size={14} /></button>
+            )}
           </div>
         ))}
+        {isAdding && (
+          <div className="tag-item new-tag-item">
+            <input
+              value={newItemValue}
+              onChange={(event) => setNewItemValue(event.target.value)}
+              placeholder="输入新选项"
+            />
+            <button onClick={async () => {
+              const value = newItemValue.trim()
+              if (!value || localItems.includes(value)) return
+              const nextItems = [...localItems, value]
+              setLocalItems(nextItems)
+              setIsAdding(false)
+              setNewItemValue('')
+              await props.onChange(nextItems)
+            }}>保存</button>
+            <button className="ghost" onClick={() => {
+              setIsAdding(false)
+              setNewItemValue('')
+            }}>取消</button>
+          </div>
+        )}
       </div>
     </div>
   )
