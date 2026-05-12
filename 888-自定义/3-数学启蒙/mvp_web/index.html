@@ -46,9 +46,9 @@
       display: grid;
       /* 首屏优先：默认 2x2，大屏再扩成 3 列 */
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      column-gap: 22px;
-      row-gap: 20px;
-      padding: 10px 22px 28px;
+      column-gap: 24px;
+      row-gap: 24px;
+      padding: 16px 24px 48px;
       flex: 1;
       overflow: auto;
       align-content: start;
@@ -61,9 +61,9 @@
       justify-content: center;
       min-width: 0;
       min-height: 0;
-      aspect-ratio: 1 / 1;
+      
       gap: 8px;
-      padding: 14px 10px;
+      padding: 24px 10px;
       background: var(--white);
       border: 3px solid var(--gray-100);
       border-bottom: 6px solid var(--gray-200);
@@ -329,6 +329,14 @@
     </div>
 
     <div class="module-grid">
+      <a href="daily.html" class="module-card color-orange">
+        <div class="module-icon">
+          <span class="iconify" data-icon="fluent-emoji:trophy" style="font-size: 48px;"></span>
+        </div>
+        <span class="module-name">每日一练</span>
+        <span class="module-desc">混合题型 · 星星收集</span>
+      </a>
+
       <a href="baisu.html" class="module-card color-green">
         <div class="module-icon">
           <div class="icon-grid">
@@ -359,7 +367,7 @@
         <span class="module-desc">辨认 · 找一找 · 听指令</span>
       </a>
 
-      <a href="measure.html" class="module-card color-yellow">
+      <a href="measure.html" class="module-card color-blue">
         <div class="module-icon">
           <span class="iconify" data-icon="fluent-emoji:alarm-clock" style="font-size: 48px;"></span>
         </div>
@@ -384,7 +392,7 @@
         <span class="module-desc">10以内 · 20以内 · 100以内</span>
       </a>
 
-      <a href="sudoku.html" class="module-card color-blue">
+      <a href="sudoku.html" class="module-card color-yellow">
         <div class="module-icon">
           <span class="iconify" data-icon="fluent-emoji:puzzle-piece" style="font-size: 48px;"></span>
         </div>
@@ -392,7 +400,7 @@
         <span class="module-desc">4乘4 · 6乘6 · 9乘9</span>
       </a>
 
-      <a href="trace.html" class="module-card color-orange">
+      <a href="trace.html" class="module-card color-green">
         <div class="module-icon">
           <span class="iconify" data-icon="fluent-emoji:writing-hand" style="font-size: 44px;"></span>
         </div>
@@ -400,11 +408,6 @@
         <span class="module-desc">规范书写 · 1-100</span>
       </a>
 
-      <div class="module-card locked color-orange" style="display:none;">
-        <div class="module-icon">🏆</div>
-        <span class="module-name">每日闯关</span>
-        <span class="module-desc">混合题型 · 星星收集</span>
-      </div>
     </div>
   </div>
 
