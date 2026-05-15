@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>产品站点印厂配置</title>
+  <style>
+    :root{
+      --blue:#1677ff;
+      --blue-weak:#eaf3ff;
+      --blue-border:#bcd7ff;
+      --green:#16a34a;
+      --green-bg:#edf9f0;
+      --orange:#f59e0b;
+      --orange-bg:#fff6e8;
+      --red:#ef4444;
+      --red-bg:#fff1f1;
+      --bg:#f5f7fa;
+      --line:#dbe3ec;
+      --line-soft:#edf2f7;
+      --text:#1f2937;
+      --text-soft:#6b7280;
+      --radius:4px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",Arial,sans-serif;
+      background:#fff;
+      color:var(--text);
+    }
+    .app{min-height:100vh;display:flex;flex-direction:column;background:var(--bg);}
+    .topbar{
+      height:42px;
+      background:var(--blue);
+      color:#fff;
+      display:flex;
+      align-items:center;
+      padding:0 10px;
+      flex:0 0 auto;
+    }
+    .brand-logo{
+      display:block;
+      width:188px;
+      height:28px;
+      object-fit:contain;
+    }
+    .topnav{
+      display:flex;
+      align-items:stretch;
+      gap:5px;
+      margin-left:8px;
+      height:100%;
+    }
+    .nav-home{
+      display:flex;
+      align-items:center;
+      height:100%;
+      padding:0 8px;
+      font-size:15px;
+      white-space:nowrap;
+    }
+    .nav-arrow{
+      display:flex;
+      align-items:center;
+      height:100%;
+      color:rgba(255,255,255,.75);
+      font-size:18px;
+      padding:0 2px 1px 0;
+    }
+    .nav-tab{
+      display:flex;
+      align-items:center;
+      height:calc(100% - 3px);
+      margin-top:3px;
+      padding:0 10px;
+      background:#fff;
+      color:var(--blue);
+      border-radius:4px 4px 0 0;
+      font-size:14px;
+      border:1px solid rgba(255,255,255,.9);
+      border-bottom-color:#fff;
+    }
+    .nav-tab .close{
+      margin-left:8px;
+      color:#94a3b8;
+      font-size:12px;
+      line-height:1;
+    }
+    .topbar-spacer{flex:1}
+    .top-actions{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      color:#fff;
+      font-size:11px;
+    }
+    .top-icon{
+      width:20px;
+      height:20px;
+      background-repeat:no-repeat;
+      background-position:center;
+      background-size:20px 20px;
+      opacity:.95;
+    }
+    .top-icon.msg{background-image:url("./assets/提示_tips-one.png");}
+    .top-icon.palette{background-image:url("./assets/调色盘_platte.png");}
+    .top-icon.bell{background-image:url("./assets/提醒_remind.png");}
+    .user-wrap{display:flex;align-items:center;gap:6px;white-space:nowrap;}
+    .avatar{
+      width:22px;
+      height:22px;
+      border-radius:50%;
+      background:rgba(255,255,255,.35);
+      border:1px solid rgba(255,255,255,.25);
+    }
+    .shell{
+      display:grid;
+      grid-template-columns:68px 1fr;
+      min-height:calc(100vh - 42px);
+    }
+    .sidebar{
+      background:#fff;
+      border-right:1px solid var(--line);
+      padding:6px 4px 8px;
+    }
+    .menu{
+      display:flex;
+      flex-direction:column;
+      gap:2px;
+    }
+    .menu-item{
+      height:62px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:4px;
+      padding:5px 1px;
+      color:#475569;
+      font-size:14px;
+      text-align:center;
+      line-height:1.05;
+      border-radius:4px;
+    }
+    .menu-item.active{
+      background:var(--blue);
+      color:#fff;
+      margin:0 2px;
+      width:calc(100% - 4px);
+    }
+    .menu-icon{
+      width:22px;
+      height:22px;
+      object-fit:contain;
+      display:block;
+    }
+    .menu-item:not(.active) .icon-white{display:none;}
+    .menu-item.active .icon-color{display:none;}
+    .content{
+      padding:6px;
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      min-width:0;
+    }
+    .panel{
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+    }
+    .filters{
+      padding:10px 12px 8px;
+    }
+    .filter-grid{
+      display:grid;
+      grid-template-columns:repeat(6, minmax(0, 1fr));
+      gap:12px 10px;
+      align-items:end;
+    }
+    .field{
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+      min-width:0;
+    }
+    .field label{
+      font-size:12px;
+      color:#4b5563;
+      line-height:1;
+    }
+    .control,
+    select{
+      width:100%;
+      height:30px;
+      border:1px solid var(--line);
+      border-radius:4px;
+      padding:0 10px;
+      font-size:12px;
+      color:var(--text);
+      background:#fff;
+      outline:none;
+    }
+    .control::placeholder{color:#9aa4b2;}
+    .picker-row{
+      display:flex;
+      gap:8px;
+      align-items:center;
+    }
+    .picker-row .control{
+      flex:1 1 auto;
+    }
+    .picker-trigger{
+      flex:0 0 auto;
+      min-width:68px;
+    }
+    .filter-actions{
+      display:flex;
+      gap:8px;
+      align-items:center;
+      justify-content:flex-start;
+      padding-bottom:1px;
+    }
+    .toolbar{
+      padding:8px 12px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+    }
+    .toolbar-left,.toolbar-right{display:flex;gap:8px;align-items:center;}
+    .btn{
+      height:30px;
+      border:1px solid var(--line);
+      border-radius:4px;
+      background:#fff;
+      color:#374151;
+      font-size:12px;
+      padding:0 12px;
+      cursor:default;
+    }
+    .btn.primary{
+      background:var(--blue);
+      border-color:var(--blue);
+      color:#fff;
+    }
+    .btn.danger{
+      border-color:#f3c2c2;
+      color:#d14343;
+      background:#fff;
+    }
+    .summary{
+      font-size:12px;
+      color:var(--text-soft);
+    }
+    .table-wrap{
+      display:flex;
+      flex-direction:column;
+      min-height:0;
+      flex:1 1 auto;
+    }
+    table{
+      width:100%;
+      border-collapse:collapse;
+      table-layout:fixed;
+      min-width:1340px;
+    }
+    thead th{
+      background:#f7f9fc;
+      color:#475569;
+      font-size:12px;
+      font-weight:400;
+      height:38px;
+      border-bottom:1px solid var(--line);
+      border-right:1px solid var(--line-soft);
+      padding:0 8px;
+      text-align:left;
+      white-space:nowrap;
+    }
+    tbody td{
+      height:38px;
+      font-size:12px;
+      color:#334155;
+      border-bottom:1px solid var(--line-soft);
+      border-right:1px solid var(--line-soft);
+      padding:0 8px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      background:#fff;
+    }
+    tbody tr:nth-child(2){
+      background:#fff9ef;
+    }
+    tbody tr:nth-child(2) td{
+      background:#fff9ef;
+    }
+    .check-col{width:38px;text-align:center;}
+    .code-link{
+      color:var(--blue);
+      text-decoration:none;
+    }
+    .tag{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-width:52px;
+      height:22px;
+      padding:0 8px;
+      border-radius:11px;
+      font-size:12px;
+      border:1px solid transparent;
+    }
+    .tag.green{color:var(--green);background:var(--green-bg);border-color:#cdeed7;}
+    .tag.orange{color:#b7791f;background:var(--orange-bg);border-color:#f6d9a7;}
+    .tag.blue{color:#2563eb;background:#eef5ff;border-color:#cfe0ff;}
+    .actions a{
+      color:var(--blue);
+      text-decoration:none;
+      margin-right:10px;
+    }
+    .pagination{
+      display:flex;
+      align-items:center;
+      justify-content:flex-end;
+      gap:8px;
+      padding:10px 12px;
+      border-top:1px solid var(--line);
+      background:#fff;
+      font-size:12px;
+      color:#111827;
+    }
+    .pager{
+      display:flex;
+      align-items:center;
+      gap:2px;
+    }
+    .page-size{
+      min-width:98px;
+      height:30px;
+      padding:0 34px 0 14px;
+      border:1px solid var(--line);
+      border-radius:6px;
+      display:flex;
+      align-items:center;
+      position:relative;
+      background:#fff;
+      color:#111827;
+    }
+    .page-size-wrap{
+      position:relative;
+    }
+    .page-size::after{
+      content:"⌄";
+      position:absolute;
+      right:12px;
+      top:50%;
+      transform:translateY(-52%);
+      color:#9aa4b2;
+      font-size:12px;
+    }
+    .page-size-menu{
+      position:absolute;
+      right:0;
+      bottom:36px;
+      width:112px;
+      padding:8px 0;
+      border:1px solid var(--line);
+      border-radius:6px;
+      background:#fff;
+      box-shadow:0 8px 20px rgba(15,23,42,.08);
+      z-index:2;
+    }
+    .page-size-menu.hidden{
+      display:none;
+    }
+    .page-size-item{
+      height:38px;
+      padding:0 16px;
+      display:flex;
+      align-items:center;
+      color:#111827;
+      white-space:nowrap;
+    }
+    .page-size-item.active{
+      color:#2563eb;
+      font-weight:600;
+    }
+    .page-btn,.page-num{
+      min-width:28px;
+      height:28px;
+      border:1px solid transparent;
+      border-radius:4px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:#fff;
+      color:#111827;
+    }
+    .page-num.active{
+      color:#2563eb;
+    }
+    .page-input{
+      width:64px;
+      height:30px;
+      border:1px solid var(--line);
+      border-radius:6px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:#fff;
+      color:#111827;
+    }
+    .modal-mask{
+      position:fixed;
+      inset:0;
+      background:rgba(15,23,42,.18);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .modal{
+      background:#fff;
+      border-radius:4px;
+      border:1px solid var(--line);
+      box-shadow:0 12px 30px rgba(15,23,42,.12);
+      overflow:hidden;
+    }
+    .modal.form{
+      width:760px;
+    }
+    .modal.import{
+      width:760px;
+    }
+    .modal-head{
+      height:46px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:0 16px;
+      border-bottom:1px solid var(--line);
+      font-size:15px;
+      color:#1f2937;
+      background:#fff;
+    }
+    .modal-close{
+      font-size:18px;
+      color:#94a3b8;
+    }
+    .modal-body{
+      padding:16px;
+      background:#fff;
+    }
+    .form-grid{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:14px 16px;
+    }
+    .field.required label::before{
+      content:"*";
+      color:#ef4444;
+      margin-right:4px;
+    }
+    .inline-note{
+      margin-top:10px;
+      padding:10px 12px;
+      background:#fff8e8;
+      border:1px solid #f4ddb0;
+      border-radius:4px;
+      color:#946200;
+      font-size:12px;
+      line-height:1.6;
+    }
+    .modal-foot{
+      padding:10px 16px 14px;
+      display:flex;
+      justify-content:flex-end;
+      gap:8px;
+      background:#fff;
+    }
+    .import-layout{
+      min-height:250px;
+      padding:8px 0 6px 0;
+    }
+    .import-row{
+      display:flex;
+      align-items:center;
+      gap:18px;
+      margin-bottom:22px;
+      font-size:12px;
+      color:#374151;
+    }
+    .import-link{
+      color:var(--blue);
+      text-decoration:none;
+    }
+    .import-label{
+      color:#ff6b6b;
+    }
+    .file-chip{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      min-width:120px;
+      height:30px;
+      padding:0 12px;
+      border:1px solid var(--line);
+      border-radius:4px;
+      background:#fff;
+      color:#6b7280;
+      font-size:12px;
+    }
+    .file-chip-close{
+      color:#9aa4b2;
+      font-size:14px;
+      line-height:1;
+    }
+    .import-tips{
+      margin:8px 0 18px 148px;
+      font-size:12px;
+      color:#6b7280;
+      line-height:1.7;
+    }
+    .import-tips p{
+      margin:0 0 10px 0;
+    }
+    .fail-file{
+      margin-left:148px;
+      font-size:12px;
+      color:#ff6b6b;
+      line-height:1.7;
+    }
+    .download-link{
+      color:var(--blue);
+      text-decoration:none;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="topbar">
+      <img class="brand-logo" src="./assets/home-logo.d25547c0.png" alt="ERP" />
+      <div class="topnav">
+        <div class="nav-home">首页</div>
+        <div class="nav-arrow">›</div>
+        <div class="nav-tab">产品站点印厂配置<span class="close">×</span></div>
+      </div>
+      <div class="topbar-spacer"></div>
+      <div class="top-actions">
+        <div class="top-icon msg"></div>
+        <div class="top-icon palette"></div>
+        <div class="top-icon bell"></div>
+        <div class="user-wrap">
+          <div class="avatar"></div>
+          <span>张敏</span>
+          <span>▼</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="shell">
+      <aside class="sidebar">
+        <div class="menu">
+          <div class="menu-item">
+            <img class="menu-icon icon-color" src="./assets/销售-排行榜_ranking.png" alt="" />
+            <img class="menu-icon icon-white" src="./assets/白色icon/销售-排行榜_ranking.png" alt="" />
+            <span>销售</span>
+          </div>
+          <div class="menu-item">
+            <img class="menu-icon icon-color" src="./assets/产品-书籍_bookshelf.png" alt="" />
+            <img class="menu-icon icon-white" src="./assets/白色icon/产品-书籍_bookshelf.png" alt="" />
+            <span>产品</span>
+          </div>
+          <div class="menu-item">
+            <img class="menu-icon icon-color" src="./assets/生产-雷达图_radar-chart.png" alt="" />
+            <img class="menu-icon icon-white" src="./assets/白色icon/生产-雷达图_radar-chart.png" alt="" />
+            <span>生产</span>
+          </div>
+          <div class="menu-item active">
+            <img class="menu-icon icon-color" src="./assets/印务-打印机_printer-two.png" alt="" />
+            <img class="menu-icon icon-white" src="./assets/白色icon/印务-打印机_printer-two.png" alt="" />
+            <span>印务</span>
+          </div>
+          <div class="menu-item">
+            <img class="menu-icon icon-color" src="./assets/采购-接收库_receive (1).png" alt="" />
+            <img class="menu-icon icon-white" src="./assets/白色icon/采购-接收库_receive.png" alt="" />
+            <span>采购</span>
+          </div>
+          <div class="menu-item">
+            <img class="menu-icon icon-color" src="./assets/统计-数据看板_data-screen.png" alt="" />
+            <img class="menu-icon icon-white" src="./assets/白色icon/统计-数据看板_data-screen.png" alt="" />
+            <span>统计</span>
+          </div>
+          <div class="menu-item">
+            <img class="menu-icon icon-color" src="./assets/系统-设置配置_setting-config.png" alt="" />
+            <img class="menu-icon icon-white" src="./assets/白色icon/系统-设置配置_setting-config.png" alt="" />
+            <span>系统</span>
+          </div>
+        </div>
+      </aside>
+
+      <main class="content">
+        <section class="panel filters">
+          <div class="filter-grid">
+            <div class="field">
+              <label>产品编码</label>
+              <input class="control" value="B000540201" />
+            </div>
+            <div class="field">
+              <label>产品一类</label>
+              <select>
+                <option>全部</option>
+                <option selected>新亮剑</option>
+                <option>教材</option>
+                <option>测试</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>产品二类</label>
+              <select>
+                <option>全部</option>
+                <option selected>新亮剑高三</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>产品名称</label>
+              <input class="control" value="26届新亮剑高三 数学 QG学生用书" />
+            </div>
+            <div class="field">
+              <label>印厂</label>
+              <select>
+                <option>全部</option>
+                <option selected>南昌美达实业有限公司</option>
+                <option>南昌航浩印刷有限公司</option>
+                <option>成都金阳印务有限责任公司</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>站点</label>
+              <select>
+                <option>全部</option>
+                <option selected>南昌站点（L011）</option>
+                <option>西部站点（L021）</option>
+                <option>北部站点（L031）</option>
+                <option>咸宁站点（L041）</option>
+              </select>
+            </div>
+            <div class="filter-actions">
+              <button class="btn primary">查询</button>
+              <button class="btn">重置</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel toolbar">
+          <div class="toolbar-left">
+            <button class="btn primary" id="openAddBtn">新增</button>
+            <button class="btn" id="openEditBtn">编辑</button>
+            <button class="btn danger">删除</button>
+            <button class="btn" id="openImportBtn">导入</button>
+          </div>
+        </section>
+
+        <section class="panel table-wrap">
+          <div style="overflow:auto;flex:1 1 auto;">
+            <table>
+              <thead>
+                <tr>
+                  <th class="check-col"><input type="checkbox" /></th>
+                  <th style="width:150px;">产品编码</th>
+                  <th style="width:180px;">产品二类</th>
+                  <th style="width:240px;">产品名称</th>
+                  <th style="width:150px;">站点</th>
+                  <th style="width:240px;">站点印厂</th>
+                  <th style="width:90px;">创建人</th>
+                  <th style="width:150px;">创建时间</th>
+                  <th style="width:90px;">修改人</th>
+                  <th style="width:150px;">修改时间</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="check-col"><input type="checkbox" /></td>
+                  <td><a class="code-link" href="javascript:void(0)">B000540201</a></td>
+                  <td>新亮剑高三</td>
+                  <td>26届新亮剑高三 数学 QG学生用书</td>
+                  <td>南昌站点（L011）</td>
+                  <td>南昌美达实业有限公司</td>
+                  <td>王莉</td>
+                  <td>2026-05-14 10:22</td>
+                  <td>王莉</td>
+                  <td>2026-05-14 10:22</td>
+                </tr>
+                <tr>
+                  <td class="check-col"><input type="checkbox" checked /></td>
+                  <td><a class="code-link" href="javascript:void(0)">B000638012</a></td>
+                  <td>新亮剑高三</td>
+                  <td>26届新亮剑高三 数学 HEB学生用书</td>
+                  <td>西部站点（L021）</td>
+                  <td>南昌航浩印刷有限公司</td>
+                  <td>赵敏</td>
+                  <td>2026-05-13 16:08</td>
+                  <td>赵敏</td>
+                  <td>2026-05-14 09:15</td>
+                </tr>
+                <tr>
+                  <td class="check-col"><input type="checkbox" /></td>
+                  <td><a class="code-link" href="javascript:void(0)">B000540202</a></td>
+                  <td>新亮剑高三</td>
+                  <td>26届新亮剑高三 数学 BSD学生用书</td>
+                  <td>北部站点（L031）</td>
+                  <td>成都金阳印务有限责任公司</td>
+                  <td>李晴</td>
+                  <td>2026-05-12 14:36</td>
+                  <td>李晴</td>
+                  <td>2026-05-13 11:40</td>
+                </tr>
+                <tr>
+                  <td class="check-col"><input type="checkbox" /></td>
+                  <td><a class="code-link" href="javascript:void(0)">B000540203</a></td>
+                  <td>新亮剑高三</td>
+                  <td>26届新亮剑高三 数学 XJB学生用书</td>
+                  <td>咸宁站点（L041）</td>
+                  <td>南昌市印刷十二厂有限公司</td>
+                  <td>陈晨</td>
+                  <td>2026-05-10 09:20</td>
+                  <td>陈晨</td>
+                  <td>2026-05-13 15:02</td>
+                </tr>
+                <tr>
+                  <td class="check-col"><input type="checkbox" /></td>
+                  <td><a class="code-link" href="javascript:void(0)">B000540208</a></td>
+                  <td>新亮剑高三</td>
+                  <td>26届新亮剑高三 物理 QG学生用书</td>
+                  <td>南昌站点（L011）</td>
+                  <td>湖南关山美印有限公司</td>
+                  <td>王莉</td>
+                  <td>2026-05-09 13:28</td>
+                  <td>王莉</td>
+                  <td>2026-05-12 18:16</td>
+                </tr>
+                <tr>
+                  <td class="check-col"><input type="checkbox" /></td>
+                  <td><a class="code-link" href="javascript:void(0)">B000638014</a></td>
+                  <td>新亮剑高三</td>
+                  <td>26届新亮剑高三 物理 HEB学生用书</td>
+                  <td>北部站点（L031）</td>
+                  <td>新余市一中彩印有限公司</td>
+                  <td>徐雯</td>
+                  <td>2026-05-08 17:03</td>
+                  <td>徐雯</td>
+                  <td>2026-05-12 09:26</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="pagination">
+            <div>共 161 条</div>
+            <div class="page-size-wrap" id="pageSizeWrap">
+              <div class="page-size" id="pageSizeTrigger">50条/页</div>
+              <div class="page-size-menu hidden" id="pageSizeMenu">
+                <div class="page-size-item" data-size="10条/页">10条/页</div>
+                <div class="page-size-item" data-size="20条/页">20条/页</div>
+                <div class="page-size-item active" data-size="50条/页">50条/页</div>
+                <div class="page-size-item" data-size="80条/页">80条/页</div>
+                <div class="page-size-item" data-size="100条/页">100条/页</div>
+                <div class="page-size-item" data-size="500条/页">500条/页</div>
+                <div class="page-size-item" data-size="1000条/页">1000条/页</div>
+              </div>
+            </div>
+            <div class="pager">
+              <div class="page-btn">‹</div>
+              <div class="page-num active">1</div>
+              <div class="page-num">2</div>
+              <div class="page-num">3</div>
+              <div class="page-num">4</div>
+              <div class="page-btn">›</div>
+            </div>
+            <div class="pager">
+              <span>前往</span>
+              <div class="page-input">1</div>
+              <span>页</span>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <div class="modal-mask" id="formModal" style="display:none;">
+      <div class="modal form">
+        <div class="modal-head">
+          <span id="formModalTitle">新增产品站点印厂配置</span>
+          <span class="modal-close" data-close="formModal">×</span>
+        </div>
+        <div class="modal-body">
+          <div class="form-grid">
+            <div class="field required">
+              <label>产品</label>
+              <div class="picker-row">
+                <input class="control" id="formProductName" value="26届新亮剑高三 数学 QG学生用书" readonly />
+                <button class="btn picker-trigger" type="button">+选择</button>
+              </div>
+            </div>
+            <div class="field required">
+              <label>产品编码</label>
+              <input class="control" id="formProductCode" value="B000540201" readonly />
+            </div>
+            <div class="field required">
+              <label>站点</label>
+              <select>
+                <option>请选择站点</option>
+                <option selected>西部站点（L021）</option>
+                <option>南昌站点（L011）</option>
+                <option>北部站点（L031）</option>
+                <option>咸宁站点（L041）</option>
+              </select>
+            </div>
+            <div class="field required">
+              <label>站点印厂</label>
+              <select>
+                <option>请选择印厂</option>
+                <option selected>南昌航浩印刷有限公司</option>
+                <option>南昌美达实业有限公司</option>
+                <option>成都金阳印务有限责任公司</option>
+                <option>南昌市印刷十二厂有限公司</option>
+                <option>湖南关山美印有限公司</option>
+                <option>新余市一中彩印有限公司</option>
+                <option>江西凯顺印务有限公司</option>
+              </select>
+            </div>
+          </div>
+          <div class="inline-note">
+            同一产品编码 + 同一站点仅允许维护一条有效配置。自动转生产订单时，系统优先取站点印厂。
+          </div>
+        </div>
+        <div class="modal-foot">
+          <button class="btn" data-close="formModal">取消</button>
+          <button class="btn primary" data-close="formModal">保存</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-mask" id="importModal" style="display:none;">
+      <div class="modal import">
+        <div class="modal-head">
+          <span>导入产品站点印厂配置</span>
+          <span class="modal-close" data-close="importModal">×</span>
+        </div>
+        <div class="modal-body">
+          <div class="import-layout">
+            <div class="import-row">
+              <span>点击下载模板</span>
+              <a class="import-link" href="javascript:void(0)">下载模板</a>
+            </div>
+            <div class="import-row">
+              <span class="import-label">选择导入模板</span>
+              <button class="btn primary" type="button">选择文件</button>
+              <span class="file-chip">产品站点印厂导入.xlsx<span class="file-chip-close">×</span></span>
+            </div>
+            <div class="import-tips">
+              <p>提示：</p>
+              <p>.表格格式需要正确</p>
+              <p>.数据不能为空，否则存在导入失败</p>
+              <p>.若存在失败行，则整份 Excel 导入失败，全部数据不生效</p>
+            </div>
+            <div class="fail-file">
+              导入失败后可下载失败文件查看失败行和失败原因：
+              <a class="download-link" href="javascript:void(0)">下载失败文件</a>
+            </div>
+          </div>
+        </div>
+        <div class="modal-foot">
+          <button class="btn" data-close="importModal">取消</button>
+          <button class="btn primary" data-close="importModal">确认</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    (function () {
+      const formModal = document.getElementById('formModal');
+      const importModal = document.getElementById('importModal');
+      const formModalTitle = document.getElementById('formModalTitle');
+      const formProductCode = document.getElementById('formProductCode');
+      const pageSizeWrap = document.getElementById('pageSizeWrap');
+      const pageSizeTrigger = document.getElementById('pageSizeTrigger');
+      const pageSizeMenu = document.getElementById('pageSizeMenu');
+      const openAddBtn = document.getElementById('openAddBtn');
+      const openEditBtn = document.getElementById('openEditBtn');
+      const openImportBtn = document.getElementById('openImportBtn');
+
+      function openModal(modal) {
+        if (!modal) return;
+        modal.style.display = 'flex';
+      }
+
+      function closeModal(modal) {
+        if (!modal) return;
+        modal.style.display = 'none';
+      }
+
+      function setFormTitle(mode) {
+        if (!formModalTitle) return;
+        formModalTitle.textContent = mode === 'edit' ? '编辑产品站点印厂配置' : '新增产品站点印厂配置';
+      }
+
+      function closePageSizeMenu() {
+        if (!pageSizeMenu) return;
+        pageSizeMenu.classList.add('hidden');
+      }
+
+      if (openAddBtn) {
+        openAddBtn.addEventListener('click', function () {
+          setFormTitle('add');
+          openModal(formModal);
+        });
+      }
+
+      if (openEditBtn) {
+        openEditBtn.addEventListener('click', function () {
+          setFormTitle('edit');
+          openModal(formModal);
+        });
+      }
+
+      if (openImportBtn) {
+        openImportBtn.addEventListener('click', function () {
+          openModal(importModal);
+        });
+      }
+
+      if (pageSizeTrigger && pageSizeMenu) {
+        pageSizeTrigger.addEventListener('click', function (event) {
+          event.stopPropagation();
+          pageSizeMenu.classList.toggle('hidden');
+        });
+
+        pageSizeMenu.querySelectorAll('.page-size-item').forEach(function (node) {
+          node.addEventListener('click', function (event) {
+            event.stopPropagation();
+            pageSizeMenu.querySelectorAll('.page-size-item').forEach(function (item) {
+              item.classList.remove('active');
+            });
+            node.classList.add('active');
+            pageSizeTrigger.textContent = node.getAttribute('data-size') || node.textContent;
+            closePageSizeMenu();
+          });
+        });
+      }
+
+      document.querySelectorAll('[data-open="edit"]').forEach(function (node) {
+        node.addEventListener('click', function () {
+          setFormTitle('edit');
+          openModal(formModal);
+        });
+      });
+
+      document.querySelectorAll('[data-close]').forEach(function (node) {
+        node.addEventListener('click', function () {
+          const targetId = node.getAttribute('data-close');
+          closeModal(document.getElementById(targetId));
+        });
+      });
+
+      [formModal, importModal].forEach(function (modal) {
+        if (!modal) return;
+        modal.addEventListener('click', function (event) {
+          if (event.target === modal) {
+            closeModal(modal);
+          }
+        });
+      });
+
+      document.addEventListener('keydown', function (event) {
+        if (event.key !== 'Escape') return;
+        closePageSizeMenu();
+        [formModal, importModal].forEach(function (modal) {
+          if (modal && modal.style.display !== 'none') {
+            closeModal(modal);
+          }
+        });
+      });
+
+      document.addEventListener('click', function (event) {
+        if (!pageSizeWrap || !pageSizeMenu) return;
+        if (!pageSizeWrap.contains(event.target)) {
+          closePageSizeMenu();
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
