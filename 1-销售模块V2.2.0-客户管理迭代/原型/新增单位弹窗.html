@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>新增单位弹窗</title>
+  <style>
+    :root{
+      --blue:#1677ff;
+      --blue-weak:#eaf3ff;
+      --blue-border:#bcd7ff;
+      --bg:#eef2f7;
+      --line:#dfe5ee;
+      --line-soft:#edf1f5;
+      --text:#1f2937;
+      --text-soft:#6b7280;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",Arial,sans-serif;
+      color:var(--text);
+      background:var(--bg);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+    }
+    .backdrop{
+      position:fixed;
+      inset:0;
+      background:rgba(15,23,42,.22);
+    }
+    .modal{
+      position:relative;
+      width:860px;
+      max-width:calc(100vw - 48px);
+      max-height:calc(100vh - 48px);
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:6px;
+      box-shadow:0 18px 40px rgba(15,23,42,.18);
+      display:flex;
+      flex-direction:column;
+      overflow:hidden;
+      z-index:1;
+    }
+    .modal-header{
+      height:42px;
+      padding:0 14px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      border-bottom:1px solid var(--line-soft);
+      background:#fff;
+      color:#111827;
+      font-size:14px;
+    }
+    .close{
+      color:#94a3b8;
+      font-size:18px;
+      line-height:1;
+      user-select:none;
+    }
+    .modal-body{
+      padding:14px;
+      overflow:auto;
+    }
+    .section{
+      border:1px solid var(--line-soft);
+      border-radius:4px;
+      padding:10px;
+      background:#fff;
+    }
+    .section-title{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      margin-bottom:10px;
+      color:#111827;
+      font-size:13px;
+      line-height:1.2;
+    }
+    .subtle{color:var(--text-soft); font-size:12px;}
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:10px 12px;
+    }
+    .field{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      min-width:0;
+    }
+    .field.full{grid-column:1 / -1;}
+    .field label{
+      color:#475569;
+      font-size:12px;
+      line-height:1.2;
+      white-space:nowrap;
+    }
+    .required{
+      color:#ef4444;
+      margin-right:2px;
+    }
+    .input,
+    .select{
+      width:100%;
+      height:30px;
+      border:1px solid #d9e1ea;
+      border-radius:4px;
+      background:#fff;
+      padding:0 9px;
+      color:#334155;
+      font-family:inherit;
+      font-size:12px;
+      outline:none;
+    }
+    .region-grid{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:8px;
+    }
+    .modal-footer{
+      display:flex;
+      justify-content:flex-end;
+      gap:8px;
+      padding:12px 14px 14px;
+      border-top:1px solid var(--line-soft);
+    }
+    .btn{
+      height:30px;
+      min-width:72px;
+      padding:0 12px;
+      border-radius:4px;
+      border:1px solid transparent;
+      font-weight:400;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      font-size:12px;
+    }
+    .btn.secondary{
+      background:#fff;
+      border-color:var(--line);
+      color:#334155;
+    }
+    .btn.primary{
+      background:var(--blue);
+      color:#fff;
+    }
+    .hint{
+      padding:8px 10px;
+      margin-bottom:12px;
+      border:1px solid #bcd7ff;
+      background:#f3f8ff;
+      color:#475569;
+      border-radius:4px;
+      font-size:12px;
+      line-height:1.5;
+    }
+  </style>
+</head>
+<body>
+  <div class="backdrop"></div>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="unit-modal-title">
+    <div class="modal-header">
+      <span id="unit-modal-title">新增单位</span>
+      <span class="close">×</span>
+    </div>
+    <div class="modal-body">
+      <div class="hint">作者资源库新增单位弹窗示意，省市区和街道按 ERP 主数据选择，保存后同步到 ERP。</div>
+      <div class="section">
+        <div class="section-title">
+          <span>基础信息</span>
+          <span class="subtle">带 * 为必填项</span>
+        </div>
+        <div class="grid">
+          <div class="field">
+            <label><span class="required">*</span>单位名称</label>
+            <input class="input" type="text" placeholder="请输入单位名称" value="望谟县石屯镇民族学校" />
+          </div>
+          <div class="field">
+            <label><span class="required">*</span>单位类型</label>
+            <select class="select" id="unit-type-select">
+              <option value="">请选择单位类型</option>
+              <option value="school" selected>学校</option>
+              <option value="training">培训机构</option>
+              <option value="bureau">教育局</option>
+              <option value="other">其他</option>
+            </select>
+          </div>
+          <div class="field full">
+            <label><span class="required">*</span>省市区</label>
+            <div class="region-grid">
+              <select class="select" id="province-select"></select>
+              <select class="select" id="city-select"></select>
+              <select class="select" id="district-select"></select>
+            </div>
+          </div>
+          <div class="field">
+            <label><span class="required">*</span>街道</label>
+            <select class="select" id="street-select"></select>
+          </div>
+          <div class="field full">
+            <label>地址</label>
+            <input class="input" type="text" placeholder="请输入详细地址" value="民族学校" />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <div class="btn secondary">取消</div>
+      <div class="btn primary">保存</div>
+    </div>
+  </div>
+  <script>
+    (() => {
+      const provinces = [
+        {
+          value: '520000',
+          text: '贵州省',
+          cities: [
+            {
+              value: '522300',
+              text: '黔西南布依族苗族自治州',
+              dists: [
+                { value: '522326', text: '望谟县' },
+                { value: '522301', text: '兴义市' }
+              ]
+            },
+            {
+              value: '520100',
+              text: '贵阳市',
+              dists: [
+                { value: '520102', text: '南明区' },
+                { value: '520103', text: '云岩区' }
+              ]
+            }
+          ]
+        },
+        {
+          value: '510000',
+          text: '四川省',
+          cities: [
+            {
+              value: '510100',
+              text: '成都市',
+              dists: [
+                { value: '510104', text: '锦江区' },
+                { value: '510106', text: '金牛区' }
+              ]
+            },
+            {
+              value: '510700',
+              text: '绵阳市',
+              dists: [
+                { value: '510703', text: '涪城区' },
+                { value: '510704', text: '温江区' }
+              ]
+            }
+          ]
+        },
+        {
+          value: '530000',
+          text: '云南省',
+          cities: [
+            {
+              value: '530100',
+              text: '昆明市',
+              dists: [
+                { value: '530102', text: '五华区' },
+                { value: '530103', text: '盘龙区' }
+              ]
+            }
+          ]
+        }
+      ];
+
+      const streetMap = {
+        '522326': ['石屯镇', '乐旺镇'],
+        '522301': ['兴义街道', '桔山街道'],
+        '520102': ['中华南路街道', '次南街道'],
+        '520103': ['云岩街道', '金鸭街道'],
+        '510104': ['锦江街道', '沙河街道'],
+        '510106': ['金牛街道', '西华街道'],
+        '510703': ['海城街道', '涪江街道'],
+        '510704': ['温江街道', '柳城街道'],
+        '530102': ['五华街道', '盘龙街道'],
+        '530103': ['大观街道', '拓东街道']
+      };
+
+      const provinceSelect = document.getElementById('province-select');
+      const citySelect = document.getElementById('city-select');
+      const districtSelect = document.getElementById('district-select');
+      const streetSelect = document.getElementById('street-select');
+
+      const findProvince = value => provinces.find(item => item.value === value) || null;
+      const findCity = value => {
+        for (const province of provinces) {
+          const city = province.cities.find(item => item.value === value);
+          if (city) return city;
+        }
+        return null;
+      };
+
+      const renderCities = () => {
+        const province = findProvince(provinceSelect.value);
+        const cities = province ? province.cities : [];
+        citySelect.innerHTML = cities.map(city => `<option value="${city.value}">${city.text}</option>`).join('');
+        citySelect.value = cities[0]?.value || '';
+        renderDistricts();
+      };
+
+      const renderDistricts = () => {
+        const city = findCity(citySelect.value);
+        const dists = city ? city.dists : [];
+        districtSelect.innerHTML = dists.map(item => `<option value="${item.value}">${item.text}</option>`).join('');
+        districtSelect.value = dists[0]?.value || '';
+        renderStreets();
+      };
+
+      const renderStreets = () => {
+        const streets = streetMap[districtSelect.value] || [];
+        streetSelect.innerHTML = streets.map(item => `<option value="${item}">${item}</option>`).join('');
+        streetSelect.value = streets[0] || '';
+      };
+
+      provinceSelect.innerHTML = provinces.map(item => `<option value="${item.value}">${item.text}</option>`).join('');
+      provinceSelect.value = provinces[0].value;
+      renderCities();
+
+      provinceSelect.addEventListener('change', renderCities);
+      citySelect.addEventListener('change', renderDistricts);
+      districtSelect.addEventListener('change', renderStreets);
+    })();
+  </script>
+</body>
+</html>
