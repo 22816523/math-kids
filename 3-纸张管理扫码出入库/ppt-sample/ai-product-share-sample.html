@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI参与原有功能迭代升级的产品设计经验 - 3页样稿</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Noto+Serif+SC:wght@700;900&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    html, body {
+      height: 100%;
+      overflow-x: hidden;
+      margin: 0;
+    }
+
+    html {
+      scroll-snap-type: y mandatory;
+      scroll-behavior: smooth;
+    }
+
+    :root {
+      --navy: #0b1e43;
+      --ink: #13294f;
+      --blue: #2e67f8;
+      --sky: #dce8ff;
+      --sand: #f7f3ea;
+      --paper: #fffdf8;
+      --orange: #ff8f3d;
+      --red: #ef4f45;
+      --line: rgba(11, 30, 67, 0.14);
+      --soft-line: rgba(255, 255, 255, 0.18);
+      --title-size: clamp(1.6rem, 5vw, 4.2rem);
+      --h2-size: clamp(1.2rem, 3.3vw, 2.5rem);
+      --h3-size: clamp(1rem, 2vw, 1.5rem);
+      --body-size: clamp(0.82rem, 1.3vw, 1.08rem);
+      --small-size: clamp(0.72rem, 1vw, 0.92rem);
+      --slide-padding: clamp(1rem, 4vw, 3.6rem);
+      --content-gap: clamp(0.6rem, 2vw, 1.8rem);
+      --element-gap: clamp(0.35rem, 1vw, 0.9rem);
+      --shadow: 0 18px 52px rgba(8, 18, 41, 0.14);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Noto Sans SC", "Microsoft YaHei", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 15% 20%, rgba(46, 103, 248, 0.14), transparent 28%),
+        radial-gradient(circle at 82% 18%, rgba(255, 143, 61, 0.14), transparent 24%),
+        linear-gradient(180deg, #eef3fb 0%, #eef2f8 100%);
+    }
+
+    .slide {
+      width: 100vw;
+      height: 100vh;
+      height: 100dvh;
+      overflow: hidden;
+      scroll-snap-align: start;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      isolation: isolate;
+    }
+
+    .slide::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+      background-size: 34px 34px;
+      opacity: 0.38;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .slide-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      max-height: 100%;
+      overflow: hidden;
+      padding: var(--slide-padding);
+      gap: var(--content-gap);
+      position: relative;
+      z-index: 1;
+    }
+
+    .slide-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.55rem;
+      width: fit-content;
+      padding: 0.45rem 0.8rem;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255, 253, 248, 0.92);
+      font-size: var(--small-size);
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      backdrop-filter: blur(10px);
+    }
+
+    .slide-label::before {
+      content: "";
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--blue);
+      box-shadow: 0 0 0 5px rgba(46, 103, 248, 0.12);
+    }
+
+    h1, h2, h3, p {
+      margin: 0;
+    }
+
+    h1 {
+      font-family: "Noto Serif SC", serif;
+      font-size: var(--title-size);
+      line-height: 1.12;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+    }
+
+    h2 {
+      font-family: "Noto Serif SC", serif;
+      font-size: var(--h2-size);
+      line-height: 1.18;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+    }
+
+    h3 {
+      font-size: var(--h3-size);
+      line-height: 1.25;
+      font-weight: 800;
+    }
+
+    p, li {
+      font-size: var(--body-size);
+      line-height: 1.55;
+    }
+
+    .eyebrow {
+      font-family: "Manrope", sans-serif;
+      font-size: var(--small-size);
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(19, 41, 79, 0.72);
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.35fr 0.95fr;
+      align-items: stretch;
+      gap: clamp(1rem, 2vw, 1.4rem);
+      min-height: 0;
+    }
+
+    .hero-left,
+    .hero-right,
+    .panel,
+    .card,
+    .summary-box {
+      min-height: 0;
+    }
+
+    .hero-left {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: clamp(1.2rem, 2vw, 1.8rem);
+      border-radius: 28px;
+      background: linear-gradient(160deg, rgba(255, 253, 248, 0.92), rgba(245, 241, 233, 0.86));
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(19, 41, 79, 0.08);
+    }
+
+    .hero-title strong {
+      color: var(--blue);
+    }
+
+    .hero-copy {
+      max-width: 92%;
+      color: rgba(19, 41, 79, 0.78);
+    }
+
+    .hero-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+    }
+
+    .tag {
+      padding: 0.45rem 0.75rem;
+      border-radius: 999px;
+      background: #fff;
+      border: 1px solid rgba(19, 41, 79, 0.1);
+      font-size: var(--small-size);
+      font-weight: 700;
+      color: rgba(19, 41, 79, 0.8);
+    }
+
+    .hero-right {
+      display: grid;
+      grid-template-rows: 1.1fr 0.9fr;
+      gap: clamp(0.85rem, 1.5vw, 1rem);
+    }
+
+    .quote-card {
+      border-radius: 28px;
+      padding: clamp(1.15rem, 2vw, 1.6rem);
+      background: linear-gradient(160deg, #112a5d 0%, #0b1e43 100%);
+      color: #fff;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .quote-mark {
+      font-family: "Noto Serif SC", serif;
+      font-size: clamp(2.4rem, 5vw, 4rem);
+      line-height: 1;
+      opacity: 0.2;
+    }
+
+    .quote-text {
+      font-size: clamp(1rem, 1.65vw, 1.28rem);
+      line-height: 1.5;
+      font-weight: 700;
+      max-width: 24ch;
+    }
+
+    .quote-foot {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--soft-line);
+      font-size: var(--small-size);
+      color: rgba(255, 255, 255, 0.78);
+    }
+
+    .stats-card {
+      border-radius: 24px;
+      padding: 1rem;
+      background: linear-gradient(160deg, rgba(46, 103, 248, 0.1), rgba(255, 255, 255, 0.92));
+      border: 1px solid rgba(46, 103, 248, 0.15);
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.8rem;
+    }
+
+    .stat {
+      padding: 0.85rem;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(19, 41, 79, 0.08);
+    }
+
+    .stat strong {
+      display: block;
+      font-family: "Manrope", sans-serif;
+      font-size: clamp(1.15rem, 2.2vw, 2rem);
+      font-weight: 800;
+      color: var(--ink);
+    }
+
+    .stat span {
+      display: block;
+      margin-top: 0.35rem;
+      font-size: var(--small-size);
+      color: rgba(19, 41, 79, 0.66);
+    }
+
+    .value-layout {
+      display: grid;
+      grid-template-columns: 0.88fr 1.12fr;
+      gap: clamp(1rem, 2vw, 1.4rem);
+      min-height: 0;
+      align-items: stretch;
+    }
+
+    .panel {
+      border-radius: 28px;
+      padding: clamp(1rem, 1.9vw, 1.5rem);
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(19, 41, 79, 0.08);
+    }
+
+    .panel.dark {
+      background: linear-gradient(180deg, #0e2553 0%, #09172f 100%);
+      color: #fff;
+    }
+
+    .panel.light {
+      background: rgba(255, 253, 248, 0.94);
+    }
+
+    .panel p {
+      color: inherit;
+    }
+
+    .value-list {
+      display: grid;
+      gap: 0.8rem;
+      margin-top: 1rem;
+    }
+
+    .value-item {
+      padding: 0.9rem 1rem;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .value-item strong,
+    .value-card strong {
+      display: block;
+      margin-bottom: 0.25rem;
+      font-size: clamp(0.95rem, 1.5vw, 1.18rem);
+    }
+
+    .value-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.85rem;
+      margin-top: 1rem;
+    }
+
+    .value-card {
+      padding: 1rem;
+      border-radius: 18px;
+      background: linear-gradient(180deg, rgba(247, 243, 234, 0.92), rgba(255, 255, 255, 0.96));
+      border: 1px solid rgba(19, 41, 79, 0.08);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .value-card::after {
+      content: "";
+      position: absolute;
+      inset: auto -10% -35% auto;
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(46, 103, 248, 0.14), transparent 70%);
+    }
+
+    .value-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 2rem;
+      height: 2rem;
+      margin-bottom: 0.65rem;
+      border-radius: 50%;
+      background: var(--blue);
+      color: #fff;
+      font-family: "Manrope", sans-serif;
+      font-weight: 800;
+      font-size: 0.92rem;
+    }
+
+    .summary-box {
+      margin-top: 1rem;
+      padding: 1rem 1.1rem;
+      border-radius: 18px;
+      background: rgba(46, 103, 248, 0.08);
+      border-left: 5px solid var(--blue);
+      font-weight: 700;
+    }
+
+    .case-top {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .case-kicker {
+      font-size: var(--small-size);
+      font-weight: 800;
+      color: var(--red);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .case-layout {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: clamp(0.9rem, 1.6vw, 1.1rem);
+      align-items: stretch;
+      min-height: 0;
+    }
+
+    .case-card {
+      padding: clamp(1rem, 1.8vw, 1.4rem);
+      border-radius: 26px;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .case-card.bad {
+      background: linear-gradient(180deg, #fff4ef 0%, #fffdf8 100%);
+      border: 1px solid rgba(239, 79, 69, 0.2);
+    }
+
+    .case-card.good {
+      background: linear-gradient(180deg, #eff5ff 0%, #fffdf8 100%);
+      border: 1px solid rgba(46, 103, 248, 0.2);
+    }
+
+    .case-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.35rem 0.68rem;
+      border-radius: 999px;
+      font-size: var(--small-size);
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .pill.bad {
+      background: rgba(239, 79, 69, 0.12);
+      color: #b53730;
+    }
+
+    .pill.good {
+      background: rgba(46, 103, 248, 0.12);
+      color: #1c4ed6;
+    }
+
+    .quote-box {
+      padding: 0.95rem 1rem;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.88);
+      border: 1px solid rgba(19, 41, 79, 0.08);
+      font-size: clamp(0.92rem, 1.35vw, 1.12rem);
+      font-weight: 700;
+      line-height: 1.55;
+    }
+
+    .case-list {
+      display: grid;
+      gap: 0.75rem;
+      padding-left: 1rem;
+    }
+
+    .case-list li {
+      line-height: 1.5;
+    }
+
+    .arrow-column {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .arrow {
+      width: clamp(3rem, 5vw, 4.2rem);
+      height: clamp(3rem, 5vw, 4.2rem);
+      border-radius: 50%;
+      background: linear-gradient(180deg, #1e56e8 0%, #0f3ea8 100%);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: clamp(1.2rem, 2vw, 1.7rem);
+      box-shadow: 0 12px 32px rgba(30, 86, 232, 0.28);
+    }
+
+    .case-footer {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 0.85rem;
+    }
+
+    .footer-card {
+      padding: 0.95rem 1rem;
+      border-radius: 18px;
+      background: rgba(255, 253, 248, 0.92);
+      border: 1px solid rgba(19, 41, 79, 0.08);
+    }
+
+    .footer-card strong {
+      display: block;
+      margin-bottom: 0.4rem;
+      font-size: var(--small-size);
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(19, 41, 79, 0.62);
+    }
+
+    .nav-dots {
+      position: fixed;
+      right: clamp(0.8rem, 2vw, 1.4rem);
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 0.55rem;
+      z-index: 10;
+    }
+
+    .nav-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      border: 0;
+      background: rgba(19, 41, 79, 0.18);
+      cursor: pointer;
+      transition: transform 0.2s ease, background 0.2s ease;
+    }
+
+    .nav-dot.active {
+      transform: scale(1.15);
+      background: var(--blue);
+    }
+
+    .slide-index {
+      position: fixed;
+      left: clamp(1rem, 2vw, 1.6rem);
+      bottom: clamp(0.8rem, 2vw, 1.2rem);
+      z-index: 10;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.65rem;
+      padding: 0.45rem 0.8rem;
+      border-radius: 999px;
+      background: rgba(255, 253, 248, 0.92);
+      border: 1px solid rgba(19, 41, 79, 0.1);
+      font-family: "Manrope", sans-serif;
+      font-size: var(--small-size);
+      font-weight: 800;
+      color: var(--ink);
+      backdrop-filter: blur(10px);
+    }
+
+    .slide-index::before {
+      content: "";
+      width: 1.6rem;
+      height: 2px;
+      background: var(--blue);
+      display: block;
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.55s ease, transform 0.55s ease;
+    }
+
+    .reveal.in-view {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 960px), (max-height: 720px) {
+      .hero,
+      .value-layout,
+      .case-layout,
+      .case-footer {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-right,
+      .stats-card,
+      .value-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-right {
+        grid-template-rows: auto auto;
+      }
+
+      .arrow-column {
+        display: none;
+      }
+
+      .nav-dots {
+        display: none;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+
+      .reveal,
+      .reveal.in-view {
+        opacity: 1;
+        transform: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav-dots" aria-label="幻灯片导航">
+    <button class="nav-dot active" data-target="slide-1" aria-label="第1页"></button>
+    <button class="nav-dot" data-target="slide-2" aria-label="第2页"></button>
+    <button class="nav-dot" data-target="slide-3" aria-label="第3页"></button>
+  </nav>
+  <div class="slide-index"><span id="slide-index-text">01 / 03</span></div>
+
+  <section class="slide" id="slide-1">
+    <div class="slide-content">
+      <div class="slide-label reveal">Sample / Cover</div>
+      <div class="hero">
+        <div class="hero-left reveal">
+          <div class="hero-title">
+            <div class="eyebrow">AI + Product Design</div>
+            <h1>AI参与原有功能迭代升级的<br><strong>产品设计经验</strong></h1>
+          </div>
+          <p class="hero-copy">以纸张管理扫码出入库项目为例，重点讲清楚一件事：在存量 ERP 功能迭代里，AI 到底有没有给产品经理提效，以及这个提效应该怎么用，才不会失控。</p>
+          <div class="hero-tags">
+            <span class="tag">原有ERP迭代</span>
+            <span class="tag">产品方法复盘</span>
+            <span class="tag">AI协作提效</span>
+          </div>
+        </div>
+        <div class="hero-right reveal">
+          <div class="quote-card">
+            <div class="quote-mark">“</div>
+            <div class="quote-text">AI 的价值，不在于替产品经理做判断，而在于更快地整理、对照、同步和暴露问题。</div>
+            <div class="quote-foot">
+              <span>纸张管理扫码出入库项目</span>
+              <span>内部经验分享</span>
+            </div>
+          </div>
+          <div class="stats-card">
+            <div class="stat">
+              <strong>1</strong>
+              <span>个存量 ERP 迭代案例</span>
+            </div>
+            <div class="stat">
+              <strong>7</strong>
+              <span>组可复用章节结构</span>
+            </div>
+            <div class="stat">
+              <strong>3+3</strong>
+              <span>踩坑与有效做法</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" id="slide-2">
+    <div class="slide-content">
+      <div class="slide-label reveal">Sample / Value</div>
+      <div class="case-top reveal">
+        <div>
+          <div class="eyebrow">Chapter 3</div>
+          <h2>AI是怎么介入的，<br>价值体现在哪</h2>
+        </div>
+        <div class="slide-label">企业复盘型主模板</div>
+      </div>
+      <div class="value-layout">
+        <div class="panel dark reveal">
+          <h3>不是少思考了，而是这些环节明显更快</h3>
+          <div class="value-list">
+            <div class="value-item">
+              <strong>需求整理提效</strong>
+              <p>把跨多轮对话的零散信息，先收成结构草稿。</p>
+            </div>
+            <div class="value-item">
+              <strong>差异核查提效</strong>
+              <p>把原始需求、代码、PRD 放在一起做高密度对照。</p>
+            </div>
+            <div class="value-item">
+              <strong>联动同步提效</strong>
+              <p>规则拍板后，把 PRD、原型和章节口径更快同步。</p>
+            </div>
+            <div class="value-item">
+              <strong>问题暴露更早</strong>
+              <p>很多原本靠人工来回翻材料才能发现的问题，会更早出现。</p>
+            </div>
+          </div>
+        </div>
+        <div class="panel light reveal">
+          <h3>这 4 类价值，对产品经理意味着什么</h3>
+          <div class="value-grid">
+            <div class="value-card">
+              <span class="value-num">01</span>
+              <strong>少做机械整理</strong>
+              <p>把时间从搬运信息，转到判断信息。</p>
+            </div>
+            <div class="value-card">
+              <span class="value-num">02</span>
+              <strong>少做重复核对</strong>
+              <p>高耗时的对照工作，更适合先交给 AI。</p>
+            </div>
+            <div class="value-card">
+              <span class="value-num">03</span>
+              <strong>少被碎活拖住</strong>
+              <p>文档和原型同步这种碎工作，提效最明显。</p>
+            </div>
+            <div class="value-card">
+              <span class="value-num">04</span>
+              <strong>更聚焦高价值判断</strong>
+              <p>边界、口径、风险和取舍，仍然必须由产品经理拍板。</p>
+            </div>
+          </div>
+          <div class="summary-box">AI 的提效是成立的，但这个提效有边界。它节省的是整理、核查、同步和回写时间，不替代业务判断。</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" id="slide-3">
+    <div class="slide-content">
+      <div class="slide-label reveal">Sample / Case Compare</div>
+      <div class="case-top reveal">
+        <div>
+          <div class="case-kicker">Chapter 4 / Case 4.5</div>
+          <h2>手机端件明细展示方式改造</h2>
+        </div>
+        <div class="slide-label">案例对比页</div>
+      </div>
+      <div class="case-layout">
+        <div class="case-card bad reveal">
+          <div class="case-head">
+            <h3>容易带偏的说法</h3>
+            <span class="pill bad">Before</span>
+          </div>
+          <div class="quote-box">“提纸单和退纸单手机端的件明细展示方式我们要再考虑下……你思考下有什么改进方案。”</div>
+          <ul class="case-list">
+            <li>给了 AI 很大的设计自由度</li>
+            <li>没有锁定“必须轻改”</li>
+            <li>没有限制“必须保留现有结构”</li>
+            <li>结果是 AI 直接做出一版完整重构稿</li>
+          </ul>
+        </div>
+        <div class="arrow-column reveal">
+          <div class="arrow">→</div>
+        </div>
+        <div class="case-card good reveal">
+          <div class="case-head">
+            <h3>更稳的说法</h3>
+            <span class="pill good">After</span>
+          </div>
+          <div class="quote-box">“先基于现有页面分析问题，只给轻改方向；如果改动超过原结构，先不要直接改原型。”</div>
+          <ul class="case-list">
+            <li>先收改造边界，再让 AI 出方案</li>
+            <li>只改件明细展示，不重做整页结构</li>
+            <li>先做最小改动试探，再决定是否扩展</li>
+            <li>把“设计完整性”让位于“迭代风险可控”</li>
+          </ul>
+        </div>
+      </div>
+      <div class="case-footer reveal">
+        <div class="footer-card">
+          <strong>为什么这个案例值得讲</strong>
+          <p>它很典型地暴露了 AI 在存量功能迭代里的一个偏好：只要边界不够清楚，它就容易从“轻改”滑向“重做”。</p>
+        </div>
+        <div class="footer-card">
+          <strong>最后沉淀</strong>
+          <p>好指令的核心不是更复杂，而是阶段更明确、边界更清楚。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    class PresentationController {
+      constructor() {
+        this.slides = [...document.querySelectorAll('.slide')];
+        this.navDots = [...document.querySelectorAll('.nav-dot')];
+        this.indexText = document.getElementById('slide-index-text');
+        this.current = 0;
+        this.touchStartY = 0;
+        this.wheelLock = false;
+        this.bindEvents();
+        this.observeSlides();
+        this.observeReveal();
+        this.updateState(0);
+      }
+
+      bindEvents() {
+        window.addEventListener('keydown', (event) => {
+          if (event.key === 'ArrowDown' || event.key === 'PageDown') this.goTo(this.current + 1);
+          if (event.key === 'ArrowUp' || event.key === 'PageUp') this.goTo(this.current - 1);
+          if (event.key === 'Home') this.goTo(0);
+          if (event.key === 'End') this.goTo(this.slides.length - 1);
+        });
+
+        window.addEventListener('wheel', (event) => {
+          if (this.wheelLock) return;
+          this.wheelLock = true;
+          setTimeout(() => { this.wheelLock = false; }, 700);
+          if (event.deltaY > 25) this.goTo(this.current + 1);
+          if (event.deltaY < -25) this.goTo(this.current - 1);
+        }, { passive: true });
+
+        window.addEventListener('touchstart', (event) => {
+          this.touchStartY = event.changedTouches[0].clientY;
+        }, { passive: true });
+
+        window.addEventListener('touchend', (event) => {
+          const delta = this.touchStartY - event.changedTouches[0].clientY;
+          if (delta > 45) this.goTo(this.current + 1);
+          if (delta < -45) this.goTo(this.current - 1);
+        }, { passive: true });
+
+        this.navDots.forEach((dot, index) => {
+          dot.addEventListener('click', () => this.goTo(index));
+        });
+      }
+
+      goTo(index) {
+        const target = Math.max(0, Math.min(index, this.slides.length - 1));
+        this.slides[target].scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+
+      updateState(index) {
+        this.current = index;
+        this.navDots.forEach((dot, i) => dot.classList.toggle('active', i === index));
+        this.indexText.textContent = `${String(index + 1).padStart(2, '0')} / ${String(this.slides.length).padStart(2, '0')}`;
+      }
+
+      observeSlides() {
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              const index = this.slides.indexOf(entry.target);
+              if (index >= 0) this.updateState(index);
+            }
+          });
+        }, { threshold: 0.55 });
+
+        this.slides.forEach((slide) => observer.observe(slide));
+      }
+
+      observeReveal() {
+        const revealObserver = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) entry.target.classList.add('in-view');
+          });
+        }, { threshold: 0.2 });
+
+        document.querySelectorAll('.reveal').forEach((item) => revealObserver.observe(item));
+      }
+    }
+
+    new PresentationController();
+  </script>
+</body>
+</html>
