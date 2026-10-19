@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+  <title>数学启蒙 · 乘除法启蒙</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Quicksand:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/design-system.css?v=20260903">
+  <link rel="stylesheet" href="css/multiplication.css?v=20260903">
+  <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
+</head>
+<body>
+  <!-- 护眼背景装饰 -->
+  <div class="bg-decoration">
+    <div class="cloud cloud-1"></div>
+    <div class="cloud cloud-2"></div>
+    <div class="cloud cloud-3"></div>
+  </div>
+
+  <div id="app">
+    <!-- 顶栏 -->
+    <div class="topbar">
+      <div class="topbar-left">
+        <a href="index.html" class="back-btn" aria-label="返回首页"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg></a>
+        <span class="topbar-title">✖️ 乘除法启蒙</span>
+      </div>
+    </div>
+
+    <!-- 模式切换页签 -->
+    <div class="mode-tabs">
+      <button class="mode-tab active" data-mode="matrix">
+        <span class="tab-icon">✖️</span>
+        <span class="tab-label">乘法点阵</span>
+      </button>
+      <button class="mode-tab" data-mode="share">
+        <span class="tab-icon">🦴</span>
+        <span class="tab-label">平均分</span>
+      </button>
+      <button class="mode-tab" data-mode="remainder">
+        <span class="tab-icon">🍎</span>
+        <span class="tab-label">余数挑战</span>
+      </button>
+    </div>
+
+    <!-- 内容区 -->
+    <div class="content multiplication-content">
+      <!-- 题目提示栏 -->
+      <div id="questionBar" class="question-bar">
+        <span class="question-icon" id="questionIcon">✖️</span>
+        <span class="question-text" id="questionText">加载中...</span>
+        <button type="button" id="questionSpeaker" class="question-speaker" aria-label="播放题目语音">🔊</button>
+      </div>
+
+      <!-- 画布舞台区 -->
+      <div class="mult-stage" id="multStage">
+        <!-- JS 动态生成点阵或平分容器 -->
+      </div>
+
+      <!-- 选项按钮区 -->
+      <div class="mult-options" id="multOptions">
+        <!-- JS 动态生成选项按钮 -->
+      </div>
+    </div>
+
+    <!-- 反馈浮层 -->
+    <div id="feedbackOverlay" class="feedback-overlay" style="display:none;">
+      <div class="feedback-emoji" id="feedbackEmoji"></div>
+      <div class="feedback-text" id="feedbackText"></div>
+    </div>
+  </div>
+
+  <script src="js/timer.js?v=20260903"></script>
+  <script src="js/practice-support.js?v=20260903"></script>
+  <script src="js/multiplication.js?v=20260903"></script>
+</body>
+</html>

@@ -53,9 +53,9 @@
   --btn-depth:   6px;
   --card-depth:  8px;
 
-  /* 字体 */
-  --font: 'ZCOOL KuaiLe', 'PingFang SC', 'Hiragino Sans GB', sans-serif;
-  --font-round: 'Nunito', var(--font);
+  /* 字体 (端正规整、圆润护眼儿童字体) */
+  --font: 'Nunito', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'YouYuan', sans-serif;
+  --font-round: var(--font);
 }
 
 /* ---------- 全局重置 ---------- */
@@ -79,95 +79,141 @@ html, body {
   touch-action: manipulation;
 }
 
-/* ---------- 主容器：竖屏平板优先 ---------- */
+/* ---------- 主容器：iPad Pro 10.5 英寸横屏 4:3 (纯白固态画布，4:3 比例 100% 清晰) ---------- */
 #app {
-  width: 100%;
-  height: 100%;
-  max-width: 820px;
+  height: 100vh;
+  width: calc(100vh * 4 / 3);
+  max-width: 100vw;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  background: rgba(253, 251, 247, 0.4);
-  backdrop-filter: blur(10px);
+  background: #FFFFFF;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 0 40px rgba(0,0,0,0.03);
+  box-shadow: 0 0 50px rgba(0, 0, 0, 0.15);
+  border-left: 2px solid #EAE7E0;
+  border-right: 2px solid #EAE7E0;
   z-index: 1;
+}
+
+@media screen and (min-width: 900px) {
+  body {
+    padding: 0;
+    margin: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #EFECE6;
+  }
+  #app {
+    height: 100vh;
+    width: min(100vw, calc(100vh * 4 / 3));
+    max-width: 100vw;
+    border-radius: 0;
+  }
 }
 
 /* ---------- 多邻国风格按钮 ---------- */
 .btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 14px 28px;
-  border: 2px solid var(--white);
-  border-radius: var(--radius-lg);
-  font-family: var(--font);
-  font-size: 18px;
-  font-weight: 700;
-  cursor: pointer;
-  position: relative;
-  transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.15s;
-  /* 更像果冻的厚底阴影 */
-  box-shadow: 0 var(--btn-depth) 0 var(--gray-200), 0 8px 12px rgba(0,0,0,0.04);
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  padding: 14px 28px !important;
+  font-size: 18px !important;
+  font-weight: 900 !important;
+  border-radius: var(--radius-xl, 20px) !important;
+  border: 2px solid transparent !important;
+  cursor: pointer !important;
+  text-decoration: none !important;
+  transition: transform 0.1s ease, box-shadow 0.1s ease !important;
+  position: relative !important;
+  outline: none !important;
+  box-sizing: border-box !important;
 }
 
 .btn:active {
-  transform: translateY(calc(var(--btn-depth) - 2px));
-  box-shadow: 0 2px 0 var(--gray-200), 0 4px 6px rgba(0,0,0,0.02);
+  transform: translateY(5px) !important;
 }
 
-/* 按钮颜色变体 */
-.btn-green {
-  background: linear-gradient(180deg, #F0FBF6 0%, var(--green) 100%);
-  color: var(--title);
-  box-shadow: 0 var(--btn-depth) 0 var(--green-dark), 0 8px 12px rgba(118,215,196,0.2);
+/* 绿色主动作按键（多邻国 3D 绿色按键） */
+.btn-green, .btn-primary {
+  background: #58CC02 !important;
+  border-color: #58CC02 !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 5px 0 #46A302 !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15) !important;
 }
-.btn-green:active { box-shadow: 0 2px 0 var(--green-dark), 0 4px 6px rgba(118,215,196,0.1); }
+.btn-green:active, .btn-primary:active {
+  box-shadow: 0 0 0 #46A302 !important;
+}
 
+/* 蓝色按键 */
 .btn-blue {
-  background: linear-gradient(180deg, #F0F8FD 0%, var(--blue) 100%);
-  color: var(--title);
-  box-shadow: 0 var(--btn-depth) 0 var(--blue-dark), 0 8px 12px rgba(133,193,233,0.2);
+  background: #1CB0F6 !important;
+  border-color: #1CB0F6 !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 5px 0 #1899D6 !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15) !important;
 }
-.btn-blue:active { box-shadow: 0 2px 0 var(--blue-dark); }
+.btn-blue:active {
+  box-shadow: 0 0 0 #1899D6 !important;
+}
 
+/* 红色按键 */
 .btn-red {
-  background: linear-gradient(180deg, #FEF0EF 0%, var(--red) 100%);
-  color: var(--title);
-  box-shadow: 0 var(--btn-depth) 0 var(--red-dark), 0 8px 12px rgba(241,148,138,0.2);
+  background: #FF4B4B !important;
+  border-color: #FF4B4B !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 5px 0 #EA2B2B !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15) !important;
 }
-.btn-red:active { box-shadow: 0 2px 0 var(--red-dark); }
+.btn-red:active {
+  box-shadow: 0 0 0 #EA2B2B !important;
+}
 
+/* 黄色按键 */
 .btn-yellow {
-  background: linear-gradient(180deg, #FFFDF8 0%, var(--yellow) 100%);
-  color: var(--title);
-  box-shadow: 0 var(--btn-depth) 0 var(--yellow-dark), 0 8px 12px rgba(248,196,113,0.2);
+  background: #FFC800 !important;
+  border-color: #FFC800 !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 5px 0 #E5B200 !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15) !important;
 }
-.btn-yellow:active { box-shadow: 0 2px 0 var(--yellow-dark); }
+.btn-yellow:active {
+  box-shadow: 0 0 0 #E5B200 !important;
+}
 
+/* 紫色按键 */
 .btn-purple {
-  background: linear-gradient(180deg, #F9F0FC 0%, var(--purple) 100%);
-  color: var(--title);
-  box-shadow: 0 var(--btn-depth) 0 var(--purple-dark), 0 8px 12px rgba(195,155,211,0.2);
+  background: #CE82FF !important;
+  border-color: #CE82FF !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 5px 0 #AF67E8 !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15) !important;
 }
-.btn-purple:active { box-shadow: 0 2px 0 var(--purple-dark); }
+.btn-purple:active {
+  box-shadow: 0 0 0 #AF67E8 !important;
+}
 
-/* 幽灵按钮（白底描边） */
+/* 白底 3D 软边按键 / 幽灵按键 */
 .btn-ghost {
-  background: var(--white);
-  border: 2px solid var(--white);
-  box-shadow: 0 var(--btn-depth) 0 var(--gray-200), 0 8px 12px rgba(0,0,0,0.02);
-  color: var(--gray-500);
+  background: #FFFFFF !important;
+  border: 2px solid #E2E8F0 !important;
+  box-shadow: 0 4px 0 #CBD5E1 !important;
+  color: #475569 !important;
+}
+.btn-ghost:active {
+  box-shadow: 0 0 0 #CBD5E1 !important;
 }
 
 .btn-ghost.active {
-  border-color: var(--blue-light);
-  box-shadow: 0 var(--btn-depth) 0 var(--blue-dark);
-  color: var(--title);
-  background: linear-gradient(180deg, #F0F8FD 0%, var(--blue) 100%);
+  background: #F0F8FF !important;
+  border-color: #B3E5FC !important;
+  box-shadow: 0 4px 0 #81D4FA !important;
+  color: #0369A1 !important;
 }
 
 /* 小按钮 */
@@ -226,6 +272,36 @@ html, body {
   font-size: 20px;
   font-weight: 700;
   color: var(--text);
+}
+
+/* ---------- 3D 物理按压返回按钮 ---------- */
+.back-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 44px !important;
+  height: 44px !important;
+  border-radius: 50% !important;
+  background: #FFFFFF !important;
+  border: 2px solid #E2E8F0 !important;
+  box-shadow: 0 4px 0 #CBD5E1 !important;
+  text-decoration: none !important;
+  color: #334155 !important;
+  margin-right: 12px !important;
+  transition: transform 0.1s ease, box-shadow 0.1s ease, background-color 0.1s ease !important;
+  outline: none !important;
+  flex-shrink: 0 !important;
+}
+
+.back-btn:hover {
+  background: #F8FAFC !important;
+  border-color: #CBD5E1 !important;
+  color: #0F172A !important;
+}
+
+.back-btn:active {
+  transform: translateY(4px) !important;
+  box-shadow: 0 0 0 #CBD5E1 !important;
 }
 
 /* 进度条 */
@@ -289,10 +365,15 @@ html, body {
 /* ---------- 内容区 ---------- */
 .content {
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start !important;
   overflow-y: auto;
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
-  padding: 16px;
+  padding: 12px 16px !important;
+  box-sizing: border-box !important;
 }
 
 /* ---------- 动画关键帧 ---------- */
@@ -379,35 +460,372 @@ html, body {
   animation: bounceIn 0.5s ease-out 0.1s both;
 }
 
+/* ---------- 题目/提示标题栏：居中对齐中轴对称 ---------- */
+.question-bar, .question-display-bar {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  gap: 10px !important;
+  padding: 8px 20px 8px 20px !important;
+  margin: 0 auto 8px auto !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  width: 100% !important;
+  max-width: 820px !important;
+  box-sizing: border-box !important;
+  flex-shrink: 0 !important;
+}
+
+.question-text, .question-display {
+  text-align: center !important;
+  font-size: 20px !important;
+  font-weight: 800 !important;
+  color: #1E293B !important;
+}
+
+/* ---------- 常见的量 · 天平/直尺背景卡片完全移除与 820px 宽屏容器 ---------- */
+.scale-display, .scale-container, .weight-area .scale-display, .ruler-container, .length-area .ruler-container {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 8px 0 !important;
+}
+
+.length-area, #lengthArea {
+  width: 100% !important;
+  max-width: 820px !important;
+  margin: 0 auto !important;
+}
+
+/* ---------- 常见的量 · 比较模式 HD 1.5倍等比放大 (720px 大画布) ---------- */
+.compare-area, #compareArea {
+  width: 100% !important;
+  max-width: 820px !important;
+  margin: 0 auto !important;
+}
+
+.compare-scene, #compareScene {
+  width: 100% !important;
+  max-width: 720px !important;
+  min-height: 280px !important;
+  padding: 24px 32px !important;
+  background: linear-gradient(180deg, #F0F9FF 0%, #E0F2FE 100%) !important;
+  border-radius: 28px !important;
+  border: 3px solid #7DD3FC !important;
+  box-shadow: 0 6px 0 #38BDF8, 0 12px 24px rgba(0, 0, 0, 0.06) !important;
+  margin: 0 auto 20px auto !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-sizing: border-box !important;
+}
+
+.compare-options, #compareOptions, .length-options, #lengthOptions, .weight-options, #weightOptions, .clock-options, #clockOptions {
+  display: flex !important;
+  gap: 20px !important;
+  justify-content: center !important;
+  align-items: center !important;
+  flex-wrap: wrap !important;
+  margin-top: 16px !important;
+}
+
+/* ---------- 常见的量 · 比较 / 测量 / 轻重 / 钟表 浅色纯色底选项按钮 ---------- */
+.compare-option, .length-option, .weight-option, .clock-option {
+  background: #F1F5F9 !important;
+  border: 2px solid #E2E8F0 !important;
+  border-radius: 20px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04) !important;
+  padding: 14px 32px !important;
+  font-size: 20px !important;
+  font-weight: 800 !important;
+  color: #1E293B !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+}
+
+.compare-option:hover, .length-option:hover, .weight-option:hover, .clock-option:hover {
+  background: #E2E8F0 !important;
+  border-color: #CBD5E1 !important;
+  transform: translateY(-2px) !important;
+}
+
+.compare-option:active, .length-option:active, .weight-option:active, .clock-option:active {
+  transform: translateY(1px) !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04) !important;
+}
+
+.compare-option.selected, .length-option.selected, .weight-option.selected, .clock-option.selected {
+  background: #DCFCE7 !important;
+  border-color: #22C55E !important;
+  color: #15803D !important;
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.2) !important;
+}
+
+.compare-option.wrong, .length-option.wrong, .weight-option.wrong, .clock-option.wrong {
+  background: #FEE2E2 !important;
+  border-color: #EF4444 !important;
+  color: #B91C1C !important;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2) !important;
+}
+/* ---------- 常见的量 · 钟表 HD 1.5倍放大 (390px x 390px 完美同心圆框) ---------- */
+.clock-area, #clockArea {
+  width: 100% !important;
+  max-width: 820px !important;
+  margin: 0 auto !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 20px !important;
+}
+
+.clock-face, #clockFace {
+  width: 390px !important;
+  height: 390px !important;
+  margin: 0 auto !important;
+  background: #FFFFFF !important;
+  border-radius: 50% !important;
+  border: 4px solid #FFFFFF !important;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.08) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-sizing: border-box !important;
+}
+
+.clock-face svg, #clockSvg {
+  width: 340px !important;
+  height: 340px !important;
+  display: block !important;
+  margin: 0 auto !important;
+}
+
+/* ---------- 常见的量 · 日历 HD 放大 (540px 大画布) 与重复卡片隐藏 ---------- */
+#calendarHelper, .calendar-helper, .calendar-helper-card {
+  display: none !important;
+}
+
+.calendar-paper {
+  background: #FFFDF0 !important;
+  border-radius: 28px !important;
+  box-shadow: 0 6px 0 #CBD5E1, 0 12px 24px rgba(0, 0, 0, 0.05) !important;
+  padding: 24px 28px !important;
+  width: 100% !important;
+  max-width: 540px !important;
+  border: 3px solid #FDE047 !important;
+  margin: 0 auto !important;
+  box-sizing: border-box !important;
+}
+
+.calendar-header {
+  background: #81D4FA !important;
+  border-radius: 18px !important;
+  padding: 12px 20px !important;
+  text-align: center !important;
+  margin-bottom: 12px !important;
+  box-shadow: 0 4px 0 #4FC3F7 !important;
+}
+
+.cal-month-title {
+  font-size: 24px !important;
+  font-weight: 900 !important;
+  color: #0F172A !important;
+}
+
+.calendar-weekdays {
+  display: grid !important;
+  grid-template-columns: repeat(7, 1fr) !important;
+  text-align: center !important;
+  font-size: 18px !important;
+  font-weight: 800 !important;
+  color: #475569 !important;
+  padding: 8px 0 !important;
+}
+
+.calendar-grid {
+  display: grid !important;
+  grid-template-columns: repeat(7, 1fr) !important;
+  gap: 8px !important;
+  margin-top: 8px !important;
+}
+
+.cal-day {
+  aspect-ratio: 1 !important;
+  width: 100% !important;
+  max-width: 52px !important;
+  min-height: 48px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 50% !important;
+  font-size: 20px !important;
+  font-weight: 800 !important;
+  color: #1E293B !important;
+  background: #FFFFFF !important;
+  border: 2px solid #E2E8F0 !important;
+  cursor: pointer !important;
+  margin: 0 auto !important;
+  transition: transform 0.15s ease, background-color 0.15s ease !important;
+  outline: none !important;
+}
+
+.cal-day.empty {
+  background: transparent !important;
+  border: none !important;
+  cursor: default !important;
+}
+
+.cal-day.today {
+  background: #FACC15 !important;
+  color: #0F172A !important;
+  font-weight: 900 !important;
+  border-color: #EAB308 !important;
+  box-shadow: 0 4px 0 #CA8A04 !important;
+  transform: scale(1.1) !important;
+  z-index: 2 !important;
+}
+
+.cal-day.selected {
+  background: #58CC02 !important;
+  color: #FFFFFF !important;
+  font-weight: 900 !important;
+  border-color: #46A302 !important;
+  box-shadow: 0 4px 0 #46A302 !important;
+  transform: scale(1.15) !important;
+  z-index: 3 !important;
+}
+
+.question-icon {
+  font-size: 24px !important;
+  flex-shrink: 0 !important;
+}
+
+.question-text {
+  flex: 0 1 auto !important;
+  font-size: 18px !important;
+  font-weight: 800 !important;
+  color: var(--title, #2D3748) !important;
+  text-align: left !important;
+}
+
+/* ---------- 喇叭按钮（柔和色卡底座，无空心圈动效） ---------- */
 .question-speaker {
   flex-shrink: 0;
-  width: 44px;
-  height: 44px;
-  border: 2px solid rgba(255, 255, 255, 0.9);
-  border-radius: 9999px;
-  background: rgba(255, 255, 255, 0.92);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
-  font-size: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: none !important;
+  border-radius: 10px !important;
+  background: #EDF2F7 !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05) !important;
+  font-size: 18px;
   line-height: 1;
   cursor: pointer;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  margin-left: 8px;
+  transition: background 0.2s ease, transform 0.15s ease;
+  outline: none;
+}
+
+.question-speaker:hover {
+  background: #E2E8F0 !important;
+  transform: scale(1.05);
 }
 
 .question-speaker:active {
   transform: scale(0.94);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }
 
-.question-speaker[hidden] {
+/* 播放中高亮色卡状态（无空心圈） */
+.question-speaker.is-playing {
+  background: #BEE3F8 !important;
+  color: #2B6CB0 !important;
+  border: none !important;
+  box-shadow: 0 2px 8px rgba(49, 130, 206, 0.2) !important;
+}
+
+.question-speaker.is-playing::after {
   display: none !important;
+}
+
+/* ---------- 全局统一页签样式（横向排列：左Icon右文字、统一高度 48px、防溢出） ---------- */
+.mode-tabs {
+  display: flex !important;
+  gap: 8px !important;
+  padding: 10px 16px !important;
+  background: var(--white, #FFFFFF) !important;
+  border-bottom: 2px solid var(--gray-50, #F7FAFC) !important;
+  flex-shrink: 0 !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  overflow-x: auto !important;
+  scrollbar-width: none !important;
+}
+
+.mode-tabs::-webkit-scrollbar {
+  display: none !important;
+}
+
+.mode-tab {
+  flex: 1 1 0% !important;
+  min-width: 0 !important;
+  height: 48px !important;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  padding: 0 10px !important;
+  background: #F8FAFC !important;
+  border: 2px solid #E2E8F0 !important;
+  box-shadow: 0 4px 0 #CBD5E1 !important;
+  border-radius: 16px !important;
+  cursor: pointer !important;
+  color: #475569 !important;
+  font-family: var(--font, sans-serif) !important;
+  box-sizing: border-box !important;
+  transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.15s ease !important;
+}
+
+.mode-tab.active {
+  background: #F0F8FF !important;
+  border-color: #B3E5FC !important;
+  box-shadow: 0 4px 0 #81D4FA !important;
+  color: #0369A1 !important;
+  font-weight: 800 !important;
+}
+
+.mode-tab:active {
+  transform: translateY(4px) !important;
+  box-shadow: 0 0 0 #CBD5E1 !important;
+}
+
+.tab-icon {
+  font-size: 20px !important;
+  flex-shrink: 0 !important;
+  line-height: 1 !important;
+}
+
+.tab-label {
+  font-size: 15px !important;
+  font-weight: 700 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
 }
 
 /* ---------- 平板适配 ---------- */
 
-/* 大平板（iPad Pro 12.9等） */
+/* 大平板（iPad Pro 10.5 / 12.9 横屏 4:3） */
 @media (min-width: 1024px) {
   #app {
-    max-width: 900px;
+    height: 100vh;
+    width: min(100vw, calc(100vh * 4 / 3));
+    max-width: 100vw;
   }
 }
 
@@ -563,4 +981,30 @@ html, body {
   font-weight: 700;
   margin-top: 12px;
   min-height: 24px;
+}
+
+/* ---------- iPad Pro 10.5 英寸 (1112px × 834px) 横屏平板专属适配 ---------- */
+@media screen and (min-width: 768px) and (max-width: 1200px) {
+  #app {
+    max-width: 100%;
+  }
+
+  .content {
+    padding: 16px 24px;
+  }
+
+  .mode-tab {
+    padding: 14px 16px;
+    flex-direction: row;
+    justify-content: center;
+    gap: 8px;
+  }
+  
+  .tab-icon { font-size: 26px; }
+  .tab-label { font-size: 16px; }
+
+  .answer-btn {
+    min-height: 68px;
+    font-size: 32px;
+  }
 }

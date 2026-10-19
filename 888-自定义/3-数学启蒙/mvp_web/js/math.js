@@ -10,7 +10,7 @@ const state = {
   answer: null,
   practiceMode: false,
   currentQuestion: 0,
-  totalQuestions: 10,
+  totalQuestions: 5,
   correctCount: 0,
   currentFruit: '🍎',
   eaten: 0,
@@ -124,7 +124,7 @@ function showAnswerOptions(demoFuncName) {
         .join('')}
     </div>
     ${demoFuncName
-      ? `<button class="btn-ghost btn-sm" onclick="${demoFuncName}()" style="margin-top:16px;">📕 看演示</button>`
+      ? `<button class="demo-watch-btn" onclick="${demoFuncName}()">📺 看演示</button>`
       : ''}
   `;
 }
@@ -194,7 +194,7 @@ function showCompleteScreen() {
       <div style="font-size:18px;color:var(--gray-400);">${encouragement}</div>
     </div>
   `;
-  controlArea.innerHTML = '<button class="btn btn-blue btn-lg" onclick="startPractice()">🔄 再来一组</button>';
+  controlArea.innerHTML = '<button class="btn btn-blue btn-lg" onclick="startPractice()">🔄 再练一轮</button>';
   bottomActions.style.display = 'none';
   feedback.textContent = '';
   feedback.className = 'feedback';
@@ -445,6 +445,27 @@ function carryOver() {
   }, 1500);
 }
 
+function renderTenFrame(filledCount, type = 'tens', crossedCount = 0) {
+  const cells = [];
+  for (let i = 0; i < 10; i++) {
+    let cellClass = 'ten-cell';
+    if (i < crossedCount) {
+      cellClass += ' crossed';
+    } else if (i < filledCount) {
+      cellClass += ` filled-${type}`;
+    }
+    cells.push(`<div class="${cellClass}"></div>`);
+  }
+  return `<div class="ten-frame-grid">${cells.join('')}</div>`;
+}
+
+function renderTenPack() {
+  return `<div class="ten-pack-block">📦 10</div>`;
+}
+
+let demoStep = 1;
+let demoAutoPlayTimer = null;
+
 function generateLevel3Question() {
   const tens = Math.floor(Math.random() * 7) + 2;
   const ones = Math.floor(Math.random() * 5) + 1;
@@ -460,85 +481,199 @@ function generateLevel3Question() {
 }
 
 function renderLevel3Subtraction() {
+  clearTimeout(demoAutoPlayTimer);
   const { total, subtract } = state.question;
   setPrompt(`${getQuestionPrefix()}：${total} - ${subtract} = ?`, `${getQuestionPrefix()}，${total}减${subtract}等于多少？`);
   updateRodsDisplay();
   showAnswerOptions('showLevel3Demo');
 }
 
-function showLevel3Demo() {
-  const { total, subtract } = state.question;
-  state.toRemove = subtract;
-  setPrompt(`${getQuestionPrefix()}：${total} - ${subtract} = ?`, `长按一捆拆开，再拿走 ${subtract} 根小棒`);
-  updateRodsDisplay();
-
-  controlArea.innerHTML = `
-    <div style="font-size:18px;color:var(--gray-500);margin-bottom:12px;">
-      长按一捆可以拆开，点击单根可以拿走
-    </div>
-    <div style="font-size:20px;font-weight:700;">
-      还需要拿走 <span id="remainCount" style="color:var(--red);">${subtract}</span> 根
-    </div>
-  `;
-}
-
 function updateRodsDisplay() {
   visualArea.innerHTML = `
-    <div class="rods-container" id="rodsContainer">
-      ${Array(state.bundles)
-        .fill(0)
-        .map((_, index) => `<div class="rod-bundle" onmousedown="startUnbundle(${index})" ontouchstart="startUnbundle(${index})"></div>`)
-        .join('')}
-      ${Array(state.singles)
-        .fill(0)
-        .map((_, index) => `<div class="rod-single" onclick="removeSingle(${index})"></div>`)
-        .join('')}
-    </div>
-    <div style="margin-top:16px;font-size:20px;font-weight:700;">
-      <span style="color:var(--blue);">十位: ${state.bundles}</span>
-      <span style="margin:0 20px;color:var(--gray-400);">|</span>
-      <span style="color:var(--green);">个位: ${state.singles}</span>
+    <div class="level3-demo-container">
+      <div class="place-column tens-col">
+        <div class="column-title">📦 十位 (${state.bundles} 盒 = ${state.bundles * 10})</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center;">
+          ${Array(state.bundles).fill(0).map(() => renderTenPack()).join('')}
+        </div>
+      </div>
+      <div class="place-column ones-col">
+        <div class="column-title">🍬 个位 (${state.singles} 块)</div>
+        <div class="singles-flex-container">
+          ${Array(state.singles).fill(0).map(() => '<div class="single-dot-block"></div>').join('')}
+        </div>
+      </div>
     </div>
   `;
 }
 
-let unbundleTimer = null;
-
-function startUnbundle() {
-  if (state.bundles === 0) return;
-
-  unbundleTimer = setTimeout(() => {
-    state.bundles -= 1;
-    state.singles += 10;
-    updateRodsDisplay();
-    speakFeedback('✅ 拆捆成功！', 'correct');
-  }, 300);
+function showLevel3Demo() {
+  demoStep = 1;
+  clearTimeout(demoAutoPlayTimer);
+  renderLevel3DemoStep(1);
 }
 
-window.addEventListener('mouseup', () => clearTimeout(unbundleTimer));
-window.addEventListener('touchend', () => clearTimeout(unbundleTimer));
+function renderLevel3DemoStep(step) {
+  demoStep = step;
+  clearTimeout(demoAutoPlayTimer);
 
-function removeSingle() {
-  if (state.toRemove === 0 || state.singles === 0) return;
+  const { total, subtract, tens, ones } = state.question;
+  const subTens = Math.floor(subtract / 10);
+  const subOnes = subtract % 10;
+  const tensLeftAfterBorrow = tens - 1;
+  const remainInBorrow = 10 - subOnes;
+  const finalOnes = remainInBorrow + ones;
+  const finalTens = tensLeftAfterBorrow - subTens;
+  const finalResult = total - subtract;
 
-  state.singles -= 1;
-  state.toRemove -= 1;
-  updateRodsDisplay();
+  if (step === 1) {
+    setPrompt(
+      `${getQuestionPrefix()} 演示：${total} - ${subtract}`,
+      `个位只有 ${ones} 块，减不去 ${subOnes} 块，不够减！需要从十位借 1 个 10 到个位！`
+    );
 
-  const remainCount = $('#remainCount');
-  if (remainCount) {
-    remainCount.textContent = state.toRemove;
-  }
+    visualArea.innerHTML = `
+      <div class="demo-step-indicator">
+        <span class="step-chip active">1. 观察原数</span>
+        <span class="step-chip">2. 借10到个位</span>
+        <span class="step-chip">3. 个位破十减${subOnes}</span>
+        <span class="step-chip">4. 十位扣减与总结</span>
+      </div>
+      <div class="level3-demo-container">
+        <div class="place-column tens-col">
+          <div class="column-title">📦 十位 (${tens}包 = ${tens * 10})</div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center;">
+            ${Array(tens).fill(0).map(() => renderTenPack()).join('')}
+          </div>
+        </div>
+        <div class="place-column ones-col">
+          <div class="column-title">🍬 个位 (${ones}块)</div>
+          <div class="singles-flex-container">
+            ${Array(ones).fill(0).map(() => '<div class="single-dot-block"></div>').join('')}
+          </div>
+        </div>
+      </div>
+    `;
 
-  if (state.toRemove === 0) {
-    setTimeout(() => {
-      speakFeedback('🎉 拿走完成！', 'correct');
-      setTimeout(() => {
-        feedback.textContent = '';
-        feedback.className = 'feedback';
-        renderLevel3Subtraction();
-      }, 1000);
-    }, 300);
+    controlArea.innerHTML = `
+      <div class="demo-control-bar">
+        <button class="btn btn-green btn-lg" onclick="renderLevel3DemoStep(2)">下一步：借10到个位 ⏭️</button>
+        <button class="btn-ghost btn-sm" onclick="renderLevel3Subtraction()">❌ 退出演示</button>
+      </div>
+    `;
+  } else if (step === 2) {
+    setPrompt(
+      `步骤 2：从十位借 1 个 10 放到个位！`,
+      `从十位借 1 个整十包送到个位并拆开！十位还剩 ${tensLeftAfterBorrow} 包，个位里面多出 1 个拆开的 10 格盒！`
+    );
+
+    visualArea.innerHTML = `
+      <div class="demo-step-indicator">
+        <span class="step-chip">1. 观察原数</span>
+        <span class="step-chip active">2. 借10到个位</span>
+        <span class="step-chip">3. 个位破十减${subOnes}</span>
+        <span class="step-chip">4. 十位扣减与总结</span>
+      </div>
+      <div class="level3-demo-container">
+        <div class="place-column tens-col">
+          <div class="column-title">📦 十位 (剩 ${tensLeftAfterBorrow} 包 = ${tensLeftAfterBorrow * 10})</div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center;">
+            ${Array(tensLeftAfterBorrow).fill(0).map(() => renderTenPack()).join('')}
+          </div>
+        </div>
+        <div class="place-column ones-col" style="border-color:#F8E8C8;background:#FAF5EA;">
+          <div class="column-title">🍬 个位 (拆开的10盒 + 原有${ones}块)</div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+            <div style="font-size:12px;font-weight:700;color:#D97706;">⭐ 借来并拆开的 10 格盒：</div>
+            ${renderTenFrame(10, 'borrow')}
+            <div style="font-size:12px;font-weight:700;color:#059669;margin-top:4px;">🍬 原有的 ${ones} 块：</div>
+            <div class="singles-flex-container">
+              ${Array(ones).fill(0).map(() => '<div class="single-dot-block"></div>').join('')}
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    controlArea.innerHTML = `
+      <div class="demo-control-bar">
+        <button class="btn btn-blue btn-sm" onclick="renderLevel3DemoStep(1)">◀️ 上一步</button>
+        <button class="btn btn-green btn-lg" onclick="renderLevel3DemoStep(3)">下一步：个位破十减${subOnes} ⏭️</button>
+        <button class="btn-ghost btn-sm" onclick="renderLevel3Subtraction()">❌ 退出演示</button>
+      </div>
+    `;
+  } else if (step === 3) {
+    setPrompt(
+      `步骤 3：在个位从借来的 10 里面减去 ${subOnes}！`,
+      `在借来的 10 格盒里划掉 ${subOnes} 格，还剩下 ${remainInBorrow} 格！加上原本的 ${ones} 块，个位一共是 ${finalOnes} 块。`
+    );
+
+    visualArea.innerHTML = `
+      <div class="demo-step-indicator">
+        <span class="step-chip">1. 观察原数</span>
+        <span class="step-chip">2. 借10到个位</span>
+        <span class="step-chip active">3. 个位破十减${subOnes}</span>
+        <span class="step-chip">4. 十位扣减与总结</span>
+      </div>
+      <div class="level3-demo-container">
+        <div class="place-column tens-col">
+          <div class="column-title">📦 十位 (剩 ${tensLeftAfterBorrow} 包)</div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center;">
+            ${Array(tensLeftAfterBorrow).fill(0).map(() => renderTenPack()).join('')}
+          </div>
+        </div>
+        <div class="place-column ones-col" style="border-color:#F8E8C8;background:#FAF5EA;">
+          <div class="column-title">🍬 个位 (破十剩${remainInBorrow} + 原有${ones} = ${finalOnes})</div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+            <div style="font-size:12px;font-weight:700;color:#D97706;">⭐ 划掉 ${subOnes} 格，剩 ${remainInBorrow} 格：</div>
+            ${renderTenFrame(10, 'borrow', subOnes)}
+            <div style="font-size:12px;font-weight:700;color:#059669;margin-top:4px;">🍬 原有的 ${ones} 块：</div>
+            <div class="singles-flex-container">
+              ${Array(ones).fill(0).map(() => '<div class="single-dot-block"></div>').join('')}
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    controlArea.innerHTML = `
+      <div class="demo-control-bar">
+        <button class="btn btn-blue btn-sm" onclick="renderLevel3DemoStep(2)">◀️ 上一步</button>
+        <button class="btn btn-green btn-lg" onclick="renderLevel3DemoStep(4)">下一步：十位扣减与总结 ⏭️</button>
+        <button class="btn-ghost btn-sm" onclick="renderLevel3Subtraction()">❌ 退出演示</button>
+      </div>
+    `;
+  } else if (step === 4) {
+    setPrompt(
+      `步骤 4：算出最终答案 ${finalResult}`,
+      `个位得 ${finalOnes}！十位剩 ${tensLeftAfterBorrow} 盒减去 ${subTens} 盒得 ${finalTens} 盒！最终答案是 ${finalResult}！`
+    );
+
+    visualArea.innerHTML = `
+      <div class="demo-step-indicator">
+        <span class="step-chip">1. 观察原数</span>
+        <span class="step-chip">2. 借10到个位</span>
+        <span class="step-chip">3. 个位破十减${subOnes}</span>
+        <span class="step-chip active">4. 总结答案</span>
+      </div>
+      <div class="level3-demo-container" style="flex-direction:column;align-items:center;">
+        <div class="result-display" style="font-size:64px;margin:10px 0;color:var(--blue);">
+          ${total} - ${subtract} = ${finalResult}
+        </div>
+        <div style="font-size:18px;line-height:1.6;color:var(--text);background:var(--white);padding:16px 24px;border-radius:var(--radius-lg);border:2px solid var(--gray-100);max-width:520px;text-align:left;width:100%;">
+          <div>🔹 <strong>个位计算 (破十法)</strong>：借10 - ${subOnes} = ${remainInBorrow}，加上原有 ${ones} 块 ➜ <strong>${finalOnes}</strong></div>
+          <div>🔹 <strong>十位计算</strong>：(借后剩 ${tensLeftAfterBorrow} 盒) - ${subTens} 盒 ➜ <strong>${finalTens} 盒 (${finalTens * 10})</strong></div>
+          <div style="margin-top:8px;color:var(--green);font-weight:bold;font-size:20px;">💡 最终结果：${finalTens}个十 + ${finalOnes}个一 = ${finalResult}</div>
+        </div>
+      </div>
+    `;
+
+    controlArea.innerHTML = `
+      <div class="demo-control-bar">
+        <button class="btn btn-blue btn-sm" onclick="renderLevel3DemoStep(1)">🔄 重新演示</button>
+        <button class="btn btn-green btn-lg" onclick="renderLevel3Subtraction()">✅ 我学会了，去答题</button>
+      </div>
+    `;
   }
 }
 

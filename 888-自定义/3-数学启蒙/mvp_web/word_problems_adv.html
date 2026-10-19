@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+  <title>数学启蒙 · 行程与高阶应用题</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Quicksand:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/design-system.css?v=20260903">
+  <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
+  <style>
+    .adv-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 20px;
+      text-align: center;
+      flex: 1;
+    }
+    .track-demo {
+      width: 320px;
+      height: 60px;
+      background: #FEF3C7;
+      border-radius: 999px;
+      border: 3px solid #F59E0B;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      margin: 20px 0;
+      font-size: 32px;
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-decoration">
+    <div class="cloud cloud-1"></div>
+    <div class="cloud cloud-2"></div>
+  </div>
+
+  <div id="app">
+    <div class="topbar">
+      <div class="topbar-left">
+        <a href="index.html" class="back-btn" aria-label="返回首页"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg></a>
+        <span class="topbar-title">🏃 行程与高阶应用题 (4-6年级)</span>
+      </div>
+    </div>
+
+    <div class="adv-container">
+      <div class="track-demo">
+        <span>🚗</span>
+        <span style="font-size:16px; font-weight:800; color:#D97706;">相遇问题：路程 ÷ 速度和</span>
+        <span>🚙</span>
+      </div>
+      <h2 style="font-size: 26px; font-weight: 900; color: #1E293B; margin-bottom: 8px;">相遇追及 · 鸡兔同笼 · 工程问题</h2>
+      <p style="font-size: 16px; color: #64748B; max-width: 480px; line-height: 1.5;">两车同时相对开出，多久相遇？通过线段图可视化推演速度与时间的关系！</p>
+      <div style="margin-top: 24px; display: flex; gap: 12px;">
+        <button class="btn btn-yellow btn-lg" onclick="alert('高阶专题：线段图推演与行程模拟动画！')">🚗 发车模拟</button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

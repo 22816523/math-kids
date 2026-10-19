@@ -473,6 +473,8 @@
       isDrawing: false,
       strokeCount: 0,
       currentLayout: null,
+      traceCount: 0,
+      traceTotal: 5,
     };
 
     function drawPathStroke(ctx, commands, offsetX, offsetY, scale) {
@@ -606,7 +608,13 @@
 
     function setCurrentNumber(num, { announce = true } = {}) {
       state.currentNum = num;
-      boardTargetText.textContent = String(num);
+      const questionTextEl = $('#questionText');
+      if (questionTextEl && !questionTextEl.querySelector('#boardTargetText')) {
+        questionTextEl.innerHTML = `一起来写数字：<span class="board-target" id="boardTargetText">${num}</span> (${state.traceCount + 1}/${state.traceTotal})`;
+      } else {
+        const targetText = $('#boardTargetText');
+        if (targetText) targetText.textContent = String(num);
+      }
       clearDrawCanvas();
       renderReferenceNumber(num);
 
@@ -769,10 +777,41 @@
       speak(result.text);
 
       if (result.isPass) {
-        window.setTimeout(() => {
-          window.PracticeSupport?.showConfetti?.();
-          setCurrentNumber(pickNextTraceNumber(state.currentNum), { announce: true });
-        }, 1500);
+        state.traceCount++;
+        if (state.traceCount >= state.traceTotal) {
+          window.setTimeout(() => {
+            window.PracticeSupport?.showConfetti?.();
+            speak('太棒了，完成本轮5个数字描红！');
+            const questionTextEl = $('#questionText');
+            if (questionTextEl) {
+              questionTextEl.innerHTML = '🎉 本轮 5 个数字描红已完成！';
+            }
+            
+            const bottomActions = $('#bottomActions');
+            if (bottomActions) {
+              bottomActions.innerHTML = '<button class="btn btn-blue btn-lg" id="nextRoundBtn">🔄 再练一轮</button>';
+              const nextRoundBtn = $('#nextRoundBtn');
+              if (nextRoundBtn) {
+                nextRoundBtn.onclick = () => {
+                  state.traceCount = 0;
+                  bottomActions.innerHTML = '<button class="btn btn-green btn-lg" id="submitBtn">✨ 写好了，检查一下</button>';
+                  const newSubmitBtn = $('#submitBtn');
+                  if (newSubmitBtn) newSubmitBtn.onclick = checkDrawQuality;
+                  const questionTextEl = $('#questionText');
+                  if (questionTextEl) {
+                    questionTextEl.innerHTML = '一起来写数字：<span class="board-target" id="boardTargetText">1</span>';
+                  }
+                  setCurrentNumber(pickNextTraceNumber(state.currentNum), { announce: true });
+                };
+              }
+            }
+          }, 1500);
+        } else {
+          window.setTimeout(() => {
+            window.PracticeSupport?.showConfetti?.();
+            setCurrentNumber(pickNextTraceNumber(state.currentNum), { announce: true });
+          }, 1500);
+        }
       } else {
         window.setTimeout(() => {
           clearDrawCanvas();

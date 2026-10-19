@@ -206,15 +206,9 @@
       calMonthTitle.textContent = `${CALENDAR_MONTH_INFO.monthLabel} ${CALENDAR_MONTH_INFO.englishLabel}`;
     }
 
-    if (calendarArea && !document.getElementById('calendarHelper')) {
-      const helper = document.createElement('div');
-      helper.id = 'calendarHelper';
-      helper.className = 'calendar-helper';
-      helper.innerHTML = `
-        <div class="calendar-helper-title" id="calendarHelperTitle">看日历找日期</div>
-        <div class="calendar-helper-text" id="calendarHelperText">先看黄色的今天，再点出题目要找的日期。</div>
-      `;
-      calendarArea.insertBefore(helper, calendarArea.firstChild);
+    if (calendarArea) {
+      const oldHelper = document.getElementById('calendarHelper');
+      if (oldHelper) oldHelper.remove();
     }
   }
 
@@ -258,6 +252,13 @@
       autoSpeak: options?.autoSpeak !== false,
       allowReplay: options?.allowReplay !== false,
     });
+  }
+
+  function showBottomAction(text, callback, className) {
+    bottomActions.style.display = 'flex';
+    actionBtn.textContent = text;
+    actionBtn.className = className || 'btn btn-primary btn-lg';
+    actionBtn.onclick = callback;
   }
 
   function scheduleAdvance(callback, delay) {
@@ -406,6 +407,7 @@
     clockOptions.innerHTML = '';
     bottomActions.style.display = 'flex';
     actionBtn.textContent = '🎯 开始练习';
+    actionBtn.className = 'btn btn-primary btn-lg';
     actionBtn.onclick = startClockPractice;
     showQuestion('🕐', '拖动蓝色分针，看时针怎么动');
   }
@@ -418,14 +420,14 @@
   }
 
   function nextClockQuestion() {
-    state.clockRound++;
-    if (state.clockRound > 12) {
+    if (state.clockRound >= 5) {
       showFeedback('🎉', '时间大师！', 2000);
       showConfetti();
       addStar(3);
-      setTimeout(initClock, 2500);
+      showBottomAction('🔄 再玩一次', startClockPractice);
       return;
     }
+    state.clockRound++;
 
     const types = [0, 30, 15, 45];
     const minute = types[state.clockRound % 4];
@@ -585,12 +587,15 @@
       showFeedback('🎉', '刚刚好，谢谢你！', 1500);
       addStar(2);
       state.moneyRound++;
-      if (state.moneyRound >= 6) {
+      if (state.moneyRound >= 5) {
         setTimeout(() => {
           showFeedback('🏆', '购物高手！', 2000);
           showConfetti();
           addStar(3);
-          setTimeout(initMoney, 2500);
+          showBottomAction('🔄 再玩一次', () => {
+            state.moneyRound = 0;
+            initMoney();
+          });
         }, 1600);
       } else {
         setTimeout(resetMoneyRound, 1800);
@@ -617,14 +622,14 @@
 
   const COMPARE_QUESTIONS = {
     length: [
-      { a: { label: '红铅笔', len: 180, color: '#FF8A8A' }, b: { label: '蓝铅笔', len: 120, color: '#7BC8F6' }, answer: 'a', q: '哪支铅笔更长？' },
-      { a: { label: '绿铅笔', len: 100, color: '#6BCB77' }, b: { label: '紫铅笔', len: 160, color: '#C89CF2' }, answer: 'b', q: '哪支铅笔更长？' },
-      { a: { label: '橙铅笔', len: 140, color: '#FFA36C' }, b: { label: '粉铅笔', len: 140, color: '#F28CB1' }, answer: 'same', q: '哪支铅笔更长？' },
-      { a: { label: '黄铅笔', len: 200, color: '#FFD166' }, b: { label: '青铅笔', len: 110, color: '#6CD4DB' }, answer: 'a', q: '哪支铅笔更长？' },
-      { a: { label: '灰铅笔', len: 90, color: '#AAAAAA' }, b: { label: '棕铅笔', len: 170, color: '#C89C6C' }, answer: 'b', q: '哪支铅笔更长？' },
-      { a: { label: '白铅笔', len: 150, color: '#E5E5E5' }, b: { label: '黑铅笔', len: 130, color: '#4B4B4B' }, answer: 'a', q: '哪支铅笔更长？' },
-      { a: { label: '金铅笔', len: 120, color: '#FFD700' }, b: { label: '银铅笔', len: 180, color: '#C0C0C0' }, answer: 'b', q: '哪支铅笔更长？' },
-      { a: { label: '玫红铅笔', len: 160, color: '#FF69B4' }, b: { label: '天蓝铅笔', len: 160, color: '#87CEEB' }, answer: 'same', q: '哪支铅笔更长？' },
+      { a: { label: '红铅笔', len: 180, color: '#FF6B6B' }, b: { label: '蓝铅笔', len: 120, color: '#4D96FF' }, answer: 'a', q: '哪支铅笔更长？' },
+      { a: { label: '绿铅笔', len: 100, color: '#6BCB77' }, b: { label: '紫铅笔', len: 160, color: '#9B59B6' }, answer: 'b', q: '哪支铅笔更长？' },
+      { a: { label: '橙铅笔', len: 140, color: '#FF9F43' }, b: { label: '粉铅笔', len: 140, color: '#FF7597' }, answer: 'same', q: '哪支铅笔更长？' },
+      { a: { label: '黄铅笔', len: 200, color: '#FFD166' }, b: { label: '青铅笔', len: 110, color: '#00D2D3' }, answer: 'a', q: '哪支铅笔更长？' },
+      { a: { label: '珊瑚红铅笔', len: 110, color: '#FF5252' }, b: { label: '薄荷绿铅笔', len: 170, color: '#10B981' }, answer: 'b', q: '哪支铅笔更长？' },
+      { a: { label: '香槟橙铅笔', len: 150, color: '#FF8C00' }, b: { label: '葡萄紫铅笔', len: 130, color: '#8E44AD' }, answer: 'a', q: '哪支铅笔更长？' },
+      { a: { label: '柠檬黄铅笔', len: 130, color: '#FACC15' }, b: { label: '天蓝铅笔', len: 180, color: '#38BDF8' }, answer: 'b', q: '哪支铅笔更长？' },
+      { a: { label: '玫红铅笔', len: 160, color: '#FF4081' }, b: { label: '宝石蓝铅笔', len: 160, color: '#3B82F6' }, answer: 'same', q: '哪支铅笔更长？' },
     ],
     height: [
       { a: { emoji: '🦒', label: '长颈鹿', size: 80 }, b: { emoji: '🐱', label: '小猫', size: 40 }, answer: 'a', q: '谁更高？' },
@@ -663,22 +668,18 @@
       { a: { emoji: '🎃', label: '南瓜', size: 50 }, b: { emoji: '🍊', label: '橙子', size: 42 }, answer: 'a', q: '哪个更大？' },
     ],
     thick: [
-      { a: { label: '红树干', width: 60, color: '#8B4513' }, b: { label: '蓝树干', width: 35, color: '#4682B4' }, answer: 'a', q: '哪根树干更粗？' },
-      { a: { label: '绿树干', width: 40, color: '#228B22' }, b: { label: '紫树干', width: 55, color: '#9370DB' }, answer: 'b', q: '哪根树干更粗？' },
-      { a: { label: '黄树干', width: 48, color: '#DAA520' }, b: { label: '橙树干', width: 48, color: '#FF8C00' }, answer: 'same', q: '哪根树干更粗？' },
-      { a: { label: '灰树干', width: 70, color: '#808080' }, b: { label: '棕树干', width: 42, color: '#A0522D' }, answer: 'a', q: '哪根树干更粗？' },
-      { a: { label: '粉树干', width: 38, color: '#FFB6C1' }, b: { label: '青树干', width: 62, color: '#20B2AA' }, answer: 'b', q: '哪根树干更粗？' },
+      { a: { label: '红树干', width: 60, color: '#FF5252' }, b: { label: '蓝树干', width: 35, color: '#3B82F6' }, answer: 'a', q: '哪根树干更粗？' },
+      { a: { label: '绿树干', width: 40, color: '#10B981' }, b: { label: '紫树干', width: 55, color: '#9B59B6' }, answer: 'b', q: '哪根树干更粗？' },
+      { a: { label: '黄树干', width: 48, color: '#FFD166' }, b: { label: '橙树干', width: 48, color: '#FF9F43' }, answer: 'same', q: '哪根树干更粗？' },
+      { a: { label: '青树干', width: 70, color: '#00D2D3' }, b: { label: '粉树干', width: 42, color: '#FF7597' }, answer: 'a', q: '哪根树干更粗？' },
+      { a: { label: '天蓝树干', width: 38, color: '#38BDF8' }, b: { label: '翡翠绿树干', width: 62, color: '#059669' }, answer: 'b', q: '哪根树干更粗？' },
     ],
   };
 
   function initCompare() {
     state.compareRound = 0;
-    bottomActions.style.display = 'flex';
-    actionBtn.textContent = '🎯 开始练习';
-    actionBtn.onclick = startComparePractice;
-    compareScene.innerHTML = '<div style="font-size:64px;text-align:center;width:100%;padding:40px 0;">⚖️</div>';
-    compareOptions.innerHTML = '';
-    showQuestion('⚖️', '比一比，谁更长、更高、更重');
+    bottomActions.style.display = 'none';
+    nextCompareQuestion();
   }
 
   function startComparePractice() {
@@ -688,14 +689,14 @@
   }
 
   function nextCompareQuestion() {
-    state.compareRound++;
-    if (state.compareRound > 15) {
+    if (state.compareRound >= 5) {
       showFeedback('🎉', '比较大师！', 2000);
       showConfetti();
       addStar(3);
-      setTimeout(initCompare, 2500);
+      showBottomAction('🔄 再玩一次', startComparePractice);
       return;
     }
+    state.compareRound++;
 
     const types = ['length', 'height', 'weight', 'count', 'size', 'thick'];
     const type = types[(state.compareRound - 1) % 6];
@@ -729,42 +730,48 @@
   }
 
   function renderLengthScene(q) {
+    const lenA = Math.round((q.a.len || 140) * 1.5);
+    const lenB = Math.round((q.b.len || 140) * 1.5);
     compareScene.innerHTML = `
-      <div style="display:flex;flex-direction:column;gap:20px;width:100%;padding:20px;">
-        <div style="display:flex;align-items:center;gap:10px;">
-          <span style="font-size:14px;font-weight:700;width:70px;text-align:right;">${q.a.label}</span>
-          <div class="pencil" style="width:${q.a.len}px;background:${q.a.color};border-left-color:${q.a.color};">&nbsp;</div>
+      <div style="display:flex;flex-direction:column;gap:24px;width:100%;max-width:640px;margin:0 auto;padding:12px 0;">
+        <div style="display:flex;align-items:center;gap:16px;">
+          <span style="font-size:18px;font-weight:800;width:90px;text-align:right;color:#1E293B;">${q.a.label}</span>
+          <div class="pencil" style="width:${lenA}px;height:38px;background:${q.a.color};border-left-color:${q.a.color};border-radius:4px;box-shadow:0 3px 6px rgba(0,0,0,0.15);">&nbsp;</div>
         </div>
-        <div style="display:flex;align-items:center;gap:10px;">
-          <span style="font-size:14px;font-weight:700;width:70px;text-align:right;">${q.b.label}</span>
-          <div class="pencil" style="width:${q.b.len}px;background:${q.b.color};border-left-color:${q.b.color};">&nbsp;</div>
+        <div style="display:flex;align-items:center;gap:16px;">
+          <span style="font-size:18px;font-weight:800;width:90px;text-align:right;color:#1E293B;">${q.b.label}</span>
+          <div class="pencil" style="width:${lenB}px;height:38px;background:${q.b.color};border-left-color:${q.b.color};border-radius:4px;box-shadow:0 3px 6px rgba(0,0,0,0.15);">&nbsp;</div>
         </div>
       </div>`;
   }
 
   function renderHeightScene(q) {
+    const sizeA = Math.round((q.a.size || 50) * 1.5);
+    const sizeB = Math.round((q.b.size || 50) * 1.5);
     compareScene.innerHTML = `
-      <div class="animal-item">
-        <span class="animal-body" style="font-size:${q.a.size}px;">${q.a.emoji}</span>
-        <span class="animal-label">${q.a.label}</span>
-      </div>
-      <div class="animal-item">
-        <span class="animal-body" style="font-size:${q.b.size}px;">${q.b.emoji}</span>
-        <span class="animal-label">${q.b.label}</span>
+      <div style="display:flex;gap:60px;align-items:flex-end;justify-content:center;padding:12px 0;">
+        <div class="animal-item" style="display:flex;flex-direction:column;align-items:center;gap:10px;">
+          <span class="animal-body" style="font-size:${sizeA}px;filter:drop-shadow(0 6px 12px rgba(0,0,0,0.12));">${q.a.emoji}</span>
+          <span class="animal-label" style="font-size:18px;font-weight:800;color:#1E293B;">${q.a.label}</span>
+        </div>
+        <div class="animal-item" style="display:flex;flex-direction:column;align-items:center;gap:10px;">
+          <span class="animal-body" style="font-size:${sizeB}px;filter:drop-shadow(0 6px 12px rgba(0,0,0,0.12));">${q.b.emoji}</span>
+          <span class="animal-label" style="font-size:18px;font-weight:800;color:#1E293B;">${q.b.label}</span>
+        </div>
       </div>`;
   }
 
   function renderWeightScene(q) {
     const tilt = q.tilt || 0;
     compareScene.innerHTML = `
-      <div class="scale-container">
+      <div class="scale-container" style="transform:scale(1.4);margin:24px 0;">
         <div class="scale-beam" style="transform:rotate(${tilt}deg);">
           <div class="scale-pan scale-pan-left">
-            <div class="scale-pan-items">${q.a.emoji}</div>
+            <div class="scale-pan-items" style="font-size:42px;">${q.a.emoji}</div>
             <div class="scale-pan-plate"></div>
           </div>
           <div class="scale-pan scale-pan-right">
-            <div class="scale-pan-items">${q.b.emoji}</div>
+            <div class="scale-pan-items" style="font-size:42px;">${q.b.emoji}</div>
             <div class="scale-pan-plate"></div>
           </div>
         </div>
@@ -775,57 +782,68 @@
 
   function renderCountScene(q) {
     compareScene.innerHTML = `
-      <div style="display:flex;gap:40px;align-items:center;">
-        <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
-          <div style="display:flex;flex-wrap:wrap;gap:4px;max-width:120px;justify-content:center;">
-            ${Array(q.a.num).fill(q.a.emoji).map(e => `<span style="font-size:28px;">${e}</span>`).join('')}
+      <div style="display:flex;gap:60px;align-items:center;justify-content:center;padding:12px 0;">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:12px;">
+          <div style="display:flex;flex-wrap:wrap;gap:8px;max-width:200px;justify-content:center;">
+            ${Array(q.a.num).fill(q.a.emoji).map(e => `<span style="font-size:44px;filter:drop-shadow(0 3px 6px rgba(0,0,0,0.1));">${e}</span>`).join('')}
           </div>
-          <span style="font-size:14px;font-weight:700;color:var(--gray-400);">${q.a.label}</span>
+          <span style="font-size:18px;font-weight:800;color:#1E293B;">${q.a.label}</span>
         </div>
-        <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
-          <div style="display:flex;flex-wrap:wrap;gap:4px;max-width:120px;justify-content:center;">
-            ${Array(q.b.num).fill(q.b.emoji).map(e => `<span style="font-size:28px;">${e}</span>`).join('')}
+        <div style="display:flex;flex-direction:column;align-items:center;gap:12px;">
+          <div style="display:flex;flex-wrap:wrap;gap:8px;max-width:200px;justify-content:center;">
+            ${Array(q.b.num).fill(q.b.emoji).map(e => `<span style="font-size:44px;filter:drop-shadow(0 3px 6px rgba(0,0,0,0.1));">${e}</span>`).join('')}
           </div>
-          <span style="font-size:14px;font-weight:700;color:var(--gray-400);">${q.b.label}</span>
+          <span style="font-size:18px;font-weight:800;color:#1E293B;">${q.b.label}</span>
         </div>
       </div>`;
   }
 
   function renderSizeScene(q) {
+    const sizeA = Math.round((q.a.size || 50) * 1.5);
+    const sizeB = Math.round((q.b.size || 50) * 1.5);
     compareScene.innerHTML = `
-      <div style="display:flex;gap:40px;align-items:flex-end;">
-        <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
-          <span style="font-size:${q.a.size}px;">${q.a.emoji}</span>
-          <span style="font-size:14px;font-weight:700;color:var(--gray-400);">${q.a.label}</span>
+      <div style="display:flex;gap:60px;align-items:flex-end;justify-content:center;padding:12px 0;">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:12px;">
+          <span style="font-size:${sizeA}px;filter:drop-shadow(0 6px 12px rgba(0,0,0,0.12));">${q.a.emoji}</span>
+          <span style="font-size:18px;font-weight:800;color:#1E293B;">${q.a.label}</span>
         </div>
-        <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
-          <span style="font-size:${q.b.size}px;">${q.b.emoji}</span>
-          <span style="font-size:14px;font-weight:700;color:var(--gray-400);">${q.b.label}</span>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:12px;">
+          <span style="font-size:${sizeB}px;filter:drop-shadow(0 6px 12px rgba(0,0,0,0.12));">${q.b.emoji}</span>
+          <span style="font-size:18px;font-weight:800;color:#1E293B;">${q.b.label}</span>
         </div>
       </div>`;
   }
 
   function renderThickScene(q) {
+    const wA = Math.round((q.a.width || 40) * 1.5);
+    const wB = Math.round((q.b.width || 40) * 1.5);
     compareScene.innerHTML = `
-      <div style="display:flex;flex-direction:column;gap:20px;width:100%;padding:20px;">
-        <div style="display:flex;align-items:center;gap:10px;">
-          <span style="font-size:14px;font-weight:700;width:70px;text-align:right;">${q.a.label}</span>
-          <div style="width:120px;height:${q.a.width}px;background:${q.a.color};border-radius:${q.a.width/2}px;border:2px solid rgba(0,0,0,0.2);"></div>
+      <div style="display:flex;flex-direction:column;gap:24px;width:100%;max-width:640px;margin:0 auto;padding:12px 0;">
+        <div style="display:flex;align-items:center;gap:16px;">
+          <span style="font-size:18px;font-weight:800;width:90px;text-align:right;color:#1E293B;">${q.a.label}</span>
+          <div style="width:220px;height:${wA}px;background:${q.a.color};border-radius:${wA/2}px;border:2.5px solid rgba(0,0,0,0.18);box-shadow:0 4px 8px rgba(0,0,0,0.12);">&nbsp;</div>
         </div>
-        <div style="display:flex;align-items:center;gap:10px;">
-          <span style="font-size:14px;font-weight:700;width:70px;text-align:right;">${q.b.label}</span>
-          <div style="width:120px;height:${q.b.width}px;background:${q.b.color};border-radius:${q.b.width/2}px;border:2px solid rgba(0,0,0,0.2);"></div>
+        <div style="display:flex;align-items:center;gap:16px;">
+          <span style="font-size:18px;font-weight:800;width:90px;text-align:right;color:#1E293B;">${q.b.label}</span>
+          <div style="width:220px;height:${wB}px;background:${q.b.color};border-radius:${wB/2}px;border:2.5px solid rgba(0,0,0,0.18);box-shadow:0 4px 8px rgba(0,0,0,0.12);">&nbsp;</div>
         </div>
       </div>`;
   }
 
   function renderCompareOptions(q) {
     compareOptions.innerHTML = '';
+
+    function getOptionIcon(item, fallbackColor) {
+      if (item.emoji) return item.emoji;
+      const color = item.color || fallbackColor;
+      return `<span style="display:inline-block;width:24px;height:24px;border-radius:50%;background:${color};border:2px solid rgba(0,0,0,0.15);box-shadow:0 3px 6px rgba(0,0,0,0.12);vertical-align:middle;flex-shrink:0;"></span>`;
+    }
+
     const opts = [
-      { key: 'a', icon: q.a.emoji || '🅰️', text: q.a.label },
-      { key: 'b', icon: q.b.emoji || '🅱️', text: q.b.label },
+      { key: 'a', icon: getOptionIcon(q.a, '#FF4757'), text: q.a.label },
+      { key: 'b', icon: getOptionIcon(q.b, '#2ED573'), text: q.b.label },
     ];
-    if (q.answer === 'same' || q.a.len === q.b?.len || q.a.size === q.b?.size) {
+    if (q.answer === 'same' || q.a.len === q.b?.len || q.a.size === q.b?.size || q.a.width === q.b?.width) {
       opts.push({ key: 'same', icon: '🤝', text: '一样' });
     }
 
@@ -862,24 +880,26 @@
     { obj: '🖊️', name: '钢笔', len: 14, unit: 'cm', opts: [12, 14, 16] },
     { obj: '📱', name: '手机', len: 16, unit: 'cm', opts: [14, 16, 18] },
     { obj: '🪥', name: '牙刷', len: 18, unit: 'cm', opts: [16, 18, 20] },
-    { obj: '🥖', name: '面包', len: 25, unit: 'cm', opts: [20, 25, 30] },
+    { obj: '🥖', name: '面包', len: 19, unit: 'cm', opts: [15, 19, 20] },
+    { obj: '🍌', name: '香蕉', len: 13, unit: 'cm', opts: [11, 13, 15] },
+    { obj: '🚩', name: '小旗子', len: 10, unit: 'cm', opts: [8, 10, 12] },
   ];
 
   function initLength() {
     state.lengthRound = 0;
-    showQuestion('📏', '用尺子量一量，选出正确的长度');
-    bottomActions.style.display = 'flex';
-    actionBtn.textContent = '🎯 开始练习';
-    actionBtn.className = 'btn btn-blue btn-lg';
-    actionBtn.onclick = nextLengthQuestion;
-    rulerContainer.innerHTML = '<div style="font-size:48px;padding:40px;">📏</div><div style="font-size:18px;color:var(--gray-400);">点击"开始练习"测量物体</div>';
-    lengthOptions.innerHTML = '';
+    bottomActions.style.display = 'none';
+    nextLengthQuestion();
   }
 
   function nextLengthQuestion() {
     if (state.lengthRound >= 5) {
       showFeedback('🎊', '全部完成！', 2000);
-      setTimeout(initLength, 2500);
+      showConfetti();
+      addStar(3);
+      showBottomAction('🔄 再玩一次', () => {
+        state.lengthRound = 0;
+        nextLengthQuestion();
+      });
       return;
     }
     state.lengthRound++;
@@ -887,31 +907,41 @@
     state.lengthAnswer = q.len;
     showQuestion('📏', `第${state.lengthRound}题：${q.name}有多长？`, `第${state.lengthRound}题，${q.name}有多长？`);
 
-    const maxLen = 30;
+    const maxLen = Math.max(20, Math.ceil((q.len || 20) / 5) * 5);
     rulerContainer.innerHTML = `
-      <div style="display:flex;flex-direction:column;align-items:center;gap:16px;width:100%;">
-        <div style="position:relative;width:100%;max-width:320px;">
-          <div style="display:flex;height:40px;background:linear-gradient(180deg,#FFE4B5,#FFD700);border:2px solid var(--gray-300);border-radius:4px;position:relative;">
-            ${Array.from({length: maxLen+1}, (_, i) => {
+      <div style="display:flex;flex-direction:column;align-items:center;gap:24px;width:100%;max-width:820px;margin:0 auto;box-sizing:border-box;">
+        <div style="position:relative;width:100%;max-width:800px;padding-top:30px;">
+          <!-- 高清极简纯色直尺 (天空蓝纯色 108px) -->
+          <div style="display:flex;height:108px;background:#E0F2FE;border:2px solid #0284C7;border-radius:14px;box-shadow:0 4px 12px rgba(2,132,199,0.12);position:relative;box-sizing:border-box;overflow:visible;">
+            ${Array.from({length: maxLen + 1}, (_, i) => {
               const isLong = i % 5 === 0;
-              return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;border-left:${i===0?'none':'1px solid rgba(0,0,0,0.1)'};position:relative;">
-                <div style="width:2px;height:${isLong?'16px':'10px'};background:var(--text);margin-top:2px;"></div>
-                ${i === q.len ? `<div style="position:absolute;top:-12px;width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-top:12px solid #FF0000;"></div>` : ''}
+              return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;position:relative;height:100%;">
+                <div style="width:${isLong?'2.5px':'1.5px'};height:${isLong?'48px':'24px'};background:${isLong?'#0F172A':'#0284C7'};margin-top:0;"></div>
+                ${i === q.len ? `<div style="position:absolute;top:-28px;width:0;height:0;border-left:14px solid transparent;border-right:14px solid transparent;border-top:24px solid #EF4444;filter:drop-shadow(0 3px 6px rgba(0,0,0,0.25));z-index:10;"></div>` : ''}
               </div>`;
             }).join('')}
+            <div style="position:absolute;right:14px;bottom:12px;font-size:20px;font-weight:900;color:#0369A1;">cm</div>
           </div>
-          <div style="display:flex;justify-content:space-between;margin-top:4px;padding:0 2px;">
-            ${Array.from({length: 7}, (_, i) => `<span style="font-size:11px;font-weight:700;">${i*5}</span>`).join('')}
+          <!-- 巨型数字标号：0到20每个刻度数字清清楚楚 -->
+          <div style="display:flex;justify-content:space-between;margin-top:12px;padding:0 2px;">
+            ${Array.from({length: maxLen + 1}, (_, i) => `<span style="font-size:${i%5===0?'20px':'14px'};font-weight:${i%5===0?'900':'700'};color:${i%5===0?'#0F172A':'#475569'};flex:1;text-align:center;">${i}</span>`).join('')}
           </div>
-          <div style="position:absolute;right:4px;top:20px;transform:translateY(-50%);font-size:11px;font-weight:700;color:var(--text);">cm</div>
         </div>
-        <div style="font-size:48px;">${q.obj}</div>
-        <div style="font-size:18px;font-weight:700;color:var(--gray-400);">${q.name}有多长？</div>
+        <!-- 巨型测量物体展示 -->
+        <div style="display:flex;flex-direction:column;align-items:center;gap:12px;margin-top:12px;">
+          <div style="font-size:96px;filter:drop-shadow(0 8px 16px rgba(0,0,0,0.12));">${q.obj}</div>
+          <div style="font-size:24px;font-weight:900;color:#1E293B;">${q.name}有多长？</div>
+        </div>
       </div>
     `;
 
     lengthOptions.innerHTML = '';
-    q.opts.forEach(opt => {
+    const shuffledOpts = [...q.opts];
+    for (let i = shuffledOpts.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffledOpts[i], shuffledOpts[j]] = [shuffledOpts[j], shuffledOpts[i]];
+    }
+    shuffledOpts.forEach(opt => {
       const div = document.createElement('div');
       div.className = 'length-option';
       div.textContent = `${opt} ${q.unit}`;
@@ -934,133 +964,106 @@
     });
   }
 
-  /* ========== 质量模式 (魔法等量天平) ========== */
+  /* ========== 轻重模式 (选哪个更重) ========== */
 
-  const BALANCE_QUESTIONS = [
-    // 基础数量配平 (感知重量与数量关系)
-    { type: 'basic', leftCount: 2, leftIcon: '🍉', rightIcon: '🍎', target: 6, weightRatio: 3, q: '1个西瓜和3个苹果一样重。2个西瓜等于几个苹果呢？' },
-    { type: 'basic', leftCount: 3, leftIcon: '🐷', rightIcon: '🍓', target: 6, weightRatio: 2, q: '1只小猪和2颗草莓一样重。填满右边让天平平衡！' },
-    
-    // 算式配平 (代数前置)
-    { type: 'equation', leftText: '4 + 3', rightIcon: '1️⃣', target: 7, weightRatio: 1, q: '左方是 4 加 3，右方需要放几个 1？' },
-    { type: 'equation', leftText: '10 - 2', rightIcon: '🍎', target: 8, weightRatio: 1, q: '多少个苹果能让天平（10 - 2）平衡？' },
-    
-    // 纯逻辑代换 (生活场景)
-    { type: 'substitute', leftCount: 2, leftIcon: '🐄', rightIcon: '🐑', target: 4, weightRatio: 2, q: '已知 1头牛 = 2只羊。那么 2头牛等于几只羊？' },
-    { type: 'substitute', leftCount: 1, leftIcon: '🐘', rightIcon: '🐒', target: 5, weightRatio: 5, q: '大象好重呀！1只大象等于5只猴子。' },
+  const WEIGHT_QUESTIONS = [
+    { a: { emoji: '🍉', label: '西瓜' }, b: { emoji: '🍓', label: '草莓' }, answer: 'a', q: '谁更重？', tilt: -15 },
+    { a: { emoji: '🪶', label: '羽毛' }, b: { emoji: '🧱', label: '砖头' }, answer: 'b', q: '谁更重？', tilt: 15 },
+    { a: { emoji: '🎾', label: '网球' }, b: { emoji: '🏀', label: '篮球' }, answer: 'b', q: '谁更重？', tilt: 10 },
+    { a: { emoji: '📚', label: '书' }, b: { emoji: '📄', label: '纸' }, answer: 'a', q: '谁更重？', tilt: -12 },
+    { a: { emoji: '🎈', label: '气球' }, b: { emoji: '🪨', label: '石头' }, answer: 'b', q: '谁更重？', tilt: 18 },
+    { a: { emoji: '🍎', label: '苹果' }, b: { emoji: '🍇', label: '葡萄' }, answer: 'a', q: '谁更重？', tilt: -8 },
+    { a: { emoji: '🥔', label: '土豆' }, b: { emoji: '🥔', label: '土豆' }, answer: 'same', q: '谁更重？', tilt: 0 },
+    { a: { emoji: '🧸', label: '玩具熊' }, b: { emoji: '📱', label: '手机' }, answer: 'a', q: '谁更重？', tilt: -10 },
   ];
 
   function initWeight() {
     state.weightRound = 0;
-    state.rightItems = 0;
-    showQuestion('⚖️', '魔法天平：放上东西，让两边一样重！');
-    bottomActions.style.display = 'flex';
-    actionBtn.textContent = '🎯 开始魔法挑战';
-    actionBtn.className = 'btn btn-purple btn-lg';
-    actionBtn.onclick = nextWeightQuestion;
-    
-    scaleDisplay.innerHTML = `
-      <div style="font-size:64px;padding:20px;margin-bottom:20px;">⚖️</div>
-      <div style="font-size:20px;font-weight:700;color:var(--title);max-width:280px;text-align:center;">
-        点击物品放入托盘，<br>让天平完美平衡！
-      </div>`;
-    weightOptions.innerHTML = '';
+    bottomActions.style.display = 'none';
+    nextWeightQuestion();
   }
 
   function nextWeightQuestion() {
-    if (state.weightRound >= BALANCE_QUESTIONS.length) {
-      showFeedback('🎊', '天平大师！', 2000);
+    if (state.weightRound >= 5) {
+      showFeedback('🎊', '轻重小达人！', 2000);
       showConfetti();
       addStar(5);
-      setTimeout(initWeight, 2500);
+      showBottomAction('🔄 再玩一次', () => {
+        state.weightRound = 0;
+        nextWeightQuestion();
+      });
       return;
     }
-    const q = BALANCE_QUESTIONS[state.weightRound];
-    state.rightItems = 0;
-    
-    showQuestion('⚖️', `第${state.weightRound + 1}关：${q.q}`, q.q);
-    renderBalanceScale(q);
-  }
+    const q = WEIGHT_QUESTIONS[state.weightRound % WEIGHT_QUESTIONS.length];
 
-  function renderBalanceScale(q) {
-    const leftWeight = q.target * 10;
-    const rightWeight = state.rightItems * 10;
-    const diff = rightWeight - leftWeight;
-    let tilt = (diff / leftWeight) * 25;
-    if (tilt < -25) tilt = -25;
-    if (tilt > 25) tilt = 25;
+    showQuestion('⚖️', `第${state.weightRound + 1}题：${q.a.label} 和 ${q.b.label}，${q.q}`, q.q);
 
-    let leftHTML = '';
-    if (q.type === 'equation') {
-      leftHTML = `<div style="font-size:32px;font-weight:900;background:var(--white);padding:4px 12px;border-radius:12px;border:4px solid var(--blue);color:var(--blue-dark);box-shadow:0 4px 0 var(--blue-light);">${q.leftText}</div>`;
-    } else {
-      leftHTML = Array(q.leftCount).fill(`<span style="font-size:40px;">${q.leftIcon}</span>`).join('');
-    }
-
-    let rightHTML = Array(state.rightItems).fill(`<span class="removable-item" style="font-size:40px;cursor:pointer;transition:transform 0.1s;">${q.rightIcon}</span>`).join('');
-
+    // 渲染跷跷板天平
     scaleDisplay.innerHTML = `
-      <div class="scale-container" style="margin-top:40px;margin-bottom:20px;transform:scale(1.15);">
-        <div class="scale-beam" style="transform:rotate(${tilt}deg);transition:transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);">
-          <div class="scale-pan scale-pan-left">
-            <div class="scale-pan-items" style="display:flex;gap:4px;flex-wrap:wrap;justify-content:center;max-width:120px;">
-              ${leftHTML}
+      <div class="balance-scale-wrapper">
+        <div class="balance-scale-stage">
+          <div class="balance-scale-beam" style="transform:rotate(${q.tilt}deg);">
+            <div class="balance-scale-pan-left">
+              <div class="balance-scale-ropes">
+                <div class="balance-scale-rope-left"></div>
+                <div class="balance-scale-rope-right"></div>
+              </div>
+              <div class="balance-scale-items">
+                <span style="font-size:48px;">${q.a.emoji}</span>
+              </div>
+              <div class="balance-scale-plate"></div>
             </div>
-            <div class="scale-pan-plate" style="width:120px;${diff === 0 && state.rightItems > 0 ? 'background:var(--green);border-color:var(--green-dark);' : ''}"></div>
-          </div>
-          <div class="scale-pan scale-pan-right">
-            <div class="scale-pan-items" id="rightPanItems" style="display:flex;gap:4px;flex-wrap:wrap;justify-content:center;max-width:120px;min-height:50px;">
-              ${rightHTML}
+            <div class="balance-scale-pan-right">
+              <div class="balance-scale-ropes">
+                <div class="balance-scale-rope-left"></div>
+                <div class="balance-scale-rope-right"></div>
+              </div>
+              <div class="balance-scale-items">
+                <span style="font-size:48px;">${q.b.emoji}</span>
+              </div>
+              <div class="balance-scale-plate"></div>
             </div>
-            <div class="scale-pan-plate" style="width:120px;${diff === 0 && state.rightItems > 0 ? 'background:var(--green);border-color:var(--green-dark);' : ''}"></div>
           </div>
+          <div class="balance-scale-pillar"></div>
         </div>
-        <div class="scale-pillar" style="height:80px;width:16px;"></div>
-        <div class="scale-base" style="width:120px;height:16px;"></div>
+        <div class="balance-scale-base"></div>
       </div>
     `;
 
-    const rItems = scaleDisplay.querySelectorAll('.removable-item');
-    rItems.forEach(item => {
-      item.onclick = () => {
-        if (diff === 0 && state.rightItems === q.target) return;
-        state.rightItems--;
-        speak('拿走');
-        renderBalanceScale(q);
-      };
-    });
-
-    if (diff === 0 && state.rightItems > 0) {
-      weightOptions.innerHTML = '';
-      setTimeout(() => {
-        showFeedback('🎉', '完美平衡！', 1500);
-        addStar(2);
-        state.weightRound++;
-        scheduleAdvance(nextWeightQuestion, 2000);
-      }, 500);
-    } else {
-      weightOptions.innerHTML = `
-        <div style="width:100%;text-align:center;margin-bottom:12px;color:var(--purple-dark);font-weight:900;">点击放入托盘：</div>
-        <div style="display:flex;gap:16px;justify-content:center;">
-          <div class="weight-option" id="addBtn" style="font-size:32px;padding:12px 30px;background:var(--white);border:4px solid var(--white);box-shadow:0 6px 0 var(--gray-200);border-radius:100px;cursor:pointer;user-select:none;">
-             <span style="font-size:40px;vertical-align:middle;">➕ ${q.rightIcon}</span>
-          </div>
-        </div>
-      `;
-      const addBtn = document.getElementById('addBtn');
-      if (addBtn) {
-        addBtn.onmousedown = () => addBtn.style.transform = 'translateY(6px)';
-        addBtn.onmouseup = () => addBtn.style.transform = 'none';
-        addBtn.ontouchstart = () => addBtn.style.transform = 'translateY(6px)';
-        addBtn.ontouchend = () => addBtn.style.transform = 'none';
-
-        addBtn.onclick = () => {
-          state.rightItems++;
-          speak(String(state.rightItems));
-          renderBalanceScale(q);
-        };
-      }
+    // 渲染三个选项按钮
+    const options = [
+      { key: 'a', text: `${q.a.emoji} ${q.a.label} 更重` },
+      { key: 'b', text: `${q.b.emoji} ${q.b.label} 更重` },
+      { key: 'same', text: '⚖️ 一样重' },
+    ];
+    // 随机打乱选项顺序
+    for (let i = options.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [options[i], options[j]] = [options[j], options[i]];
     }
+
+    weightOptions.innerHTML = `<div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:12px;"></div>`;
+    const row = weightOptions.firstElementChild;
+    options.forEach(opt => {
+      const btn = document.createElement('div');
+      btn.className = 'weight-option';
+      btn.textContent = opt.text;
+      btn.onclick = () => {
+        if (btn.classList.contains('selected') || btn.classList.contains('wrong')) return;
+        if (opt.key === q.answer) {
+          btn.classList.add('selected');
+          addStar(1);
+          showFeedback('🎉', '答对了！', 1200);
+          state.weightRound++;
+          scheduleAdvance(nextWeightQuestion, 1500);
+        } else {
+          btn.classList.add('wrong');
+          showFeedback('🤔', '再想想哦', 800);
+          setTimeout(() => btn.classList.remove('wrong'), 500);
+        }
+      };
+      row.appendChild(btn);
+    });
   }
 
   
@@ -1105,11 +1108,14 @@
   }
 
   function nextCalendarQuestion() {
-    if (state.calendarRound >= CALENDAR_QUESTIONS.length) {
+    if (state.calendarRound >= 5) {
       showFeedback('🎊', '日历小达人！', 2000);
       showConfetti();
       addStar(5);
-      setTimeout(initCalendar, 2500);
+      showBottomAction('🔄 再玩一次', () => {
+        state.calendarRound = 0;
+        nextCalendarQuestion();
+      });
       return;
     }
     bottomActions.style.display = 'none';
@@ -1182,430 +1188,6 @@
 
     $$('.weight-pan-item').forEach((item) => {
       item.addEventListener('click', () => removeWeightItem(question));
-    });
-  }
-
-  function initCompare() {
-    state.compareRound = 0;
-    bottomActions.style.display = 'flex';
-    actionBtn.textContent = '开始练习';
-    actionBtn.className = 'btn btn-green btn-lg';
-    actionBtn.onclick = startComparePractice;
-    compareScene.innerHTML = `
-      <div class="compare-intro">
-        <div class="compare-intro-card">
-          <div class="compare-intro-title">比长短</div>
-          <div class="compare-intro-row">
-            <div class="pencil" style="width:150px;background:#FF8A8A;border-left-color:#FF8A8A;">&nbsp;</div>
-            <div class="pencil" style="width:90px;background:#7BC8F6;border-left-color:#7BC8F6;">&nbsp;</div>
-          </div>
-        </div>
-        <div class="compare-intro-card">
-          <div class="compare-intro-title">比多少</div>
-          <div class="compare-intro-row compare-intro-icons">
-            <span>🍎🍎🍎🍎</span>
-            <span>🍌🍌</span>
-          </div>
-        </div>
-      </div>`;
-    compareOptions.innerHTML = '';
-    showQuestion('📏', '比一比长短、高矮、多少、大小和粗细。');
-  }
-
-  function nextCompareQuestion() {
-    state.compareRound++;
-    if (state.compareRound > 15) {
-      showFeedback('🎉', '比较大师！', 2000);
-      showConfetti();
-      addStar(3);
-      setTimeout(initCompare, 2500);
-      return;
-    }
-
-    const types = getComparePracticeTypes();
-    const type = types[(state.compareRound - 1) % types.length];
-    state.compareType = type;
-    const pool = COMPARE_QUESTIONS[type];
-    const q = pool[randInt(0, pool.length - 1)];
-
-    const reverse = Math.random() < 0.5;
-    const questionMap = {
-      length: { normal: '哪支铅笔更长？', reverse: '哪支铅笔更短？' },
-      height: { normal: '谁更高？', reverse: '谁更矮？' },
-      count: { normal: '哪个更多？', reverse: '哪个更少？' },
-      size: { normal: '哪个更大？', reverse: '哪个更小？' },
-      thick: { normal: '哪根树干更粗？', reverse: '哪根树干更细？' },
-    };
-
-    const questionTextValue = reverse ? questionMap[type].reverse : (q.q || questionMap[type].normal);
-    state.compareAnswer = reverse && q.answer !== 'same' ? (q.answer === 'a' ? 'b' : 'a') : q.answer;
-
-    showQuestion('📏', `第${state.compareRound}题：${questionTextValue}`, `第${state.compareRound}题，${questionTextValue}`);
-
-    if (type === 'length') renderLengthScene(q);
-    else if (type === 'height') renderHeightScene(q);
-    else if (type === 'count') renderCountScene(q);
-    else if (type === 'size') renderSizeScene(q);
-    else renderThickScene(q);
-
-    renderCompareOptions(q);
-  }
-
-  function initWeight() {
-    state.weightRound = 0;
-    state.rightItems = 0;
-    bottomActions.style.display = 'flex';
-    actionBtn.textContent = '开始练习';
-    actionBtn.className = 'btn btn-purple btn-lg';
-    actionBtn.onclick = nextWeightQuestion;
-
-    scaleDisplay.innerHTML = `
-      <div class="weight-intro">
-        <div class="scale-container weight-scale-demo">
-          <div class="scale-beam" style="transform:rotate(-8deg);">
-            <div class="scale-pan scale-pan-left">
-              <div class="scale-pan-items"><span style="font-size:38px;">🍉</span></div>
-              <div class="scale-pan-plate" style="width:120px;"></div>
-            </div>
-            <div class="scale-pan scale-pan-right">
-              <div class="scale-pan-items"><span style="font-size:38px;">🍎🍎🍎</span></div>
-              <div class="scale-pan-plate" style="width:120px;"></div>
-            </div>
-          </div>
-          <div class="scale-pillar" style="height:80px;width:16px;"></div>
-          <div class="scale-base" style="width:120px;height:16px;"></div>
-        </div>
-        <div class="weight-intro-text">看天平比轻重，把下面的物品拖到右边托盘里。</div>
-      </div>
-    `;
-    weightOptions.innerHTML = `
-      <div class="weight-instruction">开始后会出现可以拖动的物品，也可以直接点一下放上去。</div>
-    `;
-    showQuestion('⚖️', '看天平比轻重，把物品拖到托盘里。');
-  }
-
-  function nextWeightQuestion() {
-    if (state.weightRound >= BALANCE_QUESTIONS.length) {
-      showFeedback('🎉', '轻重大师！', 2000);
-      showConfetti();
-      addStar(5);
-      setTimeout(initWeight, 2500);
-      return;
-    }
-
-    const question = BALANCE_QUESTIONS[state.weightRound];
-    state.rightItems = 0;
-    showQuestion('⚖️', `第${state.weightRound + 1}关：${question.q}`, question.q);
-    renderBalanceScale(question);
-  }
-
-  function renderBalanceScale(question) {
-    const leftWeight = question.target * 10;
-    const rightWeight = state.rightItems * 10;
-    const diff = rightWeight - leftWeight;
-    let tilt = (diff / leftWeight) * 25;
-    if (tilt < -25) tilt = -25;
-    if (tilt > 25) tilt = 25;
-
-    const leftHTML = question.type === 'equation'
-      ? `<div class="weight-equation">${question.leftText}</div>`
-      : Array(question.leftCount).fill(`<span style="font-size:40px;">${question.leftIcon}</span>`).join('');
-
-    const rightHTML = Array(state.rightItems)
-      .fill(`<button type="button" class="weight-pan-item">${question.rightIcon}</button>`)
-      .join('');
-
-    scaleDisplay.innerHTML = `
-      <div class="scale-container weight-scale-board">
-        <div class="scale-beam" style="transform:rotate(${tilt}deg);transition:transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);">
-          <div class="scale-pan scale-pan-left">
-            <div class="scale-pan-items weight-pan-items">${leftHTML}</div>
-            <div class="scale-pan-plate" style="width:120px;"></div>
-          </div>
-          <div class="scale-pan scale-pan-right">
-            <div class="scale-pan-items weight-pan-items weight-dropzone" id="rightPanItems">${rightHTML}</div>
-            <div class="scale-pan-plate" style="width:120px;"></div>
-          </div>
-        </div>
-        <div class="scale-pillar" style="height:80px;width:16px;"></div>
-        <div class="scale-base" style="width:120px;height:16px;"></div>
-      </div>
-      <div class="weight-status">${diff === 0 && state.rightItems > 0 ? '天平平衡啦' : '把物品拖到右边托盘里'}</div>
-    `;
-
-    if (diff === 0 && state.rightItems > 0) {
-      weightOptions.innerHTML = '';
-      setTimeout(() => {
-        showFeedback('🎉', '平衡成功！', 1500);
-        addStar(2);
-        state.weightRound++;
-        scheduleAdvance(nextWeightQuestion, 1800);
-      }, 400);
-      return;
-    }
-
-    const trayItems = createWeightTrayItems(question)
-      .map((item) => `<button type="button" class="weight-tray-item" draggable="true" data-id="${item.id}">${item.icon}</button>`)
-      .join('');
-
-    weightOptions.innerHTML = `
-      <div class="weight-instruction">拖动或点按下面的物品，放到右边托盘里。</div>
-      <div class="weight-tray">${trayItems}</div>
-    `;
-
-    bindWeightTray(question);
-  }
-
-  function initCalendar() {
-    calendarArea.style.display = 'flex';
-    state.calendarRound = 0;
-    bottomActions.style.display = 'flex';
-    actionBtn.textContent = '开始练习';
-    actionBtn.className = 'btn btn-purple btn-lg';
-    actionBtn.onclick = nextCalendarQuestion;
-
-    renderMonth(null);
-    updateCalendarHelper('看日历找日期', '黄色会标出“今天”，再按题目找出目标日期。');
-    showQuestion('🗓️', '先看清是几月，再根据题目点出正确日期。');
-  }
-
-  function renderMonth(todayHighlight) {
-    if (calMonthTitle) {
-      calMonthTitle.textContent = `${CALENDAR_MONTH_INFO.monthLabel} ${CALENDAR_MONTH_INFO.englishLabel}`;
-    }
-
-    const cells = getCalendarMonthCells(todayHighlight);
-    calendarGrid.innerHTML = cells.map((cell) => {
-      if (cell.empty) {
-        return '<div class="cal-day empty"></div>';
-      }
-      const classes = ['cal-day'];
-      if (cell.isToday) classes.push('today');
-      return `<button type="button" class="${classes.join(' ')}" data-day="${cell.day}">${cell.day}</button>`;
-    }).join('');
-  }
-
-  function nextCalendarQuestion() {
-    if (state.calendarRound >= CALENDAR_QUESTIONS.length) {
-      showFeedback('🎉', '日历小达人！', 2000);
-      showConfetti();
-      addStar(5);
-      setTimeout(initCalendar, 2500);
-      return;
-    }
-
-    bottomActions.style.display = 'none';
-    const question = CALENDAR_QUESTIONS[state.calendarRound];
-    showQuestion('🗓️', `第${state.calendarRound + 1}关：${question.q}`, question.q);
-    updateCalendarHelper(`今天是 ${question.today} 日`, question.q);
-    renderMonth(question.today);
-
-    const days = calendarGrid.querySelectorAll('.cal-day:not(.empty)');
-    days.forEach((day) => {
-      day.onclick = () => {
-        if (day.classList.contains('selected')) return;
-        const dayNumber = parseInt(day.dataset.day, 10);
-        if (dayNumber === question.target) {
-          day.classList.add('selected');
-          speak('找对啦');
-          setTimeout(() => {
-            showFeedback('🎉', '日期找对了！', 1200);
-            state.calendarRound++;
-            addStar(2);
-            scheduleAdvance(nextCalendarQuestion, 1600);
-          }, 350);
-        } else {
-          day.classList.add('wrong');
-          speak('再看一看今天和星期');
-          setTimeout(() => day.classList.remove('wrong'), 500);
-        }
-      };
-    });
-  }
-
-  function initCompare() {
-    state.compareRound = 0;
-    bottomActions.style.display = 'none';
-    compareOptions.innerHTML = '';
-    nextCompareQuestion();
-  }
-
-  function nextCompareQuestion() {
-    state.compareRound++;
-    if (state.compareRound > 15) {
-      showFeedback('🎉', '比较大师！', 2000);
-      showConfetti();
-      addStar(3);
-      setTimeout(initCompare, 2500);
-      return;
-    }
-
-    const types = getComparePracticeTypes();
-    const type = types[(state.compareRound - 1) % types.length];
-    const pool = COMPARE_QUESTIONS[type];
-    const question = pool[randInt(0, pool.length - 1)];
-    const reverse = Math.random() < 0.5;
-    const questionMap = {
-      length: { normal: '哪支铅笔更长？', reverse: '哪支铅笔更短？' },
-      height: { normal: '谁更高？', reverse: '谁更矮？' },
-      count: { normal: '哪个更多？', reverse: '哪个更少？' },
-      size: { normal: '哪个更大？', reverse: '哪个更小？' },
-      thick: { normal: '哪根树干更粗？', reverse: '哪根树干更细？' },
-    };
-    const questionTextValue = reverse ? questionMap[type].reverse : (question.q || questionMap[type].normal);
-    state.compareAnswer = reverse && question.answer !== 'same'
-      ? (question.answer === 'a' ? 'b' : 'a')
-      : question.answer;
-
-    showQuestion('📏', `第${state.compareRound}题：${questionTextValue}`, `第${state.compareRound}题，${questionTextValue}`);
-
-    if (type === 'length') renderLengthScene(question);
-    else if (type === 'height') renderHeightScene(question);
-    else if (type === 'count') renderCountScene(question);
-    else if (type === 'size') renderSizeScene(question);
-    else renderThickScene(question);
-
-    renderCompareOptions(question);
-  }
-
-  function initLength() {
-    state.lengthRound = 0;
-    bottomActions.style.display = 'none';
-    nextLengthQuestion();
-  }
-
-  function renderWeightJudgeScene(question) {
-    const tilt = question.tilt || 0;
-    scaleDisplay.innerHTML = `
-      <div class="scale-container weight-scale-board">
-        <div class="scale-beam" style="transform:rotate(${tilt}deg);transition:transform 0.35s ease;">
-          <div class="scale-pan scale-pan-left">
-            <div class="scale-pan-items weight-pan-items"><span style="font-size:42px;">${question.a.emoji}</span></div>
-            <div class="scale-pan-plate" style="width:120px;"></div>
-          </div>
-          <div class="scale-pan scale-pan-right">
-            <div class="scale-pan-items weight-pan-items"><span style="font-size:42px;">${question.b.emoji}</span></div>
-            <div class="scale-pan-plate" style="width:120px;"></div>
-          </div>
-        </div>
-        <div class="scale-pillar" style="height:80px;width:16px;"></div>
-        <div class="scale-base" style="width:120px;height:16px;"></div>
-      </div>
-      <div class="weight-status">${question.a.label} 和 ${question.b.label}，谁更重？</div>
-    `;
-  }
-
-  function renderWeightOptions(question) {
-    weightOptions.innerHTML = '';
-    const options = buildWeightChoiceOptions(question);
-    const row = document.createElement('div');
-    row.className = 'weight-choice-row';
-    row.style.display = 'flex';
-    row.style.flexDirection = 'row';
-    row.style.flexWrap = 'wrap';
-    row.style.justifyContent = 'center';
-    row.style.alignItems = 'stretch';
-    row.style.gap = '12px';
-    row.style.width = '100%';
-
-    options.forEach((option) => {
-      const node = document.createElement('div');
-      node.className = 'weight-option';
-      node.innerHTML = `<span class="compare-option-icon">${option.icon}</span><span class="compare-option-text">${option.text}</span>`;
-      node.onclick = () => {
-        if (state.weightAnswer === null) return;
-        if (option.key === state.weightAnswer) {
-          node.classList.add('selected');
-          addStar(1);
-          showFeedback('🎉', '答对了！', 1000);
-          state.weightAnswer = null;
-          state.weightRound++;
-          scheduleAdvance(nextWeightQuestion, 1200);
-        } else {
-          node.classList.add('wrong');
-          showFeedback('🤔', '再看看哪边更低一些', 900);
-          setTimeout(() => node.classList.remove('wrong'), 500);
-        }
-      };
-      row.appendChild(node);
-    });
-    weightOptions.appendChild(row);
-  }
-
-  function initWeight() {
-    state.weightRound = 0;
-    bottomActions.style.display = 'none';
-    nextWeightQuestion();
-  }
-
-  function nextWeightQuestion() {
-    const questions = COMPARE_QUESTIONS.weight;
-    if (state.weightRound >= questions.length) {
-      showFeedback('🎉', '轻重大师！', 2000);
-      showConfetti();
-      addStar(4);
-      setTimeout(initWeight, 2500);
-      return;
-    }
-
-    const question = questions[state.weightRound % questions.length];
-    state.weightAnswer = question.answer;
-    showQuestion('⚖️', `第${state.weightRound + 1}题：谁更重？`, `第${state.weightRound + 1}题，谁更重？`);
-    renderWeightJudgeScene(question);
-    renderWeightOptions(question);
-  }
-
-  function initCalendar() {
-    calendarArea.style.display = 'flex';
-    state.calendarRound = 0;
-    bottomActions.style.display = 'none';
-    nextCalendarQuestion();
-  }
-
-  function renderMonth(todayHighlight) {
-    if (calMonthTitle) {
-      calMonthTitle.textContent = `${CALENDAR_MONTH_INFO.monthLabel} ${CALENDAR_MONTH_INFO.englishLabel}`;
-    }
-    const cells = getCalendarMonthCells(todayHighlight);
-    calendarGrid.innerHTML = cells.map((cell) => {
-      if (cell.empty) return '<div class="cal-day empty"></div>';
-      const classes = ['cal-day'];
-      if (cell.isToday) classes.push('today');
-      return `<button type="button" class="${classes.join(' ')}" data-day="${cell.day}">${cell.day}</button>`;
-    }).join('');
-  }
-
-  function nextCalendarQuestion() {
-    if (state.calendarRound >= CALENDAR_QUESTIONS.length) {
-      showFeedback('🎉', '日历小达人！', 2000);
-      showConfetti();
-      addStar(5);
-      setTimeout(initCalendar, 2500);
-      return;
-    }
-
-    const question = CALENDAR_QUESTIONS[state.calendarRound];
-    renderMonth(question.today);
-    updateCalendarHelper(`今天是 ${question.today} 日`, question.q);
-    showQuestion('🗓️', `第${state.calendarRound + 1}题：${question.q}`, `第${state.calendarRound + 1}题，${question.q}`);
-
-    const days = calendarGrid.querySelectorAll('.cal-day:not(.empty)');
-    days.forEach((day) => {
-      day.onclick = () => {
-        if (day.classList.contains('selected')) return;
-        const dayNumber = parseInt(day.dataset.day, 10);
-        if (dayNumber === question.target) {
-          day.classList.add('selected');
-          showFeedback('🎉', '日期找对了！', 1000);
-          addStar(2);
-          state.calendarRound++;
-          scheduleAdvance(nextCalendarQuestion, 1200);
-        } else {
-          day.classList.add('wrong');
-          showFeedback('🤔', '先看黄色的今天，再数一数', 900);
-          setTimeout(() => day.classList.remove('wrong'), 500);
-        }
-      };
     });
   }
 

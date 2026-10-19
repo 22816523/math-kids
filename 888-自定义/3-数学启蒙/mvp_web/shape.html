@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
   <title>数学启蒙 · 图形与几何</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/design-system.css?v=20260314b">
-  <link rel="stylesheet" href="css/shape.css?v=20260314b">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Quicksand:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/design-system.css?v=20260827_fix_tangram_area_display_override">
+  <link rel="stylesheet" href="css/shape.css?v=20260827_fix_tangram_area_display_override">
 </head>
 <body>
   <!-- 护眼背景装饰 -->
@@ -21,7 +21,7 @@
     <!-- 顶栏 -->
     <div class="topbar">
       <div class="topbar-left">
-        <a href="index.html" class="back-btn">◀</a>
+        <a href="index.html" class="back-btn" aria-label="返回首页"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg></a>
         <span class="topbar-title">📐 图形与几何</span>
       </div>
       <!-- Removed gamification elements -->
@@ -36,10 +36,6 @@
       <button class="mode-tab" data-mode="classify">
         <span class="tab-icon">🏠</span>
         <span class="tab-label">分类</span>
-      </button>
-      <button class="mode-tab" data-mode="find">
-        <span class="tab-icon">🔍</span>
-        <span class="tab-label">找一找</span>
       </button>
       <!-- 新增：七巧板拼摆模式 -->
       <button class="mode-tab" data-mode="tangram">
@@ -76,14 +72,6 @@
         <div class="classify-homes" id="classifyHomes">
           <!-- JS动态生成分类目标 -->
         </div>
-      </div>
-
-      <!-- 找一找模式：场景区 -->
-      <div id="findArea" class="find-area" style="display:none;">
-        <div class="scene-container" id="sceneContainer">
-          <!-- JS动态生成SVG场景 -->
-        </div>
-        <div class="find-progress" id="findProgress"></div>
       </div>
 
       <!-- 新增：拼一拼模式（七巧板拼摆） -->

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+  <title>数学启蒙 · 简易方程实验室</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Quicksand:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/design-system.css?v=20260903">
+  <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
+  <style>
+    .adv-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 20px;
+      text-align: center;
+      flex: 1;
+    }
+    .eq-demo {
+      font-size: 36px;
+      font-weight: 900;
+      color: #059669;
+      background: #D1FAE5;
+      border-radius: 24px;
+      border: 3px solid #34D399;
+      padding: 16px 36px;
+      margin: 20px 0;
+      box-shadow: 0 6px 16px rgba(16, 185, 129, 0.15);
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-decoration">
+    <div class="cloud cloud-1"></div>
+    <div class="cloud cloud-2"></div>
+  </div>
+
+  <div id="app">
+    <div class="topbar">
+      <div class="topbar-left">
+        <a href="index.html" class="back-btn" aria-label="返回首页"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg></a>
+        <span class="topbar-title">🧪 简易方程实验室 (4-6年级)</span>
+      </div>
+    </div>
+
+    <div class="adv-container">
+      <div class="eq-demo">3x + 5 = 20</div>
+      <h2 style="font-size: 26px; font-weight: 900; color: #1E293B; margin-bottom: 8px;">用字母表示数与抵消解方程</h2>
+      <p style="font-size: 16px; color: #64748B; max-width: 480px; line-height: 1.5;">通过天平平衡与卡牌抵消游戏，理解等式基本性质（两边同时减去 5 移项），轻松解出 x = 5！</p>
+      <div style="margin-top: 24px; display: flex; gap: 12px;">
+        <button class="btn btn-green btn-lg" onclick="alert('高阶专题：天平抵消卡牌解方程实验！')">🧪 解方程实验</button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

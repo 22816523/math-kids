@@ -25,9 +25,32 @@
     } = config;
 
     let currentSpeech = '';
+    let playingTimer = null;
+
+    function triggerPlaybackState(text) {
+      if (!speakerButton || !speakerButton.classList) return;
+      if (playingTimer) clearTimeout(playingTimer);
+      speakerButton.classList.add('is-playing');
+      const duration = Math.max(1600, (text || '').length * 280);
+      playingTimer = setTimeout(() => {
+        if (speakerButton && speakerButton.classList) {
+          speakerButton.classList.remove('is-playing');
+        }
+        playingTimer = null;
+      }, duration);
+    }
+
+    function clearPlaybackState() {
+      if (playingTimer) clearTimeout(playingTimer);
+      if (speakerButton && speakerButton.classList) {
+        speakerButton.classList.remove('is-playing');
+      }
+      playingTimer = null;
+    }
 
     function replayPrompt() {
       if (!currentSpeech) return false;
+      triggerPlaybackState(currentSpeech);
       speak(currentSpeech);
       return true;
     }
@@ -46,6 +69,7 @@
       syncReplayButton(speakerButton, allowReplay);
 
       if (autoSpeak && speechText) {
+        triggerPlaybackState(speechText);
         speak(speechText);
       }
     }
@@ -53,6 +77,7 @@
     function hidePrompt() {
       if (questionBar) questionBar.style.display = 'none';
       currentSpeech = '';
+      clearPlaybackState();
       syncReplayButton(speakerButton, false);
     }
 

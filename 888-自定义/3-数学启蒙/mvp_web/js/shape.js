@@ -7,10 +7,12 @@
   'use strict';
 
   // ========== 柔和色板（护眼糖果色：中饱和+高亮度） ==========
+  // ========== 经典 4 色莫兰迪色板（沉稳色块、绝不眩目、重复色彩） ==========
   const SOFT_COLORS = [
-    '#FF8A8A', '#7BC8F6', '#FFD166', '#6BCB77',
-    '#C89CF2', '#FFA36C', '#6CD4DB', '#F28CB1',
-    '#A8E06C', '#8A9CF2', '#F2D16C', '#6CF2C8',
+    '#3B6998', // 沉稳深蓝
+    '#3D8B6E', // 莫兰迪绿
+    '#C68B45', // 暖琥珀金
+    '#B85B56'  // 陶土深红
   ];
 
   let colorIndex = 0;
@@ -28,55 +30,55 @@
     colorIndex = 0;
   }
 
-  // ========== SVG图形生成器（颜色动态传入） ==========
+  // ========== SVG图形生成器（纯净无边框色块） ==========
   const SHAPES = {
     circle: {
       name: '圆形',
-      makeSvg: (c) => '<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="42" fill="' + c + '" stroke="rgba(0,0,0,0.12)" stroke-width="1.5"/></svg>'
+      makeSvg: (c) => '<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="42" fill="' + c + '"/></svg>'
     },
     square: {
       name: '正方形',
-      makeSvg: (c) => '<svg viewBox="0 0 100 100"><rect x="12" y="12" width="76" height="76" fill="' + c + '" stroke="rgba(0,0,0,0.12)" stroke-width="1.5"/></svg>'
+      makeSvg: (c) => '<svg viewBox="0 0 100 100"><rect x="12" y="12" width="76" height="76" rx="4" fill="' + c + '"/></svg>'
     },
     triangle: {
       name: '三角形',
-      makeSvg: (c) => '<svg viewBox="0 0 100 100"><polygon points="50,8 92,88 8,88" fill="' + c + '" stroke="rgba(0,0,0,0.12)" stroke-width="1.5"/></svg>'
+      makeSvg: (c) => '<svg viewBox="0 0 100 100"><polygon points="50,8 92,88 8,88" fill="' + c + '"/></svg>'
     },
     rectangle: {
       name: '长方形',
-      makeSvg: (c) => '<svg viewBox="0 0 100 100"><rect x="8" y="22" width="84" height="56" rx="2" fill="' + c + '" stroke="rgba(0,0,0,0.12)" stroke-width="1.5"/></svg>'
+      makeSvg: (c) => '<svg viewBox="0 0 100 100"><rect x="8" y="22" width="84" height="56" rx="4" fill="' + c + '"/></svg>'
     },
     oval: {
       name: '椭圆形',
-      makeSvg: (c) => '<svg viewBox="0 0 100 100"><ellipse cx="50" cy="50" rx="44" ry="30" fill="' + c + '" stroke="rgba(0,0,0,0.12)" stroke-width="1.5"/></svg>'
+      makeSvg: (c) => '<svg viewBox="0 0 100 100"><ellipse cx="50" cy="50" rx="44" ry="30" fill="' + c + '"/></svg>'
     },
     diamond: {
       name: '菱形',
-      makeSvg: (c) => '<svg viewBox="0 0 100 100"><polygon points="50,6 94,50 50,94 6,50" fill="' + c + '" stroke="rgba(0,0,0,0.12)" stroke-width="1.5"/></svg>'
+      makeSvg: (c) => '<svg viewBox="0 0 100 100"><polygon points="50,6 94,50 50,94 6,50" fill="' + c + '"/></svg>'
     },
     semicircle: {
       name: '半圆形',
-      makeSvg: (c) => '<svg viewBox="0 0 100 100"><path d="M8,70 A42,42 0 0,1 92,70 Z" fill="' + c + '" stroke="rgba(0,0,0,0.12)" stroke-width="1.5"/></svg>'
+      makeSvg: (c) => '<svg viewBox="0 0 100 100"><path d="M8,70 A42,42 0 0,1 92,70 Z" fill="' + c + '"/></svg>'
     },
     trapezoid: {
       name: '梯形',
-      makeSvg: (c) => '<svg viewBox="0 0 100 100"><polygon points="25,15 75,15 95,85 5,85" fill="' + c + '" stroke="rgba(0,0,0,0.12)" stroke-width="1.5"/></svg>'
+      makeSvg: (c) => '<svg viewBox="0 0 100 100"><polygon points="25,15 75,15 95,85 5,85" fill="' + c + '"/></svg>'
     },
     star: {
       name: '五角星',
-      makeSvg: (c) => '<svg viewBox="0 0 100 100"><polygon points="50,5 61,38 97,38 68,59 79,93 50,72 21,93 32,59 3,38 39,38" fill="' + c + '" stroke="rgba(0,0,0,0.12)" stroke-width="1.5"/></svg>'
+      makeSvg: (c) => '<svg viewBox="0 0 100 100"><polygon points="50,5 61,38 97,38 68,59 79,93 50,72 21,93 32,59 3,38 39,38" fill="' + c + '"/></svg>'
     },
     heart: {
       name: '爱心',
-      makeSvg: (c) => '<svg viewBox="0 0 100 100"><path d="M50,88 C25,65 5,50 5,32 A22,22 0,0,1 50,20 A22,22 0,0,1 95,32 C95,50 75,65 50,88Z" fill="' + c + '" stroke="rgba(0,0,0,0.12)" stroke-width="1.5"/></svg>'
+      makeSvg: (c) => '<svg viewBox="0 0 100 100"><path d="M50,88 C25,65 5,50 5,32 A22,22 0,0,1 50,20 A22,22 0,0,1 95,32 C95,50 75,65 50,88Z" fill="' + c + '"/></svg>'
     },
     pentagon: {
       name: '五边形',
-      makeSvg: (c) => '<svg viewBox="0 0 100 100"><polygon points="50,8 95,38 77,90 23,90 5,38" fill="' + c + '" stroke="rgba(0,0,0,0.12)" stroke-width="1.5"/></svg>'
+      makeSvg: (c) => '<svg viewBox="0 0 100 100"><polygon points="50,8 95,38 77,90 23,90 5,38" fill="' + c + '"/></svg>'
     },
     parallelogram: {
       name: '平行四边形',
-      makeSvg: (c) => '<svg viewBox="0 0 100 100"><polygon points="25,20 92,20 75,80 8,80" fill="' + c + '" stroke="rgba(0,0,0,0.12)" stroke-width="1.5"/></svg>'
+      makeSvg: (c) => '<svg viewBox="0 0 100 100"><polygon points="25,20 92,20 75,80 8,80" fill="' + c + '"/></svg>'
     }
   };
 
@@ -115,10 +117,6 @@
     recTotal: 5,
     // 分类
     classifyRemaining: 0,
-    // 找一找
-    findTargets: [],
-    findFound: 0,
-    findScene: 0,
     tangramRound: 0,
     tangramQueue: [],
     tangramFilled: 0,
@@ -133,9 +131,6 @@
   const classifyArea = $('#classifyArea');
   const classifyShapes = $('#classifyShapes');
   const classifyHomes = $('#classifyHomes');
-  const findArea = $('#findArea');
-  const sceneContainer = $('#sceneContainer');
-  const findProgress = $('#findProgress');
   const tangramArea = $('#tangramArea');
   const tangramBoard = $('#tangramBoard');
   const spatialArea = $('#spatialArea');
@@ -265,7 +260,7 @@
 
   function showCelebration() {
     const container = $('#confettiContainer');
-    const colors = ['#58CC02', '#1CB0F6', '#FF4B4B', '#FFC800', '#CE82FF', '#FF9600'];
+    const colors = SOFT_COLORS;
     for (let i = 0; i < 40; i++) {
       const piece = document.createElement('div');
       piece.className = 'confetti-piece';
@@ -291,13 +286,11 @@
     shuffleColors();
     // 每种图形显示一个
     const keys = shuffle(SHAPE_KEYS);
-    keys.forEach((key, idx) => {
+    keys.forEach((key) => {
       const card = document.createElement('div');
       card.className = 'shape-card';
       card.dataset.shape = key;
       card.innerHTML = shapeSvg(key);
-      card.style.animationDelay = (idx * 0.05) + 's';
-      card.classList.add('animate-bounce');
       card.addEventListener('click', () => {
         if (state.practicing) return;
         speak(SHAPES[key].name);
@@ -572,147 +565,7 @@
     document.removeEventListener('mouseup', onClassifyDragEnd);
   }
 
-  // ====================================================
-  //  找一找模式：SVG场景 + 点击隐藏图形
-  // ====================================================
-  const SCENES = [
-    {
-      name: '客厅',
-      bg: '#E8F5E9',
-      items: [
-        { shape: 'circle', x: 15, y: 20, w: 18, h: 18, label: '挂钟' },
-        { shape: 'rectangle', x: 55, y: 60, w: 30, h: 18, label: '电视' },
-        { shape: 'square', x: 10, y: 65, w: 16, h: 16, label: '靠垫' },
-        { shape: 'triangle', x: 80, y: 10, w: 16, h: 16, label: '屋顶装饰' },
-        { shape: 'oval', x: 40, y: 85, w: 22, h: 12, label: '地毯' },
-      ]
-    },
-    {
-      name: '卧室',
-      bg: '#E3F2FD',
-      items: [
-        { shape: 'rectangle', x: 20, y: 40, w: 40, h: 22, label: '床' },
-        { shape: 'square', x: 70, y: 30, w: 16, h: 16, label: '窗户' },
-        { shape: 'circle', x: 75, y: 70, w: 14, h: 14, label: '台灯底座' },
-        { shape: 'triangle', x: 10, y: 10, w: 18, h: 18, label: '衣架' },
-        { shape: 'diamond', x: 45, y: 12, w: 14, h: 14, label: '装饰画' },
-      ]
-    },
-    {
-      name: '厨房',
-      bg: '#FFF3E0',
-      items: [
-        { shape: 'circle', x: 30, y: 25, w: 16, h: 16, label: '盘子' },
-        { shape: 'rectangle', x: 55, y: 50, w: 28, h: 20, label: '冰箱' },
-        { shape: 'square', x: 15, y: 55, w: 18, h: 18, label: '烤箱' },
-        { shape: 'oval', x: 70, y: 20, w: 20, h: 12, label: '锅' },
-        { shape: 'triangle', x: 45, y: 80, w: 16, h: 16, label: '三角架' },
-      ]
-    }
-  ];
 
-  function enterFindExplore() {
-    state.practicing = true;
-    state.findScene = 0;
-    bottomActions.style.display = 'none';
-    startFindPractice();
-    return;
-    renderScene(SCENES[0]);
-    showQuestion('🔍', '这是' + SCENES[0].name + '，看看里面藏了什么图形');
-    showBottomAction('🎯 开始找图形', () => startFindPractice());
-  }
-
-  function renderScene(scene) {
-    sceneContainer.innerHTML = '';
-    sceneContainer.style.background = scene.bg;
-    shuffleColors();
-
-    // 渲染场景物品（用SVG图形表示）
-    scene.items.forEach((item, idx) => {
-      const hotspot = document.createElement('div');
-      hotspot.className = 'find-hotspot';
-      hotspot.dataset.index = idx;
-      hotspot.dataset.shape = item.shape;
-      hotspot.style.left = item.x + '%';
-      hotspot.style.top = item.y + '%';
-      hotspot.style.width = item.w + '%';
-      hotspot.style.height = item.h + '%';
-      hotspot.innerHTML = shapeSvg(item.shape);
-      hotspot.title = item.label;
-
-      hotspot.addEventListener('click', () => {
-        if (!state.practicing) {
-          speak(SHAPES[item.shape].name + '，' + item.label);
-          return;
-        }
-        onFindClick(hotspot, item, idx);
-      });
-
-      sceneContainer.appendChild(hotspot);
-    });
-
-    findProgress.textContent = '';
-  }
-
-  function startFindPractice() {
-    state.practicing = true;
-    bottomActions.style.display = 'none';
-
-    const scene = SCENES[state.findScene];
-    renderScene(scene);
-    // 随机选一种图形作为目标
-    const shapes = [...new Set(scene.items.map(i => i.shape))];
-    const target = pickRandom(shapes);
-    state.findTargets = scene.items
-      .map((item, idx) => ({ ...item, idx }))
-      .filter(item => item.shape === target);
-    state.findFound = 0;
-
-    // 重置所有hotspot状态
-    $$('.find-hotspot').forEach(h => h.classList.remove('found'));
-
-    const name = SHAPES[target].name;
-    const total = state.findTargets.length;
-    showQuestion('🔍', '找出' + scene.name + '里所有的' + name + '（共' + total + '个）', '找出所有的' + name);
-    findProgress.textContent = '0 / ' + total;
-  }
-
-  function onFindClick(hotspot, item, idx) {
-    if (hotspot.classList.contains('found')) return;
-
-    const isTarget = state.findTargets.some(t => t.idx === idx);
-    if (isTarget) {
-      hotspot.classList.add('found');
-      showFeedback(true);
-      state.findFound++;
-      findProgress.textContent = state.findFound + ' / ' + state.findTargets.length;
-
-      if (state.findFound >= state.findTargets.length) {
-        scheduleAdvance(() => {
-          // 下一个场景或完成
-          state.findScene++;
-          if (state.findScene < SCENES.length) {
-            startFindPractice();
-            return;
-            const next = SCENES[state.findScene];
-            renderScene(next);
-            showQuestion('🎉', '找到了！去' + next.name + '看看');
-            showBottomAction('👉 下一个场景', () => startFindPractice());
-          } else {
-            showQuestion('🎉', '所有场景都找完了！');
-            showCelebration();
-            showBottomAction('🔄 再来一轮', () => {
-              state.findScene = 0;
-              startFindPractice();
-            });
-          }
-        }, 1200);
-      }
-    } else {
-      showFeedback(false);
-      speak(SHAPES[item.shape].name + '，不是这个哦');
-    }
-  }
 
 
   // ====================================================
@@ -910,8 +763,8 @@
        mountSvgMarkup(piece, SHAPES[p.shape].makeSvg(p.color));
        
        piece.style.position = 'relative';
-       piece.style.width = '60px';
-       piece.style.height = '60px';
+       piece.style.width = '64px';
+       piece.style.height = '64px';
        setupTangramDrag(piece, p, slot, piecesArea);
        piecesArea.appendChild(piece);
     });
@@ -1190,7 +1043,6 @@
 
     recognizeArea.style.display = 'none';
     classifyArea.style.display = 'none';
-    findArea.style.display = 'none';
     tangramArea.style.display = 'none';
     spatialArea.style.display = 'none';
     bottomActions.style.display = 'none';
@@ -1205,10 +1057,6 @@
         classifyArea.style.display = '';
         enterClassifyExplore();
         break;
-      case 'find':
-        findArea.style.display = '';
-        enterFindExplore();
-        break;
       case 'tangram':
         tangramArea.style.display = '';
         enterTangramExplore();
@@ -1221,13 +1069,27 @@
   }
 
   // ====================================================
-  //  初始化
+  //  初始化（保存并恢复上次点击的页签）
   // ====================================================
   function init() {
     $$('.mode-tab').forEach(tab => {
-      tab.addEventListener('click', () => switchMode(tab.dataset.mode));
+      tab.addEventListener('click', () => {
+        const mode = tab.dataset.mode;
+        switchMode(mode);
+        try { localStorage.setItem('shape_last_mode', mode); } catch(e){}
+      });
     });
-    switchMode('recognize');
+
+    let savedMode = 'recognize';
+    try {
+      savedMode = localStorage.getItem('shape_last_mode') || 'recognize';
+    } catch(e){}
+
+    if (!document.querySelector('.mode-tab[data-mode="' + savedMode + '"]')) {
+      savedMode = 'recognize';
+    }
+
+    switchMode(savedMode);
   }
 
   if (document.readyState === 'loading') {

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+  <title>数学启蒙 · 面积与体积几何</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Quicksand:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/design-system.css?v=20260903">
+  <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
+  <style>
+    .adv-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 20px;
+      text-align: center;
+      flex: 1;
+    }
+    .cube-demo {
+      width: 140px;
+      height: 140px;
+      background: linear-gradient(135deg, #60A5FA 0%, #2563EB 100%);
+      border-radius: 24px;
+      border: 3px solid #1D4ED8;
+      box-shadow: 0 10px 20px rgba(37, 99, 235, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #FFF;
+      font-size: 32px;
+      font-weight: 900;
+      margin: 20px 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-decoration">
+    <div class="cloud cloud-1"></div>
+    <div class="cloud cloud-2"></div>
+  </div>
+
+  <div id="app">
+    <div class="topbar">
+      <div class="topbar-left">
+        <a href="index.html" class="back-btn" aria-label="返回首页"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg></a>
+        <span class="topbar-title">🧊 面积与体积几何 (4-6年级)</span>
+      </div>
+    </div>
+
+    <div class="adv-container">
+      <div class="cube-demo">V = S×h</div>
+      <h2 style="font-size: 26px; font-weight: 900; color: #1E293B; margin-bottom: 8px;">平行四边形面积与柱体体积</h2>
+      <p style="font-size: 16px; color: #64748B; max-width: 480px; line-height: 1.5;">通过割补割剪法，将平行四边形转化为长方形；利用底面积 S 乘以高 h 计算立体体积！</p>
+      <div style="margin-top: 24px; display: flex; gap: 12px;">
+        <button class="btn btn-blue btn-lg" onclick="alert('高阶专题：动态割补法与体积切割演练！')">📐 动态切割</button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
