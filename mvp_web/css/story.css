@@ -1,0 +1,182 @@
+/* ============================================
+   数学启蒙 · 故事应用题 CSS
+   包含小鸟飞走/小熊吃苹果等 CSS3 动画与关卡舞台
+   ============================================ */
+
+.story-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  max-width: 820px;
+  margin: 0 auto;
+}
+
+/* 故事舞台区 */
+.story-stage {
+  width: 100%;
+  max-width: 720px;
+  min-height: 260px;
+  background: linear-gradient(180deg, #F0FDF4 0%, #DCFCE7 100%);
+  border: 3px solid #86EFAC;
+  border-radius: 28px;
+  box-shadow: 0 6px 0 #4ADE80, 0 12px 24px rgba(0, 0, 0, 0.05);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* 舞台环境装饰 */
+.stage-bg-tree {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 50px;
+  background: #BBF7D0;
+  border-top: 3px solid #86EFAC;
+  border-radius: 0 0 24px 24px;
+}
+
+/* 物品/角色容器 */
+.story-items {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  z-index: 2;
+}
+
+/* 单个故事物品/角色 */
+.story-item {
+  font-size: 54px;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 1s cubic-bezier(0.25, 0.1, 0.25, 1), opacity 1s ease;
+  user-select: none;
+}
+
+/* 离场动画：飞走/变小隐去 */
+.story-item.fly-away {
+  transform: translate(250px, -180px) scale(0.2) rotate(20deg);
+  opacity: 0;
+}
+
+/* 离场动画：吃掉/溶解隐去 */
+.story-item.eaten {
+  transform: scale(0) rotate(-45deg);
+  opacity: 0;
+}
+
+/* 入场动画：游过来/加入 */
+.story-item.join-in {
+  animation: bounceIn 0.8s ease;
+}
+
+/* 比多比少：对齐排队布局 */
+.align-group {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  max-width: 500px;
+  z-index: 2;
+}
+
+.align-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  justify-content: flex-start;
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 16px;
+}
+
+.align-label {
+  font-size: 16px;
+  font-weight: 800;
+  color: #1E293B;
+  min-width: 70px;
+}
+
+.align-items-line {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.align-item-box {
+  width: 44px;
+  height: 44px;
+  font-size: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #FFFFFF;
+  border: 2px solid #CBD5E1;
+  border-radius: 12px;
+}
+
+.align-item-box.extra {
+  border-color: #FF4B4B;
+  background: #FEE2E2;
+  animation: pulse 1s infinite;
+}
+
+/* 选项栏 */
+.story-options {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  width: 100%;
+  margin-top: 8px;
+}
+
+.story-opt-btn {
+  background: #FFFFFF !important;
+  border: 2px solid #E2E8F0 !important;
+  box-shadow: 0 4px 0 #CBD5E1 !important;
+  border-radius: 20px !important;
+  padding: 14px 32px !important;
+  font-size: 24px !important;
+  font-weight: 900 !important;
+  color: #1E293B !important;
+  cursor: pointer !important;
+  transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.15s ease !important;
+}
+
+.story-opt-btn:hover {
+  background: #F8FAFC !important;
+  border-color: #CBD5E1 !important;
+}
+
+.story-opt-btn:active {
+  transform: translateY(4px) !important;
+  box-shadow: 0 0 0 #CBD5E1 !important;
+}
+
+.story-opt-btn.correct {
+  background: #DCFCE7 !important;
+  border-color: #22C55E !important;
+  color: #15803D !important;
+  box-shadow: 0 4px 0 #16A34A !important;
+}
+
+.story-opt-btn.wrong {
+  background: #FEE2E2 !important;
+  border-color: #EF4444 !important;
+  color: #B91C1C !important;
+  box-shadow: 0 4px 0 #DC2626 !important;
+}

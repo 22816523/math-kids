@@ -1,0 +1,1206 @@
+/* ============================================
+   常见的量 · 核心逻辑
+   钟表（可拖动）/ 人民币（含角）/ 比较（扩充题库）
+   ============================================ */
+
+(function () {
+  'use strict';
+
+  const $ = (s) => document.querySelector(s);
+  const $$ = (s) => [...document.querySelectorAll(s)];
+
+  const starCountEl = $('#starCount');
+  const questionBar = $('#questionBar');
+  const questionIcon = $('#questionIcon');
+  const questionText = $('#questionText');
+  const questionSpeaker = $('#questionSpeaker');
+  const feedbackOverlay = $('#feedbackOverlay');
+  const feedbackEmoji = $('#feedbackEmoji');
+  const feedbackText = $('#feedbackText');
+  const confettiBox = $('#confettiContainer');
+  const bottomActions = $('#bottomActions');
+  const actionBtn = $('#actionBtn');
+
+  const clockArea = $('#clockArea');
+  const clockSvg = $('#clockSvg');
+  const digitalClock = $('#digitalClock');
+  const clockOptions = $('#clockOptions');
+
+  const moneyArea = $('#moneyArea');
+  const shopShelf = $('#shopShelf');
+  const payPrompt = $('#payPrompt');
+  const payText = $('#payText');
+  const wallet = $('#wallet');
+  const cashierTray = $('#cashierTray');
+  const cashier = $('#cashier');
+  const paidTotal = $('#paidTotal');
+
+  const compareArea = $('#compareArea');
+  const compareScene = $('#compareScene');
+  const compareOptions = $('#compareOptions');
+
+  const lengthArea = $('#lengthArea');
+  const rulerContainer = $('#rulerContainer');
+  const lengthOptions = $('#lengthOptions');
+
+  const weightArea = $('#weightArea');
+  const scaleDisplay = $('#scaleDisplay');
+  const weightOptions = $('#weightOptions');
+  const calendarArea = $('#calendarArea');
+  const calendarGrid = $('#calendarGrid');
+  const calMonthTitle = $('#calMonthTitle');
+  const measureContent = $('.measure-content');
+
+  const state = {
+    mode: 'clock',
+    stars: 0,
+    clockHour: 3,
+    clockMinute: 0,
+    clockDragging: false,
+    clockMode: 'explore',
+    clockRound: 0,
+    clockAnswer: null,
+    chosenItem: null,
+    paidCoins: [],
+    targetPrice: 0,
+    moneyRound: 0,
+    compareType: null,
+    compareAnswer: null,
+    compareRound: 0,
+    lengthAnswer: null,
+    lengthRound: 0,
+    weightAnswer: null,
+    weightRound: 0,
+    rightItems: 0,
+    calendarRound: 0,
+  };
+
+  const CALENDAR_MONTH_INFO = {
+    monthLabel: '五月',
+    englishLabel: 'May',
+    firstWeekday: 3,
+    daysInMonth: 31,
+    weekdays: ['日', '一', '二', '三', '四', '五', '六'],
+  };
+
+  function speak(text) {
+    if (!text || !('speechSynthesis' in window) || typeof window.SpeechSynthesisUtterance !== 'function') {
+      return false;
+    }
+
+    try {
+      window.speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = 'zh-CN';
+      u.rate = 0.85;
+      u.pitch = 1.2;
+      window.speechSynthesis.speak(u);
+      return true;
+    } catch (error) {
+      console.warn('measure speech failed:', error);
+      return false;
+    }
+  }
+
+  const promptController = window.PracticeSupport.createPromptController({
+    questionBar,
+    questionIcon,
+    questionText,
+    speakerButton: questionSpeaker,
+    speak,
+  });
+
+  function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  function randInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+  function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+  function getComparePracticeTypes() {
+    return ['length', 'height', 'count', 'size', 'thick'];
+  }
+
+  function createWeightTrayItems(question, extraCount) {
+    const trayCount = Math.max(question.target + (extraCount ?? 2), 6);
+    return Array.from({ length: trayCount }, (_, index) => ({
+      id: `${question.rightIcon}-${index}`,
+      icon: question.rightIcon,
+    }));
+  }
+
+  function buildWeightChoiceOptions(question) {
+    return [
+      { key: 'a', icon: question.a.emoji, text: question.a.label },
+      { key: 'b', icon: question.b.emoji, text: question.b.label },
+      { key: 'same', icon: '⚪', text: '一样' },
+    ];
+  }
+
+  function getCalendarMonthCells(todayHighlight) {
+    const cells = [];
+    for (let i = 0; i < CALENDAR_MONTH_INFO.firstWeekday; i++) {
+      cells.push({ empty: true });
+    }
+    for (let day = 1; day <= CALENDAR_MONTH_INFO.daysInMonth; day++) {
+      cells.push({
+        day,
+        isToday: day === todayHighlight,
+      });
+    }
+    return cells;
+  }
+
+  function ensureMeasureStaticUi() {
+    if (!document.getElementById('measureFixStyles')) {
+      const style = document.createElement('style');
+      style.id = 'measureFixStyles';
+      style.textContent = `
+        .compare-intro{display:flex;flex-direction:column;gap:14px;width:100%;padding:18px;}
+        .compare-intro-card{background:rgba(255,255,255,0.92);border-radius:18px;border:3px solid rgba(255,255,255,0.95);box-shadow:0 8px 18px rgba(0,0,0,0.06);padding:16px;}
+        .compare-intro-title{font-size:16px;font-weight:800;color:var(--title);margin-bottom:12px;}
+        .compare-intro-row{display:flex;align-items:center;justify-content:space-between;gap:12px;}
+        .compare-intro-icons{font-size:28px;}
+        .weight-intro{display:flex;flex-direction:column;align-items:center;gap:14px;}
+        .weight-intro-text,.weight-status,.weight-instruction{font-size:16px;font-weight:800;color:var(--purple-dark);text-align:center;}
+        .weight-scale-board{margin-top:20px;margin-bottom:16px;transform:scale(1.05);}
+        .weight-pan-items{min-height:58px;}
+        .weight-dropzone{min-width:120px;min-height:58px;padding:6px;border:2px dashed rgba(122,92,0,0.18);border-radius:18px;background:rgba(255,255,255,0.22);}
+        .weight-tray{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;width:100%;}
+        .weight-options{display:flex;flex-direction:row;flex-wrap:wrap;justify-content:center;align-items:center;gap:12px;width:100%;}
+        .weight-tray-item,.weight-pan-item{border:none;background:var(--white);border-radius:18px;box-shadow:0 6px 14px rgba(0,0,0,0.08);cursor:pointer;user-select:none;transition:transform 0.15s ease, box-shadow 0.15s ease;}
+        .weight-tray-item{width:60px;height:60px;font-size:34px;}
+        .weight-pan-item{width:46px;height:46px;font-size:28px;background:rgba(255,255,255,0.92);}
+        .weight-tray-item:active,.weight-pan-item:active{transform:scale(0.94);}
+        .weight-equation{font-size:30px;font-weight:900;background:var(--white);padding:4px 12px;border-radius:12px;border:4px solid var(--blue);color:var(--blue-dark);box-shadow:0 4px 0 var(--blue-light);}
+        .calendar-helper{width:100%;max-width:380px;background:rgba(255,249,230,0.95);border:2px dashed #FFD166;border-radius:16px;padding:12px 16px;margin-bottom:14px;}
+        .calendar-helper-title{font-size:16px;font-weight:900;color:#7A5C00;}
+        .calendar-helper-text{font-size:14px;font-weight:700;color:#9A6E1D;margin-top:4px;}
+      `;
+      document.head.appendChild(style);
+    }
+
+    const weightTabLabel = document.querySelector('.mode-tab[data-mode="weight"] .tab-label');
+    if (weightTabLabel) {
+      weightTabLabel.textContent = '轻重';
+    }
+
+    if (measureContent && calendarArea && calendarArea.parentElement !== measureContent) {
+      measureContent.appendChild(calendarArea);
+    }
+
+    const weekdays = calendarArea?.querySelector('.calendar-weekdays');
+    if (weekdays) {
+      weekdays.innerHTML = CALENDAR_MONTH_INFO.weekdays.map((day) => `<span>${day}</span>`).join('');
+    }
+
+    if (calMonthTitle) {
+      calMonthTitle.textContent = `${CALENDAR_MONTH_INFO.monthLabel} ${CALENDAR_MONTH_INFO.englishLabel}`;
+    }
+
+    if (calendarArea) {
+      const oldHelper = document.getElementById('calendarHelper');
+      if (oldHelper) oldHelper.remove();
+    }
+  }
+
+  function addStar(n) {
+    state.stars += n;
+    if (!starCountEl) return;
+    starCountEl.textContent = state.stars;
+    starCountEl.style.animation = 'none';
+    void starCountEl.offsetWidth;
+    starCountEl.style.animation = 'bounceIn 0.4s ease-out';
+  }
+
+  function showFeedback(emoji, text, duration) {
+    feedbackEmoji.textContent = emoji;
+    feedbackText.textContent = text;
+    feedbackOverlay.style.display = 'flex';
+    speak(text);
+    setTimeout(() => { feedbackOverlay.style.display = 'none'; }, duration || 1500);
+  }
+
+  function showConfetti() {
+    confettiBox.innerHTML = '';
+    const colors = ['#FF8A8A','#7BC8F6','#FFD166','#6BCB77','#C89CF2','#FFA36C'];
+    for (let i = 0; i < 30; i++) {
+      const p = document.createElement('div');
+      p.className = 'confetti-piece';
+      p.style.left = Math.random() * 100 + '%';
+      p.style.width = randInt(6, 12) + 'px';
+      p.style.height = randInt(6, 12) + 'px';
+      p.style.background = pick(colors);
+      p.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+      p.style.animationDelay = Math.random() * 0.8 + 's';
+      confettiBox.appendChild(p);
+    }
+    setTimeout(() => { confettiBox.innerHTML = ''; }, 3500);
+  }
+
+  function showQuestion(icon, text, speechText, options) {
+    promptController.showPrompt(icon, text, {
+      speechText: speechText ?? text,
+      autoSpeak: options?.autoSpeak !== false,
+      allowReplay: options?.allowReplay !== false,
+    });
+  }
+
+  function showBottomAction(text, callback, className) {
+    bottomActions.style.display = 'flex';
+    actionBtn.textContent = text;
+    actionBtn.className = className || 'btn btn-primary btn-lg';
+    actionBtn.onclick = callback;
+  }
+
+  function scheduleAdvance(callback, delay) {
+    clearTimeout(state._advanceTimer);
+    state._advanceTimer = setTimeout(callback, delay);
+  }
+
+  $$('.mode-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      $$('.mode-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      state.mode = tab.dataset.mode;
+      switchMode();
+    });
+  });
+
+  function switchMode() {
+    ensureMeasureStaticUi();
+    clockArea.style.display = 'none';
+    moneyArea.style.display = 'none';
+    compareArea.style.display = 'none';
+    lengthArea.style.display = 'none';
+    weightArea.style.display = 'none';
+    calendarArea.style.display = 'none';
+    promptController.hidePrompt();
+    bottomActions.style.display = 'none';
+    clearTimeout(state._advanceTimer);
+
+    if (state.mode === 'clock') {
+      clockArea.style.display = 'flex';
+      initClock();
+    } else if (state.mode === 'money') {
+      moneyArea.style.display = 'flex';
+      initMoney();
+    } else if (state.mode === 'compare') {
+      compareArea.style.display = 'flex';
+      initCompare();
+    } else if (state.mode === 'length') {
+      lengthArea.style.display = 'flex';
+      initLength();
+    } else if (state.mode === 'weight') {
+      weightArea.style.display = 'flex';
+      initWeight();
+    } else if (state.mode === 'calendar') {
+      calendarArea.style.display = 'flex';
+      initCalendar();
+    }
+  }
+
+  /* ========== 钟表模式 ========== */
+
+  function drawClockFace(hour, minute, draggable) {
+    const cx = 150, cy = 150, r = 130;
+    let svg = '<circle cx="150" cy="150" r="130" fill="#FFF9E6" stroke="#FFD166" stroke-width="4"/>';
+    
+    for (let i = 1; i <= 12; i++) {
+      const angle = (i * 30 - 90) * Math.PI / 180;
+      const x1 = cx + (r - 8) * Math.cos(angle);
+      const y1 = cy + (r - 8) * Math.sin(angle);
+      const x2 = cx + (r - 20) * Math.cos(angle);
+      const y2 = cy + (r - 20) * Math.sin(angle);
+      svg += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#CCA050" stroke-width="3" stroke-linecap="round"/>`;
+      const nx = cx + (r - 36) * Math.cos(angle);
+      const ny = cy + (r - 36) * Math.sin(angle);
+      svg += `<text x="${nx}" y="${ny}" text-anchor="middle" dominant-baseline="central" font-size="22" font-weight="800" fill="#7A5C00" font-family="Nunito">${i}</text>`;
+    }
+
+    for (let i = 0; i < 60; i++) {
+      if (i % 5 === 0) continue;
+      const angle = (i * 6 - 90) * Math.PI / 180;
+      const x1 = cx + (r - 8) * Math.cos(angle);
+      const y1 = cy + (r - 8) * Math.sin(angle);
+      const x2 = cx + (r - 14) * Math.cos(angle);
+      const y2 = cy + (r - 14) * Math.sin(angle);
+      svg += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#E5C888" stroke-width="1.5" stroke-linecap="round"/>`;
+    }
+
+    const hAngle = ((hour % 12) * 30 + minute * 0.5 - 90) * Math.PI / 180;
+    const hx = cx + 60 * Math.cos(hAngle);
+    const hy = cy + 60 * Math.sin(hAngle);
+    svg += `<line x1="150" y1="150" x2="${hx}" y2="${hy}" stroke="#4B4B4B" stroke-width="6" stroke-linecap="round"/>`;
+
+    const mAngle = (minute * 6 - 90) * Math.PI / 180;
+    const mx = cx + 90 * Math.cos(mAngle);
+    const my = cy + 90 * Math.sin(mAngle);
+    svg += `<line x1="150" y1="150" x2="${mx}" y2="${my}" stroke="#1CB0F6" stroke-width="4" stroke-linecap="round"/>`;
+    
+    if (draggable) {
+      svg += `<circle cx="${mx}" cy="${my}" r="16" fill="#1CB0F6" fill-opacity="0.3" stroke="#1CB0F6" stroke-width="2" style="cursor:grab;" id="minuteHandle"/>`;
+    }
+
+    svg += '<circle cx="150" cy="150" r="6" fill="#FF4B4B"/>';
+    clockSvg.innerHTML = svg;
+
+    if (draggable) {
+      const handle = document.getElementById('minuteHandle');
+      handle.addEventListener('mousedown', startDrag);
+      handle.addEventListener('touchstart', startDrag);
+    }
+
+    digitalClock.textContent = String(hour).padStart(2, '0') + ':' + String(minute).padStart(2, '0');
+  }
+
+  function startDrag(e) {
+    e.preventDefault();
+    state.clockDragging = true;
+    document.addEventListener('mousemove', onDrag);
+    document.addEventListener('mouseup', stopDrag);
+    document.addEventListener('touchmove', onDrag);
+    document.addEventListener('touchend', stopDrag);
+  }
+
+  function onDrag(e) {
+    if (!state.clockDragging) return;
+    const rect = clockSvg.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+    const dx = clientX - cx;
+    const dy = clientY - cy;
+    let angle = Math.atan2(dy, dx) * 180 / Math.PI + 90;
+    if (angle < 0) angle += 360;
+    state.clockMinute = Math.round(angle / 6) % 60;
+    state.clockHour = Math.floor((state.clockHour % 12) + state.clockMinute / 60);
+    if (state.clockHour === 0) state.clockHour = 12;
+    drawClockFace(state.clockHour, state.clockMinute, true);
+  }
+
+  function stopDrag() {
+    state.clockDragging = false;
+    document.removeEventListener('mousemove', onDrag);
+    document.removeEventListener('mouseup', stopDrag);
+    document.removeEventListener('touchmove', onDrag);
+    document.removeEventListener('touchend', stopDrag);
+  }
+
+  function initClock() {
+    state.clockMode = 'explore';
+    state.clockRound = 0;
+    const now = new Date();
+    state.clockHour = now.getHours() % 12 || 12;
+    state.clockMinute = 0;
+    drawClockFace(state.clockHour, state.clockMinute, true);
+    digitalClock.style.display = 'block';
+    clockOptions.innerHTML = '';
+    bottomActions.style.display = 'flex';
+    actionBtn.textContent = '🎯 开始练习';
+    actionBtn.className = 'btn btn-primary btn-lg';
+    actionBtn.onclick = startClockPractice;
+    showQuestion('🕐', '拖动蓝色分针，看时针怎么动');
+  }
+
+  function startClockPractice() {
+    state.clockMode = 'practice';
+    state.clockRound = 0;
+    bottomActions.style.display = 'none';
+    nextClockQuestion();
+  }
+
+  function nextClockQuestion() {
+    if (state.clockRound >= 5) {
+      showFeedback('🎉', '时间大师！', 2000);
+      showConfetti();
+      addStar(3);
+      showBottomAction('🔄 再玩一次', startClockPractice);
+      return;
+    }
+    state.clockRound++;
+
+    const types = [0, 30, 15, 45];
+    const minute = types[state.clockRound % 4];
+    const hour = randInt(1, 12);
+    state.clockAnswer = { hour, minute };
+    drawClockFace(hour, minute, false);
+    digitalClock.style.display = 'none';
+
+    const timeStr = minute === 0 ? `${hour}点整` : minute === 30 ? `${hour}点半` : minute === 15 ? `${hour}点15分` : `${hour}点45分`;
+    showQuestion('🎯', `第${state.clockRound}题：现在是几点？`, `第${state.clockRound}题，现在是几点？`);
+
+    const correct = timeStr;
+    const options = new Set([correct]);
+    while (options.size < 3) {
+      const fH = randInt(1, 12);
+      const fM = pick(types);
+      const fStr = fM === 0 ? `${fH}点整` : fM === 30 ? `${fH}点半` : fM === 15 ? `${fH}点15分` : `${fH}点45分`;
+      if (fStr !== correct) options.add(fStr);
+    }
+
+    const icons = ['🕐', '🕑', '🕒'];
+    clockOptions.innerHTML = '';
+    shuffle([...options]).forEach((opt, i) => {
+      const div = document.createElement('div');
+      div.className = 'clock-option';
+      div.innerHTML = `<span class="clock-option-icon">${icons[i]}</span><span class="clock-option-text">${opt}</span>`;
+      div.onclick = () => {
+        if (state.clockAnswer === null) return;
+        if (div.classList.contains('selected')) return;
+        if (opt === correct) {
+          div.classList.add('selected');
+          addStar(1);
+          showFeedback('🎉', '答对了！' + correct, 1200);
+          state.clockAnswer = null;
+          scheduleAdvance(nextClockQuestion, 1500);
+        } else {
+          div.classList.add('wrong');
+          showFeedback('🤔', '再想想', 800);
+          setTimeout(() => div.classList.remove('wrong'), 500);
+        }
+      };
+      clockOptions.appendChild(div);
+    });
+  }
+
+  /* ========== 人民币模式 ========== */
+
+  const SHOP_ITEMS = [
+    { icon: '🍎', name: '苹果', price: 1.5 },
+    { icon: '🍌', name: '香蕉', price: 2.0 },
+    { icon: '🧃', name: '果汁', price: 3.5 },
+    { icon: '🍪', name: '饼干', price: 5.0 },
+    { icon: '🍦', name: '冰淇淋', price: 4.5 },
+    { icon: '🎈', name: '气球', price: 2.5 },
+    { icon: '✏️', name: '铅笔', price: 1.0 },
+    { icon: '📒', name: '本子', price: 3.0 },
+    { icon: '🧸', name: '玩具熊', price: 12.5 },
+    { icon: '🖍️', name: '蜡笔', price: 6.5 },
+    { icon: '🍭', name: '棒棒糖', price: 0.5 },
+    { icon: '🥤', name: '可乐', price: 2.5 },
+    { icon: '🍿', name: '爆米花', price: 4.0 },
+    { icon: '🎨', name: '水彩笔', price: 9.5 },
+    { icon: '🚗', name: '玩具车', price: 15.0 },
+    { icon: '📚', name: '故事书', price: 11.5 },
+    { icon: '🎮', name: '游戏机', price: 18.0 },
+    { icon: '🎒', name: '书包', price: 25.0 },
+    { icon: '👟', name: '运动鞋', price: 35.0 },
+    { icon: '🏀', name: '篮球', price: 28.0 },
+    { icon: '🎧', name: '耳机', price: 45.0 },
+    { icon: '⚽', name: '足球', price: 32.0 },
+    { icon: '🛴', name: '滑板车', price: 68.0 },
+    { icon: '🎸', name: '玩具吉他', price: 55.0 },
+    { icon: '🚲', name: '自行车', price: 88.0 },
+  ];
+
+  function initMoney() {
+    state.moneyRound = 0;
+    state.chosenItem = null;
+    state.paidCoins = [];
+    renderShop();
+    payPrompt.style.display = 'none';
+    wallet.innerHTML = '';
+    cashierTray.innerHTML = '';
+    paidTotal.textContent = '0';
+    showQuestion('💰', '点一个商品，试试付钱吧');
+    bottomActions.style.display = 'none';
+  }
+
+  function renderShop() {
+    const items = shuffle(SHOP_ITEMS).slice(0, 6);
+    shopShelf.innerHTML = '';
+    items.forEach(item => {
+      const div = document.createElement('div');
+      div.className = 'shop-item';
+      div.innerHTML = `<span class="shop-item-icon">${item.icon}</span><span class="shop-item-price">${item.price}元</span>`;
+      div.onclick = () => chooseItem(item, div);
+      shopShelf.appendChild(div);
+    });
+  }
+
+  function chooseItem(item, el) {
+    if (state.chosenItem) return;
+    state.chosenItem = item;
+    state.targetPrice = item.price;
+    state.paidCoins = [];
+    el.classList.add('chosen');
+    payPrompt.style.display = 'flex';
+    payText.textContent = `买${item.icon}${item.name}，需要付 ${item.price} 元`;
+    showQuestion('💰', `请付 ${item.price} 元`, `买${item.name}，需要付${item.price}元`);
+    renderWallet();
+    cashierTray.innerHTML = '';
+    paidTotal.textContent = '0';
+  }
+
+  function renderWallet() {
+    wallet.innerHTML = '';
+    const coins = [];
+    if (state.targetPrice >= 50) coins.push({ value: 100, label: '100元', cls: 'coin-100' });
+    if (state.targetPrice >= 30) coins.push({ value: 50, label: '50元', cls: 'coin-50' });
+    if (state.targetPrice >= 15) coins.push({ value: 20, label: '20元', cls: 'coin-20' });
+    if (state.targetPrice >= 5) coins.push({ value: 10, label: '10元', cls: 'coin-10' });
+    coins.push({ value: 5, label: '5元', cls: 'coin-5' });
+    coins.push({ value: 1, label: '1元', cls: 'coin-1' });
+    coins.push({ value: 0.5, label: '5角', cls: 'coin-05' });
+    coins.push({ value: 0.1, label: '1角', cls: 'coin-01' });
+
+    coins.forEach((c, idx) => {
+      const div = document.createElement('div');
+      div.className = 'coin ' + c.cls;
+      div.textContent = c.label;
+      div.dataset.value = c.value;
+      div.dataset.idx = idx;
+      div.onclick = () => payCoin(div, c);
+      wallet.appendChild(div);
+    });
+  }
+
+  function payCoin(el, coin) {
+    state.paidCoins.push(coin.value);
+    const mini = document.createElement('div');
+    mini.className = 'coin ' + coin.cls;
+    mini.textContent = coin.label;
+    mini.onclick = () => {
+      state.paidCoins.splice(state.paidCoins.indexOf(coin.value), 1);
+      mini.remove();
+      updatePaid();
+    };
+    cashierTray.appendChild(mini);
+    updatePaid();
+  }
+
+  function updatePaid() {
+    const total = Math.round(state.paidCoins.reduce((s, v) => s + v, 0) * 10) / 10;
+    paidTotal.textContent = total;
+
+    if (Math.abs(total - state.targetPrice) < 0.01) {
+      showFeedback('🎉', '刚刚好，谢谢你！', 1500);
+      addStar(2);
+      state.moneyRound++;
+      if (state.moneyRound >= 5) {
+        setTimeout(() => {
+          showFeedback('🏆', '购物高手！', 2000);
+          showConfetti();
+          addStar(3);
+          showBottomAction('🔄 再玩一次', () => {
+            state.moneyRound = 0;
+            initMoney();
+          });
+        }, 1600);
+      } else {
+        setTimeout(resetMoneyRound, 1800);
+      }
+    } else if (total > state.targetPrice) {
+      showFeedback('🤔', '钱给多了，点收银台的钱可以拿回哦', 1500);
+      speak('钱给多了，能拿回一些吗');
+    }
+  }
+
+  function resetMoneyRound() {
+    state.chosenItem = null;
+    state.paidCoins = [];
+    $$('.shop-item').forEach(el => el.classList.remove('chosen'));
+    payPrompt.style.display = 'none';
+    wallet.innerHTML = '';
+    cashierTray.innerHTML = '';
+    paidTotal.textContent = '0';
+    showQuestion('💰', '再选一个商品吧');
+    renderShop();
+  }
+
+  /* ========== 比较模式 ========== */
+
+  const COMPARE_QUESTIONS = {
+    length: [
+      { a: { label: '红铅笔', len: 180, color: '#FF6B6B' }, b: { label: '蓝铅笔', len: 120, color: '#4D96FF' }, answer: 'a', q: '哪支铅笔更长？' },
+      { a: { label: '绿铅笔', len: 100, color: '#6BCB77' }, b: { label: '紫铅笔', len: 160, color: '#9B59B6' }, answer: 'b', q: '哪支铅笔更长？' },
+      { a: { label: '橙铅笔', len: 140, color: '#FF9F43' }, b: { label: '粉铅笔', len: 140, color: '#FF7597' }, answer: 'same', q: '哪支铅笔更长？' },
+      { a: { label: '黄铅笔', len: 200, color: '#FFD166' }, b: { label: '青铅笔', len: 110, color: '#00D2D3' }, answer: 'a', q: '哪支铅笔更长？' },
+      { a: { label: '珊瑚红铅笔', len: 110, color: '#FF5252' }, b: { label: '薄荷绿铅笔', len: 170, color: '#10B981' }, answer: 'b', q: '哪支铅笔更长？' },
+      { a: { label: '香槟橙铅笔', len: 150, color: '#FF8C00' }, b: { label: '葡萄紫铅笔', len: 130, color: '#8E44AD' }, answer: 'a', q: '哪支铅笔更长？' },
+      { a: { label: '柠檬黄铅笔', len: 130, color: '#FACC15' }, b: { label: '天蓝铅笔', len: 180, color: '#38BDF8' }, answer: 'b', q: '哪支铅笔更长？' },
+      { a: { label: '玫红铅笔', len: 160, color: '#FF4081' }, b: { label: '宝石蓝铅笔', len: 160, color: '#3B82F6' }, answer: 'same', q: '哪支铅笔更长？' },
+    ],
+    height: [
+      { a: { emoji: '🦒', label: '长颈鹿', size: 80 }, b: { emoji: '🐱', label: '小猫', size: 40 }, answer: 'a', q: '谁更高？' },
+      { a: { emoji: '🐭', label: '小老鼠', size: 32 }, b: { emoji: '🐘', label: '大象', size: 88 }, answer: 'b', q: '谁更高？' },
+      { a: { emoji: '🐕', label: '小狗', size: 48 }, b: { emoji: '🐈', label: '小猫', size: 44 }, answer: 'a', q: '谁更高？' },
+      { a: { emoji: '🐰', label: '兔子', size: 42 }, b: { emoji: '🦘', label: '袋鼠', size: 72 }, answer: 'b', q: '谁更高？' },
+      { a: { emoji: '🐻', label: '熊', size: 76 }, b: { emoji: '🐿️', label: '松鼠', size: 36 }, answer: 'a', q: '谁更高？' },
+      { a: { emoji: '🐧', label: '企鹅', size: 50 }, b: { emoji: '🦆', label: '鸭子', size: 50 }, answer: 'same', q: '谁更高？' },
+      { a: { emoji: '🦌', label: '鹿', size: 70 }, b: { emoji: '🐑', label: '羊', size: 52 }, answer: 'a', q: '谁更高？' },
+      { a: { emoji: '🐢', label: '乌龟', size: 38 }, b: { emoji: '🦎', label: '蜥蜴', size: 40 }, answer: 'b', q: '谁更高？' },
+    ],
+    weight: [
+      { a: { emoji: '🍉', label: '西瓜' }, b: { emoji: '🍓', label: '草莓' }, answer: 'a', q: '谁更重？', tilt: -12 },
+      { a: { emoji: '🪶', label: '羽毛' }, b: { emoji: '🧱', label: '砖头' }, answer: 'b', q: '谁更重？', tilt: 12 },
+      { a: { emoji: '🎾', label: '网球' }, b: { emoji: '🏀', label: '篮球' }, answer: 'b', q: '谁更重？', tilt: 8 },
+      { a: { emoji: '📚', label: '书' }, b: { emoji: '📄', label: '纸' }, answer: 'a', q: '谁更重？', tilt: -10 },
+      { a: { emoji: '🎈', label: '气球' }, b: { emoji: '🪨', label: '石头' }, answer: 'b', q: '谁更重？', tilt: 14 },
+      { a: { emoji: '🍎', label: '苹果' }, b: { emoji: '🍇', label: '葡萄' }, answer: 'a', q: '谁更重？', tilt: -6 },
+      { a: { emoji: '🥔', label: '土豆' }, b: { emoji: '🥔', label: '土豆' }, answer: 'same', q: '谁更重？', tilt: 0 },
+      { a: { emoji: '🧸', label: '玩具熊' }, b: { emoji: '📱', label: '手机' }, answer: 'a', q: '谁更重？', tilt: -8 },
+    ],
+    count: [
+      { a: { emoji: '🍎', label: '苹果', num: 5 }, b: { emoji: '🍌', label: '香蕉', num: 3 }, answer: 'a', q: '哪种水果更多？' },
+      { a: { emoji: '⭐', label: '星星', num: 4 }, b: { emoji: '🌙', label: '月亮', num: 7 }, answer: 'b', q: '哪个更多？' },
+      { a: { emoji: '🌸', label: '花', num: 6 }, b: { emoji: '🌸', label: '花', num: 6 }, answer: 'same', q: '哪边的花更多？' },
+      { a: { emoji: '🎈', label: '气球', num: 8 }, b: { emoji: '🎁', label: '礼物', num: 5 }, answer: 'a', q: '哪个更多？' },
+      { a: { emoji: '🍪', label: '饼干', num: 3 }, b: { emoji: '🍭', label: '糖果', num: 9 }, answer: 'b', q: '哪个更多？' },
+      { a: { emoji: '🐝', label: '蜜蜂', num: 7 }, b: { emoji: '🦋', label: '蝴蝶', num: 4 }, answer: 'a', q: '哪个更多？' },
+    ],
+    size: [
+      { a: { emoji: '🏀', label: '篮球', size: 70 }, b: { emoji: '⚽', label: '足球', size: 55 }, answer: 'a', q: '哪个球更大？' },
+      { a: { emoji: '🎾', label: '网球', size: 40 }, b: { emoji: '🏐', label: '排球', size: 60 }, answer: 'b', q: '哪个球更大？' },
+      { a: { emoji: '📦', label: '箱子', size: 80 }, b: { emoji: '📦', label: '箱子', size: 80 }, answer: 'same', q: '哪个箱子更大？' },
+      { a: { emoji: '🍉', label: '西瓜', size: 75 }, b: { emoji: '🍎', label: '苹果', size: 45 }, answer: 'a', q: '哪个更大？' },
+      { a: { emoji: '🐘', label: '大象', size: 85 }, b: { emoji: '🐭', label: '老鼠', size: 30 }, answer: 'a', q: '哪个更大？' },
+      { a: { emoji: '🎃', label: '南瓜', size: 50 }, b: { emoji: '🍊', label: '橙子', size: 42 }, answer: 'a', q: '哪个更大？' },
+    ],
+    thick: [
+      { a: { label: '红树干', width: 60, color: '#FF5252' }, b: { label: '蓝树干', width: 35, color: '#3B82F6' }, answer: 'a', q: '哪根树干更粗？' },
+      { a: { label: '绿树干', width: 40, color: '#10B981' }, b: { label: '紫树干', width: 55, color: '#9B59B6' }, answer: 'b', q: '哪根树干更粗？' },
+      { a: { label: '黄树干', width: 48, color: '#FFD166' }, b: { label: '橙树干', width: 48, color: '#FF9F43' }, answer: 'same', q: '哪根树干更粗？' },
+      { a: { label: '青树干', width: 70, color: '#00D2D3' }, b: { label: '粉树干', width: 42, color: '#FF7597' }, answer: 'a', q: '哪根树干更粗？' },
+      { a: { label: '天蓝树干', width: 38, color: '#38BDF8' }, b: { label: '翡翠绿树干', width: 62, color: '#059669' }, answer: 'b', q: '哪根树干更粗？' },
+    ],
+  };
+
+  function initCompare() {
+    state.compareRound = 0;
+    bottomActions.style.display = 'none';
+    nextCompareQuestion();
+  }
+
+  function startComparePractice() {
+    state.compareRound = 0;
+    bottomActions.style.display = 'none';
+    nextCompareQuestion();
+  }
+
+  function nextCompareQuestion() {
+    if (state.compareRound >= 5) {
+      showFeedback('🎉', '比较大师！', 2000);
+      showConfetti();
+      addStar(3);
+      showBottomAction('🔄 再玩一次', startComparePractice);
+      return;
+    }
+    state.compareRound++;
+
+    const types = ['length', 'height', 'weight', 'count', 'size', 'thick'];
+    const type = types[(state.compareRound - 1) % 6];
+    state.compareType = type;
+    const pool = COMPARE_QUESTIONS[type];
+    const q = pool[randInt(0, pool.length - 1)];
+
+    const reverse = Math.random() < 0.5;
+    const questionMap = {
+      length: { normal: '哪支铅笔更长？', reverse: '哪支铅笔更短？' },
+      height: { normal: '谁更高？', reverse: '谁更矮？' },
+      weight: { normal: '谁更重？', reverse: '谁更轻？' },
+      count: { normal: '哪个更多？', reverse: '哪个更少？' },
+      size: { normal: '哪个更大？', reverse: '哪个更小？' },
+      thick: { normal: '哪根树干更粗？', reverse: '哪根树干更细？' }
+    };
+
+    const questionText = reverse ? questionMap[type].reverse : (q.q || questionMap[type].normal);
+    state.compareAnswer = reverse && q.answer !== 'same' ? (q.answer === 'a' ? 'b' : 'a') : q.answer;
+
+    showQuestion('⚖️', `第${state.compareRound}题：${questionText}`, `第${state.compareRound}题，${questionText}`);
+
+    if (type === 'length') renderLengthScene(q);
+    else if (type === 'height') renderHeightScene(q);
+    else if (type === 'weight') renderWeightScene(q);
+    else if (type === 'count') renderCountScene(q);
+    else if (type === 'size') renderSizeScene(q);
+    else renderThickScene(q);
+
+    renderCompareOptions(q);
+  }
+
+  function renderLengthScene(q) {
+    const lenA = Math.round((q.a.len || 140) * 1.5);
+    const lenB = Math.round((q.b.len || 140) * 1.5);
+    compareScene.innerHTML = `
+      <div style="display:flex;flex-direction:column;gap:24px;width:100%;max-width:640px;margin:0 auto;padding:12px 0;">
+        <div style="display:flex;align-items:center;gap:16px;">
+          <span style="font-size:18px;font-weight:800;width:90px;text-align:right;color:#1E293B;">${q.a.label}</span>
+          <div class="pencil" style="width:${lenA}px;height:38px;background:${q.a.color};border-left-color:${q.a.color};border-radius:4px;box-shadow:0 3px 6px rgba(0,0,0,0.15);">&nbsp;</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:16px;">
+          <span style="font-size:18px;font-weight:800;width:90px;text-align:right;color:#1E293B;">${q.b.label}</span>
+          <div class="pencil" style="width:${lenB}px;height:38px;background:${q.b.color};border-left-color:${q.b.color};border-radius:4px;box-shadow:0 3px 6px rgba(0,0,0,0.15);">&nbsp;</div>
+        </div>
+      </div>`;
+  }
+
+  function renderHeightScene(q) {
+    const sizeA = Math.round((q.a.size || 50) * 1.5);
+    const sizeB = Math.round((q.b.size || 50) * 1.5);
+    compareScene.innerHTML = `
+      <div style="display:flex;gap:60px;align-items:flex-end;justify-content:center;padding:12px 0;">
+        <div class="animal-item" style="display:flex;flex-direction:column;align-items:center;gap:10px;">
+          <span class="animal-body" style="font-size:${sizeA}px;filter:drop-shadow(0 6px 12px rgba(0,0,0,0.12));">${q.a.emoji}</span>
+          <span class="animal-label" style="font-size:18px;font-weight:800;color:#1E293B;">${q.a.label}</span>
+        </div>
+        <div class="animal-item" style="display:flex;flex-direction:column;align-items:center;gap:10px;">
+          <span class="animal-body" style="font-size:${sizeB}px;filter:drop-shadow(0 6px 12px rgba(0,0,0,0.12));">${q.b.emoji}</span>
+          <span class="animal-label" style="font-size:18px;font-weight:800;color:#1E293B;">${q.b.label}</span>
+        </div>
+      </div>`;
+  }
+
+  function renderWeightScene(q) {
+    const tilt = q.tilt || 0;
+    compareScene.innerHTML = `
+      <div class="scale-container" style="transform:scale(1.4);margin:24px 0;">
+        <div class="scale-beam" style="transform:rotate(${tilt}deg);">
+          <div class="scale-pan scale-pan-left">
+            <div class="scale-pan-items" style="font-size:42px;">${q.a.emoji}</div>
+            <div class="scale-pan-plate"></div>
+          </div>
+          <div class="scale-pan scale-pan-right">
+            <div class="scale-pan-items" style="font-size:42px;">${q.b.emoji}</div>
+            <div class="scale-pan-plate"></div>
+          </div>
+        </div>
+        <div class="scale-pillar"></div>
+        <div class="scale-base"></div>
+      </div>`;
+  }
+
+  function renderCountScene(q) {
+    compareScene.innerHTML = `
+      <div style="display:flex;gap:60px;align-items:center;justify-content:center;padding:12px 0;">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:12px;">
+          <div style="display:flex;flex-wrap:wrap;gap:8px;max-width:200px;justify-content:center;">
+            ${Array(q.a.num).fill(q.a.emoji).map(e => `<span style="font-size:44px;filter:drop-shadow(0 3px 6px rgba(0,0,0,0.1));">${e}</span>`).join('')}
+          </div>
+          <span style="font-size:18px;font-weight:800;color:#1E293B;">${q.a.label}</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:12px;">
+          <div style="display:flex;flex-wrap:wrap;gap:8px;max-width:200px;justify-content:center;">
+            ${Array(q.b.num).fill(q.b.emoji).map(e => `<span style="font-size:44px;filter:drop-shadow(0 3px 6px rgba(0,0,0,0.1));">${e}</span>`).join('')}
+          </div>
+          <span style="font-size:18px;font-weight:800;color:#1E293B;">${q.b.label}</span>
+        </div>
+      </div>`;
+  }
+
+  function renderSizeScene(q) {
+    const sizeA = Math.round((q.a.size || 50) * 1.5);
+    const sizeB = Math.round((q.b.size || 50) * 1.5);
+    compareScene.innerHTML = `
+      <div style="display:flex;gap:60px;align-items:flex-end;justify-content:center;padding:12px 0;">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:12px;">
+          <span style="font-size:${sizeA}px;filter:drop-shadow(0 6px 12px rgba(0,0,0,0.12));">${q.a.emoji}</span>
+          <span style="font-size:18px;font-weight:800;color:#1E293B;">${q.a.label}</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:12px;">
+          <span style="font-size:${sizeB}px;filter:drop-shadow(0 6px 12px rgba(0,0,0,0.12));">${q.b.emoji}</span>
+          <span style="font-size:18px;font-weight:800;color:#1E293B;">${q.b.label}</span>
+        </div>
+      </div>`;
+  }
+
+  function renderThickScene(q) {
+    const wA = Math.round((q.a.width || 40) * 1.5);
+    const wB = Math.round((q.b.width || 40) * 1.5);
+    compareScene.innerHTML = `
+      <div style="display:flex;flex-direction:column;gap:24px;width:100%;max-width:640px;margin:0 auto;padding:12px 0;">
+        <div style="display:flex;align-items:center;gap:16px;">
+          <span style="font-size:18px;font-weight:800;width:90px;text-align:right;color:#1E293B;">${q.a.label}</span>
+          <div style="width:220px;height:${wA}px;background:${q.a.color};border-radius:${wA/2}px;border:2.5px solid rgba(0,0,0,0.18);box-shadow:0 4px 8px rgba(0,0,0,0.12);">&nbsp;</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:16px;">
+          <span style="font-size:18px;font-weight:800;width:90px;text-align:right;color:#1E293B;">${q.b.label}</span>
+          <div style="width:220px;height:${wB}px;background:${q.b.color};border-radius:${wB/2}px;border:2.5px solid rgba(0,0,0,0.18);box-shadow:0 4px 8px rgba(0,0,0,0.12);">&nbsp;</div>
+        </div>
+      </div>`;
+  }
+
+  function renderCompareOptions(q) {
+    compareOptions.innerHTML = '';
+
+    function getOptionIcon(item, fallbackColor) {
+      if (item.emoji) return item.emoji;
+      const color = item.color || fallbackColor;
+      return `<span style="display:inline-block;width:24px;height:24px;border-radius:50%;background:${color};border:2px solid rgba(0,0,0,0.15);box-shadow:0 3px 6px rgba(0,0,0,0.12);vertical-align:middle;flex-shrink:0;"></span>`;
+    }
+
+    const opts = [
+      { key: 'a', icon: getOptionIcon(q.a, '#FF4757'), text: q.a.label },
+      { key: 'b', icon: getOptionIcon(q.b, '#2ED573'), text: q.b.label },
+    ];
+    if (q.answer === 'same' || q.a.len === q.b?.len || q.a.size === q.b?.size || q.a.width === q.b?.width) {
+      opts.push({ key: 'same', icon: '🤝', text: '一样' });
+    }
+
+    opts.forEach(opt => {
+      const div = document.createElement('div');
+      div.className = 'compare-option';
+      div.innerHTML = `<span class="compare-option-icon">${opt.icon}</span><span class="compare-option-text">${opt.text}</span>`;
+      div.onclick = () => {
+        if (state.compareAnswer === null) return;
+        if (div.classList.contains('selected')) return;
+        if (opt.key === state.compareAnswer) {
+          div.classList.add('selected');
+          addStar(1);
+          showFeedback('🎉', '答对了！', 1200);
+          state.compareAnswer = null;
+          scheduleAdvance(nextCompareQuestion, 1500);
+        } else {
+          div.classList.add('wrong');
+          showFeedback('🤔', '再看看哦', 800);
+          setTimeout(() => div.classList.remove('wrong'), 500);
+        }
+      };
+      compareOptions.appendChild(div);
+    });
+  }
+
+  /* ========== 长度模式 ========== */
+
+  const LENGTH_QUESTIONS = [
+    { obj: '✏️', name: '铅笔', len: 8, unit: 'cm', opts: [6, 8, 10] },
+    { obj: '📏', name: '尺子', len: 15, unit: 'cm', opts: [12, 15, 18] },
+    { obj: '🔑', name: '钥匙', len: 5, unit: 'cm', opts: [3, 5, 7] },
+    { obj: '🥄', name: '勺子', len: 12, unit: 'cm', opts: [10, 12, 14] },
+    { obj: '🖊️', name: '钢笔', len: 14, unit: 'cm', opts: [12, 14, 16] },
+    { obj: '📱', name: '手机', len: 16, unit: 'cm', opts: [14, 16, 18] },
+    { obj: '🪥', name: '牙刷', len: 18, unit: 'cm', opts: [16, 18, 20] },
+    { obj: '🥖', name: '面包', len: 19, unit: 'cm', opts: [15, 19, 20] },
+    { obj: '🍌', name: '香蕉', len: 13, unit: 'cm', opts: [11, 13, 15] },
+    { obj: '🚩', name: '小旗子', len: 10, unit: 'cm', opts: [8, 10, 12] },
+  ];
+
+  function initLength() {
+    state.lengthRound = 0;
+    bottomActions.style.display = 'none';
+    nextLengthQuestion();
+  }
+
+  function nextLengthQuestion() {
+    if (state.lengthRound >= 5) {
+      showFeedback('🎊', '全部完成！', 2000);
+      showConfetti();
+      addStar(3);
+      showBottomAction('🔄 再玩一次', () => {
+        state.lengthRound = 0;
+        nextLengthQuestion();
+      });
+      return;
+    }
+    state.lengthRound++;
+    const q = LENGTH_QUESTIONS[Math.floor(Math.random() * LENGTH_QUESTIONS.length)];
+    state.lengthAnswer = q.len;
+    showQuestion('📏', `第${state.lengthRound}题：${q.name}有多长？`, `第${state.lengthRound}题，${q.name}有多长？`);
+
+    const maxLen = Math.max(20, Math.ceil((q.len || 20) / 5) * 5);
+    rulerContainer.innerHTML = `
+      <div style="display:flex;flex-direction:column;align-items:center;gap:24px;width:100%;max-width:820px;margin:0 auto;box-sizing:border-box;">
+        <div style="position:relative;width:100%;max-width:800px;padding-top:30px;">
+          <!-- 高清极简纯色直尺 (天空蓝纯色 108px) -->
+          <div style="display:flex;height:108px;background:#E0F2FE;border:2px solid #0284C7;border-radius:14px;box-shadow:0 4px 12px rgba(2,132,199,0.12);position:relative;box-sizing:border-box;overflow:visible;">
+            ${Array.from({length: maxLen + 1}, (_, i) => {
+              const isLong = i % 5 === 0;
+              return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;position:relative;height:100%;">
+                <div style="width:${isLong?'2.5px':'1.5px'};height:${isLong?'48px':'24px'};background:${isLong?'#0F172A':'#0284C7'};margin-top:0;"></div>
+                ${i === q.len ? `<div style="position:absolute;top:-28px;width:0;height:0;border-left:14px solid transparent;border-right:14px solid transparent;border-top:24px solid #EF4444;filter:drop-shadow(0 3px 6px rgba(0,0,0,0.25));z-index:10;"></div>` : ''}
+              </div>`;
+            }).join('')}
+            <div style="position:absolute;right:14px;bottom:12px;font-size:20px;font-weight:900;color:#0369A1;">cm</div>
+          </div>
+          <!-- 巨型数字标号：0到20每个刻度数字清清楚楚 -->
+          <div style="display:flex;justify-content:space-between;margin-top:12px;padding:0 2px;">
+            ${Array.from({length: maxLen + 1}, (_, i) => `<span style="font-size:${i%5===0?'20px':'14px'};font-weight:${i%5===0?'900':'700'};color:${i%5===0?'#0F172A':'#475569'};flex:1;text-align:center;">${i}</span>`).join('')}
+          </div>
+        </div>
+        <!-- 巨型测量物体展示 -->
+        <div style="display:flex;flex-direction:column;align-items:center;gap:12px;margin-top:12px;">
+          <div style="font-size:96px;filter:drop-shadow(0 8px 16px rgba(0,0,0,0.12));">${q.obj}</div>
+          <div style="font-size:24px;font-weight:900;color:#1E293B;">${q.name}有多长？</div>
+        </div>
+      </div>
+    `;
+
+    lengthOptions.innerHTML = '';
+    const shuffledOpts = [...q.opts];
+    for (let i = shuffledOpts.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffledOpts[i], shuffledOpts[j]] = [shuffledOpts[j], shuffledOpts[i]];
+    }
+    shuffledOpts.forEach(opt => {
+      const div = document.createElement('div');
+      div.className = 'length-option';
+      div.textContent = `${opt} ${q.unit}`;
+      div.onclick = () => {
+        if (state.lengthAnswer === null) return;
+        if (div.classList.contains('selected')) return;
+        if (opt === state.lengthAnswer) {
+          div.classList.add('selected');
+          addStar(1);
+          showFeedback('🎉', '答对了！', 1200);
+          state.lengthAnswer = null;
+          scheduleAdvance(nextLengthQuestion, 1500);
+        } else {
+          div.classList.add('wrong');
+          showFeedback('🤔', '再看看哦', 800);
+          setTimeout(() => div.classList.remove('wrong'), 500);
+        }
+      };
+      lengthOptions.appendChild(div);
+    });
+  }
+
+  /* ========== 轻重模式 (选哪个更重) ========== */
+
+  const WEIGHT_QUESTIONS = [
+    { a: { emoji: '🍉', label: '西瓜' }, b: { emoji: '🍓', label: '草莓' }, answer: 'a', q: '谁更重？', tilt: -15 },
+    { a: { emoji: '🪶', label: '羽毛' }, b: { emoji: '🧱', label: '砖头' }, answer: 'b', q: '谁更重？', tilt: 15 },
+    { a: { emoji: '🎾', label: '网球' }, b: { emoji: '🏀', label: '篮球' }, answer: 'b', q: '谁更重？', tilt: 10 },
+    { a: { emoji: '📚', label: '书' }, b: { emoji: '📄', label: '纸' }, answer: 'a', q: '谁更重？', tilt: -12 },
+    { a: { emoji: '🎈', label: '气球' }, b: { emoji: '🪨', label: '石头' }, answer: 'b', q: '谁更重？', tilt: 18 },
+    { a: { emoji: '🍎', label: '苹果' }, b: { emoji: '🍇', label: '葡萄' }, answer: 'a', q: '谁更重？', tilt: -8 },
+    { a: { emoji: '🥔', label: '土豆' }, b: { emoji: '🥔', label: '土豆' }, answer: 'same', q: '谁更重？', tilt: 0 },
+    { a: { emoji: '🧸', label: '玩具熊' }, b: { emoji: '📱', label: '手机' }, answer: 'a', q: '谁更重？', tilt: -10 },
+  ];
+
+  function initWeight() {
+    state.weightRound = 0;
+    bottomActions.style.display = 'none';
+    nextWeightQuestion();
+  }
+
+  function nextWeightQuestion() {
+    if (state.weightRound >= 5) {
+      showFeedback('🎊', '轻重小达人！', 2000);
+      showConfetti();
+      addStar(5);
+      showBottomAction('🔄 再玩一次', () => {
+        state.weightRound = 0;
+        nextWeightQuestion();
+      });
+      return;
+    }
+    const q = WEIGHT_QUESTIONS[state.weightRound % WEIGHT_QUESTIONS.length];
+
+    showQuestion('⚖️', `第${state.weightRound + 1}题：${q.a.label} 和 ${q.b.label}，${q.q}`, q.q);
+
+    // 渲染跷跷板天平
+    scaleDisplay.innerHTML = `
+      <div class="balance-scale-wrapper">
+        <div class="balance-scale-stage">
+          <div class="balance-scale-beam" style="transform:rotate(${q.tilt}deg);">
+            <div class="balance-scale-pan-left">
+              <div class="balance-scale-ropes">
+                <div class="balance-scale-rope-left"></div>
+                <div class="balance-scale-rope-right"></div>
+              </div>
+              <div class="balance-scale-items">
+                <span style="font-size:48px;">${q.a.emoji}</span>
+              </div>
+              <div class="balance-scale-plate"></div>
+            </div>
+            <div class="balance-scale-pan-right">
+              <div class="balance-scale-ropes">
+                <div class="balance-scale-rope-left"></div>
+                <div class="balance-scale-rope-right"></div>
+              </div>
+              <div class="balance-scale-items">
+                <span style="font-size:48px;">${q.b.emoji}</span>
+              </div>
+              <div class="balance-scale-plate"></div>
+            </div>
+          </div>
+          <div class="balance-scale-pillar"></div>
+        </div>
+        <div class="balance-scale-base"></div>
+      </div>
+    `;
+
+    // 渲染三个选项按钮
+    const options = [
+      { key: 'a', text: `${q.a.emoji} ${q.a.label} 更重` },
+      { key: 'b', text: `${q.b.emoji} ${q.b.label} 更重` },
+      { key: 'same', text: '⚖️ 一样重' },
+    ];
+    // 随机打乱选项顺序
+    for (let i = options.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [options[i], options[j]] = [options[j], options[i]];
+    }
+
+    weightOptions.innerHTML = `<div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:12px;"></div>`;
+    const row = weightOptions.firstElementChild;
+    options.forEach(opt => {
+      const btn = document.createElement('div');
+      btn.className = 'weight-option';
+      btn.textContent = opt.text;
+      btn.onclick = () => {
+        if (btn.classList.contains('selected') || btn.classList.contains('wrong')) return;
+        if (opt.key === q.answer) {
+          btn.classList.add('selected');
+          addStar(1);
+          showFeedback('🎉', '答对了！', 1200);
+          state.weightRound++;
+          scheduleAdvance(nextWeightQuestion, 1500);
+        } else {
+          btn.classList.add('wrong');
+          showFeedback('🤔', '再想想哦', 800);
+          setTimeout(() => btn.classList.remove('wrong'), 500);
+        }
+      };
+      row.appendChild(btn);
+    });
+  }
+
+  
+  /* ====================================================
+     日历模式
+     ==================================================== */
+  // 假定当月 1 号是周三（索引 3），共 31 天
+  const CALENDAR_QUESTIONS = [
+    { q: "今天是 12 号，明天是几号？请圈出来。", today: 12, target: 13 },
+    { q: "今天是 5 号，大后天是几号？", today: 5, target: 8 },
+    { q: "今天是 18 号，上个星期五是几号？", today: 18, target: 10 },
+    { q: "今天是 25 号，昨天是几号？", today: 25, target: 24 },
+    { q: "这周四是几号？请把它圈出来。", today: 2, target: 2 } // 1号周三，2号周四
+  ];
+
+  function initCalendar() {
+    calendarArea.style.display = 'flex';
+    state.calendarRound = 0;
+    bottomActions.style.display = 'flex';
+    actionBtn.textContent = '🎯 开始时间挑战';
+    actionBtn.className = 'btn btn-purple btn-lg';
+    actionBtn.onclick = nextCalendarQuestion;
+    
+    // 初始化一份默认日历用于展示
+    renderMonth(null); 
+    showQuestion('🗓️', '认识日历：跟着问题圈出正确的日期吧！');
+  }
+
+  function renderMonth(todayHighlight) {
+    let html = '';
+    // 3 empty slots for offset (Su, Mo, Tu) -> 1st is Wed
+    for(let i=0; i<3; i++) {
+        html += '<div class="cal-day empty"></div>';
+    }
+    // 31 days
+    for(let i=1; i<=31; i++) {
+      let extClass = '';
+      if (i === todayHighlight) extClass = 'today';
+      html += `<div class="cal-day ${extClass}" data-day="${i}">${i}</div>`;
+    }
+    calendarGrid.innerHTML = html;
+  }
+
+  function nextCalendarQuestion() {
+    if (state.calendarRound >= 5) {
+      showFeedback('🎊', '日历小达人！', 2000);
+      showConfetti();
+      addStar(5);
+      showBottomAction('🔄 再玩一次', () => {
+        state.calendarRound = 0;
+        nextCalendarQuestion();
+      });
+      return;
+    }
+    bottomActions.style.display = 'none';
+    const q = CALENDAR_QUESTIONS[state.calendarRound];
+    
+    showQuestion('🗓️', `第${state.calendarRound + 1}关：${q.q}`, q.q);
+    renderMonth(q.today);
+    
+    const days = calendarGrid.querySelectorAll('.cal-day:not(.empty)');
+    days.forEach(day => {
+      day.onclick = () => {
+        if (day.classList.contains('selected')) return;
+        const d = parseInt(day.dataset.day);
+        if (d === q.target) {
+          day.classList.add('selected');
+          speak('找对啦！');
+          setTimeout(() => {
+            showFeedback('🎉', '圈的非常准！', 1500);
+            state.calendarRound++;
+            addStar(2);
+            scheduleAdvance(nextCalendarQuestion, 2000);
+          }, 500);
+        } else {
+          day.classList.add('wrong');
+          speak('再数一数');
+          setTimeout(() => day.classList.remove('wrong'), 500);
+        }
+      };
+    });
+  }
+
+  function updateCalendarHelper(title, text) {
+    const titleEl = document.getElementById('calendarHelperTitle');
+    const textEl = document.getElementById('calendarHelperText');
+    if (titleEl) titleEl.textContent = title;
+    if (textEl) textEl.textContent = text;
+  }
+
+  function addWeightItem(question) {
+    state.rightItems += 1;
+    speak(`右边放了${state.rightItems}个`);
+    renderBalanceScale(question);
+  }
+
+  function removeWeightItem(question) {
+    if (state.rightItems <= 0) return;
+    state.rightItems -= 1;
+    speak('拿走一个');
+    renderBalanceScale(question);
+  }
+
+  function bindWeightTray(question) {
+    const dropzone = document.getElementById('rightPanItems');
+    if (dropzone) {
+      dropzone.addEventListener('dragover', (event) => {
+        event.preventDefault();
+      });
+      dropzone.addEventListener('drop', (event) => {
+        event.preventDefault();
+        addWeightItem(question);
+      });
+    }
+
+    $$('.weight-tray-item').forEach((item) => {
+      item.addEventListener('dragstart', (event) => {
+        event.dataTransfer?.setData('text/plain', question.rightIcon);
+      });
+      item.addEventListener('click', () => addWeightItem(question));
+    });
+
+    $$('.weight-pan-item').forEach((item) => {
+      item.addEventListener('click', () => removeWeightItem(question));
+    });
+  }
+
+  if (typeof module !== 'undefined' && module.exports) {
+    module.exports = {
+      CALENDAR_MONTH_INFO,
+      buildWeightChoiceOptions,
+      createWeightTrayItems,
+      getCalendarMonthCells,
+      getComparePracticeTypes,
+    };
+  }
+
+  switchMode();
+
+})();

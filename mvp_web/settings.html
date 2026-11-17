@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+  <title>家长设置</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Quicksand:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/design-system.css?v=20260827_soft_pastel_wash_colored_3d_bases">
+  <style>
+    .settings-container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .setting-item {
+      background: #F8FAFC;
+      border: 2px solid #E2E8F0;
+      box-shadow: 0 5px 0 #CBD5E1;
+      border-radius: 24px;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+    .setting-label {
+      font-size: 20px;
+      font-weight: 800;
+      color: #1E293B;
+      margin-bottom: 16px;
+    }
+    .duration-options {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    .duration-btn {
+      padding: 16px;
+      font-size: 16px;
+      font-weight: 700;
+      background: #FFFFFF;
+      border: 2px solid #E2E8F0;
+      box-shadow: 0 4px 0 #CBD5E1;
+      border-radius: 18px;
+      cursor: pointer;
+      color: #1E293B;
+      transition: transform 0.1s ease, box-shadow 0.1s ease;
+    }
+    .duration-btn.active {
+      background: #F0F8FF !important;
+      border-color: #B3E5FC !important;
+      box-shadow: 0 4px 0 #81D4FA !important;
+      color: #0369A1 !important;
+    }
+    .duration-btn:active {
+      transform: translateY(4px);
+      box-shadow: 0 0 0 #CBD5E1;
+    }
+  </style>
+</head>
+<body>
+  <!-- 护眼背景装饰 -->
+  <div class="bg-decoration">
+    <div class="cloud cloud-1"></div>
+    <div class="cloud cloud-2"></div>
+    <div class="cloud cloud-3"></div>
+  </div>
+
+  <div id="app">
+    <div class="topbar">
+      <div class="topbar-left">
+        <a href="index.html" class="back-btn" aria-label="返回首页"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg></a>
+        <span class="topbar-title">家长设置</span>
+      </div>
+    </div>
+
+    <div class="settings-container">
+      <div class="setting-item">
+        <div class="setting-label">⏰ 学习时长控制</div>
+        <div class="duration-options">
+          <button class="duration-btn" data-duration="0">不限制</button>
+          <button class="duration-btn" data-duration="10">10分钟</button>
+          <button class="duration-btn" data-duration="15">15分钟</button>
+          <button class="duration-btn" data-duration="20">20分钟</button>
+          <button class="duration-btn" data-duration="30">30分钟</button>
+          <button class="duration-btn" data-duration="60">60分钟</button>
+        </div>
+        <div style="margin-top:12px;font-size:14px;color:var(--gray-400);">
+          超过设定时长后需要家长验证才能继续使用
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/timer.js"></script>
+  <script>
+    // 进入家长设置前先验证，先隐藏页面内容
+    document.getElementById('app').style.visibility = 'hidden';
+
+    ParentalControl.requireVerification(() => {
+      // 验证通过，显示页面内容并初始化设置
+      document.getElementById('app').style.visibility = 'visible';
+
+      const buttons = document.querySelectorAll('.duration-btn');
+      const settings = ParentalControl.getSettings();
+
+      // 显示当前设置
+      buttons.forEach(btn => {
+        if (parseInt(btn.dataset.duration) === settings.duration) {
+          btn.classList.add('active');
+        }
+      });
+
+      // 点击设置
+      buttons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const duration = parseInt(btn.dataset.duration);
+          localStorage.setItem('parentalSettings', JSON.stringify({ duration }));
+          ParentalControl.resetTimer();
+
+          buttons.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+
+          alert('✅ 设置已保存');
+        });
+      });
+    });
+
+    // 监听弹窗关闭（点取消）：若未通过验证则返回首页
+    const _cancelObserver = new MutationObserver(() => {
+      if (!document.getElementById('verifyModal') &&
+          document.getElementById('app').style.visibility === 'hidden') {
+        window.location.href = 'index.html';
+      }
+    });
+    _cancelObserver.observe(document.body, { childList: true });
+  </script>
+</body>
+</html>

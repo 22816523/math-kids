@@ -1,0 +1,154 @@
+/* ============================================
+   数学启蒙 · 乘除法启蒙 CSS
+   包含点阵矩阵、平均分、余数盘面
+   ============================================ */
+
+.multiplication-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  max-width: 820px;
+  margin: 0 auto;
+}
+
+/* 乘法画布区 */
+.mult-stage {
+  width: 100%;
+  max-width: 720px;
+  min-height: 280px;
+  background: linear-gradient(180deg, #F5F3FF 0%, #EDE9FE 100%);
+  border: 3px solid #C4B5FD;
+  border-radius: 28px;
+  box-shadow: 0 6px 0 #A78BFA, 0 12px 24px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+/* 点阵矩阵容器 */
+.matrix-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+  justify-content: center;
+}
+
+.matrix-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 6px 14px;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 16px;
+  border: 2px dashed #C4B5FD;
+}
+
+.matrix-dot {
+  font-size: 38px;
+  line-height: 1;
+  animation: bounceIn 0.4s ease;
+}
+
+/* 平均分 / 余数 容器 */
+.share-container {
+  display: flex;
+  gap: 32px;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.share-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  background: #FFFFFF;
+  border: 3px solid #DDD6FE;
+  border-radius: 24px;
+  padding: 16px;
+  min-width: 140px;
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.08);
+}
+
+.share-avatar {
+  font-size: 44px;
+}
+
+.share-items-box {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+  min-height: 48px;
+}
+
+/* 余数剩余区 */
+.remainder-box {
+  margin-top: 16px;
+  padding: 12px 24px;
+  background: #FEF2F2;
+  border: 2px dashed #FCA5A5;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 18px;
+  font-weight: 800;
+  color: #991B1B;
+}
+
+/* 选项按钮 */
+.mult-options {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  width: 100%;
+  margin-top: 8px;
+}
+
+.mult-opt-btn {
+  background: #FFFFFF !important;
+  border: 2px solid #E2E8F0 !important;
+  box-shadow: 0 4px 0 #CBD5E1 !important;
+  border-radius: 20px !important;
+  padding: 14px 32px !important;
+  font-size: 24px !important;
+  font-weight: 900 !important;
+  color: #1E293B !important;
+  cursor: pointer !important;
+  transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.15s ease !important;
+}
+
+.mult-opt-btn:hover {
+  background: #F8FAFC !important;
+  border-color: #CBD5E1 !important;
+}
+
+.mult-opt-btn:active {
+  transform: translateY(4px) !important;
+  box-shadow: 0 0 0 #CBD5E1 !important;
+}
+
+.mult-opt-btn.correct {
+  background: #DCFCE7 !important;
+  border-color: #22C55E !important;
+  color: #15803D !important;
+  box-shadow: 0 4px 0 #16A34A !important;
+}
+
+.mult-opt-btn.wrong {
+  background: #FEE2E2 !important;
+  border-color: #EF4444 !important;
+  color: #B91C1C !important;
+  box-shadow: 0 4px 0 #DC2626 !important;
+}
