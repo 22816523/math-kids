@@ -553,132 +553,149 @@
 }
 
 /* ============================================
-   100以内加减法 · 方块积木 (Cube Blocks) 规范系统
+   100以内加减法 · 小木棒 (Math Sticks) 规范系统
    ============================================ */
 
-/* 单颗方块积木 */
-.cube-unit {
-  width: 18px;
-  height: 18px;
-  box-sizing: border-box;
-  border-radius: 4px;
+/* 整捆小木棒 (十位：10根扎成一捆，系红绳，高74px，宽26px) */
+.stick-bundle {
+  width: 26px;
+  height: 74px;
   position: relative;
+  background: repeating-linear-gradient(
+    90deg,
+    #EAD7BD 0px,
+    #EAD7BD 4px,
+    #D2B48C 5px,
+    #F3E6D5 6px
+  );
+  border: 1.5px solid #A8865C;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
+  flex-shrink: 0;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
-  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.05);
-  flex-shrink: 0;
+  transition: all 0.25s ease;
 }
 
-/* 积木中心圆形微凸卡扣，带来温润拼插质感 */
-.cube-unit::after {
-  content: '';
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: currentColor;
-  opacity: 0.35;
-  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.15), 0 1px 1px rgba(255, 255, 255, 0.6);
-}
-
-/* 1. 原木温和色 (用于原本的十位和个位) */
-.cube-wood {
-  background: linear-gradient(180deg, #FBF6EE 0%, #EFE1CF 100%);
-  border: 1.5px solid #CFB698;
-  color: #B29B7E;
-}
-
-/* 2. 借来的 / 满十合体专属金黄色 (一目了然区分借入与合体) */
-.cube-borrow,
-.cube-gold {
-  background: linear-gradient(180deg, #FFF5CC 0%, #FEE88B 100%);
-  border: 1.5px solid #E5B838;
-  color: #C69417;
-}
-
-/* 3. 被划掉/减去的散块 */
-.cube-crossed {
-  background: #FCEAE8;
-  border: 1.5px dashed #E59F9C;
-  opacity: 0.45;
-  color: #D66863;
-  transform: scale(0.92);
-}
-.cube-crossed::before {
-  content: '✕';
+/* 整捆中间系着的红色丝带 / 扎绳 */
+.stick-bundle::after {
+  content: '10';
   position: absolute;
-  font-size: 13px;
+  top: 50%;
+  left: -2px;
+  right: -2px;
+  height: 15px;
+  transform: translateY(-50%);
+  background: linear-gradient(180deg, #F87171 0%, #EF4444 100%);
+  border: 1px solid #DC2626;
+  border-radius: 3px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+  color: #FFFFFF;
+  font-size: 10px;
   font-weight: 900;
-  color: #D66863;
-  z-index: 2;
-}
-
-/* 十积木框架 (2列 x 5行，宽 42px，高 102px，紧凑不占高) */
-.cube-ten-frame {
-  display: grid;
-  grid-template-columns: repeat(2, 18px);
-  grid-template-rows: repeat(5, 18px);
-  gap: 2px;
-  padding: 3px;
-  background: rgba(246, 239, 229, 0.65);
-  border: 2px solid #D4C0A6;
-  border-radius: 8px;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.04);
-  position: relative;
-  transition: all 0.3s ease;
-  flex-shrink: 0;
-}
-
-.cube-ten-frame.cube-ten-borrow {
-  background: rgba(254, 243, 199, 0.65);
-  border-color: #E5B838;
-}
-
-.cube-ten-frame.dashed {
-  border: 2px dashed #CBD5E1;
-  background: rgba(241, 245, 249, 0.45);
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 42px;
-  height: 102px;
-  box-sizing: border-box;
-}
-.cube-ten-frame.dashed::after {
-  content: '借出';
-  font-size: 11px;
-  font-weight: 800;
-  color: #94A3B8;
+  letter-spacing: -0.5px;
 }
 
-/* ---------- 练习界面积木舞台 ---------- */
+/* 借出虚线占位符 */
+.stick-bundle.dashed {
+  background: rgba(241, 245, 249, 0.45);
+  border: 1.5px dashed #CBD5E1;
+  box-shadow: none;
+}
+.stick-bundle.dashed::after {
+  background: transparent;
+  border: 1px dashed #CBD5E1;
+  color: #94A3B8;
+  content: '借出';
+  font-size: 9px;
+  font-weight: 800;
+}
+
+/* 满十进一新合体捆 (金麦色木质 + 琥珀金扎带) */
+.stick-bundle.bundle-gold {
+  background: repeating-linear-gradient(
+    90deg,
+    #FDE68A 0px,
+    #FDE68A 4px,
+    #F59E0B 5px,
+    #FEF3C7 6px
+  );
+  border-color: #D97706;
+}
+.stick-bundle.bundle-gold::after {
+  background: linear-gradient(180deg, #F59E0B 0%, #D97706 100%);
+  border-color: #B45309;
+  content: '新10';
+  font-size: 9px;
+}
+
+/* 单根散木棒 (个位：与整捆等高74px，宽6px，极简轻巧) */
+.stick-single {
+  width: 6px;
+  height: 74px;
+  background: linear-gradient(90deg, #F9EDE0 0%, #ECD8BE 50%, #DCBE9B 100%);
+  border: 1px solid #BCA07B;
+  border-radius: 3px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  flex-shrink: 0;
+  position: relative;
+  transition: all 0.25s ease;
+}
+
+/* 借来解散的黄色散木棒 (一眼区分借来的散棒) */
+.stick-single.stick-gold {
+  background: linear-gradient(90deg, #FFF3CC 0%, #FDE68A 50%, #F59E0B 100%);
+  border-color: #D97706;
+}
+
+/* 被扣减/划掉的散木棒 */
+.stick-single.crossed {
+  opacity: 0.3;
+  filter: grayscale(80%);
+  transform: scale(0.92);
+}
+.stick-single.crossed::before {
+  content: '✕';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #EF4444;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+/* ---------- 练习界面小棒舞台 (高度严格锁定，杜绝遮挡) ---------- */
 .level3-practice-stage {
   display: flex;
-  gap: 16px;
+  gap: 12px;
   align-items: stretch;
   justify-content: center;
   width: 100%;
-  max-width: 620px;
+  max-width: 580px;
   margin: 0 auto;
 }
 
 .practice-col {
   flex: 1;
-  min-width: 160px;
+  min-width: 130px;
   background: #FFFFFF;
   border: 2px solid #E8E2D8;
   border-radius: 16px;
-  padding: 10px 14px;
+  padding: 8px 10px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.03);
+  gap: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
 }
 
 .practice-col-title {
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 800;
   color: #4A5568;
   display: flex;
@@ -688,34 +705,38 @@
 
 .practice-blocks-wrap {
   display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
+  flex-wrap: nowrap;
+  gap: 5px;
   justify-content: center;
   align-items: center;
-  min-height: 106px;
+  min-height: 78px;
+  height: 78px;
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
 }
 
-/* 加法普通练习分行展示 */
+/* 加法普通练习展示行 */
 .practice-add-wrap {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
   width: 100%;
 }
 .practice-add-row {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   background: #FAFAF7;
-  padding: 6px 12px;
+  padding: 6px 10px;
   border-radius: 12px;
   border: 1.5px solid #EBE5DB;
 }
 .practice-add-num {
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 800;
   color: var(--blue-dark);
-  min-width: 36px;
+  min-width: 32px;
 }
 
 /* ---------- 演示专用卡片与舞台 (严格控制高度防重叠) ---------- */
@@ -723,9 +744,9 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   width: 100%;
-  max-width: 660px;
+  max-width: 640px;
   margin: 0 auto;
   box-sizing: border-box;
 }
@@ -739,7 +760,7 @@
 }
 
 .demo-step-pill {
-  padding: 4px 10px;
+  padding: 3px 9px;
   border-radius: 12px;
   font-size: 12px;
   font-weight: 800;
@@ -755,20 +776,20 @@
   border-color: #93C5FD;
 }
 
-/* 演示主舞台容器 */
+/* 演示主舞台容器 (高度严格控制在 96px 左右) */
 .demo-stage {
   display: flex;
-  gap: 14px;
+  gap: 12px;
   align-items: stretch;
   justify-content: center;
   width: 100%;
   background: #FFFFFF;
   border: 2px solid #E8E2D8;
   border-radius: 16px;
-  padding: 10px 14px;
-  min-height: 140px;
+  padding: 8px 12px;
+  min-height: 96px;
   box-sizing: border-box;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.03);
 }
 
 /* 左右分栏 */
@@ -777,11 +798,11 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
 }
 
 .demo-col-badge {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 800;
   color: #475569;
   padding: 2px 8px;
@@ -792,22 +813,25 @@
 
 .demo-col-blocks {
   display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
+  flex-wrap: nowrap;
+  gap: 5px;
   justify-content: center;
   align-items: center;
   width: 100%;
-  min-height: 106px;
+  min-height: 78px;
+  height: 78px;
+  overflow-x: auto;
+  overflow-y: hidden;
 }
 
 /* 个位拆借 / 汇合专用托盘 */
 .tray-box {
   border-radius: 10px;
-  padding: 6px 8px;
+  padding: 4px 8px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+  gap: 2px;
   width: 100%;
   box-sizing: border-box;
 }
@@ -836,10 +860,12 @@
 
 .tray-units {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 4px;
   justify-content: center;
   align-items: center;
+  min-height: 76px;
+  height: 76px;
 }
 
 /* 提示解说横幅卡片 */
@@ -848,7 +874,7 @@
   background: #F8FAFC;
   border: 1.5px solid #E2E8F0;
   border-radius: 12px;
-  padding: 8px 12px;
+  padding: 6px 12px;
   font-size: 13px;
   font-weight: 700;
   color: #334155;
@@ -862,13 +888,13 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   width: 100%;
-  padding: 10px 0;
+  padding: 8px 0;
 }
 
 .demo-result-formula {
-  font-size: 32px;
+  font-size: 30px;
   font-weight: 900;
   color: var(--blue-dark);
 }
@@ -879,9 +905,9 @@
   background: #F8FAFC;
   border: 1.5px solid #E2E8F0;
   border-radius: 12px;
-  padding: 8px 16px;
+  padding: 8px 14px;
   font-size: 13px;
-  line-height: 1.6;
+  line-height: 1.5;
   color: #334155;
   box-sizing: border-box;
   text-align: left;
@@ -894,7 +920,7 @@
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
-  margin-top: 10px;
+  margin-top: 8px;
 }
 
 /* 大号色彩“📺 看演示”按钮 */

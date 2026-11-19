@@ -261,57 +261,179 @@
   function getNumberTraceLayout(num, options = {}) {
     const canvasWidth = options.canvasWidth ?? 300;
     const canvasHeight = options.canvasHeight ?? 360;
-    const paddingX = options.paddingX ?? 22;
-    const paddingY = options.paddingY ?? 24;
     const digits = String(num).split('');
-    const contentWidth = canvasWidth - paddingX * 2;
-    const slotWidth = contentWidth / digits.length;
-    const slotPadding = Math.min(12, slotWidth * 0.08);
-    const cellTop = paddingY;
-    const cellHeight = canvasHeight - paddingY * 2;
-    const maxDigitWidth = digits.reduce((maxWidth, digit) => Math.max(maxWidth, DIGIT_SKELETONS[digit].width), 0);
-    const scaleX = (slotWidth - slotPadding * 2) / maxDigitWidth;
-    const scaleY = (cellHeight - 22) / DIGIT_HEIGHT;
-    const scale = Math.min(scaleX, scaleY);
-    const totalHeight = DIGIT_HEIGHT * scale;
-    const startY = cellTop + (cellHeight - totalHeight) / 2;
 
-    const glyphs = [];
-    digits.forEach((digit, index) => {
-      const skeleton = DIGIT_SKELETONS[digit];
+    if (digits.length === 1) {
+      // 一位数：人教版标准单个田字格，数字占【右半格】（日字格）
+      const gridSize = Math.min(260, canvasWidth - 40, canvasHeight - 60);
+      const gridLeft = (canvasWidth - gridSize) / 2;
+      const gridTop = (canvasHeight - gridSize) / 2;
+      const midX = gridLeft + gridSize / 2;
+      const midY = gridTop + gridSize / 2;
+
+      const slotX = midX;
+      const slotWidth = gridSize / 2;
+      const cellTop = gridTop;
+      const cellHeight = gridSize;
+
+      const skeleton = DIGIT_SKELETONS[digits[0]];
+      const scaleX = (slotWidth - 28) / skeleton.width;
+      const scaleY = (gridSize - 44) / DIGIT_HEIGHT;
+      const scale = Math.min(scaleX, scaleY);
+
       const width = skeleton.width * scale;
-      const slotX = paddingX + slotWidth * index;
+      const height = DIGIT_HEIGHT * scale;
       const x = slotX + (slotWidth - width) / 2;
-      glyphs.push({
-        digit,
-        index,
+      const y = gridTop + (gridSize - height) / 2;
+
+      const glyph = {
+        digit: digits[0],
+        index: 0,
         x,
-        y: startY,
+        y,
         scale,
         width,
-        height: DIGIT_HEIGHT * scale,
+        height,
         slotX,
         slotWidth,
         cellTop,
         cellHeight,
         skeleton,
+      };
+
+      return {
+        glyphs: [glyph],
+        scale,
+        totalWidth: width,
+        totalHeight: height,
+        startX: x,
+        startY: y,
+        cellTop,
+        cellHeight,
+        grids: [
+          { left: gridLeft, top: gridTop, width: gridSize, height: gridSize, midX, midY }
+        ],
+        ruleText: '一位数写在田字格右半格',
+      };
+    } else if (digits.length === 2) {
+      // 两位数：人教版标准田字格，十位占【左半格】，个位占【右半格】
+      const gridSize = Math.min(260, canvasWidth - 40, canvasHeight - 60);
+      const gridLeft = (canvasWidth - gridSize) / 2;
+      const gridTop = (canvasHeight - gridSize) / 2;
+      const midX = gridLeft + gridSize / 2;
+      const midY = gridTop + gridSize / 2;
+
+      const halfWidth = gridSize / 2;
+      const cellTop = gridTop;
+      const cellHeight = gridSize;
+
+      const maxDigitWidth = Math.max(
+        DIGIT_SKELETONS[digits[0]].width,
+        DIGIT_SKELETONS[digits[1]].width
+      );
+      const scaleX = (halfWidth - 28) / maxDigitWidth;
+      const scaleY = (gridSize - 44) / DIGIT_HEIGHT;
+      const scale = Math.min(scaleX, scaleY);
+      const height = DIGIT_HEIGHT * scale;
+      const y = gridTop + (gridSize - height) / 2;
+
+      const glyphs = digits.map((digit, index) => {
+        const skeleton = DIGIT_SKELETONS[digit];
+        const width = skeleton.width * scale;
+        const slotX = index === 0 ? gridLeft : midX;
+        const x = slotX + (halfWidth - width) / 2;
+        return {
+          digit,
+          index,
+          x,
+          y,
+          scale,
+          width,
+          height,
+          slotX,
+          slotWidth: halfWidth,
+          cellTop,
+          cellHeight,
+          skeleton,
+        };
       });
-    });
 
-    const startX = glyphs[0]?.x ?? paddingX;
-    const endX = glyphs.length ? glyphs[glyphs.length - 1].x + glyphs[glyphs.length - 1].width : startX;
-    const totalWidth = endX - startX;
+      return {
+        glyphs,
+        scale,
+        totalWidth: glyphs[1].x + glyphs[1].width - glyphs[0].x,
+        totalHeight: height,
+        startX: glyphs[0].x,
+        startY: y,
+        cellTop,
+        cellHeight,
+        grids: [
+          { left: gridLeft, top: gridTop, width: gridSize, height: gridSize, midX, midY }
+        ],
+        ruleText: '十位在左半格，个位在右半格',
+      };
+    } else {
+      // 三位数 (100)：按三列辅格排列
+      const paddingX = options.paddingX ?? 18;
+      const paddingY = options.paddingY ?? 30;
+      const contentWidth = canvasWidth - paddingX * 2;
+      const slotWidth = contentWidth / digits.length;
+      const cellTop = paddingY;
+      const cellHeight = canvasHeight - paddingY * 2;
+      const maxDigitWidth = digits.reduce((m, d) => Math.max(m, DIGIT_SKELETONS[d].width), 0);
+      const scaleX = (slotWidth - 20) / maxDigitWidth;
+      const scaleY = (cellHeight - 40) / DIGIT_HEIGHT;
+      const scale = Math.min(scaleX, scaleY);
+      const totalHeight = DIGIT_HEIGHT * scale;
+      const startY = cellTop + (cellHeight - totalHeight) / 2;
 
-    return {
-      glyphs,
-      scale,
-      totalWidth,
-      totalHeight,
-      startX,
-      startY,
-      cellTop,
-      cellHeight,
-    };
+      const glyphs = digits.map((digit, index) => {
+        const skeleton = DIGIT_SKELETONS[digit];
+        const width = skeleton.width * scale;
+        const slotX = paddingX + slotWidth * index;
+        const x = slotX + (slotWidth - width) / 2;
+        return {
+          digit,
+          index,
+          x,
+          y: startY,
+          scale,
+          width,
+          height: totalHeight,
+          slotX,
+          slotWidth,
+          cellTop,
+          cellHeight,
+          skeleton,
+        };
+      });
+
+      const grids = [];
+      digits.forEach((d, idx) => {
+        const slotX = paddingX + slotWidth * idx;
+        grids.push({
+          left: slotX + 4,
+          top: cellTop,
+          width: slotWidth - 8,
+          height: cellHeight,
+          midX: slotX + slotWidth / 2,
+          midY: cellTop + cellHeight / 2,
+        });
+      });
+
+      return {
+        glyphs,
+        scale,
+        totalWidth: glyphs[glyphs.length - 1].x + glyphs[glyphs.length - 1].width - glyphs[0].x,
+        totalHeight,
+        startX: glyphs[0].x,
+        startY,
+        cellTop,
+        cellHeight,
+        grids,
+        ruleText: '百位在第一格，十位个位在后格',
+      };
+    }
   }
 
   function getTraceStrokeWidths(scale) {
@@ -536,27 +658,37 @@
 
     function drawPracticeCells(ctx, layout) {
       ctx.save();
-      ctx.strokeStyle = CELL_GUIDE_COLOR;
-      ctx.lineWidth = 2;
-      layout.glyphs.forEach((glyph) => {
-        const insetX = 6;
-        const left = glyph.slotX + insetX;
-        const right = glyph.slotX + glyph.slotWidth - insetX;
-        const top = glyph.cellTop;
-        const bottom = glyph.cellTop + glyph.cellHeight;
-        const midX = (left + right) / 2;
-        const midY = (top + bottom) / 2;
+      const grids = layout.grids || [];
 
+      grids.forEach((grid) => {
+        // 0. 田字格纯白微米衬底
+        ctx.fillStyle = '#FFFDF9';
+        ctx.fillRect(grid.left, grid.top, grid.width, grid.height);
+
+        // 1. 田字格外边框 (实线，小学经典朱砂水红色)
+        ctx.strokeStyle = '#E0827D';
+        ctx.lineWidth = 2.5;
+        ctx.setLineDash([]);
+        ctx.strokeRect(grid.left, grid.top, grid.width, grid.height);
+
+        // 2. 田字格十字中线 (虚线，柔和浅红)
+        ctx.strokeStyle = '#EAA4A0';
+        ctx.lineWidth = 1.5;
+        ctx.setLineDash([6, 5]);
+
+        // 竖中线
         ctx.beginPath();
-        ctx.moveTo(midX, top);
-        ctx.lineTo(midX, bottom);
+        ctx.moveTo(grid.midX, grid.top);
+        ctx.lineTo(grid.midX, grid.top + grid.height);
         ctx.stroke();
 
+        // 横中线
         ctx.beginPath();
-        ctx.moveTo(left, midY);
-        ctx.lineTo(right, midY);
+        ctx.moveTo(grid.left, grid.midY);
+        ctx.lineTo(grid.left + grid.width, grid.midY);
         ctx.stroke();
       });
+
       ctx.restore();
     }
 
@@ -567,6 +699,11 @@
       });
       state.currentLayout = layout;
       const strokeWidths = getTraceStrokeWidths(layout.scale);
+
+      const ruleTip = $('#traceRuleTip');
+      if (ruleTip && layout.ruleText) {
+        ruleTip.textContent = `📖 ${layout.ruleText}`;
+      }
 
       bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
       maskCtx.clearRect(0, 0, maskCanvas.width, maskCanvas.height);
