@@ -214,10 +214,12 @@
 .skip-controls {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
+  flex-wrap: wrap;
   width: 100%;
   max-width: 560px;
   gap: 8px;
+  margin-bottom: 4px;
 }
 
 .skip-steps {
@@ -225,11 +227,68 @@
   gap: 6px;
 }
 
+.skip-step-btn,
+.skip-direction-btn {
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 999px;
+  font-family: var(--font);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.1s ease;
+}
+
+.skip-step-btn {
+  background: rgba(255, 255, 255, 0.85);
+  border: 1.5px solid #CBD5E1;
+  color: #475569;
+}
+
+.skip-step-btn:hover {
+  background: #FFFFFF;
+  border-color: #94A3B8;
+}
+
 .skip-step-btn.active {
-  border-color: var(--green);
-  border-bottom-color: var(--green-dark);
-  color: var(--green);
-  background: var(--green-light);
+  background: #E6F7EE;
+  border-color: #6EE7B7;
+  color: #047857;
+  font-weight: 800;
+}
+
+.skip-direction-btn {
+  background: #EFF6FF;
+  border: 1.5px solid #BFDBFE;
+  color: #1D4ED8;
+  margin-left: 4px;
+}
+
+.skip-direction-btn:hover {
+  background: #DBEAFE;
+  border-color: #93C5FD;
+}
+
+.skip-step-btn:active,
+.skip-direction-btn:active {
+  transform: scale(0.96);
+}
+
+@media (max-width: 600px) {
+  .skip-controls {
+    gap: 6px;
+  }
+  .skip-step-btn,
+  .skip-direction-btn {
+    height: 30px;
+    padding: 0 10px;
+    font-size: 12px;
+  }
 }
 
 /* ---------- 数位认识卡片 ---------- */

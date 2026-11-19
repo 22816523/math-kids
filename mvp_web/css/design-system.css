@@ -87,7 +87,7 @@ html, body {
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  background: #FFFFFF;
+  background: #F2FAF5 url('../assets/math-inner-bg.jpg') center top / cover no-repeat;
   position: relative;
   overflow: hidden;
   box-shadow: 0 0 50px rgba(0, 0, 0, 0.15);

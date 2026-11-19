@@ -21,9 +21,13 @@
     blanks: [],
     // 跳数模式
     skipStep: 2,
+    patternType: 'step',   // 'step' | 'odd' | 'even'
     skipForward: true,
     skipQuizAnswer: null,
     skipQuizIndex: 0,
+    parityQuizRound: 0,
+    parityQuizTarget: null,
+    patternTimers: [],
     // 拆一拆练习
     placeTarget: null,
     placeScore: 0,
@@ -716,7 +720,18 @@
   // ====================================================
   //  模式4：找规律（等差数列填空）
   // ====================================================
+  function clearPatternTimers() {
+    if (state.patternTimers.length) {
+      state.patternTimers.forEach(id => clearTimeout(id));
+      state.patternTimers = [];
+    }
+  }
+
   function showPatternExplorePattern() {
+    clearPatternTimers();
+    state.practicing = false;
+    orderQuiz.style.display = 'none';
+    boardWrapper.style.display = '';
     // 清除之前状态
     $$('.cell').forEach(c => {
       c.classList.remove('skip-highlight', 'skip-animate', 'blank', 'filled', 'hidden-num');
@@ -725,9 +740,38 @@
     
     bubbleZone.style.display = 'none';
 
+    const allNumbers = [];
+    const dirText = state.skipForward ? '顺数' : '倒数';
+
+    if (state.patternType === 'odd' || state.patternType === 'even') {
+      const start = state.patternType === 'odd' ? 1 : 2;
+      if (state.skipForward) {
+        for (let i = start; i <= 100; i += 2) allNumbers.push(i);
+      } else {
+        for (let i = start === 1 ? 99 : 100; i >= 1; i -= 2) allNumbers.push(i);
+      }
+
+      allNumbers.forEach((num, idx) => {
+        const cell = getCellByNum(num);
+        if (cell) {
+          const timerId = setTimeout(() => {
+            cell.classList.add('skip-highlight', 'skip-animate');
+          }, idx * 45);
+          state.patternTimers.push(timerId);
+        }
+      });
+
+      if (state.patternType === 'odd') {
+        showQuestion('🚀', '单数（1、3、5、7、9 结尾）— 看竖列规律', '单数都是 1、3、5、7、9 结尾，竖着一列一列看看规律');
+      } else {
+        showQuestion('🚀', '双数（2、4、6、8、0 结尾）— 看竖列规律', '双数都是 2、4、6、8、0 结尾，竖着一列一列看看规律');
+      }
+      showBottomAction('🎯 开始练习', () => startPatternPractice());
+      return;
+    }
+
     const step = state.skipStep;
     // 全量序列
-    const allNumbers = [];
     if (state.skipForward) {
       for (let i = step; i <= 100; i += step) allNumbers.push(i);
     } else {
@@ -738,24 +782,99 @@
     visible.forEach((num, idx) => {
       const cell = getCellByNum(num);
       if (cell) {
-        setTimeout(() => {
+        const timerId = setTimeout(() => {
           cell.classList.add('skip-highlight', 'skip-animate');
         }, idx * 120);
+        state.patternTimers.push(timerId);
       }
     });
 
-    const dirText = state.skipForward ? '顺数' : '倒数';
     showQuestion('🚀', step + '个一数，' + dirText + ' — 看看规律', step + '个一数，' + dirText);
 
     showBottomAction('🎯 开始练习', () => startPatternPractice());
   }
 
   function startPatternPractice() {
+    clearPatternTimers();
     state.practicing = true;
-    state.skipQuizIndex = 0;
     bottomActions.style.display = 'none';
+
+    if (state.patternType === 'odd' || state.patternType === 'even') {
+      state.parityQuizRound = 0;
+      boardWrapper.style.display = 'none';
+      bubbleZone.style.display = 'none';
+      orderQuiz.style.display = 'flex';
+      nextParityQuestion();
+      return;
+    }
+
+    state.skipQuizIndex = 0;
     resetBoardCellsForPractice();
     nextPatternQuestion();
+  }
+
+  function pickRandomParityNumber(wantOdd) {
+    const base = Math.floor(Math.random() * 50) * 2;
+    return wantOdd ? base + 1 : base + 2;
+  }
+
+  function nextParityQuestion() {
+    if (state.parityQuizRound >= 5) {
+      orderQuiz.style.display = 'none';
+      boardWrapper.style.display = '';
+      showQuestion('🎉', '单双数练习完成！');
+      showCelebration();
+      showBottomAction('🔄 再练一轮', () => startPatternPractice());
+      return;
+    }
+
+    const wantOdd = state.parityQuizRound < 2
+      ? state.patternType === 'odd'
+      : Math.random() < 0.5;
+    const targetNum = pickRandomParityNumber(wantOdd);
+    state.parityQuizTarget = targetNum;
+
+    const options = [targetNum];
+    while (options.length < 4) {
+      const fake = pickRandomParityNumber(!wantOdd);
+      if (!options.includes(fake)) {
+        options.push(fake);
+      }
+    }
+    options.sort(() => Math.random() - 0.5);
+
+    orderOptions.innerHTML = '';
+    options.forEach((num, idx) => {
+      const card = document.createElement('div');
+      card.className = 'order-option';
+      card.textContent = num;
+      card.style.animationDelay = (idx * 0.05) + 's';
+      card.addEventListener('click', () => onParityCardClick(num, card, wantOdd));
+      orderOptions.appendChild(card);
+    });
+
+    const label = wantOdd ? '单数' : '双数';
+    orderHint.textContent = wantOdd
+      ? '小提示：单数的个位是 1、3、5、7、9'
+      : '小提示：双数的个位是 2、4、6、8、0';
+    orderProgress.textContent = (state.parityQuizRound + 1) + ' / 5';
+    showQuestion('🔎', '找出哪个是【' + label + '】？', '请找出哪个数字是' + label);
+  }
+
+  function onParityCardClick(num, card, wantOdd) {
+    if (state.parityQuizTarget === null) return;
+    if (num === state.parityQuizTarget) {
+      card.classList.add('order-correct');
+      showFeedback(true);
+      state.parityQuizTarget = null;
+      state.parityQuizRound++;
+      scheduleAdvance(() => nextParityQuestion(), 1400);
+    } else {
+      card.classList.add('order-wrong');
+      showFeedback(false);
+      setTimeout(() => card.classList.remove('order-wrong'), 400);
+      speak('再看看个位数字哦，要找' + (wantOdd ? '单数' : '双数'));
+    }
   }
 
   function nextPatternQuestion() {
@@ -956,6 +1075,7 @@
     state.placeTarget = null;
     clearTimeout(state._orderTimer);
     clearTimeout(state._advanceTimer);
+    clearPatternTimers();
 
     $$('.mode-tab').forEach(tab => {
       tab.classList.toggle('active', tab.dataset.mode === mode);
@@ -983,7 +1103,12 @@
       btn.addEventListener('click', () => {
         $$('.skip-step-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        state.skipStep = parseInt(btn.dataset.step);
+        if (btn.dataset.parity) {
+          state.patternType = btn.dataset.parity;
+        } else {
+          state.patternType = 'step';
+          state.skipStep = parseInt(btn.dataset.step);
+        }
         showPatternExplorePattern();
       });
     });

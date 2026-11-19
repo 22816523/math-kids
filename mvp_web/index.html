@@ -3,12 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-  <title>数学启蒙</title>
+  <title>好玩的数学</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Quicksand:wght@700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Quicksand:wght@700&family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/design-system.css?v=20260827_soft_pastel_wash_colored_3d_bases">
   <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
   <style>
+    #app {
+      background: #F2FAF5 url('assets/math-bg.jpg') center bottom / cover no-repeat;
+    }
     .home-header {
       position: relative;
       text-align: center;
@@ -39,16 +42,37 @@
       transform: scale(0.95);
     }
     .home-title {
-      font-size: 34px;
-      font-weight: 900;
-      color: #1E293B;
-      letter-spacing: -0.5px;
+      font-family: 'ZCOOL KuaiLe', 'YouYuan', 'PingFang SC', 'Nunito', sans-serif;
+      font-size: 44px;
+      font-weight: 400;
+      letter-spacing: 4px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      line-height: 1.2;
+      padding: 4px 0;
     }
-    .home-subtitle {
-      font-size: 14px;
-      color: #64748B;
-      margin-top: 4px;
-      font-weight: 500;
+    .title-char {
+      display: inline-block;
+      -webkit-text-stroke: 3px #FFFFFF;
+      paint-order: stroke fill;
+      filter: drop-shadow(0 3px 0 rgba(0, 0, 0, 0.1));
+      transition: transform 0.2s ease;
+    }
+    .title-char-1 { color: #34B368; transform: rotate(-4deg) translateY(1px); }
+    .title-char-2 { color: #38A3F1; transform: rotate(3deg) translateY(-2px); }
+    .title-char-3 { color: #F59E0B; transform: rotate(-3deg) translateY(1px); font-size: 36px; }
+    .title-char-4 { color: #EC6B7E; transform: rotate(3deg) translateY(-1px); }
+    .title-char-5 { color: #9B6BE8; transform: rotate(-3deg) translateY(1px); }
+    @media (max-width: 600px) {
+      .home-title {
+        font-size: 34px;
+        letter-spacing: 2px;
+      }
+      .title-char-3 {
+        font-size: 28px;
+      }
     }
     .module-grid {
       display: grid;
@@ -194,8 +218,13 @@
   <div id="app">
     <div class="home-header">
       <button class="settings-btn" onclick="openSettings()">⚙️</button>
-      <div class="home-title">趣味数学</div>
-      <div class="home-subtitle">3-8岁 · 玩中学数学</div>
+      <div class="home-title" aria-label="好玩的数学">
+        <span class="title-char title-char-1">好</span>
+        <span class="title-char title-char-2">玩</span>
+        <span class="title-char title-char-3">的</span>
+        <span class="title-char title-char-4">数</span>
+        <span class="title-char title-char-5">学</span>
+      </div>
     </div>
 
     <div class="module-grid">
