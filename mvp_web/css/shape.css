@@ -3,47 +3,52 @@
    三种模式：辨认 / 分类 / 找一找 / 拼一拼 / 听指令
    ============================================ */
 
-/* ---------- 子模式切换标签（平面图形 / 立体图形） ---------- */
+/* ---------- 二级切换标签（参考百数板“2个一数”轻量级胶囊样式，区分层级） ---------- */
 .shape-sub-tabs {
   display: flex;
   justify-content: center;
-  gap: 12px;
-  padding: 10px 16px 6px;
+  gap: 8px;
+  padding: 8px 16px 2px;
   background: transparent;
   flex-shrink: 0;
 }
 
 .shape-sub-tab {
+  height: 32px;
+  padding: 0 14px;
+  border-radius: 999px;
+  font-family: var(--font);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 8px 20px;
-  border-radius: 999px;
-  border: 2px solid #E2E8F0;
-  background: #FFFFFF;
-  color: #64748B;
-  font-size: 14px;
-  font-weight: 800;
+  justify-content: center;
+  gap: 4px;
   cursor: pointer;
+  background: rgba(255, 255, 255, 0.85);
+  border: 1.5px solid #CBD5E1;
+  color: #475569;
   transition: all 0.15s ease;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+  box-shadow: none;
 }
 
 .shape-sub-tab:hover {
-  border-color: #CBD5E1;
+  background: #FFFFFF;
+  border-color: #94A3B8;
 }
 
 .shape-sub-tab.active {
-  background: #7CE0C3;
-  border-color: #58D1B1;
-  color: #065F46;
-  box-shadow: 0 3px 0 #58D1B1, 0 4px 10px rgba(124, 224, 195, 0.35);
-  transform: translateY(-1px);
+  background: #E6F7EE;
+  border-color: #6EE7B7;
+  color: #047857;
+  font-weight: 800;
+  box-shadow: none;
+  transform: none;
 }
 
 .shape-sub-tab:active {
-  transform: translateY(1px);
-  box-shadow: 0 1px 0 #58D1B1;
+  transform: scale(0.96);
 }
 .shape-content {
   scrollbar-width: none;          /* Firefox */

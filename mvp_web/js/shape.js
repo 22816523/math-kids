@@ -51,7 +51,7 @@
     },
     parallelogram: {
       name: '平行四边形',
-      makeSvg: (c) => '<svg viewBox="0 0 100 100"><polygon points="22,18 94,18 78,82 6,82" stroke-linejoin="round" stroke-width="8" stroke="' + c + '" fill="' + c + '"/></svg>'
+      makeSvg: (c) => '<svg viewBox="0 0 100 100"><polygon points="28,26 94,26 72,74 6,74" stroke-linejoin="round" stroke-width="8" stroke="' + c + '" fill="' + c + '"/></svg>'
     },
     trapezoid: {
       name: '梯形',
@@ -59,7 +59,7 @@
     },
     diamond: {
       name: '菱形',
-      makeSvg: (c) => '<svg viewBox="0 0 100 100"><polygon points="50,6 94,50 50,94 6,50" stroke-linejoin="round" stroke-width="8" stroke="' + c + '" fill="' + c + '"/></svg>'
+      makeSvg: (c) => '<svg viewBox="0 0 100 100"><polygon points="50,8 82,50 50,92 18,50" stroke-linejoin="round" stroke-width="8" stroke="' + c + '" fill="' + c + '"/></svg>'
     },
     sector: {
       name: '扇形',
@@ -107,7 +107,11 @@
     },
     triangular_prism: {
       name: '三棱柱',
-      makeSvg: () => '<svg viewBox="0 0 100 100"><polygon points="50,12 88,32 22,32" fill="#FFE1C4"/><polygon points="22,32 50,12 50,72 22,88" fill="#ECA05F"/><polygon points="50,12 88,32 88,88 50,72" fill="#FFBE86"/></svg>'
+      makeSvg: () => '<svg viewBox="0 0 100 100">' +
+        '<polygon points="16,20 50,36 50,86 16,70" fill="#FFBE86"/>' +
+        '<polygon points="50,36 84,20 84,70 50,86" fill="#ECA05F"/>' +
+        '<polygon points="16,20 84,20 50,36" fill="#FFE1C4"/>' +
+        '</svg>'
     },
     square_pyramid: {
       name: '四棱锥',
