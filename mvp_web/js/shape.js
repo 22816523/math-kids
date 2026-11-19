@@ -31,91 +31,91 @@
     colorIndex = 0;
   }
 
-  // ========== 平面图形库（小学 1-6 年级 · 12种马卡龙纯净质感） ==========
+  // ========== 平面图形库（小学 1-6 年级 · 12种马卡龙纯净质感 · 放大丰满比例） ==========
   const PLANE_SHAPES = {
     square: {
       name: '正方形',
-      makeSvg: (c) => '<svg viewBox="0 0 100 100"><rect x="15" y="15" width="70" height="70" rx="10" fill="' + c + '"/></svg>'
+      makeSvg: (c) => '<svg viewBox="0 0 100 100"><rect x="10" y="10" width="80" height="80" rx="12" fill="' + c + '"/></svg>'
     },
     rectangle: {
       name: '长方形',
-      makeSvg: (c) => '<svg viewBox="0 0 100 100"><rect x="10" y="24" width="80" height="52" rx="10" fill="' + c + '"/></svg>'
+      makeSvg: (c) => '<svg viewBox="0 0 100 100"><rect x="6" y="20" width="88" height="60" rx="12" fill="' + c + '"/></svg>'
     },
     triangle: {
       name: '三角形',
-      makeSvg: (c) => '<svg viewBox="0 0 100 100"><polygon points="50,14 88,84 12,84" stroke-linejoin="round" stroke-width="8" stroke="' + c + '" fill="' + c + '"/></svg>'
+      makeSvg: (c) => '<svg viewBox="0 0 100 100"><polygon points="50,8 94,88 6,88" stroke-linejoin="round" stroke-width="8" stroke="' + c + '" fill="' + c + '"/></svg>'
     },
     circle: {
       name: '圆形',
-      makeSvg: (c) => '<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="38" fill="' + c + '"/></svg>'
+      makeSvg: (c) => '<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" fill="' + c + '"/></svg>'
     },
     parallelogram: {
       name: '平行四边形',
-      makeSvg: (c) => '<svg viewBox="0 0 100 100"><polygon points="26,24 88,24 74,76 12,76" stroke-linejoin="round" stroke-width="8" stroke="' + c + '" fill="' + c + '"/></svg>'
+      makeSvg: (c) => '<svg viewBox="0 0 100 100"><polygon points="22,18 94,18 78,82 6,82" stroke-linejoin="round" stroke-width="8" stroke="' + c + '" fill="' + c + '"/></svg>'
     },
     trapezoid: {
       name: '梯形',
-      makeSvg: (c) => '<svg viewBox="0 0 100 100"><polygon points="28,24 72,24 88,78 12,78" stroke-linejoin="round" stroke-width="8" stroke="' + c + '" fill="' + c + '"/></svg>'
+      makeSvg: (c) => '<svg viewBox="0 0 100 100"><polygon points="24,18 76,18 95,82 5,82" stroke-linejoin="round" stroke-width="8" stroke="' + c + '" fill="' + c + '"/></svg>'
     },
     diamond: {
       name: '菱形',
-      makeSvg: (c) => '<svg viewBox="0 0 100 100"><polygon points="50,12 88,50 50,88 12,50" stroke-linejoin="round" stroke-width="8" stroke="' + c + '" fill="' + c + '"/></svg>'
+      makeSvg: (c) => '<svg viewBox="0 0 100 100"><polygon points="50,6 94,50 50,94 6,50" stroke-linejoin="round" stroke-width="8" stroke="' + c + '" fill="' + c + '"/></svg>'
     },
     sector: {
       name: '扇形',
-      makeSvg: (c) => '<svg viewBox="0 0 100 100"><path d="M50,78 L20,30 A45,45 0 0,1 80,30 Z" stroke-linejoin="round" stroke-width="6" stroke="' + c + '" fill="' + c + '"/></svg>'
+      makeSvg: (c) => '<svg viewBox="0 0 100 100"><path d="M50,84 L14,24 A46,46 0 0,1 86,24 Z" stroke-linejoin="round" stroke-width="8" stroke="' + c + '" fill="' + c + '"/></svg>'
     },
     pentagon: {
       name: '五边形',
-      makeSvg: (c) => '<svg viewBox="0 0 100 100"><polygon points="50,14 88,42 74,84 26,84 12,42" stroke-linejoin="round" stroke-width="8" stroke="' + c + '" fill="' + c + '"/></svg>'
+      makeSvg: (c) => '<svg viewBox="0 0 100 100"><polygon points="50,8 95,38 78,88 22,88 5,38" stroke-linejoin="round" stroke-width="8" stroke="' + c + '" fill="' + c + '"/></svg>'
     },
     hexagon: {
       name: '六边形',
-      makeSvg: (c) => '<svg viewBox="0 0 100 100"><polygon points="25,18 75,18 92,50 75,82 25,82 8,50" stroke-linejoin="round" stroke-width="8" stroke="' + c + '" fill="' + c + '"/></svg>'
+      makeSvg: (c) => '<svg viewBox="0 0 100 100"><polygon points="25,12 75,12 95,50 75,88 25,88 5,50" stroke-linejoin="round" stroke-width="8" stroke="' + c + '" fill="' + c + '"/></svg>'
     },
     oval: {
       name: '椭圆形',
-      makeSvg: (c) => '<svg viewBox="0 0 100 100"><ellipse cx="50" cy="50" rx="42" ry="28" fill="' + c + '"/></svg>'
+      makeSvg: (c) => '<svg viewBox="0 0 100 100"><ellipse cx="50" cy="50" rx="46" ry="32" fill="' + c + '"/></svg>'
     },
     right_triangle: {
       name: '直角三角形',
-      makeSvg: (c) => '<svg viewBox="0 0 100 100"><polygon points="18,16 18,84 84,84" stroke-linejoin="round" stroke-width="8" stroke="' + c + '" fill="' + c + '"/></svg>'
+      makeSvg: (c) => '<svg viewBox="0 0 100 100"><polygon points="12,12 12,88 88,88" stroke-linejoin="round" stroke-width="8" stroke="' + c + '" fill="' + c + '"/></svg>'
     }
   };
 
-  // ========== 立体图形库（小学 1-6 年级 · 8种柔和透视拟真） ==========
+  // ========== 立体图形库（小学 1-6 年级 · 8种柔和透视拟真 · 放大丰满比例） ==========
   const SOLID_SHAPES = {
     cube: {
       name: '正方体',
-      makeSvg: () => '<svg viewBox="0 0 100 100"><polygon points="50,15 82,30 50,45 18,30" fill="#A7EDE0"/><polygon points="18,30 50,45 50,85 18,70" fill="#58D1B1"/><polygon points="50,45 82,30 82,70 50,85" fill="#7CE0C3"/></svg>'
+      makeSvg: () => '<svg viewBox="0 0 100 100"><polygon points="50,10 88,28 50,46 12,28" fill="#A7EDE0"/><polygon points="12,28 50,46 50,90 12,72" fill="#58D1B1"/><polygon points="50,46 88,28 88,72 50,90" fill="#7CE0C3"/></svg>'
     },
     cuboid: {
       name: '长方体',
-      makeSvg: () => '<svg viewBox="0 0 100 100"><polygon points="46,20 86,28 56,40 16,32" fill="#A8DDFF"/><polygon points="16,32 56,40 56,82 16,74" fill="#52B2F5"/><polygon points="56,40 86,28 86,70 56,82" fill="#7BC9FF"/></svg>'
+      makeSvg: () => '<svg viewBox="0 0 100 100"><polygon points="44,16 90,26 56,40 10,30" fill="#A8DDFF"/><polygon points="10,30 56,40 56,86 10,76" fill="#52B2F5"/><polygon points="56,40 90,26 90,72 56,86" fill="#7BC9FF"/></svg>'
     },
     cylinder: {
       name: '圆柱体',
-      makeSvg: () => '<svg viewBox="0 0 100 100"><path d="M22,34 L22,72 A28,12 0 0,0 78,72 L78,34 Z" fill="#FFAAA6"/><path d="M22,34 L22,72 A28,12 0 0,0 50,78 L50,40 Z" fill="#F08E89"/><ellipse cx="50" cy="34" rx="28" ry="12" fill="#FFC9C6"/></svg>'
+      makeSvg: () => '<svg viewBox="0 0 100 100"><path d="M18,30 L18,74 A32,13 0 0,0 82,74 L82,30 Z" fill="#FFAAA6"/><path d="M18,30 L18,74 A32,13 0 0,0 50,81 L50,37 Z" fill="#F08E89"/><ellipse cx="50" cy="30" rx="32" ry="13" fill="#FFC9C6"/></svg>'
     },
     sphere: {
       name: '球体',
-      makeSvg: () => '<svg viewBox="0 0 100 100"><defs><radialGradient id="sphereGrad" cx="38%" cy="36%" r="62%"><stop offset="0%" stop-color="#FFF5D6"/><stop offset="50%" stop-color="#FED268"/><stop offset="100%" stop-color="#E5AD3A"/></radialGradient></defs><circle cx="50" cy="50" r="36" fill="url(#sphereGrad)"/></svg>'
+      makeSvg: () => '<svg viewBox="0 0 100 100"><defs><radialGradient id="sphereGrad" cx="38%" cy="36%" r="62%"><stop offset="0%" stop-color="#FFF5D6"/><stop offset="50%" stop-color="#FED268"/><stop offset="100%" stop-color="#E5AD3A"/></radialGradient></defs><circle cx="50" cy="50" r="42" fill="url(#sphereGrad)"/></svg>'
     },
     cone: {
       name: '圆锥体',
-      makeSvg: () => '<svg viewBox="0 0 100 100"><path d="M50,14 L18,74 A32,10 0 0,0 82,74 Z" fill="#D4A5FF"/><path d="M50,14 L18,74 A32,10 0 0,0 50,79 Z" fill="#BA82EC"/><ellipse cx="50" cy="74" rx="32" ry="8" fill="#E6C8FF" opacity="0.6"/></svg>'
+      makeSvg: () => '<svg viewBox="0 0 100 100"><path d="M50,10 L14,76 A36,10 0 0,0 86,76 Z" fill="#D4A5FF"/><path d="M50,10 L14,76 A36,10 0 0,0 50,81 Z" fill="#BA82EC"/><ellipse cx="50" cy="76" rx="36" ry="9" fill="#E6C8FF" opacity="0.6"/></svg>'
     },
     triangular_prism: {
       name: '三棱柱',
-      makeSvg: () => '<svg viewBox="0 0 100 100"><polygon points="50,16 84,34 26,34" fill="#FFE1C4"/><polygon points="26,34 50,16 50,68 26,84" fill="#ECA05F"/><polygon points="50,16 84,34 84,84 50,68" fill="#FFBE86"/></svg>'
+      makeSvg: () => '<svg viewBox="0 0 100 100"><polygon points="50,12 88,32 22,32" fill="#FFE1C4"/><polygon points="22,32 50,12 50,72 22,88" fill="#ECA05F"/><polygon points="50,12 88,32 88,88 50,72" fill="#FFBE86"/></svg>'
     },
     square_pyramid: {
       name: '四棱锥',
-      makeSvg: () => '<svg viewBox="0 0 100 100"><polygon points="50,14 16,74 52,84" fill="#52B2F5"/><polygon points="50,14 52,84 84,70" fill="#7BC9FF"/><polygon points="50,14 16,74 46,62" fill="#3D93D1" opacity="0.5"/></svg>'
+      makeSvg: () => '<svg viewBox="0 0 100 100"><polygon points="50,10 12,78 52,90" fill="#52B2F5"/><polygon points="50,10 52,90 88,74" fill="#7BC9FF"/><polygon points="50,10 12,78 46,64" fill="#3D93D1" opacity="0.5"/></svg>'
     },
     hexagonal_prism: {
       name: '六棱柱',
-      makeSvg: () => '<svg viewBox="0 0 100 100"><polygon points="34,16 66,16 80,28 66,40 34,40 20,28" fill="#A7EDE0"/><polygon points="20,28 34,40 34,80 20,68" fill="#58D1B1"/><polygon points="34,40 66,40 66,80 34,80" fill="#7CE0C3"/><polygon points="66,40 80,28 80,68 66,80" fill="#4ABF9F"/></svg>'
+      makeSvg: () => '<svg viewBox="0 0 100 100"><polygon points="32,12 68,12 84,26 68,40 32,40 16,26" fill="#A7EDE0"/><polygon points="16,26 32,40 32,84 16,70" fill="#58D1B1"/><polygon points="32,40 68,40 68,84 32,84" fill="#7CE0C3"/><polygon points="68,40 84,26 84,70 68,84" fill="#4ABF9F"/></svg>'
     }
   };
 
