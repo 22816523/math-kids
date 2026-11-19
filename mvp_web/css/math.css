@@ -97,9 +97,9 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
-  margin: 16px 0;
-  min-height: 160px;
+  gap: 12px;
+  margin: 8px 0;
+  min-height: 140px;
 }
 
 .objects-container {
@@ -141,8 +141,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
-  margin-top: 16px;
+  gap: 12px;
+  margin-top: 8px;
 }
 
 .control-area > .btn-green.btn-lg,
@@ -394,43 +394,6 @@
   transform: scale(0.9);
 }
 
-/* ============================================
-   100以内加减法 · 10-Frame 十格阵列与借十演示 CSS
-   ============================================ */
-
-.level3-demo-container {
-  display: flex;
-  gap: 16px;
-  align-items: stretch;
-  justify-content: center;
-  flex-wrap: wrap;
-  width: 100%;
-  max-width: 680px;
-  margin: 0 auto;
-}
-
-.place-column {
-  flex: 1;
-  min-width: 180px;
-  background: var(--white);
-  border: 3px solid var(--gray-100);
-  border-radius: var(--radius-xl);
-  font-size: 24px;
-  font-weight: 700;
-  background: var(--blue);
-  color: white;
-  border: none;
-  border-radius: var(--radius-xl);
-  border-bottom: 5px solid var(--blue-dark);
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.next-btn:active {
-  transform: translateY(3px);
-  border-bottom-width: 2px;
-}
-
 .result-display {
   font-size: 72px;
   font-weight: 700;
@@ -590,185 +553,348 @@
 }
 
 /* ============================================
-   100以内加减法 · 10-Frame 十格阵列与借十演示 CSS
+   100以内加减法 · 方块积木 (Cube Blocks) 规范系统
    ============================================ */
 
-.level3-demo-container {
+/* 单颗方块积木 */
+.cube-unit {
+  width: 18px;
+  height: 18px;
+  box-sizing: border-box;
+  border-radius: 4px;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.05);
+  flex-shrink: 0;
+}
+
+/* 积木中心圆形微凸卡扣，带来温润拼插质感 */
+.cube-unit::after {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.35;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.15), 0 1px 1px rgba(255, 255, 255, 0.6);
+}
+
+/* 1. 原木温和色 (用于原本的十位和个位) */
+.cube-wood {
+  background: linear-gradient(180deg, #FBF6EE 0%, #EFE1CF 100%);
+  border: 1.5px solid #CFB698;
+  color: #B29B7E;
+}
+
+/* 2. 借来的 / 满十合体专属金黄色 (一目了然区分借入与合体) */
+.cube-borrow,
+.cube-gold {
+  background: linear-gradient(180deg, #FFF5CC 0%, #FEE88B 100%);
+  border: 1.5px solid #E5B838;
+  color: #C69417;
+}
+
+/* 3. 被划掉/减去的散块 */
+.cube-crossed {
+  background: #FCEAE8;
+  border: 1.5px dashed #E59F9C;
+  opacity: 0.45;
+  color: #D66863;
+  transform: scale(0.92);
+}
+.cube-crossed::before {
+  content: '✕';
+  position: absolute;
+  font-size: 13px;
+  font-weight: 900;
+  color: #D66863;
+  z-index: 2;
+}
+
+/* 十积木框架 (2列 x 5行，宽 42px，高 102px，紧凑不占高) */
+.cube-ten-frame {
+  display: grid;
+  grid-template-columns: repeat(2, 18px);
+  grid-template-rows: repeat(5, 18px);
+  gap: 2px;
+  padding: 3px;
+  background: rgba(246, 239, 229, 0.65);
+  border: 2px solid #D4C0A6;
+  border-radius: 8px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.04);
+  position: relative;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.cube-ten-frame.cube-ten-borrow {
+  background: rgba(254, 243, 199, 0.65);
+  border-color: #E5B838;
+}
+
+.cube-ten-frame.dashed {
+  border: 2px dashed #CBD5E1;
+  background: rgba(241, 245, 249, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 102px;
+  box-sizing: border-box;
+}
+.cube-ten-frame.dashed::after {
+  content: '借出';
+  font-size: 11px;
+  font-weight: 800;
+  color: #94A3B8;
+}
+
+/* ---------- 练习界面积木舞台 ---------- */
+.level3-practice-stage {
   display: flex;
   gap: 16px;
   align-items: stretch;
   justify-content: center;
-  flex-wrap: wrap;
   width: 100%;
-  max-width: 680px;
+  max-width: 620px;
   margin: 0 auto;
 }
 
-.place-column {
+.practice-col {
   flex: 1;
-  min-width: 180px;
-  background: var(--white);
-  border: 3px solid var(--gray-100);
-  border-radius: var(--radius-xl);
-  padding: 12px;
+  min-width: 160px;
+  background: #FFFFFF;
+  border: 2px solid #E8E2D8;
+  border-radius: 16px;
+  padding: 10px 14px;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 10px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.03);
 }
 
-.place-column.tens-col {
-  border-color: #DCE6F2;
-  background: #F4F8FC;
-}
-
-.place-column.borrow-col {
-  border-color: #F8E8C8;
-  background: #FAF5EA;
-  animation: pulseBorrow 1.5s infinite alternate;
-}
-
-.place-column.ones-col {
-  border-color: #DAEBE1;
-  background: #F3F9F5;
-}
-
-@keyframes pulseBorrow {
-  from { box-shadow: 0 0 4px rgba(230, 180, 80, 0.2); }
-  to { box-shadow: 0 0 12px rgba(230, 180, 80, 0.4); }
-}
-
-.column-title {
-  font-size: 18px;
+.practice-col-title {
+  font-size: 15px;
   font-weight: 800;
   color: #4A5568;
   display: flex;
   align-items: center;
-  gap: 8px;
-}
-
-.ten-pack-block {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
   gap: 6px;
-  width: 96px;
-  height: 48px;
-  background: #EBF3FA;
-  border: 2.5px solid #8FB8E6;
-  border-radius: 12px;
-  color: #3B719F;
-  font-weight: 800;
-  font-size: 20px;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8), 0 3px 6px rgba(0,0,0,0.03);
-  transition: transform 0.2s ease;
 }
 
-.ten-frame-grid {
-  display: grid;
-  grid-template-columns: repeat(5, 36px);
-  grid-template-rows: repeat(2, 36px);
-  gap: 6px;
-  padding: 8px;
-  background: #FFFFFF;
-  border: 2.5px dashed #CBD5E1;
-  border-radius: var(--radius-lg);
-  margin: 4px 0;
-}
-
-.ten-cell {
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
-  background: #F8FAFC;
-  border: 2px solid #E2E8F0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 16px;
-  font-weight: bold;
-  transition: all 0.3s ease;
-  position: relative;
-}
-
-/* 柔和莫兰迪/马卡龙护眼色调 */
-.ten-cell.filled-tens {
-  background: #8FB8E6;
-  border-color: #75A2D6;
-}
-
-.ten-cell.filled-borrow {
-  background: #F5D57F;
-  border-color: #E4BD5B;
-}
-
-.ten-cell.filled-ones {
-  background: #85C8A6;
-  border-color: #69B38B;
-}
-
-.ten-cell.crossed {
-  background: #F9D5D3;
-  border-color: #E8A29F;
-  opacity: 0.6;
-}
-
-.ten-cell.crossed::after {
-  content: '✕';
-  color: #C96B67;
-  font-size: 22px;
-  font-weight: 900;
-  position: absolute;
-}
-
-.singles-flex-container {
+.practice-blocks-wrap {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 6px;
   justify-content: center;
-  max-width: 220px;
+  align-items: center;
+  min-height: 106px;
 }
 
-.single-dot-block {
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
-  background: #85C8A6;
-  border: 2px solid #69B38B;
+/* 加法普通练习分行展示 */
+.practice-add-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+.practice-add-row {
   display: flex;
   align-items: center;
-  justify-content: center;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.4);
-}
-
-.demo-step-indicator {
-  display: flex;
   gap: 10px;
-  margin-bottom: 12px;
+  background: #FAFAF7;
+  padding: 6px 12px;
+  border-radius: 12px;
+  border: 1.5px solid #EBE5DB;
+}
+.practice-add-num {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--blue-dark);
+  min-width: 36px;
 }
 
-.step-chip {
-  padding: 6px 14px;
-  border-radius: 16px;
-  font-size: 14px;
-  font-weight: 700;
-  background: #EDF2F7;
-  color: #718096;
+/* ---------- 演示专用卡片与舞台 (严格控制高度防重叠) ---------- */
+.level3-demo-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  max-width: 660px;
+  margin: 0 auto;
+  box-sizing: border-box;
 }
 
-.step-chip.active {
-  background: #6C9BD2;
-  color: #FFFFFF;
+/* 紧凑步骤胶囊指示条 */
+.demo-step-pills {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
-.demo-control-bar {
+.demo-step-pill {
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 800;
+  background: #F1F5F9;
+  color: #64748B;
+  border: 1.5px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.demo-step-pill.active {
+  background: #EBF5FF;
+  color: #2563EB;
+  border-color: #93C5FD;
+}
+
+/* 演示主舞台容器 */
+.demo-stage {
   display: flex;
   gap: 14px;
+  align-items: stretch;
+  justify-content: center;
+  width: 100%;
+  background: #FFFFFF;
+  border: 2px solid #E8E2D8;
+  border-radius: 16px;
+  padding: 10px 14px;
+  min-height: 140px;
+  box-sizing: border-box;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+}
+
+/* 左右分栏 */
+.demo-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.demo-col-badge {
+  font-size: 13px;
+  font-weight: 800;
+  color: #475569;
+  padding: 2px 8px;
+  background: #F8FAFC;
+  border-radius: 8px;
+  border: 1px solid #E2E8F0;
+}
+
+.demo-col-blocks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-height: 106px;
+}
+
+/* 个位拆借 / 汇合专用托盘 */
+.tray-box {
+  border-radius: 10px;
+  padding: 6px 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.tray-borrowed {
+  background: #FFFDF2;
+  border: 1.5px dashed #F59E0B;
+}
+
+.tray-original {
+  background: #FAF8F5;
+  border: 1.5px solid #E5DCCE;
+}
+
+.tray-label {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: -0.2px;
+}
+.tray-borrowed .tray-label {
+  color: #D97706;
+}
+.tray-original .tray-label {
+  color: #78716C;
+}
+
+.tray-units {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  justify-content: center;
+  align-items: center;
+}
+
+/* 提示解说横幅卡片 */
+.demo-tip-card {
+  width: 100%;
+  background: #F8FAFC;
+  border: 1.5px solid #E2E8F0;
+  border-radius: 12px;
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #334155;
+  text-align: center;
+  line-height: 1.4;
+  box-sizing: border-box;
+}
+
+/* 总结步骤大字与卡片 */
+.demo-result-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 10px 0;
+}
+
+.demo-result-formula {
+  font-size: 32px;
+  font-weight: 900;
+  color: var(--blue-dark);
+}
+
+.demo-summary-box {
+  width: 100%;
+  max-width: 480px;
+  background: #F8FAFC;
+  border: 1.5px solid #E2E8F0;
+  border-radius: 12px;
+  padding: 8px 16px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: #334155;
+  box-sizing: border-box;
+  text-align: left;
+}
+
+/* 控制按钮栏 */
+.demo-control-bar {
+  display: flex;
+  gap: 10px;
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
-  margin-top: 16px;
+  margin-top: 10px;
 }
 
 /* 大号色彩“📺 看演示”按钮 */
@@ -777,9 +903,9 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  margin-top: 18px;
-  padding: 12px 32px;
-  font-size: 20px;
+  margin-top: 14px;
+  padding: 10px 28px;
+  font-size: 18px;
   font-weight: 800;
   font-family: var(--font);
   color: #1E40AF;

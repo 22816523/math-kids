@@ -90,11 +90,9 @@
 
   const encourageFeedbacks = [
     { emoji: '🤔', text: '再试试看？' },
-    { emoji: '💪', text: '差不多啦！' },
+    { emoji: '👀', text: '仔细看一看～' },
     { emoji: '👆', text: '换一个试试～' },
   ];
-
-  let correctStreak = 0;
 
   function showFeedback(isCorrect) {
     const list = isCorrect ? correctFeedbacks : encourageFeedbacks;
@@ -106,17 +104,6 @@
     feedbackOverlay.style.display = 'flex';
 
     speak(fb.text);
-
-    if (isCorrect) {
-      correctStreak++;
-      // addStar() 已经被移除因为页面上去掉了星星组件
-      if (correctStreak >= 3) {
-        correctStreak = 0;
-        setTimeout(() => showCelebration(), 600);
-      }
-    } else {
-      correctStreak = 0;
-    }
 
     setTimeout(() => {
       feedbackOverlay.style.display = 'none';
