@@ -68,7 +68,20 @@ $$('.mode-tab').forEach((btn) => {
   });
 });
 
+let nextQuestionTimer = null;
+
+function clearNextQuestionTimer() {
+  if (nextQuestionTimer) {
+    clearTimeout(nextQuestionTimer);
+    nextQuestionTimer = null;
+  }
+}
+
 function showStartScreen() {
+  clearNextQuestionTimer();
+  state.practiceMode = false;
+  state.currentQuestion = 0;
+  state.correctCount = 0;
   feedback.textContent = '';
   feedback.className = 'feedback';
   bottomActions.style.display = 'none';
@@ -83,6 +96,7 @@ function showStartScreen() {
 }
 
 function startPractice() {
+  clearNextQuestionTimer();
   state.practiceMode = true;
   state.currentQuestion = 0;
   state.correctCount = 0;
@@ -153,7 +167,9 @@ function checkAnswer(selected) {
   }
   if (selected !== state.answer) return;
 
-  setTimeout(() => {
+  clearNextQuestionTimer();
+  nextQuestionTimer = setTimeout(() => {
+    nextQuestionTimer = null;
     nextQuestion();
   }, 1500);
 }
@@ -340,8 +356,10 @@ function eatApple(index) {
 }
 
 function generateLevel2Question() {
-  const a = Math.floor(Math.random() * 3) + 8;
-  const b = Math.floor(Math.random() * (20 - a - 1)) + 2;
+  const a = Math.floor(Math.random() * 4) + 6;
+  const minB = 11 - a;
+  const maxB = 9;
+  const b = Math.floor(Math.random() * (maxB - minB + 1)) + minB;
   state.question = { a, b };
   state.answer = a + b;
   renderLevel2Addition();
@@ -374,6 +392,10 @@ function showLevel2Demo() {
   const need = 10 - a;
   state.movedCount = 0;
   state.needToMove = need;
+  if (need <= 0) {
+    carryOver();
+    return;
+  }
   setPrompt(`${getQuestionPrefix()}：${a} + ${b} = ?`, `点 ${need} 个圆点，先凑成 10`);
 
   visualArea.innerHTML = `

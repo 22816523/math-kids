@@ -829,12 +829,32 @@ html, body {
   }
 }
 
-/* 小平板（iPad mini等） */
+/* 小平板（iPad mini等）与手机端 */
 @media (max-width: 600px) {
   .btn { padding: 12px 22px; font-size: 16px; }
   .btn-lg { padding: 14px 28px; font-size: 18px; }
   .topbar { padding: 10px 16px; min-height: 52px; }
   .topbar-title { font-size: 18px; }
+  .mode-tabs {
+    padding: 8px 12px !important;
+    gap: 8px !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+  .mode-tab {
+    flex: 0 0 auto !important;
+    min-width: max-content !important;
+    height: 42px !important;
+    padding: 0 12px !important;
+    gap: 5px !important;
+  }
+  .tab-icon {
+    font-size: 18px !important;
+  }
+  .tab-label {
+    font-size: 14px !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+  }
 }
 
 /* 横屏提示（可选，默认不强制） */
