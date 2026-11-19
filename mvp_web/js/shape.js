@@ -6,13 +6,14 @@
 ;(function () {
   'use strict';
 
-  // ========== 柔和色板（护眼糖果色：中饱和+高亮度） ==========
-  // ========== 经典 4 色莫兰迪色板（沉稳色块、绝不眩目、重复色彩） ==========
+  // ========== 6大核心马卡龙柔和色盘（薄荷青、天晴蓝、蜜桃粉、奶油黄、香芋紫、杏子橙） ==========
   const SOFT_COLORS = [
-    '#3B6998', // 沉稳深蓝
-    '#3D8B6E', // 莫兰迪绿
-    '#C68B45', // 暖琥珀金
-    '#B85B56'  // 陶土深红
+    '#7CE0C3', // 薄荷青
+    '#7BC9FF', // 天晴蓝
+    '#FFAAA6', // 蜜桃粉
+    '#FED268', // 奶油黄
+    '#D4A5FF', // 香芋紫
+    '#FFBE86', // 杏子橙
   ];
 
   let colorIndex = 0;
@@ -30,60 +31,99 @@
     colorIndex = 0;
   }
 
-  // ========== SVG图形生成器（纯净无边框色块） ==========
-  const SHAPES = {
-    circle: {
-      name: '圆形',
-      makeSvg: (c) => '<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="42" fill="' + c + '"/></svg>'
-    },
+  // ========== 平面图形库（小学 1-6 年级 · 12种马卡龙纯净质感） ==========
+  const PLANE_SHAPES = {
     square: {
       name: '正方形',
-      makeSvg: (c) => '<svg viewBox="0 0 100 100"><rect x="12" y="12" width="76" height="76" rx="4" fill="' + c + '"/></svg>'
-    },
-    triangle: {
-      name: '三角形',
-      makeSvg: (c) => '<svg viewBox="0 0 100 100"><polygon points="50,8 92,88 8,88" fill="' + c + '"/></svg>'
+      makeSvg: (c) => '<svg viewBox="0 0 100 100"><rect x="15" y="15" width="70" height="70" rx="10" fill="' + c + '"/></svg>'
     },
     rectangle: {
       name: '长方形',
-      makeSvg: (c) => '<svg viewBox="0 0 100 100"><rect x="8" y="22" width="84" height="56" rx="4" fill="' + c + '"/></svg>'
+      makeSvg: (c) => '<svg viewBox="0 0 100 100"><rect x="10" y="24" width="80" height="52" rx="10" fill="' + c + '"/></svg>'
     },
-    oval: {
-      name: '椭圆形',
-      makeSvg: (c) => '<svg viewBox="0 0 100 100"><ellipse cx="50" cy="50" rx="44" ry="30" fill="' + c + '"/></svg>'
+    triangle: {
+      name: '三角形',
+      makeSvg: (c) => '<svg viewBox="0 0 100 100"><polygon points="50,14 88,84 12,84" stroke-linejoin="round" stroke-width="8" stroke="' + c + '" fill="' + c + '"/></svg>'
     },
-    diamond: {
-      name: '菱形',
-      makeSvg: (c) => '<svg viewBox="0 0 100 100"><polygon points="50,6 94,50 50,94 6,50" fill="' + c + '"/></svg>'
-    },
-    semicircle: {
-      name: '半圆形',
-      makeSvg: (c) => '<svg viewBox="0 0 100 100"><path d="M8,70 A42,42 0 0,1 92,70 Z" fill="' + c + '"/></svg>'
-    },
-    trapezoid: {
-      name: '梯形',
-      makeSvg: (c) => '<svg viewBox="0 0 100 100"><polygon points="25,15 75,15 95,85 5,85" fill="' + c + '"/></svg>'
-    },
-    star: {
-      name: '五角星',
-      makeSvg: (c) => '<svg viewBox="0 0 100 100"><polygon points="50,5 61,38 97,38 68,59 79,93 50,72 21,93 32,59 3,38 39,38" fill="' + c + '"/></svg>'
-    },
-    heart: {
-      name: '爱心',
-      makeSvg: (c) => '<svg viewBox="0 0 100 100"><path d="M50,88 C25,65 5,50 5,32 A22,22 0,0,1 50,20 A22,22 0,0,1 95,32 C95,50 75,65 50,88Z" fill="' + c + '"/></svg>'
-    },
-    pentagon: {
-      name: '五边形',
-      makeSvg: (c) => '<svg viewBox="0 0 100 100"><polygon points="50,8 95,38 77,90 23,90 5,38" fill="' + c + '"/></svg>'
+    circle: {
+      name: '圆形',
+      makeSvg: (c) => '<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="38" fill="' + c + '"/></svg>'
     },
     parallelogram: {
       name: '平行四边形',
-      makeSvg: (c) => '<svg viewBox="0 0 100 100"><polygon points="25,20 92,20 75,80 8,80" fill="' + c + '"/></svg>'
+      makeSvg: (c) => '<svg viewBox="0 0 100 100"><polygon points="26,24 88,24 74,76 12,76" stroke-linejoin="round" stroke-width="8" stroke="' + c + '" fill="' + c + '"/></svg>'
+    },
+    trapezoid: {
+      name: '梯形',
+      makeSvg: (c) => '<svg viewBox="0 0 100 100"><polygon points="28,24 72,24 88,78 12,78" stroke-linejoin="round" stroke-width="8" stroke="' + c + '" fill="' + c + '"/></svg>'
+    },
+    diamond: {
+      name: '菱形',
+      makeSvg: (c) => '<svg viewBox="0 0 100 100"><polygon points="50,12 88,50 50,88 12,50" stroke-linejoin="round" stroke-width="8" stroke="' + c + '" fill="' + c + '"/></svg>'
+    },
+    sector: {
+      name: '扇形',
+      makeSvg: (c) => '<svg viewBox="0 0 100 100"><path d="M50,78 L20,30 A45,45 0 0,1 80,30 Z" stroke-linejoin="round" stroke-width="6" stroke="' + c + '" fill="' + c + '"/></svg>'
+    },
+    pentagon: {
+      name: '五边形',
+      makeSvg: (c) => '<svg viewBox="0 0 100 100"><polygon points="50,14 88,42 74,84 26,84 12,42" stroke-linejoin="round" stroke-width="8" stroke="' + c + '" fill="' + c + '"/></svg>'
+    },
+    hexagon: {
+      name: '六边形',
+      makeSvg: (c) => '<svg viewBox="0 0 100 100"><polygon points="25,18 75,18 92,50 75,82 25,82 8,50" stroke-linejoin="round" stroke-width="8" stroke="' + c + '" fill="' + c + '"/></svg>'
+    },
+    oval: {
+      name: '椭圆形',
+      makeSvg: (c) => '<svg viewBox="0 0 100 100"><ellipse cx="50" cy="50" rx="42" ry="28" fill="' + c + '"/></svg>'
+    },
+    right_triangle: {
+      name: '直角三角形',
+      makeSvg: (c) => '<svg viewBox="0 0 100 100"><polygon points="18,16 18,84 84,84" stroke-linejoin="round" stroke-width="8" stroke="' + c + '" fill="' + c + '"/></svg>'
     }
   };
 
+  // ========== 立体图形库（小学 1-6 年级 · 8种柔和透视拟真） ==========
+  const SOLID_SHAPES = {
+    cube: {
+      name: '正方体',
+      makeSvg: () => '<svg viewBox="0 0 100 100"><polygon points="50,15 82,30 50,45 18,30" fill="#A7EDE0"/><polygon points="18,30 50,45 50,85 18,70" fill="#58D1B1"/><polygon points="50,45 82,30 82,70 50,85" fill="#7CE0C3"/></svg>'
+    },
+    cuboid: {
+      name: '长方体',
+      makeSvg: () => '<svg viewBox="0 0 100 100"><polygon points="46,20 86,28 56,40 16,32" fill="#A8DDFF"/><polygon points="16,32 56,40 56,82 16,74" fill="#52B2F5"/><polygon points="56,40 86,28 86,70 56,82" fill="#7BC9FF"/></svg>'
+    },
+    cylinder: {
+      name: '圆柱体',
+      makeSvg: () => '<svg viewBox="0 0 100 100"><path d="M22,34 L22,72 A28,12 0 0,0 78,72 L78,34 Z" fill="#FFAAA6"/><path d="M22,34 L22,72 A28,12 0 0,0 50,78 L50,40 Z" fill="#F08E89"/><ellipse cx="50" cy="34" rx="28" ry="12" fill="#FFC9C6"/></svg>'
+    },
+    sphere: {
+      name: '球体',
+      makeSvg: () => '<svg viewBox="0 0 100 100"><defs><radialGradient id="sphereGrad" cx="38%" cy="36%" r="62%"><stop offset="0%" stop-color="#FFF5D6"/><stop offset="50%" stop-color="#FED268"/><stop offset="100%" stop-color="#E5AD3A"/></radialGradient></defs><circle cx="50" cy="50" r="36" fill="url(#sphereGrad)"/></svg>'
+    },
+    cone: {
+      name: '圆锥体',
+      makeSvg: () => '<svg viewBox="0 0 100 100"><path d="M50,14 L18,74 A32,10 0 0,0 82,74 Z" fill="#D4A5FF"/><path d="M50,14 L18,74 A32,10 0 0,0 50,79 Z" fill="#BA82EC"/><ellipse cx="50" cy="74" rx="32" ry="8" fill="#E6C8FF" opacity="0.6"/></svg>'
+    },
+    triangular_prism: {
+      name: '三棱柱',
+      makeSvg: () => '<svg viewBox="0 0 100 100"><polygon points="50,16 84,34 26,34" fill="#FFE1C4"/><polygon points="26,34 50,16 50,68 26,84" fill="#ECA05F"/><polygon points="50,16 84,34 84,84 50,68" fill="#FFBE86"/></svg>'
+    },
+    square_pyramid: {
+      name: '四棱锥',
+      makeSvg: () => '<svg viewBox="0 0 100 100"><polygon points="50,14 16,74 52,84" fill="#52B2F5"/><polygon points="50,14 52,84 84,70" fill="#7BC9FF"/><polygon points="50,14 16,74 46,62" fill="#3D93D1" opacity="0.5"/></svg>'
+    },
+    hexagonal_prism: {
+      name: '六棱柱',
+      makeSvg: () => '<svg viewBox="0 0 100 100"><polygon points="34,16 66,16 80,28 66,40 34,40 20,28" fill="#A7EDE0"/><polygon points="20,28 34,40 34,80 20,68" fill="#58D1B1"/><polygon points="34,40 66,40 66,80 34,80" fill="#7CE0C3"/><polygon points="66,40 80,28 80,68 66,80" fill="#4ABF9F"/></svg>'
+    }
+  };
+
+  const SHAPES = { ...PLANE_SHAPES, ...SOLID_SHAPES };
+
   // 生成带随机颜色的SVG
   function shapeSvg(key) {
+    if (!SHAPES[key]) return '';
     return SHAPES[key].makeSvg(nextColor());
   }
 
@@ -104,23 +144,25 @@
     svg.style.pointerEvents = 'none';
   }
 
+  const PLANE_SHAPE_KEYS = Object.keys(PLANE_SHAPES);
+  const SOLID_SHAPE_KEYS = Object.keys(SOLID_SHAPES);
   const SHAPE_KEYS = Object.keys(SHAPES);
 
   // ========== 状态 ==========
   const state = {
     mode: 'recognize',
+    recognizeSubType: 'plane', // 'plane' | 'solid'
     practicing: false,
     stars: 0,
     // 辨认
     recTarget: null,
     recScore: 0,
     recTotal: 5,
-    // 分类
-    classifyRemaining: 0,
-    tangramRound: 0,
-    tangramQueue: [],
-    tangramFilled: 0,
+    // 方位置物架
     spatialRound: 0,
+    spatialTasks: [],
+    currentSpatialTaskIdx: 0,
+    selectedToy: null,
   };
 
   // ========== DOM引用 ==========
@@ -128,6 +170,7 @@
   const $$ = (s) => document.querySelectorAll(s);
 
   const recognizeArea = $('#recognizeArea');
+  const shapeSubTabs = $('#shapeSubTabs');
   const classifyArea = $('#classifyArea');
   const classifyShapes = $('#classifyShapes');
   const classifyHomes = $('#classifyHomes');
@@ -280,17 +323,21 @@
   // ====================================================
   //  辨认模式：探索点击读名字 + 练习找指定图形
   // ====================================================
+  function getActiveRecognizeKeys() {
+    return state.recognizeSubType === 'solid' ? SOLID_SHAPE_KEYS : PLANE_SHAPE_KEYS;
+  }
+
   function enterRecognizeExplore() {
     state.practicing = false;
     recognizeArea.innerHTML = '';
     shuffleColors();
-    // 每种图形显示一个
-    const keys = shuffle(SHAPE_KEYS);
-    keys.forEach((key) => {
+
+    const activeKeys = getActiveRecognizeKeys();
+    activeKeys.forEach((key) => {
       const card = document.createElement('div');
       card.className = 'shape-card';
       card.dataset.shape = key;
-      card.innerHTML = shapeSvg(key);
+      card.innerHTML = shapeSvg(key) + '<div class="shape-name-tag">' + SHAPES[key].name + '</div>';
       card.addEventListener('click', () => {
         if (state.practicing) return;
         speak(SHAPES[key].name);
@@ -300,7 +347,9 @@
       });
       recognizeArea.appendChild(card);
     });
-    showQuestion('👆', '点一点图形，听听它叫什么名字');
+
+    const typeLabel = state.recognizeSubType === 'solid' ? '立体图形' : '平面图形';
+    showQuestion('👆', '点一点' + typeLabel + '，听听它叫什么名字');
     showBottomAction('🎯 开始练习', () => startRecognizePractice());
   }
 
@@ -313,21 +362,25 @@
 
   function nextRecognizeQuestion() {
     if (state.recScore >= state.recTotal) {
-      showQuestion('🎉', '全部找对了！答对 ' + state.recTotal + ' 个！');
+      showQuestion('🎉', '全部找对了！答对 ' + state.recTotal + ' 轮！');
       showCelebration();
       showBottomAction('🔄 再来一轮', () => startRecognizePractice());
       return;
     }
 
-    // 生成12个图形（4x3），确保目标至少出现2个
-    const target = pickRandom(SHAPE_KEYS);
+    const activeKeys = getActiveRecognizeKeys();
+    const target = pickRandom(activeKeys);
     state.recTarget = target;
-    const others = SHAPE_KEYS.filter(k => k !== target);
+    const others = activeKeys.filter(k => k !== target);
 
     const cards = [];
     const targetCount = 2 + Math.floor(Math.random() * 2); // 2-3个目标
     for (let i = 0; i < targetCount; i++) cards.push(target);
-    while (cards.length < 12) cards.push(pickRandom(others));
+
+    const targetGridCount = state.recognizeSubType === 'solid' ? 8 : 12;
+    while (cards.length < targetGridCount) {
+      cards.push(pickRandom(others));
+    }
     const shuffled = shuffle(cards);
 
     recognizeArea.innerHTML = '';
@@ -335,11 +388,11 @@
     let found = 0;
     const total = targetCount;
 
-    shuffled.forEach((key, idx) => {
+    shuffled.forEach((key) => {
       const card = document.createElement('div');
       card.className = 'shape-card';
       card.dataset.shape = key;
-      card.innerHTML = shapeSvg(key);
+      card.innerHTML = shapeSvg(key); // 练习模式不显示名字
       card.addEventListener('click', () => {
         if (state.recTarget === null) return;
         if (card.classList.contains('selected')) return;
@@ -362,7 +415,7 @@
     });
 
     const name = SHAPES[target].name;
-    showQuestion('👀', '找出所有的' + name + '（共' + total + '个）', '找出所有的' + name);
+    showQuestion('👀', '找出所有的【' + name + '】（共' + total + '个）', '找出所有的' + name);
   }
 
   // ====================================================
@@ -855,13 +908,35 @@
   }
 
   // ====================================================
-  //  模式：听指令 (方位九宫格)
+  //  模式：听指令 (4x4 浅白蜡木/榉木收纳置物架)
   // ====================================================
-  const SPATIAL_POSITIONS = [
-    { row: 0, col: 0, name: '左上角' }, { row: 0, col: 1, name: '正上方中心' }, { row: 0, col: 2, name: '右上角' },
-    { row: 1, col: 0, name: '左边中间' }, { row: 1, col: 1, name: '正中间' }, { row: 1, col: 2, name: '右边中间' },
-    { row: 2, col: 0, name: '左下角' }, { row: 2, col: 1, name: '正下方中心' }, { row: 2, col: 2, name: '右下角' }
-  ];
+  function getSpatialInstruction(r, c) {
+    const rowNum = r + 1;
+    const colNum = c + 1;
+    const topNum = r + 1;
+    const bottomNum = 4 - r;
+    const leftNum = c + 1;
+    const rightNum = 4 - c;
+
+    const templates = [];
+
+    // 角落特指
+    if (r === 0 && c === 0) templates.push('最左上角的格子里');
+    else if (r === 0 && c === 3) templates.push('最右上角的格子里');
+    else if (r === 3 && c === 0) templates.push('最左下角的格子里');
+    else if (r === 3 && c === 3) templates.push('最右下角的格子里');
+
+    // 坐标法（第几行，第几列）
+    templates.push('第 ' + rowNum + ' 行，第 ' + colNum + ' 列');
+
+    // 方向顺序计数法
+    templates.push('从上往下第 ' + topNum + ' 行，从左往右第 ' + leftNum + ' 个');
+    templates.push('从上往下第 ' + topNum + ' 行，从右往左第 ' + rightNum + ' 个');
+    templates.push('从下往上第 ' + bottomNum + ' 行，从左往右第 ' + leftNum + ' 个');
+    templates.push('从下往上第 ' + bottomNum + ' 行，从右往左第 ' + rightNum + ' 个');
+
+    return pickRandom(templates);
+  }
 
   function enterSpatialExplore() {
     state.practicing = true;
@@ -871,78 +946,159 @@
   }
 
   function prepareSpatialLevel() {
-    if(state.spatialRound >= 3) {
-       showQuestion('🏆', '太棒啦！柜子摆放得真整齐！');
-       showCelebration();
-       spatialShelf.innerHTML = '';
-       let spatialTray = document.getElementById('spatialTray');
-       if(spatialTray) spatialTray.remove();
-       showBottomAction('🔄 再理一次', () => enterSpatialExplore());
-       return;
+    if (state.spatialRound >= 3) {
+      showQuestion('🏆', '太棒啦！置物架整理得整整齐齐！');
+      showCelebration();
+      spatialShelf.innerHTML = '';
+      const tray = document.getElementById('spatialTray');
+      if (tray) tray.innerHTML = '';
+      showBottomAction('🔄 再理一次', () => enterSpatialExplore());
+      return;
     }
 
     spatialShelf.innerHTML = '';
-    for(let r=0; r<3; r++){
-       for(let c=0; c<3; c++){
-          const cell = document.createElement('div');
-          cell.className = 'shelf-cell';
-          cell.dataset.r = r;
-          cell.dataset.c = c;
-          spatialShelf.appendChild(cell);
-       }
+    for (let r = 0; r < 4; r++) {
+      for (let c = 0; c < 4; c++) {
+        const cell = document.createElement('div');
+        cell.className = 'shelf-cell';
+        cell.dataset.r = r;
+        cell.dataset.c = c;
+        cell.addEventListener('click', () => onCellClicked(cell));
+        spatialShelf.appendChild(cell);
+      }
     }
 
     let tray = document.getElementById('spatialTray');
-    if(!tray) {
-       tray = document.createElement('div');
-       tray.id = 'spatialTray';
-       tray.className = 'spatial-tray';
-       spatialArea.appendChild(tray);
+    if (!tray) {
+      tray = document.createElement('div');
+      tray.id = 'spatialTray';
+      tray.className = 'spatial-tray';
+      spatialArea.appendChild(tray);
     }
     tray.innerHTML = '';
 
+    const allSlots = [];
+    for (let r = 0; r < 4; r++) {
+      for (let c = 0; c < 4; c++) {
+        allSlots.push({ row: r, col: c });
+      }
+    }
+
+    const targetSlots = pickN(allSlots, 3);
     const targetKeys = pickN(SHAPE_KEYS, 3);
-    const targetSlots = pickN(SPATIAL_POSITIONS, 3);
-    state.spatialTasks = targetKeys.map((k, i) => ({
-       shape: k,
-       color: nextColor(),
-       pos: targetSlots[i]
-    }));
+    state.spatialTasks = targetKeys.map((k, i) => {
+      const pos = targetSlots[i];
+      return {
+        shape: k,
+        color: nextColor(),
+        pos: pos,
+        instruction: getSpatialInstruction(pos.row, pos.col)
+      };
+    });
     state.currentSpatialTaskIdx = 0;
-    
+    state.selectedToy = null;
+
     state.spatialTasks.forEach(task => {
-        const toy = document.createElement('div');
-        toy.className = 'spatial-toy';
-        toy.dataset.shape = task.shape;
-        mountSvgMarkup(toy, SHAPES[task.shape].makeSvg(task.color));
-        setupSpatialDrag(toy, task, tray);
-        tray.appendChild(toy);
+      const toy = document.createElement('div');
+      toy.className = 'spatial-toy';
+      toy.dataset.shape = task.shape;
+      mountSvgMarkup(toy, SHAPES[task.shape].makeSvg(task.color));
+      setupSpatialDrag(toy, task, tray);
+      tray.appendChild(toy);
     });
 
     nextSpatialInstruction();
   }
 
   function nextSpatialInstruction() {
-      const task = state.spatialTasks[state.currentSpatialTaskIdx];
-      const shapeName = SHAPES[task.shape].name;
-      const posName = task.pos.name;
-      const text = '请把 【' + shapeName + '】 放在柜子的 【' + posName + '】';
-      showQuestion('🧭', text, text, {autoSpeak: true, allowReplay: true});
+    const task = state.spatialTasks[state.currentSpatialTaskIdx];
+    const shapeName = SHAPES[task.shape].name;
+    const posName = task.instruction;
+    const text = '请把 【' + shapeName + '】 放在置物架的 【' + posName + '】';
+    showQuestion('🧭', text, text, { autoSpeak: true, allowReplay: true });
+  }
+
+  function onToyClicked(toy, task) {
+    if (toy.classList.contains('locked')) return;
+    $$('.spatial-toy').forEach(t => t.classList.remove('selected'));
+    if (state.selectedToy === toy) {
+      state.selectedToy = null;
+    } else {
+      state.selectedToy = toy;
+      toy.classList.add('selected');
+      speak(SHAPES[task.shape].name);
+    }
+  }
+
+  function onCellClicked(cell) {
+    if (!state.selectedToy) return;
+    if (cell.children.length > 0) return;
+    const currentTask = state.spatialTasks[state.currentSpatialTaskIdx];
+    checkSpatialPlacement(state.selectedToy, state.selectedToy.dataset.shape, cell, currentTask);
+  }
+
+  function checkSpatialPlacement(toy, toyShape, cell, currentTask) {
+    const isRightToy = (toyShape === currentTask.shape);
+    const isRightCell = (parseInt(cell.dataset.r, 10) === currentTask.pos.row && parseInt(cell.dataset.c, 10) === currentTask.pos.col);
+
+    if (isRightToy && isRightCell) {
+      speak('放对了！真能干！');
+      mountSvgMarkup(cell, SHAPES[currentTask.shape].makeSvg(currentTask.color), { width: '75%', height: '75%' });
+      cell.classList.add('animate-jelly');
+      toy.remove();
+      state.selectedToy = null;
+      showFeedback(true);
+
+      state.currentSpatialTaskIdx++;
+      if (state.currentSpatialTaskIdx >= state.spatialTasks.length) {
+        showQuestion('🎉', '全部都摆放整齐啦！');
+        showCelebration();
+        state.spatialRound++;
+        scheduleAdvance(prepareSpatialLevel, 2000);
+      } else {
+        scheduleAdvance(nextSpatialInstruction, 1000);
+      }
+    } else {
+      if (!isRightToy) {
+        speak('哎呀，那是别的图形，我们要放' + SHAPES[currentTask.shape].name);
+      } else {
+        speak('位置不对哦。它应该去' + currentTask.instruction);
+      }
+      toy.style.opacity = '1';
+      showFeedback(false);
+      cell.classList.add('animate-shake');
+      setTimeout(() => cell.classList.remove('animate-shake'), 400);
+    }
   }
 
   function setupSpatialDrag(toy, taskData, tray) {
-     let isDragging = false;
-     let sx=0, sy=0;
-     let ghost = null;
+    let isTracking = false;
+    let isDragging = false;
+    let sx = 0, sy = 0;
+    let ghost = null;
 
-     function onStart(e) {
-        if(toy.classList.contains('locked')) return;
-        e.preventDefault();
+    function onStart(e) {
+      if (toy.classList.contains('locked')) return;
+      isTracking = true;
+      isDragging = false;
+      const touch = e.touches ? e.touches[0] : e;
+      sx = touch.clientX;
+      sy = touch.clientY;
+
+      document.addEventListener('mousemove', onMove);
+      document.addEventListener('touchmove', onMove, { passive: false });
+      document.addEventListener('mouseup', onEnd);
+      document.addEventListener('touchend', onEnd);
+    }
+
+    function onMove(e) {
+      if (!isTracking) return;
+      const touch = e.touches ? e.touches[0] : e;
+      const dx = touch.clientX - sx;
+      const dy = touch.clientY - sy;
+
+      if (!isDragging && Math.hypot(dx, dy) > 6) {
         isDragging = true;
-        const touch = e.touches ? e.touches[0] : e;
-        sx = touch.clientX;
-        sy = touch.clientY;
-        
         ghost = toy.cloneNode(true);
         ghost.classList.add('dragging');
         const rect = toy.getBoundingClientRect();
@@ -953,82 +1109,59 @@
         ghost.style.height = rect.height + 'px';
         ghost.style.zIndex = 1000;
         document.body.appendChild(ghost);
-        toy.style.opacity = 0.2;
+        toy.style.opacity = '0.2';
+      }
 
-        document.addEventListener('mousemove', onMove);
-        document.addEventListener('touchmove', onMove, {passive:false});
-        document.addEventListener('mouseup', onEnd);
-        document.addEventListener('touchend', onEnd);
-     }
-
-     function onMove(e) {
-        if(!isDragging) return;
+      if (isDragging && ghost) {
         e.preventDefault();
-        const touch = e.touches ? e.touches[0] : e;
-        const dx = touch.clientX - sx;
-        const dy = touch.clientY - sy;
         ghost.style.transform = 'translate(' + dx + 'px, ' + dy + 'px) scale(1.1)';
-     }
+      }
+    }
 
-     function onEnd(e) {
-        if(!isDragging) return;
-        isDragging = false;
-        document.removeEventListener('mousemove', onMove);
-        document.removeEventListener('touchmove', onMove);
-        document.removeEventListener('mouseup', onEnd);
-        document.removeEventListener('touchend', onEnd);
+    function onEnd(e) {
+      if (!isTracking) return;
+      isTracking = false;
+      document.removeEventListener('mousemove', onMove);
+      document.removeEventListener('touchmove', onMove);
+      document.removeEventListener('mouseup', onEnd);
+      document.removeEventListener('touchend', onEnd);
 
-        const touch = e.changedTouches ? e.changedTouches[0] : e;
-        const cx = touch.clientX;
-        const cy = touch.clientY;
+      if (!isDragging) {
+        // 未发生明显拖拽时直接触发点击选中
+        onToyClicked(toy, taskData);
+        return;
+      }
 
-        let droppedCell = null;
-        $$('.shelf-cell').forEach(c => {
-           const rect = c.getBoundingClientRect();
-           if(cx > rect.left && cx < rect.right && cy > rect.top && cy < rect.bottom) {
-              droppedCell = c;
-           }
-        });
+      isDragging = false;
+      toy.style.opacity = '1';
+      const touch = e.changedTouches ? e.changedTouches[0] : e;
+      const cx = touch.clientX;
+      const cy = touch.clientY;
 
-        const currentTask = state.spatialTasks[state.currentSpatialTaskIdx];
-
-        if(droppedCell) {
-           const isRightToy = (taskData.shape === currentTask.shape);
-           const isRightCell = (parseInt(droppedCell.dataset.r) === currentTask.pos.row && parseInt(droppedCell.dataset.c) === currentTask.pos.col);
-           
-           if(isRightToy && isRightCell) {
-              speak('放对了！真能干！');
-              mountSvgMarkup(droppedCell, SHAPES[taskData.shape].makeSvg(taskData.color), { width: '72%', height: '72%' });
-              droppedCell.classList.add('animate-jelly');
-              toy.remove();
-              showFeedback(true);
-              
-              state.currentSpatialTaskIdx++;
-              if(state.currentSpatialTaskIdx >= state.spatialTasks.length) {
-                  showQuestion('🎉', '全部都摆放整齐啦！');
-                  showCelebration();
-                  state.spatialRound++;
-                  scheduleAdvance(prepareSpatialLevel, 2000);
-              } else {
-                  scheduleAdvance(nextSpatialInstruction, 1000);
-              }
-           } else {
-              if(!isRightToy) speak('哎呀，那是别的玩具，我们要找' + SHAPES[currentTask.shape].name);
-              else speak('位置不对哦。它应该去' + currentTask.pos.name);
-              toy.style.opacity = 1;
-              showFeedback(false);
-              ghost.classList.add('animate-shake');
-           }
-        } else {
-           toy.style.opacity = 1;
+      let droppedCell = null;
+      $$('.shelf-cell').forEach(c => {
+        const rect = c.getBoundingClientRect();
+        if (cx > rect.left && cx < rect.right && cy > rect.top && cy < rect.bottom) {
+          droppedCell = c;
         }
+      });
 
+      const currentTask = state.spatialTasks[state.currentSpatialTaskIdx];
+
+      if (droppedCell) {
+        checkSpatialPlacement(toy, taskData.shape, droppedCell, currentTask);
+      }
+
+      if (ghost) {
         ghost.remove();
-     }
+        ghost = null;
+      }
+    }
 
-     toy.addEventListener('mousedown', onStart);
-     toy.addEventListener('touchstart', onStart, {passive:false});
+    toy.addEventListener('mousedown', onStart);
+    toy.addEventListener('touchstart', onStart, { passive: true });
   }
+
   // ====================================================
   //  模式切换
   // ====================================================
@@ -1041,28 +1174,24 @@
       tab.classList.toggle('active', tab.dataset.mode === mode);
     });
 
-    recognizeArea.style.display = 'none';
-    classifyArea.style.display = 'none';
-    tangramArea.style.display = 'none';
-    spatialArea.style.display = 'none';
+    if (recognizeArea) recognizeArea.style.display = 'none';
+    if (classifyArea) classifyArea.style.display = 'none';
+    if (tangramArea) tangramArea.style.display = 'none';
+    if (spatialArea) spatialArea.style.display = 'none';
     bottomActions.style.display = 'none';
     hideQuestion();
 
+    if (shapeSubTabs) {
+      shapeSubTabs.style.display = (mode === 'recognize') ? 'flex' : 'none';
+    }
+
     switch (mode) {
       case 'recognize':
-        recognizeArea.style.display = '';
+        if (recognizeArea) recognizeArea.style.display = '';
         enterRecognizeExplore();
         break;
-      case 'classify':
-        classifyArea.style.display = '';
-        enterClassifyExplore();
-        break;
-      case 'tangram':
-        tangramArea.style.display = '';
-        enterTangramExplore();
-        break;
       case 'spatial':
-        spatialArea.style.display = '';
+        if (spatialArea) spatialArea.style.display = '';
         enterSpatialExplore();
         break;
     }
@@ -1076,14 +1205,23 @@
       tab.addEventListener('click', () => {
         const mode = tab.dataset.mode;
         switchMode(mode);
-        try { localStorage.setItem('shape_last_mode', mode); } catch(e){}
+        try { localStorage.setItem('shape_last_mode', mode); } catch (e) {}
+      });
+    });
+
+    $$('.shape-sub-tab').forEach(subTab => {
+      subTab.addEventListener('click', () => {
+        const subType = subTab.dataset.subtype;
+        state.recognizeSubType = subType;
+        $$('.shape-sub-tab').forEach(s => s.classList.toggle('active', s.dataset.subtype === subType));
+        enterRecognizeExplore();
       });
     });
 
     let savedMode = 'recognize';
     try {
       savedMode = localStorage.getItem('shape_last_mode') || 'recognize';
-    } catch(e){}
+    } catch (e) {}
 
     if (!document.querySelector('.mode-tab[data-mode="' + savedMode + '"]')) {
       savedMode = 'recognize';
@@ -1100,9 +1238,13 @@
 
   if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
+      PLANE_SHAPES,
+      SOLID_SHAPES,
+      SHAPES,
       TANGRAM_PUZZLES,
       TANGRAM_ROUNDS_PER_SESSION,
       buildTangramQueue,
+      getSpatialInstruction,
     };
   }
 })();

@@ -33,20 +33,17 @@
         <span class="tab-icon">👀</span>
         <span class="tab-label">辨认</span>
       </button>
-      <button class="mode-tab" data-mode="classify">
-        <span class="tab-icon">🏠</span>
-        <span class="tab-label">分类</span>
-      </button>
-      <!-- 新增：七巧板拼摆模式 -->
-      <button class="mode-tab" data-mode="tangram">
-        <span class="tab-icon">🧩</span>
-        <span class="tab-label">拼一拼</span>
-      </button>
-      <!-- 新增：方位九宫格模式 -->
+      <!-- 方位置物格模式 -->
       <button class="mode-tab" data-mode="spatial">
         <span class="tab-icon">🧭</span>
         <span class="tab-label">听指令</span>
       </button>
+    </div>
+
+    <!-- 辨认子标签：平面图形 / 立体图形 -->
+    <div id="shapeSubTabs" class="shape-sub-tabs">
+      <button class="shape-sub-tab active" data-subtype="plane">📄 平面图形</button>
+      <button class="shape-sub-tab" data-subtype="solid">🧊 立体图形</button>
     </div>
 
     <!-- 内容区 -->
@@ -64,27 +61,25 @@
         <!-- JS动态生成图形 -->
       </div>
 
-      <!-- 分类模式：图形区 + 分类篮子 -->
-      <div id="classifyArea" class="classify-area" style="display:none;">
-        <div class="classify-shapes" id="classifyShapes">
-          <!-- JS动态生成待分类图形 -->
-        </div>
-        <div class="classify-homes" id="classifyHomes">
-          <!-- JS动态生成分类目标 -->
-        </div>
-      </div>
-
-      <!-- 新增：拼一拼模式（七巧板拼摆） -->
-      <div id="tangramArea" class="tangram-area" style="display:none;">
-        <div class="tangram-board" id="tangramBoard">
-          <!-- JS动态生成目标轮廓底图和散落拼图碎片 -->
-        </div>
-      </div>
-
-      <!-- 新增：方位九宫格模式应用 -->
+      <!-- 方位置物格模式 (4x4) -->
       <div id="spatialArea" class="spatial-area" style="display:none;">
-        <div class="spatial-shelf" id="spatialShelf">
-          <!-- JS动态生成3x3置物架槽位 -->
+        <div class="shelf-wrapper">
+          <div class="shelf-header-corner"></div>
+          <div class="shelf-col-labels">
+            <span class="shelf-label">第1列</span>
+            <span class="shelf-label">第2列</span>
+            <span class="shelf-label">第3列</span>
+            <span class="shelf-label">第4列</span>
+          </div>
+          <div class="shelf-row-labels">
+            <span class="shelf-label">第1行</span>
+            <span class="shelf-label">第2行</span>
+            <span class="shelf-label">第3行</span>
+            <span class="shelf-label">第4行</span>
+          </div>
+          <div class="spatial-shelf" id="spatialShelf">
+            <!-- JS动态生成4x4置物架槽位 -->
+          </div>
         </div>
         <div class="spatial-tray" id="spatialTray">
           <!-- JS动态生成可以被拖拽的物品 -->
