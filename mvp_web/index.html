@@ -2,342 +2,594 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-  <title>玩中学数学</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>数学真好玩</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Quicksand:wght@700&family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/design-system.css?v=20261120_8modules">
+  <link rel="stylesheet" href="css/design-system.css?v=20261120_gummy_cute">
   <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
   <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+    body {
+      background: #FFFDF9;
+      background-image: 
+        radial-gradient(circle at 10% 20%, rgba(254, 205, 211, 0.35) 0%, transparent 35%),
+        radial-gradient(circle at 90% 15%, rgba(186, 230, 253, 0.4) 0%, transparent 35%),
+        radial-gradient(circle at 80% 80%, rgba(196, 181, 253, 0.3) 0%, transparent 40%),
+        radial-gradient(circle at 15% 85%, rgba(167, 243, 208, 0.35) 0%, transparent 35%);
+      min-height: 100vh;
+      font-family: 'Nunito', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      color: #1E293B;
+      overflow-x: hidden;
+    }
+
     #app {
-      background: #F2FAF5 url('assets/math-bg.jpg') center bottom / cover no-repeat;
-    }
-    .home-header {
+      width: 100%;
+      max-width: 1080px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
       position: relative;
-      text-align: center;
-      padding: 24px 20px 12px;
-      flex-shrink: 0;
     }
+
+    /* 顶部导航与装饰 */
+    .home-header {
+      padding: 24px 24px 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .top-action-bar {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .cute-pill-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #FFFFFF;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 800;
+      color: #F59E0B;
+      box-shadow: 0 3px 0 #E2E8F0, 0 6px 12px rgba(0, 0, 0, 0.04);
+      border: 1.5px solid #F1F5F9;
+    }
+
     .settings-btn {
-      position: absolute;
-      top: 24px;
-      right: 24px;
-      width: 42px;
-      height: 42px;
-      border-radius: 50%;
-      background: #F1F5F9;
-      border: 1.5px solid #CBD5E1;
+      width: 44px;
+      height: 44px;
+      border-radius: 16px;
+      background: #FFFFFF;
+      border: 2px solid #E2E8F0;
+      box-shadow: 0 4px 0 #CBD5E1, 0 6px 12px rgba(0,0,0,0.04);
       font-size: 20px;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: all 0.15s;
+      transition: all 0.12s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
     .settings-btn:hover {
-      background: #E2E8F0;
-      transform: scale(1.05);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 0 #CBD5E1;
     }
     .settings-btn:active {
-      transform: scale(0.95);
+      transform: translateY(4px);
+      box-shadow: 0 0 0 #CBD5E1;
     }
+
+    /* 萌趣果冻大标题 */
+    .title-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
     .home-title {
-      font-family: 'ZCOOL KuaiLe', 'YouYuan', 'PingFang SC', 'Nunito', sans-serif;
-      font-size: 46px;
+      font-family: 'ZCOOL KuaiLe', 'Nunito', cursive, sans-serif;
+      font-size: 52px;
       font-weight: 900;
-      letter-spacing: 4px;
+      letter-spacing: 5px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
-      line-height: 1.2;
-      padding: 6px 0;
+      gap: 8px;
+      line-height: 1.15;
+      padding: 8px 12px;
+      user-select: none;
     }
+
     .title-char {
       display: inline-block;
       font-weight: 900;
-      -webkit-text-stroke: 1.5px currentColor;
+      position: relative;
+      cursor: pointer;
+      transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
       text-shadow:
-        -2.5px -2.5px 0 #FFFFFF,
-         2.5px -2.5px 0 #FFFFFF,
-        -2.5px  2.5px 0 #FFFFFF,
-         2.5px  2.5px 0 #FFFFFF,
-         0 4px 0 rgba(0, 0, 0, 0.12);
-      filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.08));
-      transition: transform 0.2s ease;
+        -3px -3px 0 #FFFFFF,
+         3px -3px 0 #FFFFFF,
+        -3px  3px 0 #FFFFFF,
+         3px  3px 0 #FFFFFF,
+        -3px 0 0 #FFFFFF,
+         3px 0 0 #FFFFFF,
+         0 -3px 0 #FFFFFF,
+         0  3px 0 #FFFFFF,
+         0  5px 0 rgba(0, 0, 0, 0.14),
+         0  8px 16px rgba(0, 0, 0, 0.08);
+      filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.08));
     }
-    .title-char-1 { color: #34B368; transform: rotate(-5deg) translateY(1px); }
-    .title-char-2 { color: #38A3F1; transform: rotate(4deg) translateY(-2px); }
-    .title-char-3 { color: #F59E0B; transform: rotate(-4deg) translateY(2px); }
-    .title-char-4 { color: #EC6B7E; transform: rotate(4deg) translateY(-1px); }
-    .title-char-5 { color: #9B6BE8; transform: rotate(-3deg) translateY(2px); }
-    @media (max-width: 600px) {
-      .home-title {
-        font-size: 38px;
-        letter-spacing: 2px;
-        gap: 4px;
-      }
-      .title-char {
-        -webkit-text-stroke: 1px currentColor;
-        text-shadow:
-          -2px -2px 0 #FFFFFF,
-           2px -2px 0 #FFFFFF,
-          -2px  2px 0 #FFFFFF,
-           2px  2px 0 #FFFFFF,
-           0 3px 0 rgba(0, 0, 0, 0.12);
-      }
+
+    .title-char:hover {
+      transform: scale(1.18) rotate(var(--hover-deg, 8deg)) !important;
     }
+
+    /* 糖果色字色分配与自然摇摆 */
+    .title-char-1 { color: #E11D48; transform: rotate(-5deg) translateY(2px); --hover-deg: -10deg; } /* 数 - 蜜桃草莓红 */
+    .title-char-2 { color: #0284C7; transform: rotate(4deg) translateY(-2px); --hover-deg: 8deg; }  /* 学 - 天空海盐蓝 */
+    .title-char-3 { color: #D97706; transform: rotate(-3deg) translateY(1px); --hover-deg: -6deg; }  /* 真 - 浓郁焦糖黄 */
+    .title-char-4 { color: #059669; transform: rotate(5deg) translateY(-3px); --hover-deg: 10deg; }  /* 好 - 奇异薄荷绿 */
+    .title-char-5 { color: #7C3AED; transform: rotate(-4deg) translateY(2px); --hover-deg: -8deg; }  /* 玩 - 葡萄魔力紫 */
+
+    .subtitle-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
+      color: #92400E;
+      font-size: 14px;
+      font-weight: 800;
+      padding: 4px 16px;
+      border-radius: 999px;
+      border: 1.5px solid #FCD34D;
+      box-shadow: 0 2px 6px rgba(245, 158, 11, 0.15);
+      margin-top: 2px;
+    }
+
+    /* 模块网格 - 8卡片 4x2 / 2x4 布局 */
     .module-grid {
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 16px;
-      padding: 16px 24px 28px;
+      gap: 18px;
+      padding: 20px 28px 36px;
       flex: 1;
-      overflow: auto;
       align-content: start;
-      -webkit-overflow-scrolling: touch;
       box-sizing: border-box;
     }
+
+    /* 多邻国果冻软糖风格卡片 (Jelly Gummy Card) */
     .module-card {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      justify-content: flex-start;
-      gap: 14px;
-      padding: 18px 20px;
-      border-radius: 22px !important;
-      text-decoration: none;
-      transition: transform 0.1s ease, box-shadow 0.1s ease, border-color 0.1s ease;
-      position: relative;
-      box-sizing: border-box;
-      cursor: pointer;
-    }
-
-    .module-card:hover {
-      transform: translateY(-2px);
-    }
-
-    .module-card:active {
-      transform: translateY(5px) !important;
-    }
-
-    /* 8大模块柔和淡彩背景 + 彩色 3D 实体底座（色彩丰富、舒缓不刺眼） */
-    .card-baisu {
-      background: #F2FAF4 !important;
-      border: 2px solid #C8E6C9 !important;
-      box-shadow: 0 5px 0 #A5D6A7 !important;
-    }
-    .card-baisu:active { box-shadow: 0 0 0 #A5D6A7 !important; }
-
-    .card-shape {
-      background: #FAECF8 !important;
-      border: 2px solid #E1BEE7 !important;
-      box-shadow: 0 5px 0 #CE93D8 !important;
-    }
-    .card-shape:active { box-shadow: 0 0 0 #CE93D8 !important; }
-
-    .card-measure {
-      background: #F0F8FF !important;
-      border: 2px solid #B3E5FC !important;
-      box-shadow: 0 5px 0 #81D4FA !important;
-    }
-    .card-measure:active { box-shadow: 0 0 0 #81D4FA !important; }
-
-    .card-math {
-      background: #FDF1F1 !important;
-      border: 2px solid #FFCDD2 !important;
-      box-shadow: 0 5px 0 #EF9A9A !important;
-    }
-    .card-math:active { box-shadow: 0 0 0 #EF9A9A !important; }
-
-    .card-sudoku {
-      background: #FFFDF0 !important;
-      border: 2px solid #FFE082 !important;
-      box-shadow: 0 5px 0 #FFD54F !important;
-    }
-    .card-sudoku:active { box-shadow: 0 0 0 #FFD54F !important; }
-
-    .card-multiplication {
-      background: #FFF7ED !important;
-      border: 2px solid #FED7AA !important;
-      box-shadow: 0 5px 0 #FDBA74 !important;
-    }
-    .card-multiplication:active { box-shadow: 0 0 0 #FDBA74 !important; }
-
-    .card-game24 {
-      background: #F0FDFA !important;
-      border: 2px solid #CCFBF1 !important;
-      box-shadow: 0 5px 0 #5EEAD4 !important;
-    }
-    .card-game24:active { box-shadow: 0 0 0 #5EEAD4 !important; }
-
-    .card-story {
-      background: #F5F3FF !important;
-      border: 2px solid #DDD6FE !important;
-      box-shadow: 0 5px 0 #C4B5FD !important;
-    }
-    .card-story:active { box-shadow: 0 0 0 #C4B5FD !important; }
-
-    /* 卡片内部纯白通透图标徽章 */
-    .module-card .module-icon-badge {
-      width: 50px;
-      height: 50px;
-      border-radius: 16px !important;
-      background: #FFFFFF;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    }
-
-    .module-card .module-info {
       display: flex;
       flex-direction: column;
       align-items: flex-start;
-      gap: 2px;
-      min-width: 0;
-      flex: 1;
-    }
-    .module-card .module-name {
-      font-size: 18px;
-      font-weight: 900;
-      color: #1E293B;
-      line-height: 1.25;
-      text-align: left;
-    }
-    .module-card .module-desc {
-      font-size: 12px;
-      color: #64748B;
-      text-align: left;
-      line-height: 1.3;
-      font-weight: 600;
-      white-space: nowrap;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 20px 20px 18px;
+      border-radius: 26px !important;
+      text-decoration: none;
+      position: relative;
+      cursor: pointer;
+      user-select: none;
       overflow: hidden;
-      text-overflow: ellipsis;
+      box-sizing: border-box;
+      min-height: 142px;
+
+      /* 核心果冻质感：顶部内高光 + 实体3D厚底座 + 柔化氛围投影 */
+      border: 2px solid var(--card-border) !important;
+      background: var(--card-bg) !important;
+      box-shadow: 
+        inset 0 2px 0 rgba(255, 255, 255, 0.95),
+        inset 0 -2px 0 rgba(0, 0, 0, 0.04),
+        0 6px 0 var(--card-3d),
+        0 12px 20px var(--card-glow) !important;
+      transition: transform 0.12s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.12s ease;
+    }
+
+    .module-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 
+        inset 0 2px 0 rgba(255, 255, 255, 0.95),
+        0 10px 0 var(--card-3d),
+        0 16px 24px var(--card-glow) !important;
+    }
+
+    .module-card:active {
+      transform: translateY(6px) !important;
+      box-shadow: 
+        inset 0 2px 0 rgba(255, 255, 255, 0.9),
+        0 0 0 var(--card-3d),
+        0 2px 6px var(--card-glow) !important;
+    }
+
+    /* 卡片上部：3D图标与右上角萌系角标 */
+    .card-top-row {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .module-icon-badge {
+      width: 52px;
+      height: 52px;
+      border-radius: 18px !important;
+      background: #FFFFFF !important;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 
+        inset 0 2px 0 rgba(255, 255, 255, 0.9),
+        0 3px 0 var(--badge-border, #E2E8F0),
+        0 6px 12px rgba(0, 0, 0, 0.05);
+      border: 1.5px solid rgba(255, 255, 255, 0.8);
+      position: relative;
+      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .module-card:hover .module-icon-badge {
+      transform: scale(1.1) rotate(-4deg);
+    }
+
+    .card-tag {
+      font-size: 11px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(4px);
+      color: var(--tag-color, #475569);
+      border: 1px solid rgba(255, 255, 255, 0.95);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+      display: flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    /* 卡片下部：文案 */
+    .card-content {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
       width: 100%;
     }
 
+    .card-title {
+      font-size: 19px;
+      font-weight: 900;
+      color: #1E293B;
+      letter-spacing: 0.5px;
+      line-height: 1.25;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .card-title .arrow {
+      font-size: 14px;
+      color: var(--card-3d);
+      opacity: 0.8;
+      transition: transform 0.15s ease;
+    }
+    .module-card:hover .card-title .arrow {
+      transform: translateX(4px);
+    }
+
+    .card-desc {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--desc-color, #64748B);
+      line-height: 1.35;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* ===== 8套马卡龙软糖专属色调 ===== */
+    /* 1. 百数板 · 奇异果青柠冻 */
+    .card-baisu {
+      --card-bg: #EAF8EE;
+      --card-border: #A7F3D0;
+      --card-3d: #34D399;
+      --card-glow: rgba(52, 211, 153, 0.18);
+      --badge-border: #A7F3D0;
+      --tag-color: #065F46;
+      --desc-color: #047857;
+    }
+
+    /* 2. 图形与几何 · 香芋波波紫 */
+    .card-shape {
+      --card-bg: #F5F0FF;
+      --card-border: #DDD6FE;
+      --card-3d: #A78BFA;
+      --card-glow: rgba(167, 139, 250, 0.18);
+      --badge-border: #DDD6FE;
+      --tag-color: #5B21B6;
+      --desc-color: #6D28D9;
+    }
+
+    /* 3. 常见的量 · 晴空苏打蓝 */
+    .card-measure {
+      --card-bg: #F0F9FF;
+      --card-border: #BAE6FD;
+      --card-3d: #38BDF8;
+      --card-glow: rgba(56, 189, 248, 0.18);
+      --badge-border: #BAE6FD;
+      --tag-color: #0369A1;
+      --desc-color: #0284C7;
+    }
+
+    /* 4. 加减法 · 蜜桃草莓冻 */
+    .card-math {
+      --card-bg: #FFF1F2;
+      --card-border: #FECDD3;
+      --card-3d: #FB7185;
+      --card-glow: rgba(251, 113, 133, 0.2);
+      --badge-border: #FECDD3;
+      --tag-color: #BE123C;
+      --desc-color: #E11D48;
+    }
+
+    /* 5. 数独启蒙 · 奶酪芒果黄 */
+    .card-sudoku {
+      --card-bg: #FEFCE8;
+      --card-border: #FEF08A;
+      --card-3d: #FACC15;
+      --card-glow: rgba(250, 204, 21, 0.2);
+      --badge-border: #FEF08A;
+      --tag-color: #854D0E;
+      --desc-color: #A16207;
+    }
+
+    /* 6. 乘除法启蒙 · 焦糖甜橙橘 */
+    .card-multiplication {
+      --card-bg: #FFF7ED;
+      --card-border: #FED7AA;
+      --card-3d: #FB923C;
+      --card-glow: rgba(251, 146, 60, 0.2);
+      --badge-border: #FED7AA;
+      --tag-color: #9A3412;
+      --desc-color: #C2410C;
+    }
+
+    /* 7. 24点与心算 · 海盐薄荷青 */
+    .card-game24 {
+      --card-bg: #F0FDFA;
+      --card-border: #99F6E4;
+      --card-3d: #2DD4BF;
+      --card-glow: rgba(45, 212, 191, 0.18);
+      --badge-border: #99F6E4;
+      --tag-color: #0F766E;
+      --desc-color: #0D9488;
+    }
+
+    /* 8. 故事应用题 · 樱花幻彩紫 */
+    .card-story {
+      --card-bg: #FAF5FF;
+      --card-border: #E9D5FF;
+      --card-3d: #C084FC;
+      --card-glow: rgba(192, 132, 252, 0.2);
+      --badge-border: #E9D5FF;
+      --tag-color: #6B21A8;
+      --desc-color: #7E22CE;
+    }
+
+    /* 移动端适配 */
     @media (max-width: 900px) {
       .module-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 14px;
-        padding: 12px 16px;
+        padding: 14px 16px 24px;
       }
       .module-card {
-        padding: 16px;
-        gap: 12px;
+        padding: 16px 16px 14px;
+        min-height: 126px;
+        border-radius: 22px !important;
       }
-      .module-card .module-icon-badge {
-        width: 46px;
-        height: 46px;
+      .module-icon-badge {
+        width: 44px;
+        height: 44px;
+        border-radius: 14px !important;
       }
-      .module-card .module-name {
+      .card-title {
         font-size: 17px;
       }
-      .module-card .module-desc {
-        font-size: 11px;
+      .card-desc {
+        font-size: 10.5px;
+        letter-spacing: -0.2px;
+        line-height: 1.25;
+      }
+      .home-title {
+        font-size: 40px;
+        letter-spacing: 3px;
+        gap: 5px;
       }
     }
   </style>
 </head>
 <body>
   <div id="app">
-    <div class="home-header">
-      <button class="settings-btn" onclick="openSettings()">⚙️</button>
-      <div class="home-title" aria-label="玩中学数学">
-        <span class="title-char title-char-1">玩</span>
-        <span class="title-char title-char-2">中</span>
-        <span class="title-char title-char-3">学</span>
-        <span class="title-char title-char-4">数</span>
-        <span class="title-char title-char-5">学</span>
+    <!-- 顶部导航 -->
+    <header class="home-header">
+      <div class="top-action-bar">
+        <span class="cute-pill-badge">✨ 快乐启蒙 · 乐在其中</span>
+        <button class="settings-btn" onclick="openSettings()" title="家长设置">⚙️</button>
       </div>
-    </div>
 
-    <div class="module-grid">
+      <!-- 动态Q弹主标题 -->
+      <div class="title-wrapper">
+        <h1 class="home-title" aria-label="数学真好玩">
+          <span class="title-char title-char-1">数</span>
+          <span class="title-char title-char-2">学</span>
+          <span class="title-char title-char-3">真</span>
+          <span class="title-char title-char-4">好</span>
+          <span class="title-char title-char-5">玩</span>
+        </h1>
+        <div class="subtitle-badge">
+          <span>🎈 每天玩一玩，数学变简单！</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- 8大模块多邻国果冻软糖网格 -->
+    <main class="module-grid">
+      <!-- 1. 百数板 -->
       <a href="baisu.html" class="module-card card-baisu">
-        <div class="module-icon-badge">
-          <span class="iconify" data-icon="fluent-emoji:input-numbers" style="font-size: 32px;"></span>
+        <div class="card-top-row">
+          <div class="module-icon-badge">
+            <span class="iconify" data-icon="fluent-emoji:input-numbers" style="font-size: 30px;"></span>
+          </div>
+          <span class="card-tag">🌱 数感启蒙</span>
         </div>
-        <div class="module-info">
-          <span class="module-name">百数板</span>
-          <span class="module-desc">认数字 · 找邻居 · 九宫格</span>
+        <div class="card-content">
+          <div class="card-title">
+            <span>百数板</span>
+            <span class="arrow">➜</span>
+          </div>
+          <div class="card-desc">认数字 · 找邻居 · 九宫格</div>
         </div>
       </a>
 
+      <!-- 2. 图形与几何 -->
       <a href="shape.html" class="module-card card-shape">
-        <div class="module-icon-badge">
-          <span class="iconify" data-icon="fluent-emoji:triangular-ruler" style="font-size: 32px;"></span>
+        <div class="card-top-row">
+          <div class="module-icon-badge">
+            <span class="iconify" data-icon="fluent-emoji:triangular-ruler" style="font-size: 30px;"></span>
+          </div>
+          <span class="card-tag">🎨 空间几何</span>
         </div>
-        <div class="module-info">
-          <span class="module-name">图形与几何</span>
-          <span class="module-desc">辨认 · 听指令</span>
+        <div class="card-content">
+          <div class="card-title">
+            <span>图形与几何</span>
+            <span class="arrow">➜</span>
+          </div>
+          <div class="card-desc">辨认形状 · 听指令拼搭</div>
         </div>
       </a>
 
+      <!-- 3. 常见的量 -->
       <a href="measure.html" class="module-card card-measure">
-        <div class="module-icon-badge">
-          <span class="iconify" data-icon="fluent-emoji:alarm-clock" style="font-size: 32px;"></span>
+        <div class="card-top-row">
+          <div class="module-icon-badge">
+            <span class="iconify" data-icon="fluent-emoji:alarm-clock" style="font-size: 30px;"></span>
+          </div>
+          <span class="card-tag">⏰ 生活认知</span>
         </div>
-        <div class="module-info">
-          <span class="module-name">常见的量</span>
-          <span class="module-desc">钟表 · 测量 · 日历</span>
+        <div class="card-content">
+          <div class="card-title">
+            <span>常见的量</span>
+            <span class="arrow">➜</span>
+          </div>
+          <div class="card-desc">钟表认识 · 刻度测量 · 日历</div>
         </div>
       </a>
 
+      <!-- 4. 加减法 -->
       <a href="math.html" class="module-card card-math">
-        <div class="module-icon-badge">
-          <span class="iconify" data-icon="fluent-emoji:abacus" style="font-size: 32px;"></span>
+        <div class="card-top-row">
+          <div class="module-icon-badge">
+            <span class="iconify" data-icon="fluent-emoji:abacus" style="font-size: 30px;"></span>
+          </div>
+          <span class="card-tag">🔥 核心运算</span>
         </div>
-        <div class="module-info">
-          <span class="module-name">加减法</span>
-          <span class="module-desc">10以内 · 20以内 · 100以内</span>
+        <div class="card-content">
+          <div class="card-title">
+            <span>加减法</span>
+            <span class="arrow">➜</span>
+          </div>
+          <div class="card-desc">10以内 · 20以内 · 100以内</div>
         </div>
       </a>
 
+      <!-- 5. 数独 -->
       <a href="sudoku.html" class="module-card card-sudoku">
-        <div class="module-icon-badge">
-          <span class="iconify" data-icon="fluent-emoji:puzzle-piece" style="font-size: 32px;"></span>
+        <div class="card-top-row">
+          <div class="module-icon-badge">
+            <span class="iconify" data-icon="fluent-emoji:puzzle-piece" style="font-size: 30px;"></span>
+          </div>
+          <span class="card-tag">🧩 逻辑思维</span>
         </div>
-        <div class="module-info">
-          <span class="module-name">数独</span>
-          <span class="module-desc">4乘4 · 6乘6 · 9乘9</span>
+        <div class="card-content">
+          <div class="card-title">
+            <span>数独启蒙</span>
+            <span class="arrow">➜</span>
+          </div>
+          <div class="card-desc">4×4趣味 · 6×6进阶 · 9×9</div>
         </div>
       </a>
 
+      <!-- 6. 乘除法启蒙 -->
       <a href="multiplication.html" class="module-card card-multiplication">
-        <div class="module-icon-badge">
-          <span class="iconify" data-icon="fluent-emoji:multiply" style="font-size: 32px;"></span>
+        <div class="card-top-row">
+          <div class="module-icon-badge">
+            <span class="iconify" data-icon="fluent-emoji:multiply" style="font-size: 30px;"></span>
+          </div>
+          <span class="card-tag">🚀 乘法破冰</span>
         </div>
-        <div class="module-info">
-          <span class="module-name">乘除法启蒙</span>
-          <span class="module-desc">乘法点阵 · 平均分 · 余数</span>
+        <div class="card-content">
+          <div class="card-title">
+            <span>乘除法启蒙</span>
+            <span class="arrow">➜</span>
+          </div>
+          <div class="card-desc">点阵阵列 · 平均分配 · 余数</div>
         </div>
       </a>
 
+      <!-- 7. 24点与心算 -->
       <a href="game24.html" class="module-card card-game24">
-        <div class="module-icon-badge">
-          <span class="iconify" data-icon="fluent-emoji:flower-playing-cards" style="font-size: 32px;"></span>
+        <div class="card-top-row">
+          <div class="module-icon-badge">
+            <span class="iconify" data-icon="fluent-emoji:flower-playing-cards" style="font-size: 30px;"></span>
+          </div>
+          <span class="card-tag">⚡ 心算竞技</span>
         </div>
-        <div class="module-info">
-          <span class="module-name">24点与心算</span>
-          <span class="module-desc">24点扑克 · 心算迷宫</span>
+        <div class="card-content">
+          <div class="card-title">
+            <span>24点与心算</span>
+            <span class="arrow">➜</span>
+          </div>
+          <div class="card-desc">扑克24点 · 趣味心算迷宫</div>
         </div>
       </a>
 
+      <!-- 8. 故事应用题 -->
       <a href="story.html" class="module-card card-story">
-        <div class="module-icon-badge">
-          <span class="iconify" data-icon="fluent-emoji:open-book" style="font-size: 32px;"></span>
+        <div class="card-top-row">
+          <div class="module-icon-badge">
+            <span class="iconify" data-icon="fluent-emoji:open-book" style="font-size: 30px;"></span>
+          </div>
+          <span class="card-tag">📖 情境理解</span>
         </div>
-        <div class="module-info">
-          <span class="module-name">故事应用题</span>
-          <span class="module-desc">求一共 · 比多比少 · 生活决策</span>
+        <div class="card-content">
+          <div class="card-title">
+            <span>故事应用题</span>
+            <span class="arrow">➜</span>
+          </div>
+          <div class="card-desc">求一共 · 比多少 · 生活决策</div>
         </div>
       </a>
-    </div>
+    </main>
   </div>
 
-  <script src="js/timer.js?v=20261120_8modules"></script>
+  <script src="js/timer.js?v=20261120_gummy_cute"></script>
   <script>
     function openSettings() {
       window.location.href = 'settings.html';
