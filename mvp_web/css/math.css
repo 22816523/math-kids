@@ -262,9 +262,9 @@
 
 .ten-frame {
   display: grid;
-  grid-template-columns: repeat(5, 60px);
-  grid-template-rows: repeat(2, 60px);
-  gap: 8px;
+  grid-template-columns: repeat(5, 48px);
+  grid-template-rows: repeat(2, 48px);
+  gap: 12px;
   padding: 16px;
   background: rgba(240, 243, 246, 0.6);
   border: 3px dashed var(--gray-300);
@@ -272,19 +272,28 @@
 }
 
 .frame-cell {
-  width: 60px;
-  height: 60px;
-  border: 3px solid var(--white);
-  box-shadow: 0 4px 0 var(--gray-100);
-  border-radius: var(--radius-lg);
-  background: var(--white);
+  width: 48px;
+  height: 48px;
+  border: 2.5px dashed #CBD5E1;
+  border-radius: 50%;
+  background: transparent;
+  box-shadow: none;
   transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
 }
 
 .frame-cell.filled {
-  background: linear-gradient(135deg, var(--red-light), var(--red));
-  border-color: var(--red);
-  box-shadow: 0 4px 0 var(--red-dark);
+  border: 3px solid var(--red-dark);
+  background: var(--red);
+  box-shadow: none;
+}
+
+.frame-cell.filled.filled-blue {
+  border: 3px solid var(--blue-dark);
+  background: var(--blue);
 }
 
 .frame-cell.gray {
@@ -321,6 +330,7 @@
   border-radius: 50%;
   background: var(--blue);
   border: 3px solid var(--blue-dark);
+  box-sizing: border-box;
   cursor: pointer;
   transition: all 0.3s;
 }
@@ -420,9 +430,9 @@
 
 .ten-frame {
   display: grid;
-  grid-template-columns: repeat(5, 60px);
-  grid-template-rows: repeat(2, 60px);
-  gap: 8px;
+  grid-template-columns: repeat(5, 48px);
+  grid-template-rows: repeat(2, 48px);
+  gap: 12px;
   padding: 16px;
   background: rgba(240, 243, 246, 0.6);
   border: 3px dashed var(--gray-300);
@@ -430,19 +440,28 @@
 }
 
 .frame-cell {
-  width: 60px;
-  height: 60px;
-  border: 3px solid var(--white);
-  box-shadow: 0 4px 0 var(--gray-100);
-  border-radius: var(--radius-lg);
-  background: var(--white);
+  width: 48px;
+  height: 48px;
+  border: 2.5px dashed #CBD5E1;
+  border-radius: 50%;
+  background: transparent;
+  box-shadow: none;
   transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
 }
 
 .frame-cell.filled {
-  background: linear-gradient(135deg, var(--red-light), var(--red));
-  border-color: var(--red);
-  box-shadow: 0 4px 0 var(--red-dark);
+  border: 3px solid var(--red-dark);
+  background: var(--red);
+  box-shadow: none;
+}
+
+.frame-cell.filled.filled-blue {
+  border: 3px solid var(--blue-dark);
+  background: var(--blue);
 }
 
 .frame-cell.gray {
@@ -479,6 +498,7 @@
   border-radius: 50%;
   background: var(--blue);
   border: 3px solid var(--blue-dark);
+  box-sizing: border-box;
   cursor: pointer;
   transition: all 0.3s;
 }
@@ -556,10 +576,10 @@
    100以内加减法 · 小木棒 (Math Sticks) 规范系统
    ============================================ */
 
-/* 整捆小木棒 (十位：10根扎成一捆，系红绳，高74px，宽26px) */
+/* 整捆小木棒 (十位：10根扎成一捆，系红绳，高60px，宽22px) */
 .stick-bundle {
-  width: 26px;
-  height: 74px;
+  width: 22px;
+  height: 60px;
   position: relative;
   background: repeating-linear-gradient(
     90deg,
@@ -585,14 +605,14 @@
   top: 50%;
   left: -2px;
   right: -2px;
-  height: 15px;
+  height: 14px;
   transform: translateY(-50%);
   background: linear-gradient(180deg, #F87171 0%, #EF4444 100%);
   border: 1px solid #DC2626;
   border-radius: 3px;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
   color: #FFFFFF;
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 900;
   display: flex;
   align-items: center;
@@ -633,10 +653,10 @@
   font-size: 9px;
 }
 
-/* 单根散木棒 (个位：与整捆等高74px，宽6px，极简轻巧) */
+/* 单根散木棒 (个位：与整捆等高60px，宽5px，极简轻巧) */
 .stick-single {
-  width: 6px;
-  height: 74px;
+  width: 5px;
+  height: 60px;
   background: linear-gradient(90deg, #F9EDE0 0%, #ECD8BE 50%, #DCBE9B 100%);
   border: 1px solid #BCA07B;
   border-radius: 3px;
@@ -716,27 +736,119 @@
   overflow-y: hidden;
 }
 
-/* 加法普通练习展示行 */
-.practice-add-wrap {
+/* ============================================
+   两位数加法：上下两行（竖式对应法）
+   ============================================ */
+.vertical-addition-board {
+  width: 100%;
+  max-width: 360px;
+  background: #FFFFFF;
+  border: 2px solid #E8E2D8;
+  border-radius: 18px;
+  padding: 8px 12px 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
   display: flex;
   flex-direction: column;
   gap: 6px;
-  width: 100%;
+  box-sizing: border-box;
+  margin: 0 auto;
 }
-.practice-add-row {
-  display: flex;
+
+.addition-board-header {
+  display: grid;
+  grid-template-columns: 46px 1fr 1fr;
   align-items: center;
   gap: 8px;
-  background: #FAFAF7;
-  padding: 6px 10px;
-  border-radius: 12px;
-  border: 1.5px solid #EBE5DB;
+  padding-bottom: 4px;
+  border-bottom: 1.5px solid #F1F5F9;
 }
-.practice-add-num {
-  font-size: 18px;
+
+.col-head {
+  font-size: 11px;
   font-weight: 800;
-  color: var(--blue-dark);
-  min-width: 32px;
+  color: #64748B;
+  text-align: center;
+}
+
+.col-head-label {
+  text-align: left;
+  padding-left: 2px;
+}
+
+.addition-row {
+  display: grid;
+  grid-template-columns: 46px 1fr 1fr;
+  align-items: center;
+  gap: 8px;
+  min-height: 64px;
+}
+
+.row-tag-badge {
+  font-size: 18px;
+  font-weight: 900;
+  color: #1E293B;
+  background: #F8FAFC;
+  border: 1.5px solid #CBD5E1;
+  border-radius: 10px;
+  padding: 4px 0;
+  text-align: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.row-cell-tens,
+.row-cell-ones {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  padding: 4px 6px;
+  background: #FDFCF9;
+  border-radius: 10px;
+  min-height: 64px;
+  height: 64px;
+  box-sizing: border-box;
+  overflow-x: auto;
+  overflow-y: hidden;
+  flex-wrap: nowrap;
+  scrollbar-width: none;
+}
+.row-cell-tens::-webkit-scrollbar,
+.row-cell-ones::-webkit-scrollbar {
+  display: none;
+}
+
+.row-cell-tens {
+  border: 1px solid #EAD7BD;
+  justify-content: flex-start;
+}
+
+.row-cell-ones {
+  border: 1px solid #E2E8F0;
+  justify-content: flex-start;
+}
+
+.addition-divider-line {
+  position: relative;
+  height: 2px;
+  background: #E2E8F0;
+  margin: 1px 0;
+}
+
+.operator-badge {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: #3B82F6;
+  color: #FFFFFF;
+  font-size: 13px;
+  font-weight: 900;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.35);
 }
 
 /* ---------- 演示专用卡片与舞台 (严格控制高度防重叠) ---------- */
@@ -814,14 +926,18 @@
 .demo-col-blocks {
   display: flex;
   flex-wrap: nowrap;
-  gap: 5px;
+  gap: 3px;
   justify-content: center;
   align-items: center;
   width: 100%;
-  min-height: 78px;
-  height: 78px;
+  min-height: 70px;
+  height: 70px;
   overflow-x: auto;
   overflow-y: hidden;
+  scrollbar-width: none;
+}
+.demo-col-blocks::-webkit-scrollbar {
+  display: none;
 }
 
 /* 个位拆借 / 汇合专用托盘 */

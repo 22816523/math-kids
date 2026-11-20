@@ -189,10 +189,10 @@
 }
 
 .intro-title {
-  font-size: 32px;
+  font-size: 30px;
   font-weight: 900;
   color: #1E293B;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
 }
 
 .intro-desc {
@@ -203,13 +203,14 @@
 }
 
 .intro-rule {
-  font-size: 16px;
+  font-size: 17px;
   color: #0369A1;
   background: #F0F8FF;
   border: 1.5px solid #B3E5FC;
   border-radius: 16px;
   padding: 14px 20px;
-  font-weight: 700;
+  font-weight: 800;
+  letter-spacing: 0.3px;
 }
 
 .success-card .intro-rule {

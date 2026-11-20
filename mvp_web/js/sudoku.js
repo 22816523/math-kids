@@ -534,16 +534,16 @@
       const config = getStageConfig(state.stageId);
       const successClass = successMode ? ' success-card' : '';
       const title = successMode ? `${config.label} 完成啦` : config.label;
-      const desc = successMode
-        ? `这一轮一共完成了 ${state.queue.length} 题，做得很棒！`
-        : config.intro;
+      const ruleText = successMode
+        ? `太棒了，继续挑战下一轮吧！`
+        : `填写数字1-${config.size}，每行每列不能重复`;
 
       boardHost.innerHTML = `
         <div class="sudoku-intro-card${successClass}">
           <div class="intro-emoji">${successMode ? '🏆' : config.icon}</div>
           <div class="intro-title">${title}</div>
-          <div class="intro-desc">${desc}</div>
-          <div class="intro-rule">每一排、每一列、每个小宫格都不能重复。</div>
+          ${successMode ? `<div class="intro-desc">这一轮一共完成了 ${state.queue.length} 题，做得很棒！</div>` : ''}
+          <div class="intro-rule">${ruleText}</div>
         </div>
       `;
     }
@@ -562,7 +562,7 @@
       renderIntroCard(false);
       digitBank.innerHTML = '';
       digitBank.style.display = 'none';
-      helperText.textContent = '先看规则，再开始做题。';
+      helperText.textContent = '';
       setFeedback('', '');
       setPrompt('🧩', `${config.label}：把空格补完整`, `${config.label}。${config.intro}`);
       showBottomAction('🎯 开始练习', startStagePractice, 'btn btn-green btn-lg');

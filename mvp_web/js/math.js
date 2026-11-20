@@ -430,7 +430,7 @@ function moveDotToFrame(index) {
   const cells = [...$$('#mainFrame .frame-cell')];
   const emptyIndex = cells.findIndex((cell) => !cell.classList.contains('filled'));
   if (emptyIndex >= 0) {
-    cells[emptyIndex].classList.add('filled');
+    cells[emptyIndex].classList.add('filled', 'filled-blue');
   }
 
   if (state.movedCount === state.needToMove) {
@@ -449,7 +449,7 @@ function carryOver() {
   visualArea.innerHTML = `
     <div class="level2-container">
       <div class="ten-frame full" id="mainFrame">
-        ${Array(10).fill(0).map(() => '<div class="frame-cell filled"></div>').join('')}
+        ${Array(10).fill(0).map((_, i) => `<div class="frame-cell filled ${i >= a ? 'filled-blue' : ''}"></div>`).join('')}
       </div>
       ${remaining > 0
         ? `<div class="waiting-area">${Array(remaining).fill(0).map(() => '<div class="waiting-dot"></div>').join('')}</div>`
@@ -540,20 +540,36 @@ function renderLevel3Addition() {
   setPrompt(`${getQuestionPrefix()}：${a} + ${b} = ?`, `${getQuestionPrefix()}，${a}加${b}等于多少？`);
 
   visualArea.innerHTML = `
-    <div class="level3-practice-stage">
-      <div class="practice-col" style="flex:1.2;">
-        <div class="practice-col-title">🪵 十位 (${aTens + bTens} 捆 = ${(aTens + bTens) * 10} 根)</div>
-        <div class="practice-blocks-wrap">
+    <div class="vertical-addition-board">
+      <div class="addition-board-header">
+        <div class="col-head col-head-label">加数</div>
+        <div class="col-head col-head-tens">🪵 十位 (${aTens}捆 / ${bTens}捆)</div>
+        <div class="col-head col-head-ones">🥢 个位 (${aOnes}根 / ${bOnes}根)</div>
+      </div>
+
+      <!-- 第一行：加数一 a -->
+      <div class="addition-row">
+        <div class="row-tag-badge">${a}</div>
+        <div class="row-cell-tens">
           ${Array(aTens).fill(0).map(() => renderStickBundle({ variant: 'wood' })).join('')}
-          <div style="width:2px;height:50px;background:#E2E8F0;margin:0 4px;"></div>
-          ${Array(bTens).fill(0).map(() => renderStickBundle({ variant: 'wood' })).join('')}
+        </div>
+        <div class="row-cell-ones">
+          ${Array(aOnes).fill(0).map(() => renderStickSingle('wood')).join('')}
         </div>
       </div>
-      <div class="practice-col">
-        <div class="practice-col-title">🥢 个位 (${aOnes} + ${bOnes} 根)</div>
-        <div class="practice-blocks-wrap">
-          ${Array(aOnes).fill(0).map(() => renderStickSingle('wood')).join('')}
-          <div style="width:2px;height:50px;background:#E2E8F0;margin:0 4px;"></div>
+
+      <!-- 加号分割线 -->
+      <div class="addition-divider-line">
+        <span class="operator-badge">+</span>
+      </div>
+
+      <!-- 第二行：加数二 b -->
+      <div class="addition-row">
+        <div class="row-tag-badge">${b}</div>
+        <div class="row-cell-tens">
+          ${Array(bTens).fill(0).map(() => renderStickBundle({ variant: 'wood' })).join('')}
+        </div>
+        <div class="row-cell-ones">
           ${Array(bOnes).fill(0).map(() => renderStickSingle('wood')).join('')}
         </div>
       </div>
@@ -659,39 +675,30 @@ function renderLevel3SubtractionDemoStep(step) {
       </div>
     `;
   } else if (step === 2) {
-    setPrompt(`步骤 2：从十位借 1 捆，解开红绳散成 10 根！`, `十位拿走 1 捆送去个位，解开红绳变成 10 根散棒（黄色）！十位还剩 ${tensLeftAfterBorrow} 捆。`);
+    setPrompt(`步骤 2：从十位借 1 捆，解开红绳散成 10 根！`, `十位借出 1 捆送去个位，解开变成 10 根黄色散棒！十位还剩 ${tensLeftAfterBorrow} 捆。`);
 
     visualArea.innerHTML = `
       <div class="level3-demo-card">
         ${stepPillsHtml}
         <div class="demo-stage">
           <div class="demo-col">
-            <span class="demo-col-badge">十位 · 剩 ${tensLeftAfterBorrow} 捆 (借出 1 捆)</span>
+            <span class="demo-col-badge">十位 · 剩 ${tensLeftAfterBorrow} 捆 (借出1捆)</span>
             <div class="demo-col-blocks">
               ${Array(tensLeftAfterBorrow).fill(0).map(() => renderStickBundle({ variant: 'wood' })).join('')}
               ${renderStickBundle({ dashed: true })}
             </div>
           </div>
           <div class="demo-col">
-            <span class="demo-col-badge">个位 · 解开的10根 + 原有${ones}根</span>
-            <div style="display:flex;gap:8px;width:100%;justify-content:center;align-items:center;">
-              <div class="tray-box tray-borrowed" style="flex:1.2;">
-                <span class="tray-label">⭐ 解开的 10 根 (黄色)</span>
-                <div class="tray-units">
-                  ${Array(10).fill(0).map(() => renderStickSingle('borrow')).join('')}
-                </div>
-              </div>
-              <div class="tray-box tray-original" style="flex:0.8;">
-                <span class="tray-label">原有 ${ones} 根</span>
-                <div class="tray-units">
-                  ${Array(ones).fill(0).map(() => renderStickSingle('wood')).join('')}
-                </div>
-              </div>
+            <span class="demo-col-badge">个位 · 借10根 + 原${ones}根</span>
+            <div class="demo-col-blocks" style="gap:3px;">
+              ${Array(10).fill(0).map(() => renderStickSingle('borrow')).join('')}
+              <div style="width:1.5px;height:45px;background:#CBD5E1;margin:0 2px;"></div>
+              ${Array(ones).fill(0).map(() => renderStickSingle('wood')).join('')}
             </div>
           </div>
         </div>
         <div class="demo-tip-card">
-          💡 十位借走 1 捆留虚线；个位解开的 10 根散棒（黄色）和原本的 ${ones} 根分开摆放，清晰明了！
+          💡 十位借走 1 捆（留虚线）；个位拆开 <strong>10</strong> 根黄色小棒，和原本的 <strong>${ones}</strong> 根并排对齐。
         </div>
       </div>
     `;
@@ -719,25 +726,16 @@ function renderLevel3SubtractionDemoStep(step) {
           </div>
           <div class="demo-col">
             <span class="demo-col-badge">个位 · 破十得 ${finalOnes} 根</span>
-            <div style="display:flex;gap:8px;width:100%;justify-content:center;align-items:center;">
-              <div class="tray-box tray-borrowed" style="flex:1.2;">
-                <span class="tray-label">⭐ 拿走 ${subOnes} 根，剩 ${remainInBorrow} 根</span>
-                <div class="tray-units">
-                  ${Array(subOnes).fill(0).map(() => renderStickSingle('borrow', true)).join('')}
-                  ${Array(remainInBorrow).fill(0).map(() => renderStickSingle('borrow')).join('')}
-                </div>
-              </div>
-              <div class="tray-box tray-original" style="flex:0.8;">
-                <span class="tray-label">+ 原有 ${ones} 根</span>
-                <div class="tray-units">
-                  ${Array(ones).fill(0).map(() => renderStickSingle('wood')).join('')}
-                </div>
-              </div>
+            <div class="demo-col-blocks" style="gap:3px;">
+              ${Array(subOnes).fill(0).map(() => renderStickSingle('borrow', true)).join('')}
+              ${Array(remainInBorrow).fill(0).map(() => renderStickSingle('borrow')).join('')}
+              <div style="width:1.5px;height:45px;background:#CBD5E1;margin:0 2px;"></div>
+              ${Array(ones).fill(0).map(() => renderStickSingle('wood')).join('')}
             </div>
           </div>
         </div>
         <div class="demo-tip-card">
-          💡 <strong>破十法</strong>：10 根减去 ${subOnes} 根剩 <strong>${remainInBorrow}</strong> 根；加上原本的 <strong>${ones}</strong> 根，个位共 <strong>${finalOnes}</strong> 根！
+          💡 <strong>破十法</strong>：从借来的 10 根里拿走 ${subOnes} 根（打叉）剩 <strong>${remainInBorrow}</strong> 根；加上原有的 <strong>${ones}</strong> 根，个位共 <strong>${finalOnes}</strong> 根！
         </div>
       </div>
     `;
@@ -750,17 +748,17 @@ function renderLevel3SubtractionDemoStep(step) {
       </div>
     `;
   } else if (step === 4) {
-    setPrompt(`步骤 4：算出最终答案 ${finalResult}`, `个位得 ${finalOnes} 根！十位剩 ${tensLeftAfterBorrow} 捆减去 ${subTens} 捆得 ${finalTens} 捆！最终结果是 ${finalResult}！`);
+    setPrompt(`步骤 4：算出最终答案 ${finalResult}`, `个位得 ${finalOnes} 根，十位剩 ${finalTens} 捆，最终结果是 ${finalResult}！`);
 
     visualArea.innerHTML = `
       <div class="level3-demo-card">
         ${stepPillsHtml}
-        <div class="demo-stage" style="flex-direction:column;align-items:center;padding:10px;">
+        <div class="demo-stage" style="flex-direction:column;align-items:center;padding:12px;">
           <div class="demo-result-formula">${total} - ${subtract} = ${finalResult}</div>
           <div class="demo-summary-box">
-            <div>🔹 <strong>个位 (破十法)</strong>：借10 - ${subOnes} = ${remainInBorrow} 根，加上原有的 ${ones} 根 ➜ <strong>${finalOnes} 根</strong></div>
-            <div>🔹 <strong>十位扣减</strong>：借后剩 ${tensLeftAfterBorrow} 捆 - ${subTens} 捆 ➜ <strong>${finalTens} 捆 (${finalTens * 10})</strong></div>
-            <div style="margin-top:6px;color:#16A34A;font-weight:900;font-size:15px;">🎉 最终答案：${finalTens}捆 + ${finalOnes}根 = ${finalResult}</div>
+            <div>🔹 <strong>个位 (破十法)</strong>：借 10 - ${subOnes} = ${remainInBorrow} 根，加上原有 ${ones} 根 ➜ <strong>${finalOnes} 根</strong></div>
+            <div>🔹 <strong>十位扣减</strong>：借后剩 ${tensLeftAfterBorrow} 捆 - ${subTens} 捆 ➜ <strong>${finalTens} 捆 (${finalTens * 10} 根)</strong></div>
+            <div style="margin-top:6px;color:#16A34A;font-weight:900;font-size:16px;">🎉 最终答案：${finalTens}捆又${finalOnes}根 = ${finalResult}</div>
           </div>
         </div>
       </div>
@@ -782,7 +780,7 @@ function renderLevel3AdditionDemoStep(step) {
   const finalTens = aTens + bTens + 1;
   const finalResult = a + b;
 
-  const stepLabels = ['1. 观察两数', '2. 个位汇合', '3. 满十捆扎', '4. 进位得数'];
+  const stepLabels = ['1. 观察两数', '2. 个位汇合', '3. 满十进一', '4. 算出得数'];
   const stepPillsHtml = `
     <div class="demo-step-pills">
       ${stepLabels.map((lbl, idx) => `<span class="demo-step-pill ${idx + 1 === step ? 'active' : ''}">${lbl}</span>`).join('')}
@@ -790,32 +788,41 @@ function renderLevel3AdditionDemoStep(step) {
   `;
 
   if (step === 1) {
-    setPrompt(`${getQuestionPrefix()} 演示：${a} + ${b}`, `加法先看个位：${aOnes} 根小棒加 ${bOnes} 根小棒。`);
+    setPrompt(`${getQuestionPrefix()} 演示：${a} + ${b}`, `加法先从个位算起，观察两排加数。`);
 
     visualArea.innerHTML = `
       <div class="level3-demo-card">
         ${stepPillsHtml}
-        <div class="demo-stage" style="align-items:center;">
-          <div class="demo-col">
-            <span class="demo-col-badge">加数一 · ${a} (${aTens}捆+${aOnes}根)</span>
-            <div class="demo-col-blocks">
-              <div style="display:flex;gap:4px;">${Array(aTens).fill(0).map(() => renderStickBundle({ variant: 'wood' })).join('')}</div>
-              <div style="width:2px;height:50px;background:#E2E8F0;margin:0 4px;"></div>
-              <div style="display:flex;gap:3px;flex-wrap:nowrap;">${Array(aOnes).fill(0).map(() => renderStickSingle('wood')).join('')}</div>
+        <div class="vertical-addition-board">
+          <div class="addition-board-header">
+            <div class="col-head col-head-label">加数</div>
+            <div class="col-head col-head-tens">🪵 十位 (${aTens}捆 / ${bTens}捆)</div>
+            <div class="col-head col-head-ones">🥢 个位 (${aOnes}根 / ${bOnes}根)</div>
+          </div>
+          <div class="addition-row">
+            <div class="row-tag-badge">${a}</div>
+            <div class="row-cell-tens">
+              ${Array(aTens).fill(0).map(() => renderStickBundle({ variant: 'wood' })).join('')}
+            </div>
+            <div class="row-cell-ones">
+              ${Array(aOnes).fill(0).map(() => renderStickSingle('wood')).join('')}
             </div>
           </div>
-          <div style="font-size:24px;font-weight:900;color:#94A3B8;padding:0 6px;">+</div>
-          <div class="demo-col">
-            <span class="demo-col-badge">加数二 · ${b} (${bTens}捆+${bOnes}根)</span>
-            <div class="demo-col-blocks">
-              <div style="display:flex;gap:4px;">${Array(bTens).fill(0).map(() => renderStickBundle({ variant: 'wood' })).join('')}</div>
-              <div style="width:2px;height:50px;background:#E2E8F0;margin:0 4px;"></div>
-              <div style="display:flex;gap:3px;flex-wrap:nowrap;">${Array(bOnes).fill(0).map(() => renderStickSingle('wood')).join('')}</div>
+          <div class="addition-divider-line">
+            <span class="operator-badge">+</span>
+          </div>
+          <div class="addition-row">
+            <div class="row-tag-badge">${b}</div>
+            <div class="row-cell-tens">
+              ${Array(bTens).fill(0).map(() => renderStickBundle({ variant: 'wood' })).join('')}
+            </div>
+            <div class="row-cell-ones">
+              ${Array(bOnes).fill(0).map(() => renderStickSingle('wood')).join('')}
             </div>
           </div>
         </div>
         <div class="demo-tip-card">
-          💡 左边有 <strong>${a}</strong>，右边有 <strong>${b}</strong>。点击下一步，先把两边的个位散棒合在一起！
+          💡 上排 ${a}，下排 ${b}。点击下一步，先把两排个位的小棒合在一起！
         </div>
       </div>
     `;
@@ -840,18 +847,16 @@ function renderLevel3AdditionDemoStep(step) {
             </div>
           </div>
           <div class="demo-col">
-            <span class="demo-col-badge">个位汇合 · ${sumOnes} 根 (满十！)</span>
-            <div class="tray-box tray-borrowed" style="width:100%;">
-              <span class="tray-label">⭐ 个位一共 ${sumOnes} 根 (已满 10 根)</span>
-              <div class="tray-units">
-                ${Array(10).fill(0).map(() => renderStickSingle('borrow')).join('')}
-                ${Array(carryOnes).fill(0).map(() => renderStickSingle('wood')).join('')}
-              </div>
+            <span class="demo-col-badge">个位汇合 · ${sumOnes} 根 (满十)</span>
+            <div class="demo-col-blocks" style="gap:3px;">
+              ${Array(10).fill(0).map(() => renderStickSingle('borrow')).join('')}
+              <div style="width:1.5px;height:45px;background:#CBD5E1;margin:0 2px;"></div>
+              ${Array(carryOnes).fill(0).map(() => renderStickSingle('wood')).join('')}
             </div>
           </div>
         </div>
         <div class="demo-tip-card">
-          💡 个位合起来共 <strong>${sumOnes}</strong> 根小棒！满 10 根了，其中 10 根（黄色）可以用红绳扎成 1 捆新小棒！
+          💡 个位合起来共 <strong>${sumOnes}</strong> 根！满 10 根了，准备捆成 1 捆进到十位。
         </div>
       </div>
     `;
@@ -859,39 +864,36 @@ function renderLevel3AdditionDemoStep(step) {
     controlArea.innerHTML = `
       <div class="demo-control-bar">
         <button class="btn btn-blue btn-sm" onclick="renderLevel3DemoStep(1)">◀️ 上一步</button>
-        <button class="btn btn-green btn-lg" onclick="renderLevel3DemoStep(3)">下一步：满十捆扎 ⏭️</button>
+        <button class="btn btn-green btn-lg" onclick="renderLevel3DemoStep(3)">下一步：满十进一 ⏭️</button>
         <button class="btn-ghost btn-sm" onclick="exitLevel3Demo()">❌ 退出演示</button>
       </div>
     `;
   } else if (step === 3) {
-    setPrompt(`步骤 3：个位满 10 根系上红绳，捆成 1 捆新小棒！`, `把个位中的 10 根散棒扎成 1 捆（金色新捆），个位还剩 ${carryOnes} 根！`);
+    setPrompt(`步骤 3：满十进一，1 捆直接进到左边十位！`, `个位满 10 根扎成 1 捆送入十位，十位变成 ${finalTens} 捆，个位剩下 ${carryOnes} 根！`);
 
     visualArea.innerHTML = `
       <div class="level3-demo-card">
         ${stepPillsHtml}
         <div class="demo-stage">
           <div class="demo-col">
-            <span class="demo-col-badge">十位 · 原有 ${aTens + bTens} 捆</span>
-            <div class="demo-col-blocks">
+            <span class="demo-col-badge">十位 · 原有${aTens + bTens}捆 + 新进1捆</span>
+            <div class="demo-col-blocks" style="gap:4px;">
               ${Array(aTens + bTens).fill(0).map(() => renderStickBundle({ variant: 'wood' })).join('')}
+              <div style="width:1.5px;height:45px;background:#E2E8F0;margin:0 2px;"></div>
+              <div style="display:inline-flex;align-items:center;">
+                ${renderStickBundle({ variant: 'borrow' })}
+              </div>
             </div>
           </div>
           <div class="demo-col">
-            <span class="demo-col-badge">个位 · 新扎成1捆 + 剩${carryOnes}根</span>
-            <div style="display:flex;gap:8px;align-items:center;justify-content:center;">
-              <div class="tray-box tray-borrowed">
-                <span class="tray-label">⭐ 扎成整捆</span>
-                <div>${renderStickBundle({ variant: 'borrow' })}</div>
-              </div>
-              <div class="tray-box tray-original">
-                <span class="tray-label">个位剩下</span>
-                <div class="tray-units">${Array(carryOnes).fill(0).map(() => renderStickSingle('wood')).join('')}</div>
-              </div>
+            <span class="demo-col-badge">个位剩下 · ${carryOnes} 根</span>
+            <div class="demo-col-blocks">
+              ${Array(carryOnes).fill(0).map(() => renderStickSingle('wood')).join('')}
             </div>
           </div>
         </div>
         <div class="demo-tip-card">
-          💡 <strong>满十进一</strong>：个位的 10 根散棒扎成了 1 捆新小棒！点击下一步，让它进位到十位排队。
+          💡 <strong>满十进一</strong>：个位的 10 根扎成 1 捆直接进到了十位！个位只剩下 <strong>${carryOnes}</strong> 根。
         </div>
       </div>
     `;
@@ -899,22 +901,22 @@ function renderLevel3AdditionDemoStep(step) {
     controlArea.innerHTML = `
       <div class="demo-control-bar">
         <button class="btn btn-blue btn-sm" onclick="renderLevel3DemoStep(2)">◀️ 上一步</button>
-        <button class="btn btn-green btn-lg" onclick="renderLevel3DemoStep(4)">下一步：进位到十位得数 ⏭️</button>
+        <button class="btn btn-green btn-lg" onclick="renderLevel3DemoStep(4)">下一步：算出得数 ⏭️</button>
         <button class="btn-ghost btn-sm" onclick="exitLevel3Demo()">❌ 退出演示</button>
       </div>
     `;
   } else if (step === 4) {
-    setPrompt(`步骤 4：进位到十位，得出答案 ${finalResult}`, `新扎成的 1 捆加入十位，十位变成 ${finalTens} 捆，个位剩下 ${carryOnes} 根，最终结果是 ${finalResult}！`);
+    setPrompt(`步骤 4：十位结算，得出答案 ${finalResult}`, `十位共 ${finalTens} 捆，个位剩下 ${carryOnes} 根，最终结果是 ${finalResult}！`);
 
     visualArea.innerHTML = `
       <div class="level3-demo-card">
         ${stepPillsHtml}
-        <div class="demo-stage" style="flex-direction:column;align-items:center;padding:10px;">
+        <div class="demo-stage" style="flex-direction:column;align-items:center;padding:12px;">
           <div class="demo-result-formula">${a} + ${b} = ${finalResult}</div>
           <div class="demo-summary-box">
             <div>🔹 <strong>个位计算</strong>：${aOnes} 根 + ${bOnes} 根 = ${sumOnes} 根 ➜ 满十进一，个位留下 <strong>${carryOnes} 根</strong></div>
-            <div>🔹 <strong>十位计算</strong>：${aTens} 捆 + ${bTens} 捆 + (进位1捆) ➜ <strong>${finalTens} 捆 (${finalTens * 10})</strong></div>
-            <div style="margin-top:6px;color:#16A34A;font-weight:900;font-size:15px;">🎉 最终答案：${finalTens}捆 + ${carryOnes}根 = ${finalResult}</div>
+            <div>🔹 <strong>十位计算</strong>：${aTens} 捆 + ${bTens} 捆 + 进位 1 捆 ➜ <strong>${finalTens} 捆 (${finalTens * 10} 根)</strong></div>
+            <div style="margin-top:6px;color:#16A34A;font-weight:900;font-size:16px;">🎉 最终答案：${finalTens}捆又${carryOnes}根 = ${finalResult}</div>
           </div>
         </div>
       </div>
