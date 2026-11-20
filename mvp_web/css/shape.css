@@ -564,8 +564,9 @@
 
 .shelf-cell.hover-target {
   background: #EAF7EF;
-  border-color: #7CE0C3;
-  transform: scale(1.02);
+  border-color: #58D1B1;
+  box-shadow: 0 0 0 3px rgba(88, 209, 177, 0.45);
+  transform: scale(1.05);
 }
 
 .shelf-cell svg {
@@ -577,18 +578,15 @@
 
 .spatial-tray {
   display: flex;
-  gap: 16px;
-  padding: 12px 20px;
-  background: #FFFFFF;
-  border-radius: 20px;
-  border: 2px solid #E5DAC6;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  gap: 20px;
+  padding: 4px 0;
+  background: transparent;
+  border: none;
+  box-shadow: none;
   justify-content: center;
   align-items: center;
-  min-height: 86px;
-  width: fit-content;
-  max-width: 90%;
-  margin: 0 auto;
+  width: 100%;
+  margin: 6px auto 0;
 }
 
 .spatial-toy {

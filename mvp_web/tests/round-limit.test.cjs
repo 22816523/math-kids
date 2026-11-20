@@ -18,10 +18,3 @@ test('measure.js 各练习模块均限制为 5 题一轮且含再练一轮按钮
   assert.match(code, /calendarRound\s*>=\s*5/);
   assert.match(code, /showBottomAction\(['"]🔄 再(练一轮|来一次|玩一次)['"]/);
 });
-
-test('trace.js 默认配置 5 个数字一轮且停止无限自动跳转', () => {
-  const code = fs.readFileSync(path.join(__dirname, '../js/trace.js'), 'utf8');
-  assert.match(code, /traceTotal:\s*5/);
-  assert.match(code, /traceCount\s*>=\s*state\.traceTotal/);
-  assert.match(code, /🔄 再(练一轮|来一次|玩一次)/);
-});

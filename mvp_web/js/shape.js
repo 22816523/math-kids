@@ -91,11 +91,26 @@
     },
     cuboid: {
       name: '长方体',
-      makeSvg: () => '<svg viewBox="0 0 100 100"><polygon points="44,16 90,26 56,40 10,30" fill="#A8DDFF"/><polygon points="10,30 56,40 56,86 10,76" fill="#52B2F5"/><polygon points="56,40 90,26 90,72 56,86" fill="#7BC9FF"/></svg>'
+      makeSvg: () => '<svg viewBox="0 0 100 100">' +
+        '<polygon points="20,24 88,24 74,38 6,38" fill="#A8DDFF"/>' +
+        '<polygon points="6,38 74,38 74,74 6,74" fill="#52B2F5"/>' +
+        '<polygon points="74,38 88,24 88,60 74,74" fill="#7BC9FF"/>' +
+        '</svg>'
     },
     cylinder: {
       name: '圆柱体',
-      makeSvg: () => '<svg viewBox="0 0 100 100"><path d="M18,30 L18,74 A32,13 0 0,0 82,74 L82,30 Z" fill="#FFAAA6"/><path d="M18,30 L18,74 A32,13 0 0,0 50,81 L50,37 Z" fill="#F08E89"/><ellipse cx="50" cy="30" rx="32" ry="13" fill="#FFC9C6"/></svg>'
+      makeSvg: () => '<svg viewBox="0 0 100 100">' +
+        '<defs>' +
+        '<linearGradient id="cylBodyGrad" x1="0%" y1="0%" x2="100%" y2="0%">' +
+        '<stop offset="0%" stop-color="#FFAAA6"/>' +
+        '<stop offset="30%" stop-color="#FFBFBC"/>' +
+        '<stop offset="75%" stop-color="#FA948E"/>' +
+        '<stop offset="100%" stop-color="#E2736D"/>' +
+        '</linearGradient>' +
+        '</defs>' +
+        '<path d="M18,28 L18,72 A32,12 0 0,0 82,72 L82,28 Z" fill="url(#cylBodyGrad)"/>' +
+        '<ellipse cx="50" cy="28" rx="32" ry="12" fill="#FFE2E0" stroke="#FFAAA6" stroke-width="1"/>' +
+        '</svg>'
     },
     sphere: {
       name: '球体',
@@ -103,7 +118,17 @@
     },
     cone: {
       name: '圆锥体',
-      makeSvg: () => '<svg viewBox="0 0 100 100"><path d="M50,10 L14,76 A36,10 0 0,0 86,76 Z" fill="#D4A5FF"/><path d="M50,10 L14,76 A36,10 0 0,0 50,81 Z" fill="#BA82EC"/><ellipse cx="50" cy="76" rx="36" ry="9" fill="#E6C8FF" opacity="0.6"/></svg>'
+      makeSvg: () => '<svg viewBox="0 0 100 100">' +
+        '<defs>' +
+        '<linearGradient id="coneBodyGrad" x1="0%" y1="0%" x2="100%" y2="0%">' +
+        '<stop offset="0%" stop-color="#C58BF2"/>' +
+        '<stop offset="30%" stop-color="#E1BFFF"/>' +
+        '<stop offset="75%" stop-color="#B370E8"/>' +
+        '<stop offset="100%" stop-color="#9645D6"/>' +
+        '</linearGradient>' +
+        '</defs>' +
+        '<path d="M50,14 L16,78 A34,10 0 0,0 84,78 Z" fill="url(#coneBodyGrad)"/>' +
+        '</svg>'
     },
     triangular_prism: {
       name: '三棱柱',
@@ -1066,11 +1091,45 @@
     }
   }
 
+  function findClosestShelfCell(cx, cy, tolerance = 24) {
+    let bestCell = null;
+    let minDistance = Infinity;
+
+    $$('.shelf-cell').forEach(c => {
+      const rect = c.getBoundingClientRect();
+      const inBounds = (
+        cx >= rect.left - tolerance &&
+        cx <= rect.right + tolerance &&
+        cy >= rect.top - tolerance &&
+        cy <= rect.bottom + tolerance
+      );
+      if (inBounds) {
+        const centerX = (rect.left + rect.right) / 2;
+        const centerY = (rect.top + rect.bottom) / 2;
+        const dist = Math.hypot(cx - centerX, cy - centerY);
+        if (dist < minDistance) {
+          minDistance = dist;
+          bestCell = c;
+        }
+      }
+    });
+
+    return bestCell;
+  }
+
   function setupSpatialDrag(toy, taskData, tray) {
     let isTracking = false;
     let isDragging = false;
     let sx = 0, sy = 0;
     let ghost = null;
+    let hoveredCell = null;
+
+    function clearCellHover() {
+      if (hoveredCell) {
+        hoveredCell.classList.remove('hover-target');
+        hoveredCell = null;
+      }
+    }
 
     function onStart(e) {
       if (toy.classList.contains('locked')) return;
@@ -1084,6 +1143,7 @@
       document.addEventListener('touchmove', onMove, { passive: false });
       document.addEventListener('mouseup', onEnd);
       document.addEventListener('touchend', onEnd);
+      document.addEventListener('touchcancel', onEnd);
     }
 
     function onMove(e) {
@@ -1092,7 +1152,7 @@
       const dx = touch.clientX - sx;
       const dy = touch.clientY - sy;
 
-      if (!isDragging && Math.hypot(dx, dy) > 6) {
+      if (!isDragging && Math.hypot(dx, dy) >= 3) {
         isDragging = true;
         ghost = toy.cloneNode(true);
         ghost.classList.add('dragging');
@@ -1102,14 +1162,25 @@
         ghost.style.top = rect.top + 'px';
         ghost.style.width = rect.width + 'px';
         ghost.style.height = rect.height + 'px';
-        ghost.style.zIndex = 1000;
+        ghost.style.zIndex = '1000';
+        ghost.style.pointerEvents = 'none';
         document.body.appendChild(ghost);
         toy.style.opacity = '0.2';
       }
 
       if (isDragging && ghost) {
-        e.preventDefault();
-        ghost.style.transform = 'translate(' + dx + 'px, ' + dy + 'px) scale(1.1)';
+        if (e.cancelable) e.preventDefault();
+        ghost.style.transform = `translate3d(${dx}px, ${dy}px, 0) scale(1.15)`;
+
+        // 实时高亮悬停的置物架目标格子
+        const cell = findClosestShelfCell(touch.clientX, touch.clientY, 18);
+        if (cell !== hoveredCell) {
+          clearCellHover();
+          if (cell) {
+            cell.classList.add('hover-target');
+            hoveredCell = cell;
+          }
+        }
       }
     }
 
@@ -1120,6 +1191,9 @@
       document.removeEventListener('touchmove', onMove);
       document.removeEventListener('mouseup', onEnd);
       document.removeEventListener('touchend', onEnd);
+      document.removeEventListener('touchcancel', onEnd);
+
+      clearCellHover();
 
       if (!isDragging) {
         // 未发生明显拖拽时直接触发点击选中
@@ -1129,18 +1203,11 @@
 
       isDragging = false;
       toy.style.opacity = '1';
-      const touch = e.changedTouches ? e.changedTouches[0] : e;
+      const touch = (e.changedTouches && e.changedTouches[0]) ? e.changedTouches[0] : e;
       const cx = touch.clientX;
       const cy = touch.clientY;
 
-      let droppedCell = null;
-      $$('.shelf-cell').forEach(c => {
-        const rect = c.getBoundingClientRect();
-        if (cx > rect.left && cx < rect.right && cy > rect.top && cy < rect.bottom) {
-          droppedCell = c;
-        }
-      });
-
+      const droppedCell = findClosestShelfCell(cx, cy, 26);
       const currentTask = state.spatialTasks[state.currentSpatialTaskIdx];
 
       if (droppedCell) {
@@ -1154,7 +1221,7 @@
     }
 
     toy.addEventListener('mousedown', onStart);
-    toy.addEventListener('touchstart', onStart, { passive: true });
+    toy.addEventListener('touchstart', onStart, { passive: false });
   }
 
   // ====================================================
