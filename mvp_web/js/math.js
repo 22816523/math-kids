@@ -482,12 +482,13 @@ function renderTenFrame(filledCount, type = 'tens', crossedCount = 0) {
 }
 
 function renderStickBundle(options = {}) {
-  const { variant = 'wood', dashed = false } = options;
+  const { variant = 'wood', dashed = false, crossed = false } = options;
   if (dashed) {
     return `<div class="stick-bundle dashed"></div>`;
   }
   const goldClass = variant === 'borrow' || variant === 'gold' ? 'bundle-gold' : '';
-  return `<div class="stick-bundle ${goldClass}"></div>`;
+  const crossClass = crossed ? 'crossed' : '';
+  return `<div class="stick-bundle ${goldClass} ${crossClass}"></div>`;
 }
 
 function renderStickSingle(variant = 'wood', crossed = false) {
@@ -635,7 +636,7 @@ function renderLevel3SubtractionDemoStep(step) {
   const finalTens = tensLeftAfterBorrow - subTens;
   const finalResult = total - subtract;
 
-  const stepLabels = ['1. 观察原数', '2. 拆解1捆', `3. 破十减${subOnes}`, '4. 十位结算'];
+  const stepLabels = ['1. 观察原数', '2. 拆解1捆', `3. 破十减${subOnes}`, '4. 十位扣减'];
   const stepPillsHtml = `
     <div class="demo-step-pills">
       ${stepLabels.map((lbl, idx) => `<span class="demo-step-pill ${idx + 1 === step ? 'active' : ''}">${lbl}</span>`).join('')}
@@ -743,29 +744,43 @@ function renderLevel3SubtractionDemoStep(step) {
     controlArea.innerHTML = `
       <div class="demo-control-bar">
         <button class="btn btn-blue btn-sm" onclick="renderLevel3DemoStep(2)">◀️ 上一步</button>
-        <button class="btn btn-green btn-lg" onclick="renderLevel3DemoStep(4)">下一步：十位结算与得数 ⏭️</button>
+        <button class="btn btn-green btn-lg" onclick="renderLevel3DemoStep(4)">下一步：十位扣减${subTens}捆 ⏭️</button>
         <button class="btn-ghost btn-sm" onclick="exitLevel3Demo()">❌ 退出演示</button>
       </div>
     `;
   } else if (step === 4) {
-    setPrompt(`步骤 4：算出最终答案 ${finalResult}`, `个位得 ${finalOnes} 根，十位剩 ${finalTens} 捆，最终结果是 ${finalResult}！`);
+    setPrompt(`步骤 4：十位扣减 ${subTens} 捆，得出最终答案 ${finalResult}！`, `十位借完剩 ${tensLeftAfterBorrow} 捆，减去 ${subTens} 捆（打叉扣除），十位剩 ${finalTens} 捆；个位剩 ${finalOnes} 根，得出答案 ${finalResult}！`);
 
     visualArea.innerHTML = `
       <div class="level3-demo-card">
         ${stepPillsHtml}
-        <div class="demo-stage" style="flex-direction:column;align-items:center;padding:12px;">
-          <div class="demo-result-formula">${total} - ${subtract} = ${finalResult}</div>
-          <div class="demo-summary-box">
-            <div>🔹 <strong>个位 (破十法)</strong>：借 10 - ${subOnes} = ${remainInBorrow} 根，加上原有 ${ones} 根 ➜ <strong>${finalOnes} 根</strong></div>
-            <div>🔹 <strong>十位扣减</strong>：借后剩 ${tensLeftAfterBorrow} 捆 - ${subTens} 捆 ➜ <strong>${finalTens} 捆 (${finalTens * 10} 根)</strong></div>
-            <div style="margin-top:6px;color:#16A34A;font-weight:900;font-size:16px;">🎉 最终答案：${finalTens}捆又${finalOnes}根 = ${finalResult}</div>
+        <div class="demo-stage">
+          <div class="demo-col">
+            <span class="demo-col-badge">十位 · 减${subTens}捆，剩${finalTens}捆</span>
+            <div class="demo-col-blocks">
+              ${finalTens > 0 ? Array(finalTens).fill(0).map(() => renderStickBundle({ variant: 'wood' })).join('') : ''}
+              ${subTens > 0 ? Array(subTens).fill(0).map(() => renderStickBundle({ variant: 'wood', crossed: true })).join('') : ''}
+              ${renderStickBundle({ dashed: true })}
+            </div>
           </div>
+          <div class="demo-col">
+            <span class="demo-col-badge">个位 · 剩 ${finalOnes} 根</span>
+            <div class="demo-col-blocks">
+              ${Array(finalOnes).fill(0).map(() => renderStickSingle('wood')).join('')}
+            </div>
+          </div>
+        </div>
+        <div class="demo-tip-card">
+          <div class="demo-result-formula" style="margin-bottom:6px;">${total} - ${subtract} = ${finalResult}</div>
+          <div>💡 <strong>十位扣减</strong>：原来借完剩 <strong>${tensLeftAfterBorrow}</strong> 捆，打叉减去 <strong>${subTens}</strong> 捆，十位剩 <strong>${finalTens}</strong> 捆！</div>
+          <div style="margin-top:4px;color:#16A34A;font-weight:900;font-size:15px;">🎉 最终答案：${finalTens > 0 ? `${finalTens}捆又` : ''}${finalOnes}根 = ${finalResult}</div>
         </div>
       </div>
     `;
 
     controlArea.innerHTML = `
       <div class="demo-control-bar">
+        <button class="btn btn-blue btn-sm" onclick="renderLevel3DemoStep(3)">◀️ 上一步</button>
         <button class="btn btn-blue btn-sm" onclick="renderLevel3DemoStep(1)">🔄 重新演示</button>
         <button class="btn btn-green btn-lg" onclick="exitLevel3Demo()">✅ 我学会了，去答题</button>
       </div>

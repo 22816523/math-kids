@@ -6,7 +6,7 @@
   <title>玩中学数学</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Quicksand:wght@700&family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/design-system.css?v=20260827_soft_pastel_wash_colored_3d_bases">
+  <link rel="stylesheet" href="css/design-system.css?v=20261120_8modules">
   <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
   <style>
     #app {
@@ -89,9 +89,9 @@
     }
     .module-grid {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 20px;
-      padding: 20px 32px 32px;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+      padding: 16px 24px 28px;
       flex: 1;
       overflow: auto;
       align-content: start;
@@ -103,9 +103,9 @@
       flex-direction: row;
       align-items: center;
       justify-content: flex-start;
-      gap: 18px;
-      padding: 22px 26px;
-      border-radius: 26px !important;
+      gap: 14px;
+      padding: 18px 20px;
+      border-radius: 22px !important;
       text-decoration: none;
       transition: transform 0.1s ease, box-shadow 0.1s ease, border-color 0.1s ease;
       position: relative;
@@ -121,7 +121,7 @@
       transform: translateY(5px) !important;
     }
 
-    /* 6大模块柔和淡彩背景 + 彩色 3D 实体底座（色彩丰富、舒缓不刺眼） */
+    /* 8大模块柔和淡彩背景 + 彩色 3D 实体底座（色彩丰富、舒缓不刺眼） */
     .card-baisu {
       background: #F2FAF4 !important;
       border: 2px solid #C8E6C9 !important;
@@ -157,11 +157,32 @@
     }
     .card-sudoku:active { box-shadow: 0 0 0 #FFD54F !important; }
 
+    .card-multiplication {
+      background: #FFF7ED !important;
+      border: 2px solid #FED7AA !important;
+      box-shadow: 0 5px 0 #FDBA74 !important;
+    }
+    .card-multiplication:active { box-shadow: 0 0 0 #FDBA74 !important; }
+
+    .card-game24 {
+      background: #F0FDFA !important;
+      border: 2px solid #CCFBF1 !important;
+      box-shadow: 0 5px 0 #5EEAD4 !important;
+    }
+    .card-game24:active { box-shadow: 0 0 0 #5EEAD4 !important; }
+
+    .card-story {
+      background: #F5F3FF !important;
+      border: 2px solid #DDD6FE !important;
+      box-shadow: 0 5px 0 #C4B5FD !important;
+    }
+    .card-story:active { box-shadow: 0 0 0 #C4B5FD !important; }
+
     /* 卡片内部纯白通透图标徽章 */
     .module-card .module-icon-badge {
-      width: 56px;
-      height: 56px;
-      border-radius: 18px !important;
+      width: 50px;
+      height: 50px;
+      border-radius: 16px !important;
       background: #FFFFFF;
       display: flex;
       align-items: center;
@@ -179,14 +200,14 @@
       flex: 1;
     }
     .module-card .module-name {
-      font-size: 20px;
+      font-size: 18px;
       font-weight: 900;
       color: #1E293B;
       line-height: 1.25;
       text-align: left;
     }
     .module-card .module-desc {
-      font-size: 13px;
+      font-size: 12px;
       color: #64748B;
       text-align: left;
       line-height: 1.3;
@@ -197,7 +218,7 @@
       width: 100%;
     }
 
-    @media (max-width: 768px) {
+    @media (max-width: 900px) {
       .module-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 14px;
@@ -283,10 +304,40 @@
           <span class="module-desc">4乘4 · 6乘6 · 9乘9</span>
         </div>
       </a>
+
+      <a href="multiplication.html" class="module-card card-multiplication">
+        <div class="module-icon-badge">
+          <span class="iconify" data-icon="fluent-emoji:multiply" style="font-size: 32px;"></span>
+        </div>
+        <div class="module-info">
+          <span class="module-name">乘除法启蒙</span>
+          <span class="module-desc">乘法点阵 · 平均分 · 余数</span>
+        </div>
+      </a>
+
+      <a href="game24.html" class="module-card card-game24">
+        <div class="module-icon-badge">
+          <span class="iconify" data-icon="fluent-emoji:flower-playing-cards" style="font-size: 32px;"></span>
+        </div>
+        <div class="module-info">
+          <span class="module-name">24点与心算</span>
+          <span class="module-desc">24点扑克 · 心算迷宫</span>
+        </div>
+      </a>
+
+      <a href="story.html" class="module-card card-story">
+        <div class="module-icon-badge">
+          <span class="iconify" data-icon="fluent-emoji:open-book" style="font-size: 32px;"></span>
+        </div>
+        <div class="module-info">
+          <span class="module-name">故事应用题</span>
+          <span class="module-desc">求一共 · 比多比少 · 生活决策</span>
+        </div>
+      </a>
     </div>
   </div>
 
-  <script src="js/timer.js?v=20260313b"></script>
+  <script src="js/timer.js?v=20261120_8modules"></script>
   <script>
     function openSettings() {
       window.location.href = 'settings.html';

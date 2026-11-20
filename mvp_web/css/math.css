@@ -653,6 +653,33 @@
   font-size: 9px;
 }
 
+/* 被扣减/划掉的整捆 (底色淡灰木质，保留立体感，红叉鲜亮醒目) */
+.stick-bundle.crossed {
+  background: #E2E8F0 !important;
+  border-color: #CBD5E1 !important;
+  box-shadow: none !important;
+  transform: scale(0.92);
+  position: relative;
+}
+.stick-bundle.crossed::after {
+  background: #CBD5E1 !important;
+  border-color: #94A3B8 !important;
+  color: #64748B !important;
+  box-shadow: none !important;
+}
+.stick-bundle.crossed::before {
+  content: '✕';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #DC2626;
+  font-size: 22px;
+  font-weight: 900;
+  z-index: 5;
+  text-shadow: 0 0 2px #FFFFFF;
+}
+
 /* 单根散木棒 (个位：与整捆等高60px，宽5px，极简轻巧) */
 .stick-single {
   width: 5px;
@@ -674,9 +701,11 @@
 
 /* 被扣减/划掉的散木棒 */
 .stick-single.crossed {
-  opacity: 0.3;
-  filter: grayscale(80%);
+  background: #CBD5E1 !important;
+  border-color: #94A3B8 !important;
+  box-shadow: none !important;
   transform: scale(0.92);
+  position: relative;
 }
 .stick-single.crossed::before {
   content: '✕';
@@ -684,9 +713,11 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  color: #EF4444;
-  font-size: 11px;
+  color: #DC2626;
+  font-size: 14px;
   font-weight: 900;
+  z-index: 5;
+  text-shadow: 0 0 2px #FFFFFF;
 }
 
 /* ---------- 练习界面小棒舞台 (高度严格锁定，杜绝遮挡) ---------- */
