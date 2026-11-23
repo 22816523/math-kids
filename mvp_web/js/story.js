@@ -212,6 +212,136 @@
             }
           }
         };
+      },
+      function stationBusPeople() {
+        const total = 6 + Math.floor(Math.random() * 4); // 6~9
+        const sub = 2 + Math.floor(Math.random() * 3);   // 2~4
+        const ans = total - sub;
+        return {
+          diff: 'easy',
+          diffName: '🟢 简单',
+          icon: '🚌',
+          questionHtml: `公交车上原有 <span class="hl-num">${total}</span> 位乘客，到站后下去了 <span class="hl-num">${sub}</span> 位，车上还剩几位乘客？`,
+          audioText: `公交车上原有${total}位乘客，到站后下去了${sub}位，现在车上还剩几位乘客呢？`,
+          answer: ans,
+          options: generateOptions(ans, 4),
+          renderStage: (container) => {
+            const card = document.createElement('div');
+            card.className = 'scenario-card';
+            card.innerHTML = `
+              <div class="scenario-title">🚌 公交车乘客动态</div>
+              <div style="font-size:16px;font-weight:800;display:flex;gap:16px;">
+                <div>👥 原有: ${total} 人</div>
+                <div style="color:#DC2626;">🚶 下车: -${sub} 人</div>
+                <div style="color:#0284C7;">❓ 剩下: ? 人</div>
+              </div>
+            `;
+            container.appendChild(card);
+          }
+        };
+      },
+      function stationBusBoarding() {
+        const init = 4 + Math.floor(Math.random() * 4); // 4~7
+        const add = 2 + Math.floor(Math.random() * 3);  // 2~4
+        const ans = init + add;
+        return {
+          diff: 'easy',
+          diffName: '🟢 简单',
+          icon: '🚏',
+          questionHtml: `校车上坐了 <span class="hl-num">${init}</span> 个小朋友，到下一站又上来了 <span class="hl-num">${add}</span> 个，现在校车上一共有几个小朋友？`,
+          audioText: `校车上坐了${init}个小朋友，又上来了${add}个，现在校车上一共有几个小朋友呢？`,
+          answer: ans,
+          options: generateOptions(ans, 4),
+          renderStage: (container) => {
+            const card = document.createElement('div');
+            card.className = 'scenario-card';
+            card.innerHTML = `
+              <div class="scenario-title">🚏 校车站点上车</div>
+              <div style="font-size:16px;font-weight:800;display:flex;gap:16px;">
+                <div>👧 原有: ${init} 人</div>
+                <div style="color:#16A34A;">🎒 新上车: +${add} 人</div>
+                <div style="color:#0284C7;">❓ 一共: ? 人</div>
+              </div>
+            `;
+            container.appendChild(card);
+          }
+        };
+      },
+      function collectStickers() {
+        const names = ['小明', '小华', '乐乐', '天天', '欣欣'];
+        const name = names[Math.floor(Math.random() * names.length)];
+        const init = 3 + Math.floor(Math.random() * 4); // 3~6
+        const add = 2 + Math.floor(Math.random() * 3);  // 2~4
+        const total = init + add;
+        return {
+          diff: 'easy',
+          diffName: '🟢 简单',
+          icon: '⭐',
+          questionHtml: `<span class="hl-name">${name}</span> 有 <span class="hl-num">${init}</span> 张小星星贴纸，老师又奖给TA <span class="hl-num">${add}</span> 张，现在一共有多少张贴纸？`,
+          audioText: `${name}有${init}张贴纸，老师又奖给TA${add}张，现在一共有多少张贴纸呢？`,
+          answer: total,
+          options: generateOptions(total, 4),
+          renderStage: (container) => {
+            const card = document.createElement('div');
+            card.className = 'scenario-card';
+            card.innerHTML = `
+              <div class="scenario-title">⭐ 贴纸收集本</div>
+              <div style="font-size:15px;font-weight:800;display:flex;gap:14px;">
+                <div>⭐ 本子里: ${init} 张</div>
+                <div style="color:#D97706;">➕ 老师奖励: ${add} 张</div>
+              </div>
+            `;
+            container.appendChild(card);
+          }
+        };
+      },
+      function eatCookies() {
+        const total = 7 + Math.floor(Math.random() * 3); // 7~9
+        const sub = 2 + Math.floor(Math.random() * 3);   // 2~4
+        const left = total - sub;
+        return {
+          diff: 'easy',
+          diffName: '🟢 简单',
+          icon: '🍪',
+          questionHtml: `盘子里原有 <span class="hl-num">${total}</span> 块小熊饼干，小明当点心吃掉了 <span class="hl-num">${sub}</span> 块，盘子里还剩几块饼干？`,
+          audioText: `盘子里原有${total}块小熊饼干，吃掉了${sub}块，盘子里还剩下几块饼干呢？`,
+          answer: left,
+          options: generateOptions(left, 4),
+          renderStage: (container) => {
+            for (let i = 0; i < total; i++) {
+              const el = document.createElement('div');
+              el.className = `story-item ${i >= total - sub ? 'fly-away' : ''}`;
+              el.textContent = '🍪';
+              container.appendChild(el);
+            }
+          }
+        };
+      },
+      function pencilBoxTotal() {
+        const p = 4 + Math.floor(Math.random() * 3); // 4~6
+        const e = 2 + Math.floor(Math.random() * 3); // 2~4
+        const ans = p + e;
+        return {
+          diff: 'easy',
+          diffName: '🟢 简单',
+          icon: '✏️',
+          questionHtml: `笔袋里装有 <span class="hl-num">${p}</span> 支铅笔和 <span class="hl-num">${e}</span> 块橡皮，这两种文具一共有多少件？`,
+          audioText: `笔袋里装有${p}支铅笔和${e}块橡皮，这两种文具一共有多少件呢？`,
+          answer: ans,
+          options: generateOptions(ans, 4),
+          renderStage: (container) => {
+            const card = document.createElement('div');
+            card.className = 'scenario-card';
+            card.innerHTML = `
+              <div class="scenario-title">✏️ 笔袋里的文具</div>
+              <div style="font-size:16px;font-weight:800;display:flex;gap:18px;">
+                <div>✏️ 铅笔: ${p} 支</div>
+                <div>🧼 橡皮: ${e} 块</div>
+              </div>
+            `;
+            container.appendChild(card);
+          }
+        };
       }
     ];
   }
@@ -350,6 +480,128 @@
                 <div>🐿️ 小松鼠：${squirrel} 颗松果 🌰</div>
                 <div>🦫 妈妈：相当于 ${times} 个 ${squirrel} 颗</div>
               </div>
+            `;
+            container.appendChild(card);
+          }
+        };
+      },
+      function betweenQueueCount() {
+        const a = 2 + Math.floor(Math.random() * 2); // 2 or 3
+        const b = a + 3 + Math.floor(Math.random() * 3); // a+3 ~ a+5
+        const ans = b - a - 1;
+        return {
+          diff: 'medium',
+          diffName: '🟡 中等',
+          icon: '👫',
+          questionHtml: `小朋友排队做操，小明排第 <span class="hl-num">${a}</span> 位，小华排第 <span class="hl-num">${b}</span> 位，小明和小华之间隔着几个人？`,
+          audioText: `小明排第${a}位，小华排第${b}位，小明和小华之间隔着几个人呢？`,
+          answer: ans,
+          options: generateOptions(ans, 4),
+          renderStage: (container) => {
+            const card = document.createElement('div');
+            card.className = 'scenario-card';
+            card.innerHTML = `
+              <div class="scenario-title">排队中间人数推算 (不含两端)</div>
+              <div style="font-size:15px;font-weight:800;display:flex;gap:8px;align-items:center;">
+                <span>第${a}位(小明)</span> ➜
+                <span style="color:#0284C7;background:#E0F2FE;padding:2px 8px;border-radius:6px;">中间 ? 人</span> ➜
+                <span>第${b}位(小华)</span>
+              </div>
+            `;
+            container.appendChild(card);
+          }
+        };
+      },
+      function treePlantingBothEnds() {
+        const intervals = 4 + Math.floor(Math.random() * 4); // 4~7
+        const ans = intervals + 1;
+        return {
+          diff: 'medium',
+          diffName: '🟡 中等',
+          icon: '🌳',
+          questionHtml: `在小路一边种树，两头都要种。一共有 <span class="hl-num">${intervals}</span> 个间隔，一共要种多少棵树？`,
+          audioText: `在小路一边种树，两头都要种。一共有${intervals}个间隔，一共要种多少棵树呢？`,
+          answer: ans,
+          options: generateOptions(ans, 4),
+          renderStage: (container) => {
+            const card = document.createElement('div');
+            card.className = 'scenario-card';
+            card.innerHTML = `
+              <div class="scenario-title">两端都种树：棵数 = 间隔数 + 1</div>
+              <div style="font-size:16px;font-weight:900;color:#059669;">
+                ${intervals} 个间隔 ➜ 需要 ${ans} 棵树 🌳
+              </div>
+            `;
+            container.appendChild(card);
+          }
+        };
+      },
+      function reverseBeforeAdd() {
+        const sub = 3 + Math.floor(Math.random() * 4); // 3~6
+        const rem = 5 + Math.floor(Math.random() * 5); // 5~9
+        const ans = sub + rem;
+        return {
+          diff: 'medium',
+          diffName: '🟡 中等',
+          icon: '🍬',
+          questionHtml: `糖果罐里有些水果糖，乐乐吃了 <span class="hl-num">${sub}</span> 颗后，罐子里还剩下 <span class="hl-num">${rem}</span> 颗，糖果罐里原来有多少颗糖？`,
+          audioText: `乐乐吃了${sub}颗糖后，还剩${rem}颗，糖果罐里原来有多少颗糖呢？`,
+          answer: ans,
+          options: generateOptions(ans, 4),
+          renderStage: (container) => {
+            const card = document.createElement('div');
+            card.className = 'scenario-card';
+            card.innerHTML = `
+              <div class="scenario-title">倒推求原来总数：原来的糖 = 吃掉的 + 剩下的</div>
+              <div style="font-size:15px;font-weight:800;display:flex;gap:12px;">
+                <div>😋 吃掉: ${sub} 颗</div>
+                <div>🍬 剩下: ${rem} 颗</div>
+              </div>
+            `;
+            container.appendChild(card);
+          }
+        };
+      },
+      function socksPairs() {
+        const pairs = 3 + Math.floor(Math.random() * 4); // 3~6
+        const total = pairs * 2;
+        return {
+          diff: 'medium',
+          diffName: '🟡 中等',
+          icon: '🧦',
+          questionHtml: `抽屉里整理出 <span class="hl-num">${total}</span> 只单只袜子，每 <span class="hl-num">2</span> 只能配成一双，一共能配成几双袜子？`,
+          audioText: `有${total}只袜子，2只配成一双，一共能配成几双袜子呢？`,
+          answer: pairs,
+          options: generateOptions(pairs, 4),
+          renderStage: (container) => {
+            const card = document.createElement('div');
+            card.className = 'scenario-card';
+            card.innerHTML = `
+              <div class="scenario-title">🧦 成双配对：2 只 = 1 双</div>
+              <div style="font-size:16px;font-weight:900;">${total} 只 ➜ 刚好能配成 ${pairs} 双</div>
+            `;
+            container.appendChild(card);
+          }
+        };
+      },
+      function reverseCompareFewer() {
+        const a = 8 + Math.floor(Math.random() * 5); // 8~12
+        const diff = 2 + Math.floor(Math.random() * 4); // 2~5
+        const ans = a + diff;
+        return {
+          diff: 'medium',
+          diffName: '🟡 中等',
+          icon: '📚',
+          questionHtml: `小明有 <span class="hl-num">${a}</span> 本故事书，比天天少 <span class="hl-num">${diff}</span> 本，天天有多少本故事书？`,
+          audioText: `小明有${a}本书，比天天少${diff}本，天天有多少本书呢？`,
+          answer: ans,
+          options: generateOptions(ans, 4),
+          renderStage: (container) => {
+            const card = document.createElement('div');
+            card.className = 'scenario-card';
+            card.innerHTML = `
+              <div class="scenario-title">逆向思维：小明比天天少 ➜ 天天比小明多</div>
+              <div style="font-size:15px;font-weight:800;">天天 = 小明的 ${a} 本 + 多的 ${diff} 本</div>
             `;
             container.appendChild(card);
           }
@@ -497,6 +749,120 @@
             container.appendChild(card);
           }
         };
+      },
+      function chickenRabbitLegs() {
+        const rabbits = 2 + Math.floor(Math.random() * 3); // 2~4
+        const chickens = 2 + Math.floor(Math.random() * 3); // 2~4
+        const totalHeads = rabbits + chickens;
+        const totalLegs = chickens * 2 + rabbits * 4;
+        return {
+          diff: 'hard',
+          diffName: '🔴 困难',
+          icon: '🐔',
+          questionHtml: `笼子里有小鸡和小兔子共 <span class="hl-num">${totalHeads}</span> 只，数一数地上一共有 <span class="hl-num">${totalLegs}</span> 条腿。笼子里有几只兔子？`,
+          audioText: `笼子里有鸡和兔共${totalHeads}只，共有${totalLegs}条腿。请问笼子里有几只兔子呢？`,
+          answer: rabbits,
+          options: generateOptions(rabbits, 4),
+          renderStage: (container) => {
+            const card = document.createElement('div');
+            card.className = 'scenario-card';
+            card.innerHTML = `
+              <div class="scenario-title">🐔🐰 鸡兔思维模型 (小鸡2条腿，兔子4条腿)</div>
+              <div style="font-size:15px;font-weight:800;">总共 ${totalHeads} 只头，总腿数 ${totalLegs} 条</div>
+            `;
+            container.appendChild(card);
+          }
+        };
+      },
+      function pageTurnCount() {
+        const start = 3 + Math.floor(Math.random() * 5); // 3~7
+        const pages = 4 + Math.floor(Math.random() * 5); // 4~8
+        const end = start + pages - 1;
+        return {
+          diff: 'hard',
+          diffName: '🔴 困难',
+          icon: '📖',
+          questionHtml: `欣欣今天读绘本，从第 <span class="hl-num">${start}</span> 页一直读到第 <span class="hl-num">${end}</span> 页（两页都读了），今天一共读了多少页？`,
+          audioText: `欣欣从第${start}页读到第${end}页，今天一共读了多少页呢？`,
+          answer: pages,
+          options: generateOptions(pages, 4),
+          renderStage: (container) => {
+            const card = document.createElement('div');
+            card.className = 'scenario-card';
+            card.innerHTML = `
+              <div class="scenario-title">页码计数注意：包括开始页和结束页 (${end} - ${start} + 1)</div>
+              <div style="font-size:15px;font-weight:800;">第 ${start} 页 ➜ 第 ${end} 页</div>
+            `;
+            container.appendChild(card);
+          }
+        };
+      },
+      function foldedRopeLength() {
+        const len = 3 + Math.floor(Math.random() * 4); // 3~6米
+        const ans = len * 4;
+        return {
+          diff: 'hard',
+          diffName: '🔴 困难',
+          icon: '🎗️',
+          questionHtml: `一根彩带连续对折 <span class="hl-num">2</span> 次后，量得折叠后的长度是 <span class="hl-num">${len}</span> 米，这根彩带原来长多少米？`,
+          audioText: `一根彩带连续对折2次后，量得长${len}米，这根彩带原来长多少米呢？`,
+          answer: ans,
+          options: generateOptions(ans, 4),
+          renderStage: (container) => {
+            const card = document.createElement('div');
+            card.className = 'scenario-card';
+            card.innerHTML = `
+              <div class="scenario-title">对折两次相当于折成 4 段：原长 = ${len} × 4</div>
+              <div style="font-size:16px;font-weight:900;color:#0284C7;">原长为: ${ans} 米</div>
+            `;
+            container.appendChild(card);
+          }
+        };
+      },
+      function balanceExchange() {
+        const factor = 3 + Math.floor(Math.random() * 2); // 3 or 4
+        const ans = 2 * factor;
+        return {
+          diff: 'hard',
+          diffName: '🔴 困难',
+          icon: '⚖️',
+          questionHtml: `天平平衡：<span class="hl-num">1</span> 只小羊的重量等于 <span class="hl-num">2</span> 只大鹅，<span class="hl-num">1</span> 只大鹅等于 <span class="hl-num">${factor}</span> 只小鸭。<span class="hl-num">1</span> 只小羊等于几只小鸭的重量？`,
+          audioText: `1只小羊等于2只大鹅，1只大鹅等于${factor}只小鸭。1只小羊等于几只小鸭的重量呢？`,
+          answer: ans,
+          options: generateOptions(ans, 4),
+          renderStage: (container) => {
+            const card = document.createElement('div');
+            card.className = 'scenario-card';
+            card.innerHTML = `
+              <div class="scenario-title">⚖️ 等量代换：1 羊 = 2 鹅 = 2 × ${factor} 鸭</div>
+              <div style="font-size:15px;font-weight:800;">🐏 = 2 × 🦢 = ${ans} × 🦆</div>
+            `;
+            container.appendChild(card);
+          }
+        };
+      },
+      function twoWayQueue() {
+        const total = 9 + Math.floor(Math.random() * 4); // 9~12
+        const pos = 3 + Math.floor(Math.random() * 4);   // 3~6
+        const ans = total - pos + 1;
+        return {
+          diff: 'hard',
+          diffName: '🔴 困难',
+          icon: '🚶',
+          questionHtml: `一行队伍一共有 <span class="hl-num">${total}</span> 人，乐乐从前往后数排第 <span class="hl-num">${pos}</span> 位，乐乐从后往前数排第几位？`,
+          audioText: `队伍一共有${total}人，乐乐从前往后数排第${pos}位，从后往前数排第几位呢？`,
+          answer: ans,
+          options: generateOptions(ans, 4),
+          renderStage: (container) => {
+            const card = document.createElement('div');
+            card.className = 'scenario-card';
+            card.innerHTML = `
+              <div class="scenario-title">双向计数规律：从后往前位次 = 总人数 - 前数位次 + 1</div>
+              <div style="font-size:15px;font-weight:800;">${total} - ${pos} + 1 = ${ans}</div>
+            `;
+            container.appendChild(card);
+          }
+        };
       }
     ];
   }
@@ -589,6 +955,89 @@
             container.appendChild(card);
           }
         };
+      },
+      function supermarketCoupons() {
+        const a = 18 + Math.floor(Math.random() * 4); // 18~21
+        const b = 15 + Math.floor(Math.random() * 4); // 15~18
+        const sum = a + b; // >= 33
+        const coupon = 5;
+        const ans = sum - coupon;
+        return {
+          diff: 'comp',
+          diffName: '🟣 综合',
+          icon: '🛒',
+          questionHtml: `超市满减大促销：<span class="hl-name">“满 30 元立减 5 元”</span>。小明买了一个 <span class="hl-num">${a}</span> 元的书包和一个 <span class="hl-num">${b}</span> 元的水杯，实际一共需要付多少元？`,
+          audioText: `超市满30元减5元。书包${a}元，水杯${b}元，满减后实际需要付多少元呢？`,
+          answer: ans,
+          options: generateOptions(ans, 4),
+          renderStage: (container) => {
+            const card = document.createElement('div');
+            card.className = 'scenario-card';
+            card.innerHTML = `
+              <div class="scenario-title">🛒 优惠券结算明细</div>
+              <div style="font-size:15px;font-weight:800;display:flex;flex-direction:column;gap:4px;">
+                <div>商品原价合计: ${a} + ${b} = ${sum} 元 (满 30 元)</div>
+                <div style="color:#059669;">🎟️ 满足满减：立减 ${coupon} 元</div>
+                <div style="color:#0284C7;">实际需付: ${ans} 元</div>
+              </div>
+            `;
+            container.appendChild(card);
+          }
+        };
+      },
+      function tripBusCapacities() {
+        const fullVans = 2 + Math.floor(Math.random() * 2); // 2 or 3
+        const extras = 1 + Math.floor(Math.random() * 4);   // 1~4
+        const total = fullVans * 8 + extras;
+        const neededVans = fullVans + 1;
+        return {
+          diff: 'comp',
+          diffName: '🟣 综合',
+          icon: '🚐',
+          questionHtml: `<span class="hl-num">${total}</span> 位同学去科技馆参观，每辆面包车最多只能坐 <span class="hl-num">8</span> 人，至少需要租几辆面包车才能让所有人坐下？`,
+          audioText: `有${total}位同学去参观，每辆车最多坐8人，至少需要租几辆面包车呢？`,
+          answer: neededVans,
+          options: generateOptions(neededVans, 4),
+          renderStage: (container) => {
+            const card = document.createElement('div');
+            card.className = 'scenario-card';
+            card.innerHTML = `
+              <div class="scenario-title">🚐 车辆容量与进一法决策</div>
+              <div style="font-size:15px;font-weight:800;">
+                <div>${fullVans} 辆车坐满 ${fullVans * 8} 人，还剩 ${extras} 人，所以至少需要租 ${neededVans} 辆车！</div>
+              </div>
+            `;
+            container.appendChild(card);
+          }
+        };
+      },
+      function movieSeating() {
+        const left = 2 + Math.floor(Math.random() * 2); // 2 or 3
+        const right = 2 + Math.floor(Math.random() * 2); // 2 or 3
+        const total = 10;
+        const middleEmpty = total - left - right;
+        return {
+          diff: 'comp',
+          diffName: '🟣 综合',
+          icon: '🎬',
+          questionHtml: `电影院一排共有 <span class="hl-num">${total}</span> 个座位，左边坐了 <span class="hl-num">${left}</span> 人，右边坐了 <span class="hl-num">${right}</span> 人，中间正好空出几个连续的座位？`,
+          audioText: `一排共${total}个座位，左边坐了${left}人，右边坐了${right}人，中间空出几个座位呢？`,
+          answer: middleEmpty,
+          options: generateOptions(middleEmpty, 4),
+          renderStage: (container) => {
+            const card = document.createElement('div');
+            card.className = 'scenario-card';
+            card.innerHTML = `
+              <div class="scenario-title">🎬 影院座位布局模型 (共 ${total} 座)</div>
+              <div style="display:flex;gap:4px;justify-content:center;font-size:18px;margin-top:6px;">
+                ${Array(left).fill('🔴').join('')}
+                ${Array(middleEmpty).fill('⚪').join('')}
+                ${Array(right).fill('🔵').join('')}
+              </div>
+            `;
+            container.appendChild(card);
+          }
+        };
       }
     ];
   }
@@ -607,11 +1056,24 @@
     return arr;
   }
 
-  // 核心：构建10题队列（3简单 + 3中等 + 3困难 + 1综合）
+  let recentStoryTemplateNames = [];
+
+  // 核心：构建10题队列（3简单 + 3中等 + 3困难 + 1综合，单轮100%不重复，跨轮循环冷却）
   function buildStoryRoundQueue() {
+    const recentSet = new Set(recentStoryTemplateNames);
+
     const pickRandomItems = (pool, n) => {
-      const shuffled = [...pool].sort(() => Math.random() - 0.5);
-      return shuffled.slice(0, n).map(fn => fn());
+      let candidates = pool.filter(fn => !recentSet.has(fn.name));
+      if (candidates.length < n) {
+        candidates = [...pool];
+      }
+      const shuffled = [...candidates].sort(() => Math.random() - 0.5);
+      const chosen = shuffled.slice(0, n);
+      return chosen.map(fn => {
+        const q = fn();
+        q.templateName = fn.name;
+        return q;
+      });
     };
 
     const easyList = pickRandomItems(getEasyPool(), 3);
@@ -619,7 +1081,14 @@
     const hardList = pickRandomItems(getHardPool(), 3);
     const compList = pickRandomItems(getComprehensivePool(), 1);
 
-    return [...easyList, ...medList, ...hardList, ...compList];
+    const roundQueue = [...easyList, ...medList, ...hardList, ...compList];
+
+    recentStoryTemplateNames = [
+      ...recentStoryTemplateNames.slice(-15),
+      ...roundQueue.map(q => q.templateName)
+    ];
+
+    return roundQueue;
   }
 
   // 渲染指定题号

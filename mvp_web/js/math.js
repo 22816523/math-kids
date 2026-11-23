@@ -19,6 +19,7 @@ const state = {
   bundles: 0,
   singles: 0,
   toRemove: 0,
+  roundQuestionKeys: new Set(),
 };
 
 const questionDisplay = $('#questionDisplay');
@@ -100,6 +101,7 @@ function startPractice() {
   state.practiceMode = true;
   state.currentQuestion = 0;
   state.correctCount = 0;
+  state.roundQuestionKeys.clear();
   bottomActions.style.display = 'none';
   nextQuestion();
 }
@@ -217,22 +219,35 @@ function showCompleteScreen() {
 }
 
 function generateLevel1Question() {
-  const isAddition = Math.random() > 0.5;
-  state.type = isAddition ? 'addition' : 'subtraction';
   state.currentFruit = fruits[Math.floor(Math.random() * fruits.length)];
+  let key = '';
+  let attempts = 0;
+  let isAddition = true;
+
+  do {
+    isAddition = Math.random() > 0.5;
+    if (isAddition) {
+      const a = Math.floor(Math.random() * 9) + 1;
+      const b = Math.floor(Math.random() * (10 - a)) + 1;
+      key = `l1_+_${a}_${b}`;
+      state.question = { a, b };
+      state.answer = a + b;
+    } else {
+      const total = Math.floor(Math.random() * 9) + 2;
+      const subtract = Math.floor(Math.random() * (total - 1)) + 1;
+      key = `l1_-_${total}_${subtract}`;
+      state.question = { total, subtract };
+      state.answer = total - subtract;
+    }
+    attempts++;
+  } while (state.roundQuestionKeys.has(key) && attempts < 50);
+
+  state.roundQuestionKeys.add(key);
+  state.type = isAddition ? 'addition' : 'subtraction';
 
   if (isAddition) {
-    const a = Math.floor(Math.random() * 5) + 1;
-    const b = Math.floor(Math.random() * (10 - a)) + 1;
-    state.question = { a, b };
-    state.answer = a + b;
     renderLevel1Addition();
   } else {
-    const total = Math.floor(Math.random() * 9) + 2;
-    const subtract = Math.floor(Math.random() * (total - 1)) + 1;
-    const result = total - subtract;
-    state.question = { total, subtract };
-    state.answer = result;
     renderLevel1Subtraction();
   }
 }
@@ -356,10 +371,21 @@ function eatApple(index) {
 }
 
 function generateLevel2Question() {
-  const a = Math.floor(Math.random() * 4) + 6;
-  const minB = 11 - a;
-  const maxB = 9;
-  const b = Math.floor(Math.random() * (maxB - minB + 1)) + minB;
+  let key = '';
+  let attempts = 0;
+  let a = 6;
+  let b = 5;
+
+  do {
+    a = Math.floor(Math.random() * 5) + 5; // 5..9
+    const minB = 11 - a;
+    const maxB = 9;
+    b = Math.floor(Math.random() * (maxB - minB + 1)) + minB;
+    key = `l2_+_${a}_${b}`;
+    attempts++;
+  } while (state.roundQuestionKeys.has(key) && attempts < 50);
+
+  state.roundQuestionKeys.add(key);
   state.question = { a, b };
   state.answer = a + b;
   renderLevel2Addition();
@@ -501,36 +527,50 @@ let demoStep = 1;
 let demoAutoPlayTimer = null;
 
 function generateLevel3Question() {
-  const isAddition = Math.random() > 0.5;
+  let key = '';
+  let attempts = 0;
+  let isAddition = true;
+
+  do {
+    isAddition = Math.random() > 0.5;
+    if (isAddition) {
+      // 进位加法（和在 20~99 之间，个位相加 >= 10）
+      const aTens = Math.floor(Math.random() * 4) + 1; // 1..4
+      const aOnes = Math.floor(Math.random() * 6) + 4; // 4..9
+      const a = aTens * 10 + aOnes;
+
+      const maxBTens = Math.min(4, 8 - aTens);
+      const bTens = Math.floor(Math.random() * maxBTens) + 1; // 1..maxBTens
+      const minBOnes = 10 - aOnes;
+      const bOnes = Math.floor(Math.random() * (10 - minBOnes)) + minBOnes; // ensures aOnes + bOnes >= 10
+      const b = bTens * 10 + bOnes;
+
+      key = `l3_+_${a}_${b}`;
+      state.question = { a, b, aTens, aOnes, bTens, bOnes };
+      state.answer = a + b;
+    } else {
+      // 退位减法（被减数 21~95，减数个位 > 被减数个位）
+      const tens = Math.floor(Math.random() * 5) + 3; // 3..7
+      const ones = Math.floor(Math.random() * 5) + 1; // 1..5
+      const total = tens * 10 + ones;
+
+      const subTens = Math.floor(Math.random() * (tens - 2)) + 1; // 1..(tens-2)
+      const subOnes = Math.floor(Math.random() * (9 - ones)) + ones + 1; // subOnes > ones
+      const subtract = subTens * 10 + subOnes;
+
+      key = `l3_-_${total}_${subtract}`;
+      state.question = { total, subtract, tens, ones, subTens, subOnes };
+      state.answer = total - subtract;
+    }
+    attempts++;
+  } while (state.roundQuestionKeys.has(key) && attempts < 50);
+
+  state.roundQuestionKeys.add(key);
   state.type = isAddition ? 'addition' : 'subtraction';
 
   if (isAddition) {
-    // 进位加法（和在 20~99 之间，个位相加 >= 10）
-    const aTens = Math.floor(Math.random() * 4) + 1; // 1..4
-    const aOnes = Math.floor(Math.random() * 6) + 4; // 4..9
-    const a = aTens * 10 + aOnes;
-
-    const maxBTens = Math.min(4, 8 - aTens);
-    const bTens = Math.floor(Math.random() * maxBTens) + 1; // 1..maxBTens
-    const minBOnes = 10 - aOnes;
-    const bOnes = Math.floor(Math.random() * (10 - minBOnes)) + minBOnes; // ensures aOnes + bOnes >= 10
-    const b = bTens * 10 + bOnes;
-
-    state.question = { a, b, aTens, aOnes, bTens, bOnes };
-    state.answer = a + b;
     renderLevel3Addition();
   } else {
-    // 退位减法（被减数 21~95，减数个位 > 被减数个位）
-    const tens = Math.floor(Math.random() * 5) + 3; // 3..7
-    const ones = Math.floor(Math.random() * 5) + 1; // 1..5
-    const total = tens * 10 + ones;
-
-    const subTens = Math.floor(Math.random() * (tens - 2)) + 1; // 1..(tens-2)
-    const subOnes = Math.floor(Math.random() * (9 - ones)) + ones + 1; // subOnes > ones
-    const subtract = subTens * 10 + subOnes;
-
-    state.question = { total, subtract, tens, ones, subTens, subOnes };
-    state.answer = total - subtract;
     renderLevel3Subtraction();
   }
 }
@@ -947,3 +987,14 @@ function renderLevel3AdditionDemoStep(step) {
 }
 
 showStartScreen();
+
+if (typeof window !== 'undefined') {
+  window.mathApp = {
+    state,
+    generateLevel1Question,
+    generateLevel2Question,
+    generateLevel3Question,
+    startPractice,
+    nextQuestion
+  };
+}

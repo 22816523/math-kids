@@ -10,12 +10,13 @@
   'use strict';
 
   // 状态变量
-  let currentMode = 'calc_rush'; // 'calc_rush' | 'blank_box' | 'mixed_calc' | 'cards24'
+  let currentMode = 'calc_rush'; // 'calc_rush' | 'blank_box' | 'mixed_calc'
   let currentLevel = 1; // 1 ~ 10
   let questionInLevelIndex = 0; // 0 ~ 4 (每关5题)
   let levelScore = 0;
   let isAnswerLocked = false;
   let currentQuestion = null;
+  let levelQuestionKeys = new Set();
 
   // 关卡配置
   const LEVEL_CONFIGS = [
@@ -73,16 +74,9 @@
         tab.classList.add('active');
         currentMode = tab.getAttribute('data-mode');
 
-        // 24点模式下隐藏关卡切换器与微进度条
-        if (currentMode === 'cards24') {
-          if (btnLevelPickerTrigger) btnLevelPickerTrigger.style.display = 'none';
-          if (calcProgressTrack) calcProgressTrack.style.display = 'none';
-          loadCards24Question();
-        } else {
-          if (btnLevelPickerTrigger) btnLevelPickerTrigger.style.display = 'inline-flex';
-          if (calcProgressTrack) calcProgressTrack.style.display = 'block';
-          startLevel(currentLevel);
-        }
+        if (btnLevelPickerTrigger) btnLevelPickerTrigger.style.display = 'inline-flex';
+        if (calcProgressTrack) calcProgressTrack.style.display = 'block';
+        startLevel(currentLevel);
       });
     });
   }
@@ -169,6 +163,7 @@
     currentLevel = lvl;
     questionInLevelIndex = 0;
     levelScore = 0;
+    levelQuestionKeys.clear();
     if (levelClearModal) levelClearModal.style.display = 'none';
 
     // 更新顶栏关卡指示
@@ -180,7 +175,7 @@
     loadQuestion();
   }
 
-  // 加载当前题
+  // 加载当前题（单轮5题严格去重）
   function loadQuestion() {
     isAnswerLocked = false;
     game24Stage.innerHTML = '';
@@ -192,18 +187,23 @@
       calcProgressFill.style.width = `${((questionInLevelIndex + 1) / 5) * 100}%`;
     }
 
-    if (currentMode === 'calc_rush') {
-      currentQuestion = generateCalcRushQuestion(currentLevel);
+    let q = null;
+    let attempts = 0;
+    do {
+      if (currentMode === 'calc_rush') {
+        q = generateCalcRushQuestion(currentLevel);
+      } else if (currentMode === 'blank_box') {
+        q = generateBlankBoxQuestion(currentLevel);
+      } else if (currentMode === 'mixed_calc') {
+        q = generateMixedCalcQuestion(currentLevel);
+      }
+      attempts++;
+    } while (q && levelQuestionKeys.has(q.key || q.formulaHtml) && attempts < 50);
+
+    if (q) {
+      levelQuestionKeys.add(q.key || q.formulaHtml);
+      currentQuestion = q;
       renderFormulaQuestion(currentQuestion);
-    } else if (currentMode === 'blank_box') {
-      currentQuestion = generateBlankBoxQuestion(currentLevel);
-      renderFormulaQuestion(currentQuestion);
-    } else if (currentMode === 'mixed_calc') {
-      currentQuestion = generateMixedCalcQuestion(currentLevel);
-      renderFormulaQuestion(currentQuestion);
-    } else if (currentMode === 'cards24') {
-      loadCards24Question();
-      return;
     }
 
     if (questionIcon) questionIcon.textContent = currentQuestion.icon || '🎯';
@@ -356,6 +356,7 @@
 
     expr = `${a} ${op} ${b} = ?`;
     return {
+      key: `${a}_${op}_${b}`,
       icon: '🎯',
       questionText: `算一算：${a} ${op} ${b} 等于多少？`,
       audioText: `${a}${op === '×' ? '乘' : (op === '÷' ? '除以' : op)}${b}等于多少呢？`,
@@ -390,6 +391,7 @@
     }
 
     return {
+      key: `box_${hideLeft ? 'L' : 'R'}_${a}_${op}_${b}`,
       icon: '🔲',
       questionText: `想一想：方框 ▢ 里应该填几？`,
       audioText: audioText,
@@ -471,6 +473,7 @@
     }
 
     return {
+      key: `mix_${isFindBox ? 'box' : 'res'}_${a}_${op1}_${b}_${op2}_${c}`,
       icon: '⚡',
       questionText: isFindBox ? '混合连算：方框 ▢ 里是几？' : '混合连算：算出最终得数！',
       audioText: `观察算式，注意计算先后顺序，算出正确答案吧！`,
@@ -478,63 +481,6 @@
       answer: targetAnswer,
       options: generateOptions(targetAnswer, 4)
     };
-  }
-
-  // 4. 🎴 24点扑克
-  function loadCards24Question() {
-    isAnswerLocked = false;
-    game24Stage.innerHTML = '';
-    game24Options.innerHTML = '';
-    if (game24Options) game24Options.className = 'game24-options formulas-mode';
-
-    const hands = [
-      { cards: [1, 2, 3, 4], correct: '(1 + 2 + 3) × 4 = 24', wrongs: ['(1 + 2) × 3 + 4 = 13', '1 + 2 + 3 + 4 = 10', '2 × 3 + 4 - 1 = 9'] },
-      { cards: [2, 3, 4, 6], correct: '2 × 3 × 4 = 24', wrongs: ['2 + 3 + 4 + 6 = 15', '2 × 4 + 6 = 14', '6 × 3 - 2 + 4 = 20'] },
-      { cards: [3, 3, 3, 5], correct: '(3 + 5) × 3 = 24', wrongs: ['3 × 3 + 3 = 12', '3 + 3 + 5 = 11', '5 × 3 + 3 = 18'] },
-      { cards: [4, 4, 4, 6], correct: '(4 + 4 - 4) × 6 = 24', wrongs: ['4 × 4 + 4 = 20', '4 + 4 + 6 = 14', '6 × 4 - 4 = 20'] },
-      { cards: [6, 6, 6, 6], correct: '6 + 6 + 6 + 6 = 24', wrongs: ['6 × 6 - 6 = 30', '6 + 6 × 2 = 18', '6 × 6 ÷ 6 = 6'] },
-      { cards: [1, 5, 5, 5], correct: '(5 - 1 ÷ 5) × 5 = 24', wrongs: ['5 + 5 + 5 + 1 = 16', '5 × 5 - 1 = 24 (未用完)', '5 × 5 - 5 + 1 = 21'] },
-      { cards: [2, 7, 8, 9], correct: '(9 - 7 + 8) × 2 = 24', wrongs: ['9 + 8 + 7 - 2 = 22', '9 × 2 + 8 - 7 = 19', '8 × 2 + 9 - 7 = 18'] }
-    ];
-
-    const pick = hands[Math.floor(Math.random() * hands.length)];
-    currentQuestion = {
-      icon: '🎴',
-      questionText: '看看这 4 张扑克牌，哪个算式能凑出 24 点？',
-      audioText: '请看看这4张牌，选出能凑成24点的正确算式吧！',
-      cards: pick.cards,
-      answer: pick.correct,
-      options: shuffle([pick.correct, ...pick.wrongs])
-    };
-
-    const suits = ['♠️', '♥️', '♣️', '♦️'];
-    const container = document.createElement('div');
-    container.className = 'cards-container';
-    pick.cards.forEach((val, idx) => {
-      const card = document.createElement('div');
-      const suit = suits[idx % suits.length];
-      const isRed = suit === '♥️' || suit === '♦️';
-      card.className = `card-item ${isRed ? 'red' : ''}`;
-      card.innerHTML = `
-        <div>${val}</div>
-        <div class="card-suit">${suit}</div>
-        <div>${val}</div>
-      `;
-      container.appendChild(card);
-    });
-    game24Stage.appendChild(container);
-
-    currentQuestion.options.forEach(opt => {
-      const btn = document.createElement('button');
-      btn.className = 'game24-opt-btn';
-      btn.textContent = opt;
-      btn.addEventListener('click', () => handleOptionClick(opt, currentQuestion.answer, btn));
-      game24Options.appendChild(btn);
-    });
-
-    if (questionIcon) questionIcon.textContent = '🎴';
-    if (questionText) questionText.textContent = currentQuestion.questionText;
-    playSpeech(currentQuestion.audioText);
   }
 
   // 作答反馈
@@ -550,15 +496,11 @@
 
       setTimeout(() => {
         hideFeedback();
-        if (currentMode === 'cards24') {
-          loadCards24Question();
+        if (questionInLevelIndex < 4) {
+          questionInLevelIndex++;
+          loadQuestion();
         } else {
-          if (questionInLevelIndex < 4) {
-            questionInLevelIndex++;
-            loadQuestion();
-          } else {
-            showLevelClearModal();
-          }
+          showLevelClearModal();
         }
       }, 1300);
     } else {

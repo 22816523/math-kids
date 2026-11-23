@@ -144,7 +144,7 @@ test('4x4 方位指令生成支持行列坐标与多向顺序计数', () => {
   const instructions = new Set();
   for (let r = 0; r < 4; r++) {
     for (let c = 0; c < 4; c++) {
-      for (let k = 0; k < 10; k++) {
+      for (let k = 0; k < 30; k++) {
         const text = getSpatialInstruction(r, c);
         assert.equal(typeof text, 'string');
         assert.ok(text.length > 0);

@@ -207,41 +207,6 @@
   transition: transform 0.15s ease;
 }
 
-/* 24点扑克牌容器 */
-.cards-container {
-  display: flex;
-  gap: 14px;
-  justify-content: center;
-  align-items: center;
-  flex-wrap: wrap;
-}
-
-.card-item {
-  width: 82px;
-  height: 116px;
-  background: #FFFFFF;
-  border: 2.5px solid #CBD5E1;
-  border-radius: 16px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-  padding: 8px;
-  font-size: 24px;
-  font-weight: 900;
-  color: #1E293B;
-  user-select: none;
-}
-
-.card-item.red {
-  color: #E11D48;
-}
-
-.card-suit {
-  font-size: 28px;
-}
-
 /* 5. 选项区：保留唯一的 3D 按压交互焦点 */
 .game24-options {
   display: grid;
@@ -521,9 +486,14 @@
 
 /* 移动端适配 */
 @media (max-width: 640px) {
+  .segmented-control {
+    gap: 2px;
+    padding: 3px;
+  }
   .segmented-item {
-    font-size: 12.5px;
-    padding: 6px 6px;
+    font-size: 11.5px;
+    padding: 6px 3px;
+    letter-spacing: -0.3px;
   }
   .formula-display {
     font-size: 38px;
@@ -547,18 +517,6 @@
   .game24-opt-btn {
     padding: 13px !important;
     font-size: 22px !important;
-  }
-  .game24-options.formulas-mode {
-    grid-template-columns: 1fr;
-  }
-  .card-item {
-    width: 66px;
-    height: 96px;
-    font-size: 19px;
-    padding: 6px;
-  }
-  .card-suit {
-    font-size: 22px;
   }
   .level-picker-grid {
     grid-template-columns: 1fr;

@@ -29,9 +29,20 @@ test('故事应用题每轮固定10题且难度梯级严格对齐 (3简单 + 3�
   const storyApp = loadStoryModule();
   assert.ok(storyApp, 'storyApp 应当挂载到 window');
 
-  for (let round = 0; round < 10; round++) {
+  // 验证各层级题库扩充容量 (36道全库)
+  assert.equal(storyApp.getEasyPool().length, 10, '简单题库必须扩充至 10 道');
+  assert.equal(storyApp.getMediumPool().length, 10, '中等题库必须扩充至 10 道');
+  assert.equal(storyApp.getHardPool().length, 10, '困难题库必须扩充至 10 道');
+  assert.equal(storyApp.getComprehensivePool().length, 6, '综合题库必须扩充至 6 道');
+
+  for (let round = 0; round < 30; round++) {
     const queue = storyApp.buildStoryRoundQueue();
     assert.equal(queue.length, 10, '每轮题目数必须严格为 10');
+
+    // 验证单轮内 10 道题模板严格去重，无任何两题一模一样
+    const templateNames = queue.map(q => q.templateName);
+    const uniqueTemplates = new Set(templateNames);
+    assert.equal(uniqueTemplates.size, 10, `第 ${round + 1} 轮内 10 道题目模板必须互不相同、无一重复`);
 
     // 检查梯级划分
     for (let i = 0; i < 3; i++) {
