@@ -6,7 +6,7 @@
   <title>数学真好玩</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Quicksand:wght@700&family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/design-system.css?v=20261120_gummy_cute">
+  <link rel="stylesheet" href="css/design-system.css?v=20261123_calc_overhaul">
   <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
   <style>
     * {
@@ -14,6 +14,15 @@
       margin: 0;
       padding: 0;
       -webkit-tap-highlight-color: transparent;
+    }
+    html, body {
+      width: 100%;
+      height: auto !important;
+      min-height: 100% !important;
+      overflow-x: hidden !important;
+      overflow-y: auto !important;
+      -webkit-overflow-scrolling: touch !important;
+      touch-action: auto !important;
     }
     body {
       background: #FFFDF9;
@@ -29,13 +38,14 @@
       align-items: center;
       justify-content: flex-start;
       color: #1E293B;
-      overflow-x: hidden;
     }
 
     #app {
-      width: 100%;
+      width: 100% !important;
       max-width: 1080px;
-      min-height: 100vh;
+      height: auto !important;
+      min-height: 100vh !important;
+      overflow: visible !important;
       display: flex;
       flex-direction: column;
       position: relative;
@@ -392,25 +402,28 @@
       --desc-color: #7E22CE;
     }
 
-    /* 移动端适配 */
+    /* 移动端适配与防遮挡滚动 */
     @media (max-width: 900px) {
+      .home-header {
+        padding: 16px 16px 6px;
+      }
       .module-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 14px;
-        padding: 14px 16px 24px;
+        gap: 12px;
+        padding: 10px 14px calc(64px + env(safe-area-inset-bottom, 32px));
       }
       .module-card {
-        padding: 16px 16px 14px;
-        min-height: 126px;
-        border-radius: 22px !important;
+        padding: 14px 14px 12px;
+        min-height: 118px;
+        border-radius: 20px !important;
       }
       .module-icon-badge {
-        width: 44px;
-        height: 44px;
+        width: 42px;
+        height: 42px;
         border-radius: 14px !important;
       }
       .card-title {
-        font-size: 17px;
+        font-size: 16px;
       }
       .card-desc {
         font-size: 10.5px;
@@ -418,9 +431,9 @@
         line-height: 1.25;
       }
       .home-title {
-        font-size: 40px;
-        letter-spacing: 3px;
-        gap: 5px;
+        font-size: 38px;
+        letter-spacing: 2px;
+        gap: 4px;
       }
     }
   </style>
@@ -553,20 +566,20 @@
         </div>
       </a>
 
-      <!-- 7. 24点与心算 -->
+      <!-- 7. 计算大闯关 -->
       <a href="game24.html" class="module-card card-game24">
         <div class="card-top-row">
           <div class="module-icon-badge">
             <span class="iconify" data-icon="fluent-emoji:flower-playing-cards" style="font-size: 30px;"></span>
           </div>
-          <span class="card-tag">⚡ 心算竞技</span>
+          <span class="card-tag">⚡ 算力挑战</span>
         </div>
         <div class="card-content">
           <div class="card-title">
-            <span>24点与心算</span>
+            <span>计算大闯关</span>
             <span class="arrow">➜</span>
           </div>
-          <div class="card-desc">扑克24点 · 趣味心算迷宫</div>
+          <div class="card-desc">24点 · 算力闯关 · 方框填空 · 混合运算</div>
         </div>
       </a>
 
@@ -589,7 +602,7 @@
     </main>
   </div>
 
-  <script src="js/timer.js?v=20261120_gummy_cute"></script>
+  <script src="js/timer.js?v=20261123_calc_overhaul"></script>
   <script>
     function openSettings() {
       window.location.href = 'settings.html';

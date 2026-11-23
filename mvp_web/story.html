@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-  <title>数学启蒙 · 故事应用题</title>
+  <title>数学真好玩 · 故事应用题</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Quicksand:wght@700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/design-system.css?v=20260903">
-  <link rel="stylesheet" href="css/story.css?v=20260903">
+  <link rel="stylesheet" href="css/design-system.css?v=20261123_story_overhaul">
+  <link rel="stylesheet" href="css/story.css?v=20261123_story_overhaul">
   <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
 </head>
 <body>
@@ -25,22 +25,16 @@
         <a href="index.html" class="back-btn" aria-label="返回首页"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg></a>
         <span class="topbar-title">📖 故事应用题</span>
       </div>
+      <!-- 轮次进度与难度胶囊 -->
+      <div class="story-progress-wrapper">
+        <span id="roundIndicator" class="round-pill">第 1/10 题</span>
+        <span id="diffIndicator" class="diff-pill diff-easy">🟢 简单</span>
+      </div>
     </div>
 
-    <!-- 模式切换页签 -->
-    <div class="mode-tabs">
-      <button class="mode-tab active" data-mode="change">
-        <span class="tab-icon">🍃</span>
-        <span class="tab-label">求一共/求剩余</span>
-      </button>
-      <button class="mode-tab" data-mode="compare">
-        <span class="tab-icon">🐰</span>
-        <span class="tab-label">比多比少</span>
-      </button>
-      <button class="mode-tab" data-mode="decision">
-        <span class="tab-icon">🍎</span>
-        <span class="tab-label">生活决策</span>
-      </button>
+    <!-- 10题整体进度条 -->
+    <div class="progress-track">
+      <div id="progressFill" class="progress-fill" style="width: 10%;"></div>
     </div>
 
     <!-- 内容区 -->
@@ -48,7 +42,7 @@
       <!-- 题目提示栏 -->
       <div id="questionBar" class="question-bar">
         <span class="question-icon" id="questionIcon">📖</span>
-        <span class="question-text" id="questionText">加载中...</span>
+        <div class="question-text" id="questionText">正在生成精彩故事...</div>
         <button type="button" id="questionSpeaker" class="question-speaker" aria-label="播放题目语音">🔊</button>
       </div>
 
@@ -56,7 +50,7 @@
       <div class="story-stage" id="storyStage">
         <div class="stage-bg-tree"></div>
         <div class="story-items" id="storyItems">
-          <!-- 故事物品由 JS 动态生成 -->
+          <!-- 故事道具/排队图示由 JS 动态生成 -->
         </div>
       </div>
 
@@ -71,10 +65,33 @@
       <div class="feedback-emoji" id="feedbackEmoji"></div>
       <div class="feedback-text" id="feedbackText"></div>
     </div>
+
+    <!-- 10题通关结算卡片 -->
+    <div id="summaryModal" class="summary-modal" style="display:none;">
+      <div class="summary-card">
+        <div class="summary-trophy">🏆</div>
+        <h2 class="summary-title">太厉害啦！</h2>
+        <p class="summary-subtitle">顺利完成 10 题故事应用题大挑战！</p>
+        <div class="summary-stats">
+          <div class="stat-box">
+            <span class="stat-num" id="statScore">10/10</span>
+            <span class="stat-label">完成题数</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-num" id="statStars">⭐⭐⭐</span>
+            <span class="stat-label">表现评价</span>
+          </div>
+        </div>
+        <div class="summary-actions">
+          <button id="btnRestartRound" class="btn-action btn-primary">🔄 再练一轮</button>
+          <a href="index.html" class="btn-action btn-secondary">🏠 返回首页</a>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <script src="js/timer.js?v=20260903"></script>
-  <script src="js/practice-support.js?v=20260903"></script>
-  <script src="js/story.js?v=20260903"></script>
+  <script src="js/timer.js?v=20261123_story_overhaul"></script>
+  <script src="js/practice-support.js?v=20261123_story_overhaul"></script>
+  <script src="js/story.js?v=20261123_story_overhaul"></script>
 </body>
 </html>
