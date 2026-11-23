@@ -1,9 +1,8 @@
 /**
- * 数学启蒙 · 计算大闯关 JS
- * 支持 4 大模块：
- * 1. 🎯 计算闯关 (正向求结果，关卡 1~10，5以内加减法到两位数乘除法)
+ * 数学启蒙 · 计算大闯关 JS (极简降噪与聚焦版)
+ * 1. 🎯 计算闯关 (正向求结果，关卡 1~10)
  * 2. 🔲 方框填空 (未知数求解，关卡 1~10，如 2 + ▢ = 5)
- * 3. ⚡ 混合运算 (3~4数连算，含算结果与求方框，关卡 1~10)
+ * 3. ⚡ 混合运算 (3~4数连算，含直接算结果与算未知数，关卡 1~10)
  * 4. 🎴 24点益智 (扑克经典凑24点)
  */
 
@@ -20,23 +19,25 @@
 
   // 关卡配置
   const LEVEL_CONFIGS = [
-    { level: 1, name: '第 1 关 · 5以内加减' },
-    { level: 2, name: '第 2 关 · 10以内加减' },
-    { level: 3, name: '第 3 关 · 20以内进退位' },
-    { level: 4, name: '第 4 关 · 100以内整十加减' },
-    { level: 5, name: '第 5 关 · 100以内两位数加减' },
-    { level: 6, name: '第 6 关 · 表内九九乘法' },
-    { level: 7, name: '第 7 关 · 表内除法运算' },
-    { level: 8, name: '第 8 关 · 两位数乘除一位数' },
-    { level: 9, name: '第 9 关 · 几百几十乘除' },
-    { level: 10, name: '第 10 关 · 两位数乘除法挑战' }
+    { level: 1, name: '第 1 关 · 5以内加减', shortName: '第1关·5以内', desc: '5以内加减入门' },
+    { level: 2, name: '第 2 关 · 10以内加减', shortName: '第2关·10以内', desc: '凑十与不进位加减' },
+    { level: 3, name: '第 3 关 · 20以内进退位', shortName: '第3关·20以内', desc: '破十法与进位加法' },
+    { level: 4, name: '第 4 关 · 100以内整十加减', shortName: '第4关·整十数', desc: '整十数与加减一位数' },
+    { level: 5, name: '第 5 关 · 100以内两位数加减', shortName: '第5关·两位数加减', desc: '两位数进退位运算' },
+    { level: 6, name: '第 6 关 · 表内九九乘法', shortName: '第6关·九九乘法', desc: '乘法口诀快速心算' },
+    { level: 7, name: '第 7 关 · 表内除法运算', shortName: '第7关·表内除法', desc: '表内除法初步' },
+    { level: 8, name: '第 8 关 · 两位数乘除一位数', shortName: '第8关·乘除一位数', desc: '多位数乘除启蒙' },
+    { level: 9, name: '第 9 关 · 几百几十乘除', shortName: '第9关·几百几十', desc: '百数级口算思维' },
+    { level: 10, name: '第 10 关 · 两位数乘除法挑战', shortName: '第10关·两位数乘除', desc: '综合乘除法压轴' }
   ];
 
   // DOM 元素
-  const tabs = document.querySelectorAll('.mode-tab');
+  const tabs = document.querySelectorAll('.segmented-item');
   const levelBadge = document.getElementById('levelBadge');
-  const levelSelectorRow = document.getElementById('levelSelectorRow');
-  const levelTabsScroll = document.getElementById('levelTabsScroll');
+  const btnLevelPickerTrigger = document.getElementById('btnLevelPickerTrigger');
+  const levelPickerModal = document.getElementById('levelPickerModal');
+  const btnCloseLevelPicker = document.getElementById('btnCloseLevelPicker');
+  const levelPickerGrid = document.getElementById('levelPickerGrid');
   const calcProgressTrack = document.getElementById('calcProgressTrack');
   const calcProgressFill = document.getElementById('calcProgressFill');
   const questionIcon = document.getElementById('questionIcon');
@@ -57,7 +58,7 @@
   // 初始化
   function init() {
     bindModeTabs();
-    renderLevelSelector();
+    bindLevelPickerEvents();
     bindSpeakerEvent();
     bindModalButtons();
     startLevel(1);
@@ -72,14 +73,13 @@
         tab.classList.add('active');
         currentMode = tab.getAttribute('data-mode');
 
-        // 24点模式隐藏关卡选择器与进度条
+        // 24点模式下隐藏关卡切换器与微进度条
         if (currentMode === 'cards24') {
-          if (levelSelectorRow) levelSelectorRow.style.display = 'none';
+          if (btnLevelPickerTrigger) btnLevelPickerTrigger.style.display = 'none';
           if (calcProgressTrack) calcProgressTrack.style.display = 'none';
-          if (levelBadge) levelBadge.textContent = '24点扑克';
           loadCards24Question();
         } else {
-          if (levelSelectorRow) levelSelectorRow.style.display = 'block';
+          if (btnLevelPickerTrigger) btnLevelPickerTrigger.style.display = 'inline-flex';
           if (calcProgressTrack) calcProgressTrack.style.display = 'block';
           startLevel(currentLevel);
         }
@@ -87,20 +87,49 @@
     });
   }
 
-  // 渲染 1~10 关卡选择横条
-  function renderLevelSelector() {
-    if (!levelTabsScroll) return;
-    levelTabsScroll.innerHTML = '';
+  // 绑定关卡下拉抽屉事件
+  function bindLevelPickerEvents() {
+    if (btnLevelPickerTrigger) {
+      btnLevelPickerTrigger.addEventListener('click', () => {
+        openLevelPicker();
+      });
+    }
+    if (btnCloseLevelPicker) {
+      btnCloseLevelPicker.addEventListener('click', () => {
+        closeLevelPicker();
+      });
+    }
+    if (levelPickerModal) {
+      levelPickerModal.addEventListener('click', (e) => {
+        if (e.target === levelPickerModal) closeLevelPicker();
+      });
+    }
+  }
+
+  function openLevelPicker() {
+    renderLevelPickerGrid();
+    if (levelPickerModal) levelPickerModal.style.display = 'flex';
+  }
+
+  function closeLevelPicker() {
+    if (levelPickerModal) levelPickerModal.style.display = 'none';
+  }
+
+  function renderLevelPickerGrid() {
+    if (!levelPickerGrid) return;
+    levelPickerGrid.innerHTML = '';
     LEVEL_CONFIGS.forEach(cfg => {
       const btn = document.createElement('button');
-      btn.className = `level-btn ${cfg.level === currentLevel ? 'active' : ''}`;
-      btn.dataset.level = cfg.level;
-      btn.textContent = `第${cfg.level}关`;
+      btn.className = `level-choice-btn ${cfg.level === currentLevel ? 'active' : ''}`;
+      btn.innerHTML = `
+        <span class="level-choice-num">${cfg.name}</span>
+        <span class="level-choice-desc">${cfg.desc}</span>
+      `;
       btn.addEventListener('click', () => {
-        if (isAnswerLocked) return;
+        closeLevelPicker();
         startLevel(cfg.level);
       });
-      levelTabsScroll.appendChild(btn);
+      levelPickerGrid.appendChild(btn);
     });
   }
 
@@ -142,14 +171,11 @@
     levelScore = 0;
     if (levelClearModal) levelClearModal.style.display = 'none';
 
-    // 更新关卡指示器与高亮
+    // 更新顶栏关卡指示
     if (levelBadge) {
       const cfg = LEVEL_CONFIGS.find(c => c.level === currentLevel);
-      levelBadge.textContent = cfg ? cfg.name : `第 ${currentLevel} 关`;
+      levelBadge.textContent = cfg ? cfg.shortName : `第${currentLevel}关`;
     }
-    document.querySelectorAll('.level-btn').forEach(btn => {
-      btn.classList.toggle('active', parseInt(btn.dataset.level, 10) === currentLevel);
-    });
 
     loadQuestion();
   }
@@ -190,7 +216,7 @@
   // 渲染算式题目与选项
   function renderFormulaQuestion(q) {
     const box = document.createElement('div');
-    box.className = 'formula-box';
+    box.className = 'formula-display';
     box.innerHTML = q.formulaHtml;
     game24Stage.appendChild(box);
 
@@ -342,7 +368,6 @@
   // 2. 🔲 方框填空 (求方块未知数)
   function generateBlankBoxQuestion(level) {
     const rushQ = generateCalcRushQuestion(level);
-    // 从 rushQ 的形式 `a op b = ans` 随机把 a 或 b 替换成 ▢
     const parts = rushQ.formulaHtml.match(/<span>(\d+)<\/span> <span>([+\-×÷])<\/span> <span>(\d+)<\/span>/);
     if (!parts) return rushQ;
 
@@ -355,12 +380,10 @@
     const hideLeft = Math.random() > 0.5;
 
     if (hideLeft) {
-      // ▢ op b = ans
       targetAnswer = a;
       formulaHtml = `<span class="blank-box">▢</span> <span>${op}</span> <span>${b}</span> <span>=</span> <span>${ans}</span>`;
       audioText = `方框${op === '×' ? '乘' : (op === '÷' ? '除以' : op)}${b}等于${ans}，方框等于几呢？`;
     } else {
-      // a op ▢ = ans
       targetAnswer = b;
       formulaHtml = `<span>${a}</span> <span>${op}</span> <span class="blank-box">▢</span> <span>=</span> <span>${ans}</span>`;
       audioText = `${a}${op === '×' ? '乘' : (op === '÷' ? '除以' : op)}方框等于${ans}，方框等于几呢？`;
@@ -376,13 +399,12 @@
     };
   }
 
-  // 3. ⚡ 混合运算 (3~4数连算，直接算结果或求方框)
+  // 3. ⚡ 混合运算 (3~4数连算)
   function generateMixedCalcQuestion(level) {
     let a, b, c, op1, op2, ans, formulaHtml, targetAnswer;
-    const isFindBox = Math.random() > 0.4; // 60% 算方框，40% 算结果
+    const isFindBox = Math.random() > 0.4;
 
     if (level <= 2) {
-      // 5~10以内三数连加减
       a = 2 + Math.floor(Math.random() * 4);
       b = 1 + Math.floor(Math.random() * 3);
       c = 1 + Math.floor(Math.random() * 2);
@@ -391,7 +413,6 @@
       ans = op2 === '+' ? a + b + c : a + b - c;
       if (ans < 0) { op2 = '+'; ans = a + b + c; }
     } else if (level <= 5) {
-      // 20~100以内加减混合
       a = 15 + Math.floor(Math.random() * 30);
       b = 8 + Math.floor(Math.random() * 15);
       c = 5 + Math.floor(Math.random() * 10);
@@ -399,7 +420,6 @@
       op2 = '-';
       ans = a + b - c;
     } else if (level <= 7) {
-      // 乘加/乘减混合 (先乘后加减)
       a = 2 + Math.floor(Math.random() * 6);
       b = 2 + Math.floor(Math.random() * 6);
       c = 3 + Math.floor(Math.random() * 12);
@@ -408,9 +428,7 @@
       ans = op2 === '+' ? a * b + c : a * b - c;
       if (ans < 0) { op2 = '+'; ans = a * b + c; }
     } else {
-      // 8~10: 带括号或乘除混合
       if (Math.random() > 0.5) {
-        // (a + b) × c 或 (a - b) ÷ c
         c = 2 + Math.floor(Math.random() * 4);
         ans = 10 + Math.floor(Math.random() * 15);
         const sum = ans * c;
@@ -418,7 +436,6 @@
         b = sum - a;
         op1 = '+';
         op2 = '÷';
-        // (a + b) ÷ c = ans
         if (isFindBox) {
           targetAnswer = b;
           formulaHtml = `<span>(</span> <span>${a}</span> <span>+</span> <span class="blank-box">▢</span> <span>)</span> <span>÷</span> <span>${c}</span> <span>=</span> <span>${ans}</span>`;
@@ -446,11 +463,9 @@
     }
 
     if (isFindBox) {
-      // a op1 ▢ op2 c = ans
       targetAnswer = b;
       formulaHtml = `<span>${a}</span> <span>${op1}</span> <span class="blank-box">▢</span> <span>${op2}</span> <span>${c}</span> <span>=</span> <span>${ans}</span>`;
     } else {
-      // a op1 b op2 c = ?
       targetAnswer = ans;
       formulaHtml = `<span>${a}</span> <span>${op1}</span> <span>${b}</span> <span>${op2}</span> <span>${c}</span> <span>=</span> <span class="blank-box">?</span>`;
     }
@@ -479,11 +494,10 @@
       { cards: [4, 4, 4, 6], correct: '(4 + 4 - 4) × 6 = 24', wrongs: ['4 × 4 + 4 = 20', '4 + 4 + 6 = 14', '6 × 4 - 4 = 20'] },
       { cards: [6, 6, 6, 6], correct: '6 + 6 + 6 + 6 = 24', wrongs: ['6 × 6 - 6 = 30', '6 + 6 × 2 = 18', '6 × 6 ÷ 6 = 6'] },
       { cards: [1, 5, 5, 5], correct: '(5 - 1 ÷ 5) × 5 = 24', wrongs: ['5 + 5 + 5 + 1 = 16', '5 × 5 - 1 = 24 (未用完)', '5 × 5 - 5 + 1 = 21'] },
-      { cards: [2, 7, 8, 9], correct: '(9 - 7 + 8) × 2 = 24', wrongs: ['9 + 8 + 7 - 2 = 22', '9 × 2 + 8 - 7 = 19', '8 × 2 + 9 - 7 = 18'] },
-      { cards: [3, 4, 6, 8], correct: '6 ÷ 3 × 4 + 8 = 16 (错)', wrongs: ['8 × 3 = 24 (未用完)'] } // fallback
+      { cards: [2, 7, 8, 9], correct: '(9 - 7 + 8) × 2 = 24', wrongs: ['9 + 8 + 7 - 2 = 22', '9 × 2 + 8 - 7 = 19', '8 × 2 + 9 - 7 = 18'] }
     ];
 
-    const pick = hands[Math.floor(Math.random() * (hands.length - 1))];
+    const pick = hands[Math.floor(Math.random() * hands.length)];
     currentQuestion = {
       icon: '🎴',
       questionText: '看看这 4 张扑克牌，哪个算式能凑出 24 点？',
@@ -543,11 +557,10 @@
             questionInLevelIndex++;
             loadQuestion();
           } else {
-            // 关卡5题完成，弹出过关弹窗
             showLevelClearModal();
           }
         }
-      }, 1400);
+      }, 1300);
     } else {
       btnEl.classList.add('wrong');
       playSpeech('再仔细算一算哦~');
@@ -556,7 +569,7 @@
       setTimeout(() => {
         hideFeedback();
         btnEl.classList.remove('wrong');
-      }, 1200);
+      }, 1100);
     }
   }
 
@@ -572,7 +585,7 @@
     }
   }
 
-  // 辅助函数：生成 4 个合理选项
+  // 辅助函数
   function generateOptions(answer, count) {
     if (typeof answer !== 'number') return [answer, '错', '对', '不确定'];
     const set = new Set([answer]);

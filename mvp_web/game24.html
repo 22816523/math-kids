@@ -6,12 +6,12 @@
   <title>数学真好玩 · 计算大闯关</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Quicksand:wght@700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/design-system.css?v=20261123_calc_overhaul">
-  <link rel="stylesheet" href="css/game24.css?v=20261123_calc_overhaul">
+  <link rel="stylesheet" href="css/design-system.css?v=20261123_clean_focus">
+  <link rel="stylesheet" href="css/game24.css?v=20261123_clean_focus">
   <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
 </head>
 <body>
-  <!-- 护眼背景装饰 -->
+  <!-- 护眼柔和背景装饰 -->
   <div class="bg-decoration">
     <div class="cloud cloud-1"></div>
     <div class="cloud cloud-2"></div>
@@ -19,73 +19,73 @@
   </div>
 
   <div id="app">
-    <!-- 顶栏 -->
-    <div class="topbar">
+    <!-- 顶栏：轻量化关卡切换按钮 -->
+    <header class="topbar">
       <div class="topbar-left">
         <a href="index.html" class="back-btn" aria-label="返回首页"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg></a>
         <span class="topbar-title">⚡ 计算大闯关</span>
       </div>
       <div class="topbar-right">
-        <span id="levelBadge" class="level-indicator-pill">第 1 关 · 5以内</span>
+        <!-- 关卡下拉抽屉触发器（平时安静居于顶栏右上角） -->
+        <button id="btnLevelPickerTrigger" class="level-picker-trigger" title="点击切换关卡">
+          <span id="levelBadge">第 1 关 · 5以内</span>
+          <span class="arrow-indicator">▾</span>
+        </button>
       </div>
+    </header>
+
+    <!-- 1. 模式导航：苹果/多邻国风格一体化浅灰分段条（Segmented Pill） -->
+    <nav class="segmented-nav" aria-label="模式导航">
+      <div class="segmented-control">
+        <button class="segmented-item active" data-mode="calc_rush">🎯 计算闯关</button>
+        <button class="segmented-item" data-mode="blank_box">🔲 方框填空</button>
+        <button class="segmented-item" data-mode="mixed_calc">⚡ 混合运算</button>
+        <button class="segmented-item" data-mode="cards24">🎴 24点益智</button>
+      </div>
+    </nav>
+
+    <!-- 2. 关内5题轻量微进度条 -->
+    <div id="calcProgressTrack" class="slim-progress-track">
+      <div id="calcProgressFill" class="slim-progress-fill" style="width: 20%;"></div>
     </div>
 
-    <!-- 4 大模式切换页签 -->
-    <div class="mode-tabs">
-      <button class="mode-tab active" data-mode="calc_rush">
-        <span class="tab-icon">🎯</span>
-        <span class="tab-label">计算闯关</span>
-      </button>
-      <button class="mode-tab" data-mode="blank_box">
-        <span class="tab-icon">🔲</span>
-        <span class="tab-label">方框填空</span>
-      </button>
-      <button class="mode-tab" data-mode="mixed_calc">
-        <span class="tab-icon">⚡</span>
-        <span class="tab-label">混合运算</span>
-      </button>
-      <button class="mode-tab" data-mode="cards24">
-        <span class="tab-icon">🎴</span>
-        <span class="tab-label">24点益智</span>
-      </button>
-    </div>
-
-    <!-- 1~10 关卡选择器横条 (计算模式下显示) -->
-    <div id="levelSelectorRow" class="level-selector-row">
-      <div class="level-tabs-scroll" id="levelTabsScroll">
-        <!-- JS 动态生成 1~10 关卡选择按钮 -->
-      </div>
-    </div>
-
-    <!-- 关内5题进度条 -->
-    <div id="calcProgressTrack" class="progress-track" style="max-width: 760px; margin: 4px auto 8px;">
-      <div id="calcProgressFill" class="progress-fill" style="width: 20%;"></div>
-    </div>
-
-    <!-- 内容区 -->
-    <div class="content game24-content">
-      <!-- 题目提示栏 -->
-      <div id="questionBar" class="question-bar">
-        <span class="question-icon" id="questionIcon">🎯</span>
-        <span class="question-text" id="questionText">算一算，得出正确答案吧！</span>
-        <button type="button" id="questionSpeaker" class="question-speaker" aria-label="播放题目语音">🔊</button>
+    <!-- 3. 核心答题主区域：去冗余边框，纯净聚焦 -->
+    <main class="content game24-content">
+      <!-- 柔和题目提示 -->
+      <div class="stage-prompt-bar">
+        <span class="stage-prompt-icon" id="questionIcon">🎯</span>
+        <span class="stage-prompt-text" id="questionText">算一算，得出正确答案吧！</span>
+        <button type="button" id="questionSpeaker" class="speaker-pill-btn" aria-label="朗读题目">🔊</button>
       </div>
 
-      <!-- 画布舞台区 (算式/扑克牌) -->
-      <div class="game24-stage" id="game24Stage">
-        <!-- JS 动态生成算式卡或扑克牌 -->
+      <!-- 纯净算式舞台（无双层外框，大字号聚焦） -->
+      <div class="clean-math-stage" id="game24Stage">
+        <!-- JS 动态渲染超大算式或扑克牌 -->
       </div>
 
-      <!-- 选项按钮区 -->
+      <!-- 4. 视觉唯一交互焦点：4大答案选项（Duolingo 3D Gummy） -->
       <div class="game24-options" id="game24Options">
         <!-- JS 动态生成选项按钮 -->
       </div>
-    </div>
+    </main>
 
     <!-- 反馈浮层 -->
     <div id="feedbackOverlay" class="feedback-overlay" style="display:none;">
       <div class="feedback-emoji" id="feedbackEmoji"></div>
       <div class="feedback-text" id="feedbackText"></div>
+    </div>
+
+    <!-- 关卡快速选择抽屉弹窗 (Level Picker Drawer) -->
+    <div id="levelPickerModal" class="level-picker-modal" style="display:none;">
+      <div class="level-picker-card">
+        <div class="level-picker-header">
+          <span class="level-picker-title">🏆 选择计算关卡 (1~10 关)</span>
+          <button id="btnCloseLevelPicker" class="btn-close-picker" aria-label="关闭">✕</button>
+        </div>
+        <div class="level-picker-grid" id="levelPickerGrid">
+          <!-- JS 动态生成 10 关卡选择卡 -->
+        </div>
+      </div>
     </div>
 
     <!-- 关卡完成结算弹窗 -->
@@ -112,8 +112,8 @@
     </div>
   </div>
 
-  <script src="js/timer.js?v=20261123_calc_overhaul"></script>
-  <script src="js/practice-support.js?v=20261123_calc_overhaul"></script>
-  <script src="js/game24.js?v=20261123_calc_overhaul"></script>
+  <script src="js/timer.js?v=20261123_clean_focus"></script>
+  <script src="js/practice-support.js?v=20261123_clean_focus"></script>
+  <script src="js/game24.js?v=20261123_clean_focus"></script>
 </body>
 </html>

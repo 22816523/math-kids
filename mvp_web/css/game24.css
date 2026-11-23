@@ -1,146 +1,174 @@
 /* ============================================
-   数学启蒙 · 计算大闯关 CSS
-   4大模式 + 1~10阶梯关卡 + 算式/方框/混合舞台
+   数学启蒙 · 计算大闯关 CSS (聚焦与极简降噪版)
+   - 模式分段条：低干扰轻量一体式滑槽
+   - 关卡选择：顶栏收敛抽屉式，答题时零干扰
+   - 核心舞台：消灭框套框，54px超大清晰算式
+   - 选项交互：视觉唯一实体 3D 按压焦点
    ============================================ */
 
 .game24-content {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
   width: 100%;
-  max-width: 820px;
+  max-width: 760px;
   margin: 0 auto;
 }
 
-/* 顶栏右侧关卡指示胶囊 */
-.level-indicator-pill {
+/* 顶栏关卡下拉触发器 (安静收敛于右上角，手机端防换行) */
+.level-picker-trigger {
   background: #FFFFFF;
   border: 1.5px solid #CBD5E1;
   box-shadow: 0 2px 0 #E2E8F0;
   border-radius: 999px;
-  font-size: 13px;
+  padding: 4px 10px;
+  font-size: 12px;
   font-weight: 800;
   color: #0284C7;
-  padding: 4px 12px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all 0.12s ease;
 }
 
-/* 4大模式页签适配 */
-.mode-tabs {
-  display: flex;
-  gap: 10px;
-  justify-content: center;
+.topbar-title {
+  white-space: nowrap;
+  font-size: 18px !important;
+}
+
+.level-picker-trigger:hover {
+  background: #F0F9FF;
+  border-color: #7DD3FC;
+}
+
+.level-picker-trigger:active {
+  transform: translateY(2px);
+  box-shadow: none;
+}
+
+.arrow-indicator {
+  font-size: 11px;
+  color: #64748B;
+  transition: transform 0.2s ease;
+}
+
+/* 1. 一体化浅灰分段条导航 (Segmented Pill) */
+.segmented-nav {
   width: 100%;
-  max-width: 760px;
-  margin: 0 auto 6px;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  padding: 2px 4px 6px;
+  max-width: 680px;
+  display: flex;
+  justify-content: center;
+  margin: 2px auto 8px;
 }
 
-.mode-tab {
+.segmented-control {
+  background: #F1F5F9;
+  border: 1px solid #E2E8F0;
+  border-radius: 999px;
+  padding: 4px;
+  display: inline-flex;
+  gap: 4px;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.segmented-item {
   flex: 1;
-  min-width: 110px;
+  border: none;
+  background: transparent;
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #64748B;
+  cursor: pointer;
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  padding: 10px 14px;
-  border-radius: 18px;
+  gap: 4px;
+}
+
+.segmented-item:hover {
+  color: #1E293B;
+}
+
+.segmented-item.active {
   background: #FFFFFF;
-  border: 2px solid #E2E8F0;
-  box-shadow: 0 4px 0 #CBD5E1;
-  font-size: 15px;
-  font-weight: 800;
-  color: #475569;
-  cursor: pointer;
-  transition: all 0.12s ease;
-  white-space: nowrap;
+  color: #0284C7;
+  font-weight: 900;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
 }
 
-.mode-tab.active {
-  background: #EFF6FF;
-  border-color: #3B82F6;
-  box-shadow: 0 4px 0 #2563EB;
-  color: #1D4ED8;
-  transform: translateY(-1px);
-}
-
-.mode-tab:active {
-  transform: translateY(3px);
-  box-shadow: 0 0 0 #CBD5E1;
-}
-
-/* 1~10 关卡选择横条 */
-.level-selector-row {
+/* 2. 极细微进度条 */
+.slim-progress-track {
   width: 100%;
-  max-width: 760px;
-  margin: 0 auto 6px;
-  overflow: hidden;
-}
-
-.level-tabs-scroll {
-  display: flex;
-  gap: 8px;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  padding: 4px 4px 8px;
-}
-
-.level-btn {
-  flex-shrink: 0;
-  padding: 6px 14px;
-  background: #FFFFFF;
-  border: 1.5px solid #CBD5E1;
-  border-radius: 999px;
-  box-shadow: 0 2px 0 #E2E8F0;
-  font-size: 13px;
-  font-weight: 800;
-  color: #334155;
-  cursor: pointer;
-  transition: all 0.1s ease;
-  white-space: nowrap;
-}
-
-.level-btn.active {
-  background: #0284C7;
-  color: #FFFFFF;
-  border-color: #0369A1;
-  box-shadow: 0 3px 0 #075985;
-}
-
-.level-btn:active {
-  transform: translateY(2px);
-}
-
-/* 关卡进度条 */
-.progress-track {
-  width: 100%;
-  max-width: 760px;
-  height: 8px;
+  max-width: 680px;
+  height: 5px;
   background: #E2E8F0;
   border-radius: 999px;
   overflow: hidden;
+  margin: 0 auto 10px;
 }
 
-.progress-fill {
+.slim-progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #3B82F6, #10B981);
+  background: linear-gradient(90deg, #38BDF8, #10B981);
   border-radius: 999px;
   transition: width 0.25s ease;
 }
 
-/* 舞台容器 */
-.game24-stage {
-  width: 100%;
-  max-width: 760px;
-  min-height: 240px;
-  background: linear-gradient(180deg, #F0F9FF 0%, #E0F2FE 100%);
-  border: 3px solid #7DD3FC;
-  border-radius: 26px;
-  box-shadow: 0 6px 0 #38BDF8, 0 12px 24px rgba(0, 0, 0, 0.05);
+/* 3. 轻柔题目提示条 (无重底座外框) */
+.stage-prompt-bar {
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 0 8px;
+  color: #475569;
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.stage-prompt-icon {
+  font-size: 18px;
+}
+
+.stage-prompt-text {
+  flex: 1;
+}
+
+.speaker-pill-btn {
+  background: #F8FAFC;
+  border: 1px solid #CBD5E1;
+  border-radius: 999px;
+  padding: 3px 10px;
+  font-size: 14px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.1s ease;
+}
+
+.speaker-pill-btn:active {
+  transform: scale(0.92);
+}
+
+/* 4. 纯净算式主舞台 (彻底消灭多层重边框嵌套) */
+.clean-math-stage {
+  width: 100%;
+  min-height: 220px;
+  background: #FFFFFF;
+  border: 2px solid #E2E8F0;
+  border-radius: 28px;
+  box-shadow: 0 6px 20px rgba(15, 23, 42, 0.04);
+  display: flex;
   align-items: center;
   justify-content: center;
   padding: 24px;
@@ -148,78 +176,62 @@
   position: relative;
 }
 
-/* 算式卡片 */
-.formula-box {
-  background: #FFFFFF;
-  border: 2.5px solid #BAE6FD;
-  box-shadow: 0 6px 0 #7DD3FC, 0 10px 20px rgba(0, 0, 0, 0.05);
-  border-radius: 24px;
-  padding: 24px 36px;
+/* 超大字体主算式 */
+.formula-display {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 14px;
-  font-size: 44px;
+  gap: 16px;
+  font-size: 54px;
   font-weight: 900;
   color: #0F172A;
   user-select: none;
-  max-width: 95%;
   flex-wrap: wrap;
+  line-height: 1.15;
 }
 
-/* 未知数方框 [ ? ] */
+/* 未知数方框 [ ▢ ] (柔和醒目，不刺眼抖动) */
 .blank-box {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 68px;
-  height: 68px;
+  width: 72px;
+  height: 72px;
   background: #FAF5FF;
-  border: 3px dashed #A855F7;
+  border: 2.5px dashed #A855F7;
   border-radius: 18px;
-  color: #9333EA;
+  color: #7E22CE;
   font-size: 34px;
   font-weight: 900;
-  box-shadow: 0 0 12px rgba(168, 85, 247, 0.2);
-  animation: pulseBox 1.5s infinite;
-}
-
-@keyframes pulseBox {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.06); }
+  box-shadow: 0 2px 8px rgba(168, 85, 247, 0.12);
+  transition: transform 0.15s ease;
 }
 
 /* 24点扑克牌容器 */
 .cards-container {
   display: flex;
-  gap: 16px;
+  gap: 14px;
   justify-content: center;
   align-items: center;
   flex-wrap: wrap;
 }
 
 .card-item {
-  width: 86px;
-  height: 120px;
+  width: 82px;
+  height: 116px;
   background: #FFFFFF;
-  border: 3px solid #E2E8F0;
+  border: 2.5px solid #CBD5E1;
   border-radius: 16px;
-  box-shadow: 0 5px 0 #CBD5E1, 0 8px 16px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  padding: 10px;
-  font-size: 26px;
+  padding: 8px;
+  font-size: 24px;
   font-weight: 900;
   color: #1E293B;
   user-select: none;
-  animation: cardPop 0.25s ease;
-}
-
-@keyframes cardPop {
-  0% { transform: scale(0.92); }
-  100% { transform: scale(1); }
 }
 
 .card-item.red {
@@ -227,16 +239,15 @@
 }
 
 .card-suit {
-  font-size: 30px;
+  font-size: 28px;
 }
 
-/* 选项按钮 */
+/* 5. 选项区：保留唯一的 3D 按压交互焦点 */
 .game24-options {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 14px;
   width: 100%;
-  max-width: 760px;
   margin-top: 4px;
 }
 
@@ -244,13 +255,13 @@
   background: #FFFFFF !important;
   border: 2.5px solid #CBD5E1 !important;
   box-shadow: 0 5px 0 #94A3B8 !important;
-  border-radius: 20px !important;
+  border-radius: 22px !important;
   padding: 16px 14px !important;
-  font-size: 24px !important;
+  font-size: 26px !important;
   font-weight: 900 !important;
   color: #1E293B !important;
   cursor: pointer !important;
-  transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.15s ease !important;
+  transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.12s ease !important;
   text-align: center;
 }
 
@@ -278,14 +289,119 @@
   box-shadow: 0 5px 0 #DC2626 !important;
 }
 
-/* 24点模式下算式选项 */
+/* 24点算式长选项 */
 .game24-options.formulas-mode {
   grid-template-columns: repeat(2, 1fr);
 }
 
 .game24-options.formulas-mode .game24-opt-btn {
   font-size: 18px !important;
-  padding: 14px 18px !important;
+  padding: 14px 16px !important;
+}
+
+/* 6. 关卡快速选择抽屉弹窗 (Level Picker Drawer) */
+.level-picker-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 18px;
+}
+
+.level-picker-card {
+  background: #FFFFFF;
+  border: 2px solid #E2E8F0;
+  border-radius: 28px;
+  box-shadow: 0 16px 36px rgba(15, 23, 42, 0.15);
+  padding: 24px;
+  width: 100%;
+  max-width: 520px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  animation: popIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes popIn {
+  0% { transform: scale(0.92); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.level-picker-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.level-picker-title {
+  font-size: 18px;
+  font-weight: 900;
+  color: #1E293B;
+}
+
+.btn-close-picker {
+  background: #F1F5F9;
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  font-size: 16px;
+  font-weight: 800;
+  color: #64748B;
+  cursor: pointer;
+}
+
+.level-picker-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  max-height: 60vh;
+  overflow-y: auto;
+  padding: 2px;
+}
+
+.level-choice-btn {
+  background: #F8FAFC;
+  border: 1.5px solid #E2E8F0;
+  border-radius: 16px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  cursor: pointer;
+  transition: all 0.12s ease;
+  text-align: left;
+}
+
+.level-choice-btn:hover {
+  background: #F0F9FF;
+  border-color: #BAE6FD;
+}
+
+.level-choice-btn.active {
+  background: #EFF6FF;
+  border-color: #3B82F6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+.level-choice-num {
+  font-size: 14px;
+  font-weight: 900;
+  color: #0284C7;
+}
+
+.level-choice-desc {
+  font-size: 12px;
+  font-weight: 700;
+  color: #475569;
 }
 
 /* 结算弹窗 */
@@ -295,7 +411,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(15, 23, 42, 0.6);
+  background: rgba(15, 23, 42, 0.5);
   backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
@@ -306,22 +422,22 @@
 
 .summary-card {
   background: #FFFFFF;
-  border: 3px solid #7DD3FC;
+  border: 2px solid #E2E8F0;
   border-radius: 28px;
-  box-shadow: 0 8px 0 #0284C7, 0 16px 32px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.12);
   padding: 30px 24px;
   width: 100%;
-  max-width: 420px;
+  max-width: 400px;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 16px;
   text-align: center;
-  animation: bounceIn 0.5s ease;
+  animation: popIn 0.3s ease;
 }
 
 .summary-trophy {
-  font-size: 56px;
+  font-size: 52px;
   line-height: 1;
 }
 
@@ -340,16 +456,16 @@
 
 .summary-stats {
   display: flex;
-  gap: 16px;
+  gap: 14px;
   width: 100%;
   justify-content: center;
 }
 
 .stat-box {
   background: #F8FAFC;
-  border: 1.5px solid #E2E8F0;
+  border: 1px solid #E2E8F0;
   border-radius: 16px;
-  padding: 10px 18px;
+  padding: 10px 16px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -405,47 +521,46 @@
 
 /* 移动端适配 */
 @media (max-width: 640px) {
-  .level-indicator-pill {
-    font-size: 11px;
-    padding: 3px 8px;
-    white-space: nowrap;
+  .segmented-item {
+    font-size: 12.5px;
+    padding: 6px 6px;
   }
-  .mode-tab {
-    min-width: 85px;
-    padding: 8px 10px;
-    font-size: 13px;
-  }
-  .formula-box {
-    font-size: 30px;
-    padding: 16px 18px;
-    gap: 8px;
+  .formula-display {
+    font-size: 38px;
+    gap: 10px;
   }
   .blank-box {
-    width: 48px;
-    height: 48px;
-    font-size: 24px;
+    width: 52px;
+    height: 52px;
+    font-size: 26px;
+    border-radius: 14px;
+  }
+  .clean-math-stage {
+    min-height: 180px;
+    padding: 18px;
+    border-radius: 22px;
   }
   .game24-options {
     grid-template-columns: repeat(2, 1fr);
     gap: 10px;
   }
   .game24-opt-btn {
-    padding: 12px !important;
-    font-size: 20px !important;
+    padding: 13px !important;
+    font-size: 22px !important;
   }
   .game24-options.formulas-mode {
     grid-template-columns: 1fr;
   }
-  .cards-container {
-    gap: 8px;
-  }
   .card-item {
-    width: 68px;
-    height: 98px;
+    width: 66px;
+    height: 96px;
     font-size: 19px;
     padding: 6px;
   }
   .card-suit {
     font-size: 22px;
+  }
+  .level-picker-grid {
+    grid-template-columns: 1fr;
   }
 }
