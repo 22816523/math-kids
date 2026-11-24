@@ -1,9 +1,8 @@
 /**
  * 数学启蒙 · 计算大闯关 JS (极简降噪与聚焦版)
- * 1. 🎯 计算闯关 (正向求结果，关卡 1~10)
+ * 1. 🎯 计算闯关 (正向求结果，关卡 1~10，除法仅限表内，8~10 关递进多位数乘法)
  * 2. 🔲 方框填空 (未知数求解，关卡 1~10，如 2 + ▢ = 5)
- * 3. ⚡ 混合运算 (3~4数连算，含直接算结果与算未知数，关卡 1~10)
- * 4. 🎴 24点益智 (扑克经典凑24点)
+ * 3. ⚡ 混合运算 (3数连算，除法仅限表内)
  */
 
 (function () {
@@ -26,14 +25,14 @@
     { level: 4, name: '第 4 关 · 100以内整十加减', shortName: '第4关·整十数', desc: '整十数与加减一位数' },
     { level: 5, name: '第 5 关 · 100以内两位数加减', shortName: '第5关·两位数加减', desc: '两位数进退位运算' },
     { level: 6, name: '第 6 关 · 表内九九乘法', shortName: '第6关·九九乘法', desc: '乘法口诀快速心算' },
-    { level: 7, name: '第 7 关 · 表内除法运算', shortName: '第7关·表内除法', desc: '表内除法初步' },
-    { level: 8, name: '第 8 关 · 两位数乘除一位数', shortName: '第8关·乘除一位数', desc: '多位数乘除启蒙' },
-    { level: 9, name: '第 9 关 · 几百几十乘除', shortName: '第9关·几百几十', desc: '百数级口算思维' },
-    { level: 10, name: '第 10 关 · 两位数乘除法挑战', shortName: '第10关·两位数乘除', desc: '综合乘除法压轴' }
+    { level: 7, name: '第 7 关 · 表内除法运算', shortName: '第7关·表内除法', desc: '九九表内除法口算' },
+    { level: 8, name: '第 8 关 · 两位数乘一位数', shortName: '第8关·两位乘一位', desc: '两位数乘一位数口算' },
+    { level: 9, name: '第 9 关 · 两位数乘两位数', shortName: '第9关·两位乘两位', desc: '两位数乘法进阶' },
+    { level: 10, name: '第 10 关 · 多位数乘法挑战', shortName: '第10关·多位数乘法', desc: '三位数乘一位与大两位数乘法' }
   ];
 
   // DOM 元素
-  const tabs = document.querySelectorAll('.segmented-item');
+  const tabs = document.querySelectorAll('.mode-tab');
   const levelBadge = document.getElementById('levelBadge');
   const btnLevelPickerTrigger = document.getElementById('btnLevelPickerTrigger');
   const levelPickerModal = document.getElementById('levelPickerModal');
@@ -306,50 +305,36 @@
         op = '×';
         ans = a * b;
         break;
-      case 7: // 表内除法运算
+      case 7: // 表内除法运算 (唯一除法关，严格限制在九九表内)
         b = 2 + Math.floor(Math.random() * 8); // 2~9
-        ans = 2 + Math.floor(Math.random() * 8);
+        ans = 2 + Math.floor(Math.random() * 8); // 2~9
         a = b * ans;
         op = '÷';
         break;
-      case 8: // 两位数乘除一位数
-        if (Math.random() > 0.5) {
-          a = 12 + Math.floor(Math.random() * 25); // 12~36
-          b = 2 + Math.floor(Math.random() * 4);   // 2~5
-          op = '×';
-          ans = a * b;
-        } else {
-          b = 2 + Math.floor(Math.random() * 5);   // 2~6
-          ans = 12 + Math.floor(Math.random() * 25);
-          a = b * ans;
-          op = '÷';
-        }
+      case 8: // 两位数乘一位数
+        a = 12 + Math.floor(Math.random() * 38); // 12~49
+        b = 2 + Math.floor(Math.random() * 8);   // 2~9
+        op = '×';
+        ans = a * b;
         break;
-      case 9: // 几百几十乘除与两位数除两位数
-        if (Math.random() > 0.5) {
-          b = 11 + Math.floor(Math.random() * 8); // 11~18
-          ans = 3 + Math.floor(Math.random() * 6); // 3~8
-          a = b * ans;
-          op = '÷';
-        } else {
-          a = (10 + Math.floor(Math.random() * 20)) * 10; // 100~300
-          b = 2 + Math.floor(Math.random() * 4);
-          op = '÷';
-          ans = a / b;
-        }
+      case 9: // 两位数乘两位数
+        a = 11 + Math.floor(Math.random() * 19); // 11~29
+        b = 11 + Math.floor(Math.random() * 9);  // 11~19
+        op = '×';
+        ans = a * b;
         break;
-      case 10: // 两位数乘除法挑战
+      case 10: // 多位数乘法挑战 (三位数×一位数 + 较大两位数×两位数)
       default:
         if (Math.random() > 0.5) {
-          a = 12 + Math.floor(Math.random() * 18); // 12~29
-          b = 11 + Math.floor(Math.random() * 9);  // 11~19
+          a = 105 + Math.floor(Math.random() * 295); // 105~399
+          b = 2 + Math.floor(Math.random() * 8);     // 2~9
           op = '×';
           ans = a * b;
         } else {
-          b = 12 + Math.floor(Math.random() * 8);  // 12~19
-          ans = 11 + Math.floor(Math.random() * 8); // 11~18
-          a = b * ans;
-          op = '÷';
+          a = 21 + Math.floor(Math.random() * 39);   // 21~59
+          b = 12 + Math.floor(Math.random() * 18);   // 12~29
+          op = '×';
+          ans = a * b;
         }
         break;
     }
@@ -431,10 +416,11 @@
       if (ans < 0) { op2 = '+'; ans = a * b + c; }
     } else {
       if (Math.random() > 0.5) {
-        c = 2 + Math.floor(Math.random() * 4);
-        ans = 10 + Math.floor(Math.random() * 15);
+        // 严格表内除法：除数 2~9，商 2~9，括号内被除数 4~81
+        c = 2 + Math.floor(Math.random() * 8);
+        ans = 2 + Math.floor(Math.random() * 8);
         const sum = ans * c;
-        a = 15 + Math.floor(Math.random() * (sum - 15));
+        a = 1 + Math.floor(Math.random() * (sum - 1));
         b = sum - a;
         op1 = '+';
         op2 = '÷';
@@ -446,6 +432,7 @@
           formulaHtml = `<span>(</span> <span>${a}</span> <span>+</span> <span>${b}</span> <span>)</span> <span>÷</span> <span>${c}</span> <span>=</span> <span class="blank-box">?</span>`;
         }
         return {
+          key: `mix_div_${isFindBox ? 'box' : 'res'}_${a}_${b}_${c}`,
           icon: '⚡',
           questionText: isFindBox ? '混合运算：方框 ▢ 等于几？' : '混合运算：计算最终结果！',
           audioText: `请根据混合运算顺序，算出正确结果吧！`,
@@ -454,12 +441,12 @@
           options: generateOptions(targetAnswer, 4)
         };
       } else {
-        a = 12 + Math.floor(Math.random() * 15);
-        b = 2 + Math.floor(Math.random() * 4);
-        c = 10 + Math.floor(Math.random() * 20);
+        a = 12 + Math.floor(Math.random() * 18);
+        b = 2 + Math.floor(Math.random() * 6);
+        c = 10 + Math.floor(Math.random() * 25);
         op1 = '×';
-        op2 = '-';
-        ans = a * b - c;
+        op2 = Math.random() > 0.5 ? '+' : '-';
+        ans = op2 === '+' ? a * b + c : a * b - c;
         if (ans < 0) { op2 = '+'; ans = a * b + c; }
       }
     }
@@ -531,12 +518,14 @@
   function generateOptions(answer, count) {
     if (typeof answer !== 'number') return [answer, '错', '对', '不确定'];
     const set = new Set([answer]);
-    const deltas = [-2, -1, 1, 2, -10, 10, -5, 5];
+    const deltas = answer >= 100
+      ? [-100, -30, -20, -10, 10, 20, 30, 100]
+      : [-2, -1, 1, 2, -10, 10, -5, 5];
     while (set.size < count) {
       const delta = deltas[Math.floor(Math.random() * deltas.length)];
       const fake = answer + delta;
       if (fake > 0 && fake !== answer) set.add(fake);
-      else set.add(answer + Math.floor(Math.random() * 6) + 1);
+      else set.add(answer + (answer >= 100 ? (Math.floor(Math.random() * 5) + 1) * 10 : Math.floor(Math.random() * 6) + 1));
     }
     const arr = Array.from(set);
     return shuffle(arr);

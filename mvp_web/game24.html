@@ -6,8 +6,8 @@
   <title>数学真好玩 · 计算大闯关</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Quicksand:wght@700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/design-system.css?v=20261123_pure_calc">
-  <link rel="stylesheet" href="css/game24.css?v=20261123_pure_calc">
+  <link rel="stylesheet" href="css/design-system.css?v=20261124_calc_v2">
+  <link rel="stylesheet" href="css/game24.css?v=20261124_calc_v2">
   <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
 </head>
 <body>
@@ -34,14 +34,21 @@
       </div>
     </header>
 
-    <!-- 1. 模式导航：苹果/多邻国风格一体化浅灰分段条（Segmented Pill） -->
-    <nav class="segmented-nav" aria-label="模式导航">
-      <div class="segmented-control">
-        <button class="segmented-item active" data-mode="calc_rush">🎯 计算闯关</button>
-        <button class="segmented-item" data-mode="blank_box">🔲 方框填空</button>
-        <button class="segmented-item" data-mode="mixed_calc">⚡ 混合运算</button>
-      </div>
-    </nav>
+    <!-- 1. 模式导航：复用全局统一页签样式 -->
+    <div class="mode-tabs" role="tablist" aria-label="模式导航">
+      <button class="mode-tab active" data-mode="calc_rush">
+        <span class="tab-icon">🎯</span>
+        <span class="tab-label">计算闯关</span>
+      </button>
+      <button class="mode-tab" data-mode="blank_box">
+        <span class="tab-icon">🔲</span>
+        <span class="tab-label">方框填空</span>
+      </button>
+      <button class="mode-tab" data-mode="mixed_calc">
+        <span class="tab-icon">⚡</span>
+        <span class="tab-label">混合运算</span>
+      </button>
+    </div>
 
     <!-- 2. 关内5题轻量微进度条 -->
     <div id="calcProgressTrack" class="slim-progress-track">
@@ -111,8 +118,8 @@
     </div>
   </div>
 
-  <script src="js/timer.js?v=20261123_pure_calc"></script>
-  <script src="js/practice-support.js?v=20261123_pure_calc"></script>
-  <script src="js/game24.js?v=20261123_pure_calc"></script>
+  <script src="js/timer.js?v=20261124_calc_v2"></script>
+  <script src="js/practice-support.js?v=20261124_calc_v2"></script>
+  <script src="js/game24.js?v=20261124_calc_v2"></script>
 </body>
 </html>

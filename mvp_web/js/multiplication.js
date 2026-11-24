@@ -15,7 +15,7 @@
   let isAnswerLocked = false;
   let isSpeakingAll = false;
 
-  const tabs = document.querySelectorAll('.segmented-item');
+  const tabs = document.querySelectorAll('.mode-tab');
   const questionIcon = document.getElementById('questionIcon');
   const questionText = document.getElementById('questionText');
   const questionSpeaker = document.getElementById('questionSpeaker');

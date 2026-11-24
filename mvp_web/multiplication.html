@@ -6,8 +6,8 @@
   <title>数学真好玩 · 乘除法启蒙</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Quicksand:wght@700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/design-system.css?v=20261124_mult_v3">
-  <link rel="stylesheet" href="css/multiplication.css?v=20261124_mult_v3">
+  <link rel="stylesheet" href="css/design-system.css?v=20261124_mult_v4">
+  <link rel="stylesheet" href="css/multiplication.css?v=20261124_mult_v4">
   <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
 </head>
 <body>
@@ -27,15 +27,25 @@
       </div>
     </header>
 
-    <!-- 1. 模式导航：4段式一体化浅灰分段条（Segmented Pill） -->
-    <nav class="segmented-nav" aria-label="模式导航">
-      <div class="segmented-control">
-        <button class="segmented-item active" data-mode="table">📜 乘法表</button>
-        <button class="segmented-item" data-mode="matrix">✖️ 点阵图</button>
-        <button class="segmented-item" data-mode="share">⚖️ 平均分</button>
-        <button class="segmented-item" data-mode="remainder">🍎 余数除法</button>
-      </div>
-    </nav>
+    <!-- 1. 模式导航：复用全局统一页签样式 -->
+    <div class="mode-tabs" role="tablist" aria-label="模式导航">
+      <button class="mode-tab active" data-mode="table">
+        <span class="tab-icon">📜</span>
+        <span class="tab-label">乘法表</span>
+      </button>
+      <button class="mode-tab" data-mode="matrix">
+        <span class="tab-icon">✖️</span>
+        <span class="tab-label">点阵图</span>
+      </button>
+      <button class="mode-tab" data-mode="share">
+        <span class="tab-icon">⚖️</span>
+        <span class="tab-label">平均分</span>
+      </button>
+      <button class="mode-tab" data-mode="remainder">
+        <span class="tab-icon">🍎</span>
+        <span class="tab-label">余数除法</span>
+      </button>
+    </div>
 
     <!-- 内容主区域 -->
     <main class="content multiplication-content">
@@ -64,8 +74,8 @@
     </div>
   </div>
 
-  <script src="js/timer.js?v=20261124_mult_v3"></script>
-  <script src="js/practice-support.js?v=20261124_mult_v3"></script>
-  <script src="js/multiplication.js?v=20261124_mult_v3"></script>
+  <script src="js/timer.js?v=20261124_mult_v4"></script>
+  <script src="js/practice-support.js?v=20261124_mult_v4"></script>
+  <script src="js/multiplication.js?v=20261124_mult_v4"></script>
 </body>
 </html>
