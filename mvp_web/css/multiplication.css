@@ -176,6 +176,14 @@
   transition: all 0.12s ease;
 }
 
+.table-num-pill.table-all-pill {
+  width: auto;
+  border-radius: 999px;
+  padding: 0 12px;
+  font-size: 13px;
+  gap: 2px;
+}
+
 .table-num-pill:hover {
   background: #F0F9FF;
   border-color: #7DD3FC;
@@ -192,6 +200,83 @@
 .table-num-pill:active {
   transform: translateY(2px);
   box-shadow: none;
+}
+
+/* 45式阶梯全表 (下三角经典九九乘法表) */
+.stair-table-scroll-container {
+  width: 100%;
+  max-width: 660px;
+  max-height: 280px;
+  overflow-x: auto;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 4px;
+  box-sizing: border-box;
+  background: #F8FAFC;
+  border: 1.5px solid #E2E8F0;
+  border-radius: 14px;
+}
+
+.stair-table-board {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 580px;
+  align-items: flex-start;
+}
+
+.stair-row {
+  display: flex;
+  gap: 4px;
+  width: 100%;
+}
+
+.stair-cell {
+  flex: 0 0 58px;
+  width: 58px;
+  box-sizing: border-box;
+  padding: 4px 2px;
+  background: #FFFFFF;
+  border: 1px solid #CBD5E1;
+  border-radius: 8px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.1s ease;
+  user-select: none;
+}
+
+.stair-cell:hover {
+  background: #F0F9FF;
+  border-color: #38BDF8;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 5px rgba(2, 132, 199, 0.15);
+}
+
+.stair-cell:active {
+  transform: scale(0.95);
+  background: #BAE6FD;
+}
+
+.stair-cell-formula {
+  font-size: 11px;
+  font-weight: 800;
+  color: #0F172A;
+  font-family: 'Nunito', monospace;
+  white-space: nowrap;
+  line-height: 1.1;
+}
+
+.stair-cell-chant {
+  font-size: 10px;
+  font-weight: 700;
+  color: #92400E;
+  white-space: nowrap;
+  line-height: 1.1;
+  margin-top: 1px;
 }
 
 /* 口诀卡片列表 */

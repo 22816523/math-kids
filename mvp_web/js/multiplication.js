@@ -59,7 +59,11 @@
     if (questionSpeaker) {
       questionSpeaker.addEventListener('click', () => {
         if (currentMode === 'table') {
-          playSpeech(`${currentTableNum}的乘法口诀。点击每个口诀的小喇叭可以单独听发音哦！`);
+          if (currentTableNum === 'all') {
+            playSpeech('九九乘法表阶梯全表，共45句口诀。点击任意格子听发音！');
+          } else {
+            playSpeech(`${currentTableNum}的乘法口诀。点击每个口诀的小喇叭可以单独听发音哦！`);
+          }
         } else if (currentQuestion && currentQuestion.audioText) {
           playSpeech(currentQuestion.audioText);
         }
@@ -100,7 +104,7 @@
     renderOptions(currentQuestion.options, currentQuestion.answer);
   }
 
-  // ================= 0. 📜 九九乘法表 (1~9分阶数字点读) =================
+  // ================= 0. 📜 九九乘法表 (1~9分阶数字点读 + 45式阶梯全表) =================
   function getRhymeChant(a, b) {
     const x = Math.min(a, b);
     const y = Math.max(a, b);
@@ -122,14 +126,76 @@
     }
   }
 
+  function getStairTableFormulas(num) {
+    if (num === 'all') {
+      const list = [];
+      for (let r = 1; r <= 9; r++) {
+        for (let c = 1; c <= r; c++) {
+          list.push({ a: c, b: r, prod: c * r, formula: `${c} × ${r} = ${c * r}`, chant: getRhymeChant(c, r) });
+        }
+      }
+      return list;
+    }
+    const n = parseInt(num, 10);
+    const list = [];
+    for (let c = 1; c <= n; c++) {
+      list.push({ a: c, b: n, prod: c * n, formula: `${c} × ${n} = ${c * n}`, chant: getRhymeChant(c, n) });
+    }
+    return list;
+  }
+
+  function renderFullStairTable() {
+    const scrollContainer = document.createElement('div');
+    scrollContainer.className = 'stair-table-scroll-container';
+
+    const stairTable = document.createElement('div');
+    stairTable.className = 'stair-table-board';
+
+    for (let r = 1; r <= 9; r++) {
+      const rowDiv = document.createElement('div');
+      rowDiv.className = 'stair-row';
+
+      for (let c = 1; c <= r; c++) {
+        const prod = c * r;
+        const chant = getRhymeChant(c, r);
+        const cell = document.createElement('button');
+        cell.className = 'stair-cell';
+        cell.innerHTML = `
+          <span class="stair-cell-formula">${c}×${r}=${prod}</span>
+          <span class="stair-cell-chant">${chant}</span>
+        `;
+        cell.title = `点击朗读：${chant}`;
+        cell.addEventListener('click', () => {
+          playSpeech(`${chant}，${c}乘${r}等于${prod}`);
+        });
+        rowDiv.appendChild(cell);
+      }
+      stairTable.appendChild(rowDiv);
+    }
+
+    scrollContainer.appendChild(stairTable);
+    return scrollContainer;
+  }
+
   function renderTableStage(selectedNum) {
     multStage.innerHTML = '';
     const wrapper = document.createElement('div');
     wrapper.className = 'table-board-wrapper';
 
-    // 1~9 数字选择器
+    // 1~9 数字及全表选择器
     const selectorRow = document.createElement('div');
     selectorRow.className = 'table-num-selector';
+
+    // 阶梯全表按钮
+    const allPill = document.createElement('button');
+    allPill.className = `table-num-pill table-all-pill ${selectedNum === 'all' ? 'active' : ''}`;
+    allPill.textContent = '📐 全表';
+    allPill.title = '九九乘法表阶梯全表 (45式)';
+    allPill.addEventListener('click', () => {
+      currentTableNum = 'all';
+      renderTableStage('all');
+    });
+    selectorRow.appendChild(allPill);
 
     for (let n = 1; n <= 9; n++) {
       const pill = document.createElement('button');
@@ -144,35 +210,37 @@
     }
     wrapper.appendChild(selectorRow);
 
-    // 口诀卡片列表
-    const rhymesList = document.createElement('div');
-    rhymesList.className = 'table-rhymes-container';
+    if (selectedNum === 'all') {
+      wrapper.appendChild(renderFullStairTable());
+    } else {
+      // 分阶卡片列表 (选 1 只显示 1×1，选 2 显示 1×2与2×2 ... 选 n 显示 1~n 共 n 个)
+      const rhymesList = document.createElement('div');
+      rhymesList.className = 'table-rhymes-container';
 
-    for (let i = 1; i <= 9; i++) {
-      const chant = getRhymeChant(i, selectedNum);
-      const formula = `${i} × ${selectedNum} = ${i * selectedNum}`;
+      const formulas = getStairTableFormulas(selectedNum);
+      formulas.forEach(({ a, b, prod, formula, chant }) => {
+        const card = document.createElement('div');
+        card.className = 'rhyme-card';
+        card.innerHTML = `
+          <span class="rhyme-formula">${formula}</span>
+          <span class="rhyme-chant">${chant}</span>
+          <button class="rhyme-speaker-btn" aria-label="朗读${chant}" title="朗读">🔊</button>
+        `;
 
-      const card = document.createElement('div');
-      card.className = 'rhyme-card';
-      card.innerHTML = `
-        <span class="rhyme-formula">${formula}</span>
-        <span class="rhyme-chant">${chant}</span>
-        <button class="rhyme-speaker-btn" aria-label="朗读${chant}" title="朗读">🔊</button>
-      `;
+        const speakBtn = card.querySelector('.rhyme-speaker-btn');
+        speakBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          playSpeech(`${chant}，${a}乘${b}等于${prod}`);
+        });
 
-      const speakBtn = card.querySelector('.rhyme-speaker-btn');
-      speakBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        playSpeech(`${chant}，${i}乘${selectedNum}等于${i * selectedNum}`);
+        card.addEventListener('click', () => {
+          playSpeech(`${chant}，${a}乘${b}等于${prod}`);
+        });
+
+        rhymesList.appendChild(card);
       });
-
-      card.addEventListener('click', () => {
-        playSpeech(`${chant}，${i}乘${selectedNum}等于${i * selectedNum}`);
-      });
-
-      rhymesList.appendChild(card);
+      wrapper.appendChild(rhymesList);
     }
-    wrapper.appendChild(rhymesList);
 
     multStage.appendChild(wrapper);
 
@@ -187,7 +255,11 @@
 
     const btnReadAll = document.createElement('button');
     btnReadAll.className = 'table-action-btn btn-read-all';
-    btnReadAll.innerHTML = `<span>▶️ 连续跟读 ${num} 的口诀</span>`;
+    if (num === 'all') {
+      btnReadAll.innerHTML = `<span>▶️ 连续朗读九九乘法表</span>`;
+    } else {
+      btnReadAll.innerHTML = `<span>▶️ 连续跟读 ${num} 的口诀</span>`;
+    }
     btnReadAll.addEventListener('click', () => readAllRhymes(num));
 
     const btnPractice = document.createElement('button');
@@ -210,13 +282,13 @@
   function readAllRhymes(num) {
     if (isSpeakingAll) return;
     isSpeakingAll = true;
-    let list = [];
-    for (let i = 1; i <= 9; i++) {
-      list.push(getRhymeChant(i, num));
-    }
-    const fullText = `${num}的乘法口诀：` + list.join('，') + '。';
+    const formulas = getStairTableFormulas(num);
+    const chants = formulas.map(f => f.chant);
+    const prefix = num === 'all' ? '九九乘法表：' : `${num}的乘法口诀：`;
+    const fullText = prefix + chants.join('，') + '。';
     playSpeech(fullText);
-    setTimeout(() => { isSpeakingAll = false; }, 8000);
+    const duration = Math.max(5000, chants.length * 800);
+    setTimeout(() => { isSpeakingAll = false; }, duration);
   }
 
   // ================= 1. 乘法点阵矩阵 (直接标出行与列) =================
@@ -484,7 +556,8 @@
     generateMatrixQuestion,
     generateShareQuestion,
     generateRemainderQuestion,
-    getRhymeChant
+    getRhymeChant,
+    getStairTableFormulas
   };
 
   document.addEventListener('DOMContentLoaded', init);

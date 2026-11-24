@@ -62,4 +62,28 @@ test('乘除法启蒙模块生成逻辑与行列/余数完备性', () => {
   assert.equal(app.getRhymeChant(3, 7), '三七二十一');
   assert.equal(app.getRhymeChant(9, 9), '九九八十一');
   assert.equal(app.getRhymeChant(4, 5), '四五二十');
+
+  // 5. 阶梯乘法口诀表校验 (1有1个，2有2个...9有9个，全表45式)
+  for (let n = 1; n <= 9; n++) {
+    const list = app.getStairTableFormulas(n);
+    assert.equal(list.length, n, `${n}的口诀列表数量必须严格等于 ${n}`);
+    assert.equal(list[0].a, 1);
+    assert.equal(list[0].b, n);
+    assert.equal(list[list.length - 1].a, n);
+    assert.equal(list[list.length - 1].b, n);
+  }
+
+  // 1的口诀仅有一一得一
+  const list1 = app.getStairTableFormulas(1);
+  assert.equal(list1.length, 1);
+  assert.equal(list1[0].formula, '1 × 1 = 1');
+  assert.equal(list1[0].chant, '一一得一');
+
+  // 全表必须恰好 45 式
+  const allList = app.getStairTableFormulas('all');
+  assert.equal(allList.length, 45, '九九乘法表全表必须严格由45句口诀构成');
+  assert.equal(allList[0].formula, '1 × 1 = 1');
+  assert.equal(allList[0].chant, '一一得一');
+  assert.equal(allList[44].formula, '9 × 9 = 81');
+  assert.equal(allList[44].chant, '九九八十一');
 });
