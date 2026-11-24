@@ -53,6 +53,9 @@ test('乘除法启蒙模块生成逻辑与行列/余数完备性', () => {
     assert.equal(q.answer, q.remainder, '答案必须等于余数');
     assert.ok(q.remainder < q.groups, '余数必须严格小于除数/组数');
     assert.ok(q.options.includes(q.answer), '选项必须包含答案');
+    assert.ok(q.questionHtml.includes(q.itemName), '题干物品名必须与图标匹配');
+    assert.ok(q.questionHtml.includes(q.animalName), '题干动物名必须与头像匹配');
+    assert.ok(q.audioText.includes(q.itemName) && q.audioText.includes(q.animalName), '语音文案必须与图文一致');
   }
 
   // 4. 九九乘法口诀声韵检验

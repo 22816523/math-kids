@@ -1,9 +1,13 @@
 /* ============================================
-   数学启蒙 · 乘除法启蒙 CSS (聚焦与极简降噪版)
-   1. 乘法点阵：直接标明行数与列数坐标
-   2. 余数演示：完全自适应防溢出余数盘
-   3. 极简降噪：一体化分段条 + 纯净大舞台 + 唯一 3D 选项焦点
+   数学启蒙 · 乘除法启蒙 CSS (清晰三级视觉层级版)
+   Level 1 主焦点：画板核心图形/算式 + 底部答题按钮
+   Level 2 次引导：轻柔题干 + 简洁算式填空
+   Level 3 辅助层：坐标标尺/分组编号/口诀副文（去框降灰）
    ============================================ */
+
+:root {
+  --matrix-cell-size: 46px;
+}
 
 .multiplication-content {
   display: flex;
@@ -15,35 +19,22 @@
   margin: 0 auto;
 }
 
-/* 顶栏模式指示 */
-.mode-indicator-pill {
-  background: #FFFFFF;
-  border: 1.5px solid #CBD5E1;
-  box-shadow: 0 2px 0 #E2E8F0;
-  border-radius: 999px;
-  padding: 4px 12px;
-  font-size: 13px;
-  font-weight: 800;
-  color: #0284C7;
-  white-space: nowrap;
-}
-
-/* 1. 一体化浅灰分段条导航 (Segmented Pill) */
+/* 1. 模式分段导航 (Segmented Pill) */
 .segmented-nav {
   width: 100%;
   max-width: 600px;
   display: flex;
   justify-content: center;
-  margin: 2px auto 8px;
+  margin: 2px auto 6px;
 }
 
 .segmented-control {
-  background: #F1F5F9;
+  background: rgba(241, 245, 249, 0.9);
   border: 1px solid #E2E8F0;
   border-radius: 999px;
-  padding: 4px;
+  padding: 3px;
   display: inline-flex;
-  gap: 4px;
+  gap: 3px;
   box-sizing: border-box;
   width: 100%;
 }
@@ -52,9 +43,9 @@
   flex: 1;
   border: none;
   background: transparent;
-  padding: 8px 14px;
+  padding: 7px 12px;
   border-radius: 999px;
-  font-size: 14px;
+  font-size: 13.5px;
   font-weight: 700;
   color: #64748B;
   cursor: pointer;
@@ -73,8 +64,8 @@
 .segmented-item.active {
   background: #FFFFFF;
   color: #0284C7;
-  font-weight: 900;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+  font-weight: 800;
+  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.08);
 }
 
 /* 2. 轻柔题目提示条 */
@@ -83,72 +74,113 @@
   align-items: center;
   gap: 8px;
   width: 100%;
-  padding: 0 8px;
-  color: #475569;
+  padding: 0 6px;
+  color: #334155;
   font-size: 15px;
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .stage-prompt-icon {
-  font-size: 18px;
+  font-size: 17px;
+  flex-shrink: 0;
 }
 
 .stage-prompt-text {
   flex: 1;
-  line-height: 1.4;
+  line-height: 1.45;
 }
 
 .stage-prompt-text .hl-num {
-  color: #E11D48;
+  color: #0284C7;
   font-weight: 900;
   margin: 0 2px;
 }
 
 .speaker-pill-btn {
-  background: #F8FAFC;
-  border: 1px solid #CBD5E1;
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
   border-radius: 999px;
   padding: 3px 10px;
-  font-size: 14px;
+  font-size: 13px;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition: transform 0.1s ease;
+  transition: transform 0.1s ease, border-color 0.12s ease;
+  flex-shrink: 0;
+}
+
+.speaker-pill-btn:hover {
+  border-color: #CBD5E1;
 }
 
 .speaker-pill-btn:active {
   transform: scale(0.92);
 }
 
-/* 3. 核心教学画板 (纯白圆角、消灭冗余嵌套外框) */
+/* 3. 核心教学画板 (轻框纯净白布) */
 .clean-mult-stage {
   width: 100%;
-  min-height: 250px;
+  min-height: 248px;
   background: #FFFFFF;
-  border: 2px solid #E2E8F0;
-  border-radius: 28px;
-  box-shadow: 0 6px 20px rgba(15, 23, 42, 0.04);
+  border: 1px solid #E2E8F0;
+  border-radius: 24px;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.03);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 20px;
+  padding: 20px 18px;
   box-sizing: border-box;
   position: relative;
   overflow: hidden;
 }
 
-/* ================= 乘法口诀表 (九九乘法表分阶点读) ================= */
+/* 通用底部简洁算式行（不剧透答案，答对后填入） */
+.stage-equation {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 2px;
+  font-size: 17px;
+  font-weight: 800;
+  color: #475569;
+  font-family: 'Nunito', monospace;
+  letter-spacing: 0.5px;
+}
+
+.eq-blank {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 30px;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 8px;
+  background: #F1F5F9;
+  color: #0284C7;
+  font-weight: 900;
+  border: 1.5px dashed #93C5FD;
+  transition: all 0.2s ease;
+}
+
+.eq-blank.revealed {
+  background: #DCFCE7;
+  color: #15803D;
+  border-style: solid;
+  border-color: #86EFAC;
+}
+
+/* ================= 乘法口诀表 (轻量扁平分阶 + 45式阶梯全表) ================= */
 .table-board-wrapper {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
   width: 100%;
 }
 
-/* 1~9 数字选择器横轨 */
+/* 1~9 及全表选择器横轨（去 3D 重阴影，仅选中态高亮） */
 .table-num-selector {
   display: flex;
   gap: 6px;
@@ -156,24 +188,23 @@
   align-items: center;
   flex-wrap: wrap;
   width: 100%;
-  padding-bottom: 2px;
 }
 
 .table-num-pill {
-  width: 36px;
-  height: 36px;
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
-  background: #F8FAFC;
-  border: 1.5px solid #CBD5E1;
-  box-shadow: 0 2px 0 #E2E8F0;
-  font-size: 15px;
-  font-weight: 900;
-  color: #334155;
+  background: #F1F5F9;
+  border: 1px solid transparent;
+  box-shadow: none;
+  font-size: 14px;
+  font-weight: 800;
+  color: #475569;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.12s ease;
+  transition: background-color 0.12s ease, color 0.12s ease, border-color 0.12s ease;
 }
 
 .table-num-pill.table-all-pill {
@@ -185,43 +216,40 @@
 }
 
 .table-num-pill:hover {
-  background: #F0F9FF;
-  border-color: #7DD3FC;
+  background: #E2E8F0;
+  color: #0F172A;
 }
 
 .table-num-pill.active {
   background: #0284C7;
   color: #FFFFFF;
-  border-color: #0369A1;
-  box-shadow: 0 3px 0 #075985;
-  transform: translateY(-2px);
+  border-color: #0284C7;
+  box-shadow: 0 2px 6px rgba(2, 132, 199, 0.22);
 }
 
 .table-num-pill:active {
-  transform: translateY(2px);
-  box-shadow: none;
+  transform: scale(0.95);
 }
 
-/* 45式阶梯全表 (下三角经典九九乘法表) */
+/* 45式阶梯全表 (去外层套娃框，轻网格) */
 .stair-table-scroll-container {
   width: 100%;
   max-width: 660px;
-  max-height: 280px;
+  max-height: 276px;
   overflow-x: auto;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  padding: 4px;
+  padding: 2px;
   box-sizing: border-box;
-  background: #F8FAFC;
-  border: 1.5px solid #E2E8F0;
-  border-radius: 14px;
+  background: transparent;
+  border: none;
 }
 
 .stair-table-board {
   display: flex;
   flex-direction: column;
   gap: 4px;
-  min-width: 580px;
+  min-width: 576px;
   align-items: flex-start;
 }
 
@@ -235,30 +263,28 @@
   flex: 0 0 58px;
   width: 58px;
   box-sizing: border-box;
-  padding: 4px 2px;
-  background: #FFFFFF;
-  border: 1px solid #CBD5E1;
+  padding: 5px 2px;
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
   border-radius: 8px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+  box-shadow: none;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.1s ease;
+  transition: background-color 0.12s ease, border-color 0.12s ease;
   user-select: none;
 }
 
 .stair-cell:hover {
   background: #F0F9FF;
-  border-color: #38BDF8;
-  transform: translateY(-1px);
-  box-shadow: 0 2px 5px rgba(2, 132, 199, 0.15);
+  border-color: #7DD3FC;
 }
 
 .stair-cell:active {
-  transform: scale(0.95);
-  background: #BAE6FD;
+  transform: scale(0.96);
+  background: #E0F2FE;
 }
 
 .stair-cell-formula {
@@ -267,85 +293,99 @@
   color: #0F172A;
   font-family: 'Nunito', monospace;
   white-space: nowrap;
-  line-height: 1.1;
+  line-height: 1.15;
 }
 
 .stair-cell-chant {
   font-size: 10px;
-  font-weight: 700;
-  color: #92400E;
+  font-weight: 600;
+  color: #64748B;
   white-space: nowrap;
-  line-height: 1.1;
-  margin-top: 1px;
+  line-height: 1.15;
+  margin-top: 2px;
 }
 
-/* 口诀卡片列表 */
+/* 口诀卡片列表（去黄底胶囊，突出算式主次） */
 .table-rhymes-container {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 8px;
   width: 100%;
-  max-width: 640px;
-  max-height: 250px;
+  max-width: 600px;
+  max-height: 240px;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  padding: 2px 4px;
+  padding: 2px;
+}
+
+.table-rhymes-container--single {
+  grid-template-columns: minmax(220px, 320px);
+  justify-content: center;
 }
 
 .rhyme-card {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 12px;
+  padding: 10px 14px;
   background: #F8FAFC;
-  border: 1.5px solid #E2E8F0;
-  border-radius: 14px;
+  border: 1px solid #F1F5F9;
+  border-radius: 12px;
   box-sizing: border-box;
-  transition: all 0.12s ease;
+  cursor: pointer;
+  transition: background-color 0.12s ease, border-color 0.12s ease;
 }
 
 .rhyme-card:hover {
-  background: #FFFFFF;
-  border-color: #CBD5E1;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  background: #F0F9FF;
+  border-color: #BAE6FD;
+}
+
+.rhyme-card:active {
+  transform: scale(0.985);
 }
 
 .rhyme-formula {
-  font-size: 16px;
+  font-size: 16.5px;
   font-weight: 900;
   color: #0F172A;
   font-family: 'Nunito', monospace;
 }
 
+.rhyme-right {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .rhyme-chant {
-  font-size: 13px;
-  font-weight: 800;
-  color: #92400E;
-  background: #FEF3C7;
-  padding: 2px 8px;
-  border-radius: 999px;
-  border: 1px solid #FDE68A;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #64748B;
   white-space: nowrap;
 }
 
 .rhyme-speaker-btn {
   background: transparent;
   border: none;
-  font-size: 16px;
-  cursor: pointer;
   padding: 2px;
-  display: flex;
+  cursor: pointer;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
+  color: #94A3B8;
+  transition: color 0.12s ease, transform 0.1s ease;
+}
+
+.rhyme-card:hover .rhyme-speaker-btn {
   color: #0284C7;
-  transition: transform 0.1s ease;
 }
 
 .rhyme-speaker-btn:active {
   transform: scale(0.85);
 }
 
-/* 口诀表操作栏 (替代传统4个做题选项) */
+/* 口诀表底部操作栏（一主一次，去除双彩碰撞） */
 .table-action-bar {
   grid-column: 1 / -1;
   display: flex;
@@ -354,132 +394,143 @@
   align-items: center;
   width: 100%;
   max-width: 520px;
-  margin: 6px auto;
+  margin: 4px auto;
 }
 
 .table-action-btn {
   flex: 1;
-  padding: 14px 20px;
-  border-radius: 20px;
-  font-size: 16px;
-  font-weight: 900;
+  padding: 13px 18px;
+  border-radius: 18px;
+  font-size: 15px;
+  font-weight: 800;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 6px;
-  border: none;
   white-space: nowrap;
-  transition: transform 0.1s ease;
+  transition: transform 0.1s ease, background-color 0.12s ease;
 }
 
 .table-action-btn:active {
-  transform: translateY(4px);
+  transform: translateY(3px);
 }
 
 .btn-read-all {
   background: #0284C7;
   color: #FFFFFF;
-  box-shadow: 0 4px 0 #0369A1;
+  border: none;
+  box-shadow: 0 3px 0 #0369A1;
+}
+
+.btn-read-all:hover {
+  background: #0369A1;
 }
 
 .btn-go-practice {
-  background: #10B981;
-  color: #FFFFFF;
-  box-shadow: 0 4px 0 #059669;
+  background: #FFFFFF;
+  color: #334155;
+  border: 1.5px solid #CBD5E1;
+  box-shadow: 0 3px 0 #E2E8F0;
 }
 
-/* ================= 乘法点阵：行列清晰直标 ================= */
+.btn-go-practice:hover {
+  background: #F8FAFC;
+  border-color: #94A3B8;
+}
+
+/* ================= 乘法点阵：干净行带分组 + 浅灰标尺 ================= */
 .matrix-board-wrapper {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
   max-width: 100%;
 }
 
-.matrix-grid-table {
+.matrix-grid {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.matrix-col-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.matrix-row-spacer {
+  width: 30px;
+  flex-shrink: 0;
+}
+
+.matrix-col-track {
+  display: grid;
+  gap: 6px;
+  padding: 0 12px;
+  justify-items: center;
+}
+
+.col-header-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: #94A3B8;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.matrix-row-band {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.row-header-label {
+  width: 30px;
+  flex-shrink: 0;
+  text-align: right;
+  font-size: 12px;
+  font-weight: 700;
+  color: #94A3B8;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.matrix-row-track {
   display: grid;
   gap: 6px;
   align-items: center;
   justify-items: center;
   background: #F8FAFC;
-  padding: 14px;
-  border-radius: 20px;
-  border: 1.5px solid #E2E8F0;
-  box-sizing: border-box;
+  border-radius: 14px;
+  padding: 5px 12px;
 }
 
-/* 行号标签 (左侧列) */
-.row-header-badge {
-  background: #FEF3C7;
-  color: #B45309;
-  font-size: 12px;
-  font-weight: 900;
-  padding: 4px 8px;
-  border-radius: 8px;
-  border: 1px solid #FDE68A;
-  white-space: nowrap;
-}
-
-/* 列号标签 (顶部行) */
-.col-header-badge {
-  background: #EFF6FF;
-  color: #1D4ED8;
-  font-size: 12px;
-  font-weight: 900;
-  padding: 4px 8px;
-  border-radius: 8px;
-  border: 1px solid #BFDBFE;
-  white-space: nowrap;
-}
-
-/* 空白左上角原点 */
-.grid-origin-corner {
-  visibility: hidden;
-}
-
-/* 点阵单元格 */
 .matrix-cell {
-  width: 46px;
-  height: 46px;
-  background: #FFFFFF;
-  border: 1.5px dashed #CBD5E1;
-  border-radius: 12px;
+  width: var(--matrix-cell-size);
+  height: var(--matrix-cell-size);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 28px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+  font-size: 30px;
+  line-height: 1;
   user-select: none;
 }
 
-/* 点阵底部算式指示卡 */
-.matrix-summary-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: #F0FDF4;
-  border: 1.5px solid #86EFAC;
-  color: #15803D;
-  padding: 6px 16px;
-  border-radius: 999px;
-  font-size: 15px;
-  font-weight: 900;
-}
-
-/* ================= 平均分与余数：规整均分与防溢出余数盘 ================= */
+/* ================= 平均分与余数：轻盘面 + 余数单焦点 ================= */
 .share-board-wrapper {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
+  gap: 14px;
   width: 100%;
 }
 
 .share-groups-row {
   display: flex;
-  gap: 12px;
+  gap: 10px;
   align-items: stretch;
   justify-content: center;
   flex-wrap: wrap;
@@ -492,24 +543,18 @@
   align-items: center;
   gap: 8px;
   background: #F8FAFC;
-  border: 2px solid #E2E8F0;
-  border-radius: 20px;
-  padding: 12px 14px;
+  border: none;
+  border-radius: 18px;
+  padding: 14px 12px 10px;
   flex: 1;
-  min-width: 95px;
-  max-width: 130px;
+  min-width: 92px;
+  max-width: 138px;
   box-sizing: border-box;
 }
 
 .share-plate-avatar {
-  font-size: 32px;
+  font-size: 30px;
   line-height: 1;
-}
-
-.share-plate-name {
-  font-size: 11px;
-  font-weight: 800;
-  color: #64748B;
 }
 
 .share-plate-items {
@@ -517,66 +562,80 @@
   gap: 4px;
   flex-wrap: wrap;
   justify-content: center;
-  min-height: 32px;
+  min-height: 30px;
+  font-size: 24px;
+  line-height: 1.2;
+}
+
+.share-plate-name {
+  font-size: 11px;
+  font-weight: 700;
+  color: #94A3B8;
+}
+
+/* 余数模式下已分完的盘子整体退后，衬托余数焦点的视觉对比 */
+.share-plate--muted {
+  opacity: 0.68;
+  padding: 8px 10px;
+  gap: 4px;
+  border-radius: 14px;
+}
+
+.share-plate--muted .share-plate-avatar {
   font-size: 22px;
 }
 
-/* 独立余数盘 (完全自适应、高亮防溢出) */
+.share-plate--muted .share-plate-items {
+  min-height: 22px;
+  font-size: 18px;
+}
+
+/* 独立余数盘（柔和单焦点，去粗红虚线与大红实心胶囊） */
 .remainder-tray {
   width: 100%;
-  max-width: 440px;
-  background: #FEF2F2;
-  border: 2px dashed #FCA5A5;
-  border-radius: 18px;
-  padding: 10px 16px;
+  max-width: 420px;
+  background: #FFF5F5;
+  border: 1.5px solid #FECACA;
+  border-radius: 16px;
+  padding: 10px 18px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 10px;
+  gap: 12px;
   box-sizing: border-box;
 }
 
 .remainder-tray-label {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 13px;
-  font-weight: 900;
+  font-size: 13.5px;
+  font-weight: 800;
   color: #DC2626;
-}
-
-.remainder-tray-badge {
-  background: #DC2626;
-  color: #FFFFFF;
-  font-size: 11px;
-  font-weight: 900;
-  padding: 2px 7px;
-  border-radius: 999px;
+  white-space: nowrap;
 }
 
 .remainder-tray-items {
   display: flex;
-  gap: 6px;
+  gap: 8px;
   align-items: center;
-  font-size: 26px;
+  font-size: 28px;
+  line-height: 1;
 }
 
-/* 4. 选项按钮区 (唯一的 3D 按压交互焦点) */
+/* 4. 选项按钮区（全页唯一的强按压交互焦点） */
 .mult-options {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 14px;
+  gap: 12px;
   width: 100%;
-  margin-top: 4px;
+  margin-top: 2px;
 }
 
 .mult-opt-btn {
   background: #FFFFFF !important;
-  border: 2.5px solid #CBD5E1 !important;
-  box-shadow: 0 5px 0 #94A3B8 !important;
-  border-radius: 22px !important;
-  padding: 16px 14px !important;
-  font-size: 26px !important;
+  border: 2px solid #CBD5E1 !important;
+  box-shadow: 0 4px 0 #CBD5E1 !important;
+  border-radius: 20px !important;
+  padding: 15px 12px !important;
+  font-size: 25px !important;
   font-weight: 900 !important;
   color: #1E293B !important;
   cursor: pointer !important;
@@ -590,29 +649,35 @@
 }
 
 .mult-opt-btn:active {
-  transform: translateY(5px) !important;
-  box-shadow: 0 0 0 #94A3B8 !important;
+  transform: translateY(4px) !important;
+  box-shadow: 0 0 0 #CBD5E1 !important;
 }
 
 .mult-opt-btn.correct {
   background: #DCFCE7 !important;
   border-color: #22C55E !important;
   color: #15803D !important;
-  box-shadow: 0 5px 0 #16A34A !important;
+  box-shadow: 0 4px 0 #16A34A !important;
 }
 
 .mult-opt-btn.wrong {
   background: #FEE2E2 !important;
   border-color: #EF4444 !important;
   color: #B91C1C !important;
-  box-shadow: 0 5px 0 #DC2626 !important;
+  box-shadow: 0 4px 0 #DC2626 !important;
 }
 
 /* 移动端适配 */
 @media (max-width: 640px) {
+  :root {
+    --matrix-cell-size: 40px;
+  }
   .table-rhymes-container {
     grid-template-columns: 1fr;
     max-height: 220px;
+  }
+  .table-rhymes-container--single {
+    grid-template-columns: 1fr;
   }
   .table-num-selector {
     gap: 4px;
@@ -620,17 +685,22 @@
     justify-content: space-between;
   }
   .table-num-pill {
-    width: 29px;
-    height: 29px;
-    font-size: 13px;
+    width: 28px;
+    height: 28px;
+    font-size: 12.5px;
     flex-shrink: 0;
+  }
+  .table-num-pill.table-all-pill {
+    padding: 0 8px;
+    font-size: 11.5px;
   }
   .table-action-bar {
     flex-direction: column;
     gap: 8px;
   }
   .table-action-btn {
-    padding: 10px 14px;
+    width: 100%;
+    padding: 11px 14px;
     font-size: 14.5px;
     white-space: nowrap;
   }
@@ -644,34 +714,58 @@
     letter-spacing: -0.3px;
   }
   .clean-mult-stage {
-    min-height: 220px;
-    padding: 14px;
-    border-radius: 22px;
+    min-height: 216px;
+    padding: 16px 12px;
+    border-radius: 20px;
+  }
+  .matrix-col-row,
+  .matrix-row-band {
+    gap: 6px;
+  }
+  .matrix-row-spacer,
+  .row-header-label {
+    width: 26px;
+    font-size: 11px;
+  }
+  .col-header-label {
+    font-size: 11px;
+  }
+  .matrix-col-track {
+    gap: 4px;
+    padding: 0 8px;
+  }
+  .matrix-row-track {
+    gap: 4px;
+    padding: 4px 8px;
+    border-radius: 12px;
   }
   .matrix-cell {
-    width: 38px;
-    height: 38px;
-    font-size: 22px;
+    font-size: 24px;
   }
-  .row-header-badge, .col-header-badge {
-    font-size: 11px;
-    padding: 2px 5px;
+  .stage-equation {
+    font-size: 16px;
   }
   .share-plate {
     min-width: 80px;
-    padding: 8px 10px;
+    padding: 10px 8px 8px;
   }
   .share-plate-avatar {
     font-size: 26px;
   }
   .share-plate-items {
-    font-size: 18px;
+    font-size: 20px;
+  }
+  .share-plate--muted .share-plate-avatar {
+    font-size: 20px;
+  }
+  .share-plate--muted .share-plate-items {
+    font-size: 16px;
   }
   .remainder-tray {
-    padding: 8px 12px;
+    padding: 9px 14px;
   }
   .remainder-tray-items {
-    font-size: 22px;
+    font-size: 24px;
   }
   .mult-options {
     grid-template-columns: repeat(2, 1fr);

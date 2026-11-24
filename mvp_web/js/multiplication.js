@@ -16,7 +16,6 @@
   let isSpeakingAll = false;
 
   const tabs = document.querySelectorAll('.segmented-item');
-  const multModeBadge = document.getElementById('multModeBadge');
   const questionIcon = document.getElementById('questionIcon');
   const questionText = document.getElementById('questionText');
   const questionSpeaker = document.getElementById('questionSpeaker');
@@ -41,15 +40,6 @@
         tabs.forEach(t => t.classList.remove('active'));
         tab.classList.add('active');
         currentMode = tab.getAttribute('data-mode');
-
-        const modeNames = {
-          table: '九九乘法表',
-          matrix: '乘法点阵图',
-          share: '平均分',
-          remainder: '有余数除法'
-        };
-        if (multModeBadge) multModeBadge.textContent = modeNames[currentMode] || '乘除法启蒙';
-
         loadNewQuestion();
       });
     });
@@ -62,7 +52,7 @@
           if (currentTableNum === 'all') {
             playSpeech('九九乘法表阶梯全表，共45句口诀。点击任意格子听发音！');
           } else {
-            playSpeech(`${currentTableNum}的乘法口诀。点击每个口诀的小喇叭可以单独听发音哦！`);
+            playSpeech(`${currentTableNum}的乘法口诀。点击卡片可以单独听发音哦！`);
           }
         } else if (currentQuestion && currentQuestion.audioText) {
           playSpeech(currentQuestion.audioText);
@@ -80,7 +70,7 @@
     if (currentMode === 'table') {
       renderTableStage(currentTableNum);
       if (questionIcon) questionIcon.textContent = '📜';
-      if (questionText) questionText.innerHTML = `点击数字切换口诀，点小喇叭听发音背诵！`;
+      if (questionText) questionText.innerHTML = `点击数字切换口诀，点击卡片即可跟读`;
       return;
     }
 
@@ -218,13 +208,20 @@
       rhymesList.className = 'table-rhymes-container';
 
       const formulas = getStairTableFormulas(selectedNum);
+      if (formulas.length === 1) {
+        rhymesList.classList.add('table-rhymes-container--single');
+      }
       formulas.forEach(({ a, b, prod, formula, chant }) => {
         const card = document.createElement('div');
         card.className = 'rhyme-card';
         card.innerHTML = `
           <span class="rhyme-formula">${formula}</span>
-          <span class="rhyme-chant">${chant}</span>
-          <button class="rhyme-speaker-btn" aria-label="朗读${chant}" title="朗读">🔊</button>
+          <span class="rhyme-right">
+            <span class="rhyme-chant">${chant}</span>
+            <button class="rhyme-speaker-btn" aria-label="朗读${chant}" title="朗读">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+            </button>
+          </span>
         `;
 
         const speakBtn = card.querySelector('.rhyme-speaker-btn');
@@ -264,12 +261,11 @@
 
     const btnPractice = document.createElement('button');
     btnPractice.className = 'table-action-btn btn-go-practice';
-    btnPractice.innerHTML = `<span>🎯 去做点阵练习 ➜</span>`;
+    btnPractice.innerHTML = `<span>去做点阵练习 →</span>`;
     btnPractice.addEventListener('click', () => {
       // 切换到点阵模式
       tabs.forEach(t => t.classList.toggle('active', t.getAttribute('data-mode') === 'matrix'));
       currentMode = 'matrix';
-      if (multModeBadge) multModeBadge.textContent = '乘法点阵图';
       loadNewQuestion();
     });
 
@@ -312,50 +308,64 @@
     const wrapper = document.createElement('div');
     wrapper.className = 'matrix-board-wrapper';
 
-    // 表格：cols + 1 列，rows + 1 行
-    const table = document.createElement('div');
-    table.className = 'matrix-grid-table';
-    table.style.gridTemplateColumns = `auto repeat(${q.cols}, 1fr)`;
+    const grid = document.createElement('div');
+    grid.className = 'matrix-grid';
 
-    // 顶行：左上角原点 + 列标 (1列, 2列, 3列...)
-    const origin = document.createElement('div');
-    origin.className = 'grid-origin-corner';
-    table.appendChild(origin);
+    // 列标尺（纯浅灰辅助字，无底色边框）
+    const colRow = document.createElement('div');
+    colRow.className = 'matrix-col-row';
 
+    const spacer = document.createElement('div');
+    spacer.className = 'matrix-row-spacer';
+    colRow.appendChild(spacer);
+
+    const colTrack = document.createElement('div');
+    colTrack.className = 'matrix-col-track';
+    colTrack.style.gridTemplateColumns = `repeat(${q.cols}, var(--matrix-cell-size))`;
     for (let c = 1; c <= q.cols; c++) {
-      const colBadge = document.createElement('div');
-      colBadge.className = 'col-header-badge';
-      colBadge.textContent = `${c}列`;
-      table.appendChild(colBadge);
+      const colLabel = document.createElement('span');
+      colLabel.className = 'col-header-label';
+      colLabel.textContent = `${c}列`;
+      colTrack.appendChild(colLabel);
     }
+    colRow.appendChild(colTrack);
+    grid.appendChild(colRow);
 
-    // 后续行：行标 (1行, 2行...) + 点阵单元格
+    // 按行轻量分组：每行一条柔和浅底横带 + 干净点阵图标
     for (let r = 1; r <= q.rows; r++) {
-      const rowBadge = document.createElement('div');
-      rowBadge.className = 'row-header-badge';
-      rowBadge.textContent = `${r}行`;
-      table.appendChild(rowBadge);
+      const rowBand = document.createElement('div');
+      rowBand.className = 'matrix-row-band';
 
+      const rowLabel = document.createElement('span');
+      rowLabel.className = 'row-header-label';
+      rowLabel.textContent = `${r}行`;
+      rowBand.appendChild(rowLabel);
+
+      const rowTrack = document.createElement('div');
+      rowTrack.className = 'matrix-row-track';
+      rowTrack.style.gridTemplateColumns = `repeat(${q.cols}, var(--matrix-cell-size))`;
       for (let c = 1; c <= q.cols; c++) {
-        const cell = document.createElement('div');
+        const cell = document.createElement('span');
         cell.className = 'matrix-cell';
         cell.textContent = q.icon;
-        table.appendChild(cell);
+        rowTrack.appendChild(cell);
       }
+      rowBand.appendChild(rowTrack);
+      grid.appendChild(rowBand);
     }
 
-    wrapper.appendChild(table);
+    wrapper.appendChild(grid);
 
-    // 底部公式小结
-    const summary = document.createElement('div');
-    summary.className = 'matrix-summary-pill';
-    summary.innerHTML = `<span>💡 ${q.rows} 行 × 每行 ${q.cols} 列 = ${q.total} 个</span>`;
-    wrapper.appendChild(summary);
+    // 底部轻量算式（不剧透答案，答对后揭晓）
+    const eq = document.createElement('div');
+    eq.className = 'stage-equation';
+    eq.innerHTML = `<span>${q.rows} × ${q.cols} =</span><span class="eq-blank" id="stageAnswerBlank">?</span>`;
+    wrapper.appendChild(eq);
 
     multStage.appendChild(wrapper);
   }
 
-  // ================= 2. 平均分 (规整紧凑) =================
+  // ================= 2. 平均分 (规整轻量化) =================
   function generateShareQuestion() {
     const groups = 2 + Math.floor(Math.random() * 2); // 2 ~ 3 组
     const perGroup = 2 + Math.floor(Math.random() * 3); // 2 ~ 4 个
@@ -386,39 +396,53 @@
       plate.className = 'share-plate';
       plate.innerHTML = `
         <div class="share-plate-avatar">${q.avatar}</div>
-        <div class="share-plate-name">第${g}份</div>
         <div class="share-plate-items">
           ${Array(q.perGroup).fill(0).map(() => `<span>${q.icon}</span>`).join('')}
         </div>
+        <div class="share-plate-name">第${g}份</div>
       `;
       groupsRow.appendChild(plate);
     }
 
     wrapper.appendChild(groupsRow);
 
-    const summary = document.createElement('div');
-    summary.className = 'matrix-summary-pill';
-    summary.innerHTML = `<span>💡 ${q.total} ÷ ${q.groups} = 每只 ${q.perGroup} 个</span>`;
-    wrapper.appendChild(summary);
+    // 底部轻量算式（不剧透答案，答对后揭晓）
+    const eq = document.createElement('div');
+    eq.className = 'stage-equation';
+    eq.innerHTML = `<span>${q.total} ÷ ${q.groups} =</span><span class="eq-blank" id="stageAnswerBlank">?</span>`;
+    wrapper.appendChild(eq);
 
     multStage.appendChild(wrapper);
   }
 
-  // ================= 3. 余数挑战 (自适应独立余数盘，杜绝溢出) =================
+  // ================= 3. 余数挑战 (主次分明：分完退后，余数聚焦) =================
   function generateRemainderQuestion() {
     const groups = 3;
     const perGroup = 2 + Math.floor(Math.random() * 2); // 2 or 3
     const remainder = 1 + Math.floor(Math.random() * 2); // 1 or 2
     const total = groups * perGroup + remainder;
-    const icons = ['🍎', '🍓', '🥕', '🍪'];
-    const avatars = ['🐻', '🐰', '🐱'];
-    const icon = icons[Math.floor(Math.random() * icons.length)];
-    const avatar = avatars[Math.floor(Math.random() * avatars.length)];
+    const itemPool = [
+      { icon: '🍎', name: '苹果' },
+      { icon: '🍓', name: '草莓' },
+      { icon: '🥕', name: '胡萝卜' },
+      { icon: '🍪', name: '饼干' }
+    ];
+    const animalPool = [
+      { avatar: '🐻', name: '小熊' },
+      { avatar: '🐰', name: '小兔' },
+      { avatar: '🐱', name: '小猫' }
+    ];
+    const item = itemPool[Math.floor(Math.random() * itemPool.length)];
+    const animal = animalPool[Math.floor(Math.random() * animalPool.length)];
 
     return {
-      groups, perGroup, remainder, total, icon, avatar,
-      questionHtml: `<span class="hl-num">${total}</span> 个苹果平均分给 <span class="hl-num">${groups}</span> 只小熊，每只 <span class="hl-num">${perGroup}</span> 个，还剩下几个（余数）？`,
-      audioText: `有${total}个苹果平均分给3只小熊，每只分${perGroup}个，请问还剩下几个不能均分的苹果呢？`,
+      groups, perGroup, remainder, total,
+      icon: item.icon,
+      itemName: item.name,
+      avatar: animal.avatar,
+      animalName: animal.name,
+      questionHtml: `<span class="hl-num">${total}</span> 个${item.name}平均分给 <span class="hl-num">${groups}</span> 只${animal.name}，每只 <span class="hl-num">${perGroup}</span> 个，还剩几个？`,
+      audioText: `有${total}个${item.name}平均分给${groups}只${animal.name}，每只分${perGroup}个，请问还剩下几个呢？`,
       answer: remainder,
       options: [1, 2, 3, 4]
     };
@@ -428,44 +452,41 @@
     const wrapper = document.createElement('div');
     wrapper.className = 'share-board-wrapper';
 
-    // 均分分组
+    // 已分完分组（视觉退后，衬托余数主体）
     const groupsRow = document.createElement('div');
     groupsRow.className = 'share-groups-row';
 
     for (let g = 1; g <= q.groups; g++) {
       const plate = document.createElement('div');
-      plate.className = 'share-plate';
+      plate.className = 'share-plate share-plate--muted';
       plate.innerHTML = `
         <div class="share-plate-avatar">${q.avatar}</div>
-        <div class="share-plate-name">第${g}只熊 (${q.perGroup}个)</div>
         <div class="share-plate-items">
           ${Array(q.perGroup).fill(0).map(() => `<span>${q.icon}</span>`).join('')}
         </div>
+        <div class="share-plate-name">第${g}只</div>
       `;
       groupsRow.appendChild(plate);
     }
 
     wrapper.appendChild(groupsRow);
 
-    // 独立余数盘 (自适应、整齐包裹)
+    // 余数聚焦区（柔和单焦点，去厚红虚线与大红实心胶囊）
     const remTray = document.createElement('div');
     remTray.className = 'remainder-tray';
     remTray.innerHTML = `
-      <div class="remainder-tray-label">
-        <span class="remainder-tray-badge">余数盘</span>
-        <span>不够分1轮的剩下苹果:</span>
-      </div>
+      <span class="remainder-tray-label">剩下（余数）</span>
       <div class="remainder-tray-items">
         ${Array(q.remainder).fill(0).map(() => `<span>${q.icon}</span>`).join('')}
       </div>
     `;
     wrapper.appendChild(remTray);
 
-    // 算式引导
-    const summary = document.createElement('div');
-    summary.className = 'matrix-summary-pill';
-    summary.innerHTML = `<span>💡 ${q.total} ÷ ${q.groups} = ${q.perGroup} 余数是多少？</span>`;
-    wrapper.appendChild(summary);
+    // 轻量算式
+    const eq = document.createElement('div');
+    eq.className = 'stage-equation';
+    eq.innerHTML = `<span>${q.total} ÷ ${q.groups} = ${q.perGroup} ……</span><span class="eq-blank" id="stageAnswerBlank">?</span>`;
+    wrapper.appendChild(eq);
 
     multStage.appendChild(wrapper);
   }
@@ -502,6 +523,11 @@
     if (String(selected) === String(correct)) {
       isAnswerLocked = true;
       btnEl.classList.add('correct');
+      const answerBlank = document.getElementById('stageAnswerBlank');
+      if (answerBlank) {
+        answerBlank.textContent = correct;
+        answerBlank.classList.add('revealed');
+      }
       playSpeech('答对了！你真棒！');
       showFeedback('🎉', '算对啦！');
 
