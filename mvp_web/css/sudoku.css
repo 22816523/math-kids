@@ -218,17 +218,40 @@
   background: var(--green-light);
 }
 
+/* 极简苹果清透风棋盘：纯白留白卡片 + 同心圆角细线格 + 宫格交替微底色 */
+.sudoku-board-card {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 22px;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05);
+  box-sizing: border-box;
+}
+
+.sudoku-board-card[data-size='9'] {
+  padding: 10px;
+  border-radius: 18px;
+}
+
 .sudoku-board {
   display: grid;
   grid-template-columns: repeat(var(--grid-size), minmax(0, 1fr));
-  width: var(--board-size, min(76vw, 520px));
-  height: var(--board-size, min(76vw, 520px));
-  background: var(--white);
-  border: 4px solid var(--gray-200);
-  border-radius: 26px;
+  grid-template-rows: repeat(var(--grid-size), minmax(0, 1fr));
+  width: var(--board-size, min(74vw, 480px));
+  height: var(--board-size, min(74vw, 480px));
+  background: #FFFFFF;
+  border: 1.5px solid #94A3B8;
+  border-radius: 10px;
   overflow: hidden;
-  box-shadow: 0 var(--card-depth) 0 var(--gray-100), 0 14px 22px rgba(0, 0, 0, 0.05);
+  box-sizing: border-box;
   touch-action: none;
+}
+
+.sudoku-board[data-size='9'] {
+  border-radius: 8px;
 }
 
 .sudoku-cell {
@@ -236,19 +259,38 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1.5px solid var(--gray-200);
-  background: linear-gradient(180deg, #FFFFFF 0%, #F8FBFE 100%);
-  color: var(--title);
+  border-right: 1px solid #E2E8F0;
+  border-bottom: 1px solid #E2E8F0;
+  background: #FFFFFF;
+  color: #0F172A;
   font-family: var(--font-round);
-  font-weight: 900;
+  font-weight: 800;
   font-size: clamp(22px, 4vw, 34px);
-  transition: transform 0.12s, background 0.12s, color 0.12s, box-shadow 0.12s;
+  line-height: 1;
+  box-sizing: border-box;
+  transition: background-color 0.14s ease, color 0.14s ease, box-shadow 0.14s ease;
 }
 
-.sudoku-cell.empty {
-  color: transparent;
-  background: linear-gradient(180deg, #F5FCF8 0%, #E7F8EE 100%);
-  box-shadow: inset 0 0 0 2px rgba(118, 215, 196, 0.5);
+/* 相邻宫格交替微底色（极致清爽，零干扰分宫） */
+.sudoku-cell.subgrid-alt {
+  background: #F4F7FB;
+}
+
+/* 宫格细实线分隔与外缘去重线（彻底避免边角遮挡与双层框） */
+.sudoku-cell.box-right {
+  border-right: 2px solid #94A3B8;
+}
+
+.sudoku-cell.box-bottom {
+  border-bottom: 2px solid #94A3B8;
+}
+
+.sudoku-cell.edge-right {
+  border-right: none;
+}
+
+.sudoku-cell.edge-bottom {
+  border-bottom: none;
 }
 
 .sudoku-board[data-size='6'] .sudoku-cell {
@@ -256,69 +298,53 @@
 }
 
 .sudoku-board[data-size='9'] .sudoku-cell {
-  font-size: clamp(14px, 2.55vw, 20px);
-  border-width: 1px;
-  box-shadow: none;
+  font-size: clamp(14px, 2.5vw, 20px);
 }
 
-.sudoku-board[data-size='9'] {
-  background: transparent !important;
-  border: 0 !important;
-  border-radius: 0 !important;
-  overflow: visible !important;
-  box-shadow: none !important;
-}
-
-.sudoku-board[data-size='9'] .sudoku-cell.empty {
-  background: #EDF7F0;
-  box-shadow: none;
-}
-
-.sudoku-board[data-size='9'] .sudoku-cell.fixed {
-  background: #D6E6F6;
-  box-shadow: none;
-}
-
-.sudoku-board[data-size='9'] .sudoku-cell.filled {
-  background: #F8E0A6;
-  box-shadow: none;
-}
-
-.sudoku-board[data-size='9'] .sudoku-cell.related {
-  outline-width: 1px;
-  outline-offset: -2px;
-}
-
-.sudoku-board[data-size='9'] .sudoku-cell.drop-target {
-  background: #D9F3E8;
-  box-shadow: inset 0 0 0 2px rgba(82, 194, 171, 0.65);
-}
-
+/* 题目固定数：沉稳深炭黑粗字，与底色自然融合 */
 .sudoku-cell.fixed {
-  background: linear-gradient(180deg, #DDEBFA 0%, #BFD6EE 100%);
-  color: #33485F;
-  box-shadow: inset 0 0 0 2px rgba(88, 122, 158, 0.28);
+  color: #0F172A;
+  font-weight: 900;
 }
 
+/* 待填空格：纯净留白 */
+.sudoku-cell.empty {
+  color: transparent;
+}
+
+/* 用户已填数：鲜明苹果主蓝 + 极浅冰蓝微光 */
 .sudoku-cell.filled {
-  background: linear-gradient(180deg, #FFF4DA 0%, #F8D98E 100%);
-  color: #8A5316;
-  box-shadow: inset 0 0 0 2px rgba(217, 158, 52, 0.28);
+  background: #F0F9FF;
+  color: #0284C7;
+  font-weight: 900;
 }
 
+.sudoku-cell.filled.subgrid-alt {
+  background: #E8F4FD;
+}
+
+/* 同行/同列/同宫格柔和关联提示 */
 .sudoku-cell.related {
-  outline: 2px solid rgba(142, 193, 231, 0.45);
-  outline-offset: -3px;
+  background: #EFF6FF;
 }
 
+.sudoku-cell.related.subgrid-alt {
+  background: #E7F1FC;
+}
+
+/* 当前目标落格：清晰主蓝内框高亮 */
 .sudoku-cell.drop-target {
-  background: linear-gradient(180deg, #EFFBF5 0%, #D8F4E8 100%);
-  box-shadow: inset 0 0 0 3px rgba(82, 194, 171, 0.72);
+  background: #E0F2FE;
+  box-shadow: inset 0 0 0 2px #0284C7;
+  z-index: 1;
 }
 
+/* 冲突错误提示 */
 .sudoku-cell.wrong {
-  background: linear-gradient(180deg, #FEF0EF 0%, var(--red) 100%);
-  color: #8A4C47;
+  background: #FEE2E2;
+  color: #DC2626;
+  box-shadow: inset 0 0 0 2px #EF4444;
+  z-index: 2;
 }
 
 .digit-bank {
@@ -326,7 +352,7 @@
   grid-template-columns: repeat(var(--bank-size, 4), minmax(0, 1fr));
   justify-items: center;
   gap: 10px;
-  width: min(100%, 520px);
+  width: min(100%, 480px);
   margin: 0 auto;
   flex-shrink: 0;
 }
@@ -338,58 +364,67 @@
 }
 
 .digit-btn {
-  width: min(100%, 64px);
+  width: min(100%, 60px);
   aspect-ratio: 1;
   min-height: 0;
-  border: 3px solid var(--white);
-  border-radius: 50%;
-  background: linear-gradient(180deg, #FFFDF8 0%, var(--yellow) 100%);
-  box-shadow: 0 var(--btn-depth) 0 var(--yellow-dark), 0 6px 10px rgba(248, 196, 113, 0.2);
-  color: var(--title);
+  border: 2px solid #CBD5E1;
+  border-radius: 16px;
+  background: #FFFFFF;
+  box-shadow: 0 4px 0 #CBD5E1, 0 4px 10px rgba(15, 23, 42, 0.04);
+  color: #0284C7;
   font-family: var(--font-round);
   font-size: 24px;
   font-weight: 900;
   cursor: grab;
   user-select: none;
   touch-action: none;
+  transition: transform 0.1s ease, box-shadow 0.1s ease, border-color 0.12s ease, background-color 0.12s ease;
+}
+
+.digit-btn:hover {
+  background: #F8FAFC;
+  border-color: #94A3B8;
 }
 
 .digit-bank[data-size='9'] .digit-btn {
   width: min(100%, 38px);
-  border-width: 2px;
+  border-width: 1.5px;
+  border-radius: 11px;
   font-size: 18px;
-  box-shadow: 0 4px 0 var(--yellow-dark), 0 4px 8px rgba(248, 196, 113, 0.16);
+  box-shadow: 0 3px 0 #CBD5E1;
 }
 
 .digit-btn:active,
 .digit-btn.dragging {
   cursor: grabbing;
-  transform: translateY(calc(var(--btn-depth) - 2px));
-  box-shadow: 0 2px 0 var(--yellow-dark);
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 #CBD5E1;
+  background: #F0F9FF;
+  border-color: #7DD3FC;
 }
 
 .helper-text {
   min-height: 20px;
   text-align: center;
   font-size: 14px;
-  color: var(--gray-500);
+  color: #64748B;
   flex-shrink: 0;
 }
 
 .feedback {
   min-height: 30px;
   text-align: center;
-  font-size: 22px;
-  font-weight: 700;
+  font-size: 20px;
+  font-weight: 800;
   flex-shrink: 0;
 }
 
 .feedback.correct {
-  color: #2E7D6E;
+  color: #16A34A;
 }
 
 .feedback.encourage {
-  color: #C77B2C;
+  color: #D97706;
 }
 
 .bottom-actions {
@@ -405,16 +440,16 @@
   position: fixed;
   z-index: 999;
   pointer-events: none;
-  width: 58px;
-  height: 58px;
+  width: 54px;
+  height: 54px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 3px solid var(--white);
-  border-radius: 50%;
-  background: linear-gradient(180deg, #FFFDF8 0%, var(--yellow) 100%);
-  box-shadow: 0 var(--btn-depth) 0 var(--yellow-dark), 0 12px 20px rgba(248, 196, 113, 0.28);
-  color: var(--title);
+  border: 2px solid #38BDF8;
+  border-radius: 16px;
+  background: #FFFFFF;
+  box-shadow: 0 10px 24px rgba(2, 132, 199, 0.22);
+  color: #0284C7;
   font-family: var(--font-round);
   font-size: 26px;
   font-weight: 900;
@@ -452,6 +487,16 @@
 
   .question-text {
     font-size: 14px;
+  }
+
+  .sudoku-board-card {
+    padding: 8px;
+    border-radius: 18px;
+  }
+
+  .sudoku-board-card[data-size='9'] {
+    padding: 6px;
+    border-radius: 14px;
   }
 
   .digit-btn {

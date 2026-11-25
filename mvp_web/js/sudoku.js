@@ -440,12 +440,13 @@
       const bankHeight = digitBank?.offsetHeight || 0;
       const helperHeight = (helperText?.offsetHeight || 0) + (feedback?.offsetHeight || 0);
       const bottomHeight = bottomActions?.offsetHeight || 0;
-      const sizePadding = size === 9 ? 96 : 92;
-      const chromeHeight = topHeight + questionHeight + bankHeight + helperHeight + bottomHeight + sizePadding;
+      const cardPadding = size === 9 ? 20 : 24;
+      const sizePadding = size === 9 ? 84 : 80;
+      const chromeHeight = topHeight + questionHeight + bankHeight + helperHeight + bottomHeight + sizePadding + cardPadding;
       const availableHeight = Math.max(window.innerHeight - chromeHeight, 180);
-      const availableWidth = Math.max((content?.clientWidth || window.innerWidth) - 16, 180);
-      const cap = size === 9 ? 430 : size === 6 ? 500 : 540;
-      const boardSize = Math.max(Math.min(availableWidth, availableHeight, cap), size === 9 ? 252 : 260);
+      const availableWidth = Math.max((content?.clientWidth || window.innerWidth) - 24 - cardPadding, 180);
+      const cap = size === 9 ? 416 : size === 6 ? 460 : 480;
+      const boardSize = Math.max(Math.min(availableWidth, availableHeight, cap), size === 9 ? 252 : 240);
 
       boardHost.style.setProperty('--board-size', `${boardSize}px`);
     }
@@ -464,17 +465,14 @@
       const config = getStageConfig(state.stageId);
       boardHost.innerHTML = '';
 
+      const boardCard = document.createElement('div');
+      boardCard.className = 'sudoku-board-card';
+      boardCard.dataset.size = String(config.size);
+
       const boardEl = document.createElement('div');
       boardEl.className = 'sudoku-board';
       boardEl.style.setProperty('--grid-size', config.size);
       boardEl.dataset.size = String(config.size);
-      if (config.size === 9) {
-        boardEl.style.background = 'transparent';
-        boardEl.style.border = 'none';
-        boardEl.style.borderRadius = '0';
-        boardEl.style.overflow = 'visible';
-        boardEl.style.boxShadow = 'none';
-      }
 
       for (let rowIndex = 0; rowIndex < config.size; rowIndex += 1) {
         for (let colIndex = 0; colIndex < config.size; colIndex += 1) {
@@ -482,10 +480,13 @@
           const cellValue = state.board[rowIndex][colIndex];
           const isFixed = state.currentPuzzle.givens[rowIndex][colIndex] !== 0;
           const isActive = state.activeCell && state.activeCell.row === rowIndex && state.activeCell.col === colIndex;
+          const boxRow = Math.floor(rowIndex / config.subgridRows);
+          const boxCol = Math.floor(colIndex / config.subgridCols);
 
           cell.className = 'sudoku-cell';
           cell.dataset.row = String(rowIndex);
           cell.dataset.col = String(colIndex);
+          if ((boxRow + boxCol) % 2 === 1) cell.classList.add('subgrid-alt');
           if (isFixed) cell.classList.add('fixed');
           if (cellValue === 0) cell.classList.add('empty');
           if (!isFixed && cellValue !== 0) cell.classList.add('filled');
@@ -499,16 +500,27 @@
             cell.classList.add('wrong');
           }
 
+          if (colIndex === config.size - 1) {
+            cell.classList.add('edge-right');
+          } else if ((colIndex + 1) % config.subgridCols === 0) {
+            cell.classList.add('box-right');
+          }
+
+          if (rowIndex === config.size - 1) {
+            cell.classList.add('edge-bottom');
+          } else if ((rowIndex + 1) % config.subgridRows === 0) {
+            cell.classList.add('box-bottom');
+          }
+
           cell.textContent = cellValue === 0 ? '' : String(cellValue);
           cell.setAttribute('aria-label', `第${rowIndex + 1}排第${colIndex + 1}列`);
-          cell.style.borderRightWidth = ((colIndex + 1) % config.subgridCols === 0 && colIndex !== config.size - 1) ? '4px' : '';
-          cell.style.borderBottomWidth = ((rowIndex + 1) % config.subgridRows === 0 && rowIndex !== config.size - 1) ? '4px' : '';
 
           boardEl.appendChild(cell);
         }
       }
 
-      boardHost.appendChild(boardEl);
+      boardCard.appendChild(boardEl);
+      boardHost.appendChild(boardCard);
     }
 
     function renderDigitBank() {
